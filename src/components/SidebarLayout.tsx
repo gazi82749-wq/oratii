@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
@@ -17,6 +17,14 @@ export default function SidebarLayout({ children }) {
   const [userCredits, setUserCredits] = useState<number | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const mobileNavItems = [
+    { href: '/', label: 'Home', icon: <Home size={18} /> },
+    { href: '/speech-coach', label: 'Speech', icon: <Mic size={18} /> },
+    { href: '/interview', label: 'Interview', icon: <Briefcase size={18} /> },
+    { href: '/presentation', label: 'Viva Studio', icon: <FileText size={18} /> },
+    { href: '/dashboard', label: 'Dashboard', icon: <User size={18} /> },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -283,9 +291,39 @@ export default function SidebarLayout({ children }) {
       </nav>
 
       {/* Main Content Area */}
-      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter ${isHomePage ? '' : ['/pricing', '/about', '/support'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
+      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-20 md:pb-5 ${isHomePage ? '' : ['/pricing', '/about', '/support'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
         {children}
       </main>
+
+      {/* Modern Sticky Glassmorphic Mobile Bottom Navigation Bar */}
+      <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 right-0 z-50 mobile-bottom-nav px-2 py-2 flex items-center justify-around print:hidden">
+        {mobileNavItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-2xl transition-all duration-200 active-touch-scale ${
+                isActive 
+                  ? 'text-[#1B2140] font-bold bg-indigo-50/90 shadow-2xs' 
+                  : 'text-slate-500 hover:text-slate-900 font-medium'
+              }`}
+            >
+              <div className={`relative flex items-center justify-center p-1.5 rounded-xl transition-all ${
+                isActive ? 'bg-[#1B2140] text-white shadow-sm' : 'text-slate-600'
+              }`}>
+                {item.icon}
+                {isActive && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span>
+                )}
+              </div>
+              <span className={`text-[10px] tracking-tight ${isActive ? 'font-extrabold text-[#1B2140]' : 'font-semibold text-slate-500'}`}>
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

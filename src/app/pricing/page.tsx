@@ -214,15 +214,15 @@ export default function PricingPage() {
               return (
                 <div
                   key={pack.id}
-                  className={`relative rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 ${
+                  className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 active-touch-scale ${
                     isPopular 
-                      ? 'bg-[#151930] text-white border-2 border-[#F2A93B] shadow-2xl lg:-translate-y-2 hover:-translate-y-3 ring-4 ring-[#F2A93B]/10' 
-                      : 'bg-white text-slate-900 border border-indigo-200/90 shadow-md hover:shadow-xl hover:-translate-y-1'
+                      ? 'bg-gradient-to-b from-[#1E1B4B] via-[#151930] to-[#0F172A] text-white border-2 border-[#F2A93B] shadow-2xl lg:-translate-y-2 hover:-translate-y-3 ring-4 ring-[#F2A93B]/20 glow-aura-amber' 
+                      : 'mobile-card-vibrant text-slate-900 border border-indigo-200 shadow-md hover:shadow-xl hover:-translate-y-1'
                   }`}
                 >
                   {/* Popular Tag */}
                   {isPopular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-20 border border-amber-200">
                       <Sparkles size={13} className="animate-spin" />
                       <span>{pack.badge}</span>
                     </div>
@@ -231,40 +231,40 @@ export default function PricingPage() {
                   <div>
                     {/* Header */}
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className={`text-2xl font-bold font-heading tracking-tight ${isPopular ? 'text-white' : 'text-slate-900'}`}>
+                      <h3 className={`text-xl sm:text-2xl font-black font-heading tracking-tight ${isPopular ? 'text-white' : 'text-slate-950'}`}>
                         {pack.name}
                       </h3>
                       {!isPopular && (
-                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-200">
+                        <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-indigo-100/90 text-indigo-950 border border-indigo-200">
                           {pack.badge}
                         </span>
                       )}
                     </div>
 
-                    <p className={`text-xs mb-6 leading-relaxed ${isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <p className={`text-xs mb-6 leading-relaxed font-medium ${isPopular ? 'text-indigo-200' : 'text-slate-600'}`}>
                       {pack.subtitle}
                     </p>
 
                     {/* Price & Credits Display */}
-                    <div className={`mb-8 pb-8 border-b ${isPopular ? 'border-slate-800' : 'border-indigo-100'}`}>
+                    <div className={`mb-8 pb-8 border-b ${isPopular ? 'border-indigo-900/60' : 'border-indigo-100'}`}>
                       <div className="flex items-baseline gap-1">
-                        <span className={`text-5xl font-extrabold tracking-tight font-heading ${isPopular ? 'text-white' : 'text-slate-900'}`}>
+                        <span className={`text-4xl sm:text-5xl font-black tracking-tight font-heading ${isPopular ? 'text-white' : 'text-slate-950'}`}>
                           {isFree ? '₹0' : `₹${pack.price}`}
                         </span>
-                        <span className={`text-xs font-medium ml-1 ${isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <span className={`text-xs font-extrabold ml-1 ${isPopular ? 'text-slate-300' : 'text-slate-600'}`}>
                           one-time
                         </span>
                       </div>
 
                       <div className="mt-3 flex items-center gap-2">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${
-                          isPopular ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-indigo-100 text-indigo-900'
+                          isPopular ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40' : 'bg-indigo-100/90 text-indigo-950 border border-indigo-200'
                         }`}>
-                          <Coins size={14} />
+                          <Coins size={14} className={isPopular ? 'text-amber-400' : 'text-indigo-700'} />
                           {pack.credits} Credits Included
                         </span>
 
-                        <span className={`text-[11px] font-semibold flex items-center gap-1 ${isPopular ? 'text-emerald-400' : 'text-emerald-700'}`}>
+                        <span className={`text-[11px] font-extrabold flex items-center gap-1 ${isPopular ? 'text-emerald-300' : 'text-emerald-800'}`}>
                           <Clock size={12} />
                           {pack.validity}
                         </span>
@@ -273,7 +273,7 @@ export default function PricingPage() {
 
                     {/* Features List */}
                     <div className="space-y-3 mb-8">
-                      <p className={`text-[11px] font-bold uppercase tracking-wider ${isPopular ? 'text-slate-400' : 'text-slate-400'}`}>
+                      <p className={`text-[11px] font-black uppercase tracking-wider ${isPopular ? 'text-indigo-300' : 'text-slate-600'}`}>
                         What’s Included:
                       </p>
                       
@@ -281,9 +281,9 @@ export default function PricingPage() {
                         <div key={i} className="flex items-start gap-3">
                           <CheckCircle2 
                             size={18} 
-                            className={`shrink-0 mt-0.5 ${isPopular ? 'text-amber-400' : 'text-emerald-500'}`} 
+                            className={`shrink-0 mt-0.5 ${isPopular ? 'text-amber-400' : 'text-emerald-600'}`} 
                           />
-                          <span className={`text-sm font-medium leading-tight ${isPopular ? 'text-indigo-200' : 'text-slate-700'}`}>
+                          <span className={`text-sm font-semibold leading-tight ${isPopular ? 'text-indigo-100' : 'text-slate-800'}`}>
                             {feat}
                           </span>
                         </div>
@@ -295,12 +295,12 @@ export default function PricingPage() {
                   <button
                     onClick={() => handlePurchase(pack)}
                     disabled={isProcessing}
-                    className={`w-full py-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 group shadow-md hover:shadow-lg ${
+                    className={`w-full py-4 rounded-2xl text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 group shadow-md active-touch-scale ${
                       isPopular 
-                        ? 'bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] hover:scale-[1.02] font-black' 
+                        ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-[#F2A93B] text-[#151930] hover:scale-[1.02] font-black shadow-lg shadow-amber-500/20' 
                         : isFree
-                        ? 'bg-indigo-100 text-indigo-900 hover:bg-indigo-200 border border-indigo-200/80 hover:scale-[1.02]'
-                        : 'bg-slate-900 text-white hover:bg-black hover:scale-[1.02]'
+                        ? 'bg-indigo-100 text-indigo-950 hover:bg-indigo-200 border border-indigo-300 hover:scale-[1.02]'
+                        : 'bg-[#1B2140] text-white hover:bg-slate-900 hover:scale-[1.02]'
                     }`}
                   >
                     <span>{pack.cta}</span>

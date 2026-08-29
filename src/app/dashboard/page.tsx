@@ -371,11 +371,11 @@ export default function ProfessionalDashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Card 1: Average Presentation Rating */}
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between">
+          <div className="mobile-card-vibrant vibrant-border-indigo p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Overall Rating</span>
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
-                <TrendingUp size={16} />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Overall Rating</span>
+              <div className="w-9 h-9 rounded-xl bg-indigo-100/90 text-indigo-900 flex items-center justify-center shadow-xs">
+                <TrendingUp size={18} />
               </div>
             </div>
             <div className="my-3">
@@ -383,56 +383,56 @@ export default function ProfessionalDashboard() {
                 <AnimatedNumber value={stats.averageScore || stats.recentScore} /><span className="text-xl font-bold text-indigo-600 ml-1">%</span>
               </p>
             </div>
-            <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full w-fit">
-              <CheckCircle2 size={13} /> {stats.totalSessions} sessions completed
+            <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5 bg-emerald-100/80 border border-emerald-300 px-2.5 py-1 rounded-full w-fit">
+              <CheckCircle2 size={13} className="text-emerald-700" /> {stats.totalSessions} sessions completed
             </span>
           </div>
 
           {/* Card 2: Active Habit Streak */}
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between">
+          <div className="mobile-card-vibrant vibrant-border-amber p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Practice Streak</span>
-              <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-100 text-amber-500 flex items-center justify-center">
-                <Flame size={18} className="fill-amber-400" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Practice Streak</span>
+              <div className="w-9 h-9 rounded-xl bg-amber-100/90 text-amber-900 flex items-center justify-center shadow-xs">
+                <Flame size={20} className="fill-amber-500 text-amber-600" />
               </div>
             </div>
             <div className="my-3">
               <p className="text-4xl font-black text-slate-950 tabular-nums tracking-tight">
-                <AnimatedNumber value={stats.streak} /> <span className="text-xl font-bold text-slate-500">Days</span>
+                <AnimatedNumber value={stats.streak} /> <span className="text-xl font-bold text-slate-600">Days</span>
               </p>
             </div>
-            <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-2.5 py-1 rounded-full w-fit">
+            <span className="text-xs font-extrabold text-amber-900 bg-amber-100/90 border border-amber-300 px-2.5 py-1 rounded-full w-fit">
               🔥 Keep your daily habit active
             </span>
           </div>
 
           {/* Card 3: Presenter Level & XP */}
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between">
+          <div className="mobile-card-vibrant vibrant-border-rose p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Presenter Level</span>
-              <span className="text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Presenter Level</span>
+              <span className="text-xs font-extrabold text-rose-900 bg-rose-100/90 border border-rose-300 px-2.5 py-0.5 rounded-full">
                 Level {stats.level}
               </span>
             </div>
             <div className="my-3">
               <p className="text-4xl font-black text-slate-950 tabular-nums tracking-tight">
-                <AnimatedNumber value={stats.xp} /> <span className="text-xl font-bold text-slate-500">XP</span>
+                <AnimatedNumber value={stats.xp} /> <span className="text-xl font-bold text-slate-600">XP</span>
               </p>
             </div>
-            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-600"
+                className="h-full bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-600"
                 style={{ width: `${Math.min(100, (stats.xp % 1000) / 10)}%` }}
               />
             </div>
           </div>
 
           {/* Card 4: Total Sessions Analyzed */}
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 flex flex-col justify-between">
+          <div className="mobile-card-vibrant vibrant-border-emerald p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Total Audits</span>
-              <div className="w-8 h-8 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center">
-                <Zap size={16} />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Total Audits</span>
+              <div className="w-9 h-9 rounded-xl bg-purple-100/90 text-purple-900 flex items-center justify-center shadow-xs">
+                <Zap size={18} className="fill-purple-300 text-purple-800" />
               </div>
             </div>
             <div className="my-3">
@@ -440,7 +440,7 @@ export default function ProfessionalDashboard() {
                 <AnimatedNumber value={stats.totalSessions} />
               </p>
             </div>
-            <span className="text-xs font-semibold text-slate-600">
+            <span className="text-xs font-bold text-purple-900 bg-purple-100/80 border border-purple-200 px-2.5 py-0.5 rounded-full w-fit">
               Decks, Viva & speeches
             </span>
           </div>

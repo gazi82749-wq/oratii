@@ -637,3 +637,87 @@ input:focus, textarea:focus, select:focus {
   transform: translateY(-1px) scale(0.998);
   transition-duration: 0.1s;
 }
+
+/* ─── Mobile First Vibrant Design System & Utilities ─── */
+
+/* Touch feedback active press scale for mobile buttons & cards */
+.active-touch-scale {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, filter 0.2s ease;
+}
+.active-touch-scale:active {
+  transform: scale(0.96);
+}
+
+/* Ambient gradient mesh background for vibrant mobile feel */
+.mobile-mesh-bg {
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(242, 169, 59, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
+}
+
+/* Mobile Vibrant Card — high contrast border, soft shadow, rich glass background */
+.mobile-card-vibrant {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(199, 210, 254, 0.6);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 4px 20px -2px rgba(99, 102, 241, 0.08),
+    0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-card-vibrant:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 10px -1px rgba(99, 102, 241, 0.12);
+}
+
+/* Vibrant border accents for cards */
+.vibrant-border-amber {
+  border-left: 4px solid #F2A93B;
+}
+.vibrant-border-indigo {
+  border-left: 4px solid #6366F1;
+}
+.vibrant-border-emerald {
+  border-left: 4px solid #10B981;
+}
+.vibrant-border-rose {
+  border-left: 4px solid #F43F5E;
+}
+
+/* Vibrant Gradient Text Utility */
+.text-gradient-vibrant {
+  background: linear-gradient(135deg, #1B2140 0%, #4F46E5 50%, #F2A93B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(135deg, #E11D48 0%, #F59E0B 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mobile Sticky Bottom Nav Glassmorphism */
+.mobile-bottom-nav {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border-top: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* Glowing aura ring for avatars and record status on mobile */
+.glow-aura-indigo {
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+}
+.glow-aura-amber {
+  box-shadow: 0 0 25px rgba(242, 169, 59, 0.4);
+}
+
