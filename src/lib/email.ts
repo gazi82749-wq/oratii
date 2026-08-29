@@ -5,6 +5,10 @@ const FROM_EMAIL = 'billing@Oratiiai.com';
 
 // Generic email sender to avoid template duplication
 async function sendEmail(to: string, subject: string, heading: string, body: string, ctaText: string, ctaUrl: string, ctaColor: string) {
+  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
+    console.log(`[Email Skipped - No Resend Key] To: ${to}, Subject: ${subject}`);
+    return;
+  }
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
