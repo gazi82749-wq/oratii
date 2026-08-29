@@ -32,10 +32,11 @@ export default function SidebarLayout({ children }) {
   useEffect(() => {
     const syncAuthCookie = (session: any) => {
       if (typeof document !== 'undefined') {
+        const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
         if (session?.user) {
-          document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
+          document.cookie = `Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax${isSecure}`;
         } else {
-          document.cookie = "Oratii_logged_in=; path=/; max-age=0; SameSite=Lax";
+          document.cookie = `Oratii_logged_in=; path=/; max-age=0; SameSite=Lax${isSecure}`;
         }
       }
     };
