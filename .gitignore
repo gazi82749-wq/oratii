@@ -45,3 +45,8 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Local test scripts (may contain hardcoded keys)
+scripts/run_sql_fix.js
+scripts/test_supabase_credits.js
+scripts/test-fallback.ts
