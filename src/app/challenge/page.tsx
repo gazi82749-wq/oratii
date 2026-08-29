@@ -1,0 +1,581 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
+import {
+  Flame,
+  Award,
+  CheckCircle2,
+  Lock,
+  ArrowRight,
+  ShieldAlert,
+  RotateCcw,
+  Sparkles,
+  BarChart2,
+  Clock,
+  Download,
+  Calendar,
+  X,
+  ChevronRight,
+} from 'lucide-react';
+import {
+  getChallengeState,
+  skipChallengeDay,
+  resetChallengeState,
+  DAILY_TASKS,
+  ChallengeState,
+} from '@/lib/challenge';
+import { getProfile } from '@/lib/storage';
+import CertificateModal from '@/components/CertificateModal';
+import GuestAuthModal from '@/components/GuestAuthModal';
+import InsufficientCreditsModal from '@/components/InsufficientCreditsModal';
+import { checkAndDeductCredits } from '@/lib/credits';
+import { supabase } from '@/lib/supabaseClient';
+
+// 20 Custom Badge Definitions for the 20-Day Challenge
+const CHALLENGE_BADGES = [
+  { day: 1, name: 'Day 1 Explorer', icon: '🚀', desc: 'Recorded 2-minute self introduction' },
+  { day: 2, name: 'Hobby Master', icon: '🎨', desc: 'Explained favorite hobby clearly' },
+  { day: 3, name: 'Product Pitcher', icon: '💡', desc: 'Pitched a dream product or app' },
+  { day: 4, name: 'Storyteller', icon: '📖', desc: 'Told a memorable childhood story' },
+  { day: 5, name: 'Day 5 Pioneer', icon: '🌟', desc: 'Explained a complex topic simply' },
+  { day: 6, name: 'Elevator Pitcher', icon: '⚡', desc: 'Delivered a 90-second elevator pitch' },
+  { day: 7, name: 'Inspirer', icon: '🔥', desc: 'Gave an inspiring motivational speech' },
+  { day: 8, name: 'Negotiator', icon: '🤝', desc: 'Handled a tough objection under pressure' },
+  { day: 9, name: 'Status Updater', icon: '📊', desc: 'Presented a 2-minute project update' },
+  { day: 10, name: 'Day 10 Vanguard', icon: '🛡️', desc: 'Delivered an empathetic 1-minute apology' },
+  { day: 11, name: 'Debater', icon: '⚖️', desc: 'Argued opposing view with logical flow' },
+  { day: 12, name: 'Toastmaker', icon: '🥂', desc: 'Gave a warm toast for a colleague' },
+  { day: 13, name: 'TED Speaker', icon: '🎤', desc: 'Delivered a mini TED-style talk' },
+  { day: 14, name: 'Interview Master', icon: '💼', desc: 'Answered "What is your greatest weakness?"' },
+  { day: 15, name: 'Day 15 Veteran', icon: '🏅', desc: 'Summarized favorite book or movie' },
+  { day: 16, name: 'Instructor', icon: '🎓', desc: 'Taught a quick 2-minute skill tutorial' },
+  { day: 17, name: 'Keynote Speaker', icon: '🏛️', desc: 'Gave an opening speech for a conference' },
+  { day: 18, name: 'Pitch Master', icon: '🏆', desc: 'Explained why you should be hired' },
+  { day: 19, name: 'Award Winner', icon: '👑', desc: 'Delivered a mock award acceptance speech' },
+  { day: 20, name: '20-Day Champion', icon: '🎖️', desc: 'Completed full 20-Day Capstone Presentation' },
+];
+
+export default function ChallengePage() {
+  const router = useRouter();
+
+  const [state, setState] = useState<ChallengeState | null>(null);
+  const [showSkipModal, setShowSkipModal] = useState(false);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
+  const [isGuestAuthModalOpen, setIsGuestAuthModalOpen] = useState(false);
+  const [isCreditModalOpen, setIsCreditModalOpen] = useState(false);
+  const [creditBalance, setCreditBalance] = useState(0);
+  const [userName, setUserName] = useState('Oratii Scholar');
+  const [selectedBadgeCert, setSelectedBadgeCert] = useState<{
+    badgeName: string;
+    badgeIcon: string;
+    badgeDescription: string;
+    dayNumber: number;
+    completedDate?: string;
+  } | null>(null);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const s = getChallengeState();
+    setState(s);
+
+    const profile = getProfile();
+    if (profile?.name) {
+      setUserName(profile.name);
+    }
+  }, []);
+
+  if (!state) {
+    return (
+      <div className="w-full max-w-4xl mx-auto py-16 flex flex-col items-center justify-center">
+        <div className="w-10 h-10 border-4 border-indigo-200 border-t-[#F2A93B] rounded-full animate-spin mb-4"></div>
+        <p className="text-xs font-extrabold text-slate-500">Loading 20-Day Challenge...</p>
+      </div>
+    );
+  }
+
+  const currentDayNum = Math.min(state.current_day, 20);
+  const todayTask = DAILY_TASKS.find((t) => t.day === currentDayNum) || DAILY_TASKS[0];
+  const isCompletedAll = state.current_day > 20;
+  const completedCount = state.days_status.filter((d) => d.status === 'done').length;
+  const latestFiller = state.filler_scores.length > 0
+    ? state.filler_scores[state.filler_scores.length - 1].fillerScore
+    : 1;
+
+  const handleStartTask = async () => {
+    // 1. Check Auth (20-Day Challenge is FREE for all signed-in users)
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session?.user) {
+      setIsGuestAuthModalOpen(true);
+      return;
+    }
+
+    router.push(
+      `/speech-coach?challengeDay=${todayTask.day}&isChallenge=true&topic=${encodeURIComponent(
+        todayTask.title
+      )}`
+    );
+  };
+
+  const handleSkipClick = () => {
+    setShowSkipModal(true);
+  };
+
+  const handleUseTokenToSkip = () => {
+    setShowSkipModal(false);
+    const res = skipChallengeDay(currentDayNum);
+    setState({ ...res.newState });
+  };
+
+  const handleConfirmSkipWithoutToken = () => {
+    setShowSkipModal(false);
+    const res = skipChallengeDay(currentDayNum, true);
+    setState({ ...res.newState });
+  };
+
+  const handleOpenResetModal = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setShowSkipModal(false);
+    setShowResetConfirmModal(true);
+  };
+
+  const handleExecuteReset = () => {
+    setShowResetConfirmModal(false);
+    const reset = resetChallengeState();
+    setState({ ...reset });
+    window.location.reload();
+  };
+
+  // Metric averages
+
+  const day1Score =
+    state.days_status[0]?.score || (state.days_status[0]?.status === 'done' ? 75 : 0);
+  const day20Score =
+    state.days_status[19]?.score || (state.days_status[19]?.status === 'done' ? 92 : 0);
+
+  return (
+    <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in text-slate-900 pb-16">
+      
+      {/* 1. HEADER CARD WITH STREAK BADGE */}
+      <div className="w-full bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden" style={{ isolation: 'isolate' }}>
+        {/* Top gradient stripe */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
+        
+        <div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> 20-Day Habit Engine
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950 leading-tight mb-1">
+            20-Day Speaking Challenge
+          </h1>
+          <p className="text-xs sm:text-sm font-medium text-slate-500 max-w-xl">
+            Build unshakeable public speaking confidence. Practice 2 minutes daily, earn milestone certificates, and track your filler word reductions.
+          </p>
+        </div>
+
+        {/* Streak Pill */}
+        <div className="flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 px-5 py-3 rounded-2xl shadow-2xs shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] flex items-center justify-center shadow-2xs font-bold">
+            <Flame size={22} className="fill-[#151930]" />
+          </div>
+          <div>
+            <div className="text-xl font-black text-slate-900 leading-none">
+              {state.streak_count} <span className="text-xs font-bold text-slate-500">Days</span>
+            </div>
+            <span className="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider">Active Streak</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. PROGRESS BAR (20 Horizontal Segments) */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-bold">
+          <span className="text-slate-700 text-sm font-extrabold">Overall Course Progress</span>
+          <div className="flex items-center gap-3">
+            <span className="text-[#1B2140] font-extrabold">
+              {Math.round((completedCount / 20) * 100)}% Complete
+            </span>
+            <button
+              type="button"
+              onClick={handleOpenResetModal}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 hover:border-rose-300 rounded-xl text-xs font-extrabold transition-all shadow-2xs cursor-pointer"
+              title="Reset challenge and start from Day 1"
+            >
+              <RotateCcw size={13} />
+              <span>Reset Challenge</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-20 gap-1 sm:gap-1.5 w-full">
+          {Array.from({ length: 20 }, (_, i) => {
+            const dayNum = i + 1;
+            const statusObj = state.days_status[i] || { status: 'pending' };
+            const isToday = dayNum === currentDayNum && !isCompletedAll;
+
+            let bgColor = 'bg-indigo-100 border-indigo-200';
+            if (statusObj.status === 'done') bgColor = 'bg-emerald-500 border-emerald-600 shadow-2xs';
+            else if (statusObj.status === 'skipped') bgColor = 'bg-amber-400 border-amber-500';
+            else if (isToday) bgColor = 'bg-[#1B2140] border-indigo-900 animate-pulse';
+
+            return (
+              <div
+                key={dayNum}
+                title={`Day ${dayNum}: ${statusObj.status.toUpperCase()}`}
+                className={`h-4 sm:h-5 rounded-sm border transition-all ${bgColor} ${
+                  isToday ? 'ring-2 ring-[#F2A93B]/70 ring-offset-1' : ''
+                }`}
+              />
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 pt-1">
+          <span>Day 1</span>
+          <span>Day 10</span>
+          <span>Day 20</span>
+        </div>
+      </div>
+
+      {/* 3. STATS ROW (3 Compact Metric Cards) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Stat 1: Latest Filler Words */}
+        <div className="bg-white border border-indigo-200 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Filler Word Rate</span>
+            <div className="text-2xl font-black text-slate-900 mt-1">
+              {latestFiller} <span className="text-xs font-bold text-slate-500">per min</span>
+            </div>
+            <span className="text-[11px] font-medium text-slate-400">Target: &lt; 2 per min</span>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-indigo-100 text-[#1B2140] flex items-center justify-center shrink-0">
+            <BarChart2 size={20} />
+          </div>
+        </div>
+
+        {/* Stat 2: Sessions Completed */}
+        <div className="bg-white border border-indigo-200 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Sessions Finished</span>
+            <div className="text-2xl font-black text-slate-900 mt-1">
+              {completedCount} <span className="text-xs font-bold text-slate-500">/ 20</span>
+            </div>
+            <span className="text-[11px] font-medium text-slate-400">Daily practice sessions</span>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <CheckCircle2 size={20} />
+          </div>
+        </div>
+
+        {/* Stat 3: Freeze Tokens Remaining */}
+        <div className="bg-white border border-indigo-200 rounded-2xl p-5 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Streak Freeze Tokens</span>
+            <div className="text-2xl font-black text-slate-900 mt-1">
+              {state.freeze_tokens_remaining} <span className="text-xs font-bold text-slate-500">Tokens</span>
+            </div>
+            <span className="text-[11px] font-medium text-slate-400">Protects streak from breaking</span>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 text-xl">
+            ❄️
+          </div>
+        </div>
+      </div>
+
+      {/* 4. TODAY'S TASK CARD */}
+      {!isCompletedAll ? (
+        <div className="bg-white border-2 border-[#1B2140] rounded-2xl shadow-md p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-indigo-100 pb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 bg-indigo-100 text-[#151930] text-[11px] font-black uppercase rounded-md border border-indigo-200">
+                  Today’s Prompt
+                </span>
+                <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
+                  <Clock size={13} /> {todayTask.targetDuration}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">
+                Day {todayTask.day}: {todayTask.title}
+              </h2>
+            </div>
+          </div>
+
+          <p className="text-sm font-medium text-slate-600 leading-relaxed">
+            {todayTask.description}. Click below to launch Speech Coach pre-configured for this task.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <button
+              onClick={handleStartTask}
+              className="w-full sm:w-auto px-8 py-3.5 bg-[#1B2140] hover:shadow-glow text-white font-bold text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Start recording</span>
+              <ArrowRight size={16} />
+            </button>
+
+            <button
+              onClick={handleSkipClick}
+              className="w-full sm:w-auto px-6 py-3.5 bg-white border border-indigo-300 hover:bg-indigo-50 text-slate-700 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Skip day</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* DAY 20 BEFORE VS AFTER SUMMARY CARD */
+        <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-8 shadow-xl flex flex-col gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-2xl shadow-md">
+              🏆
+            </div>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black">Challenge Completed!</h2>
+              <p className="text-xs text-indigo-200 font-medium">You completed all 20 days of structured public speaking practice!</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/10 rounded-xl p-6 backdrop-blur-xs border border-white/10">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#F2A93B] block mb-1">Day 1 Baseline Score</span>
+              <div className="text-4xl font-black text-white">{day1Score}%</div>
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-300 block mb-1">Day 20 Final Score</span>
+              <div className="text-4xl font-black text-emerald-400">{day20Score}%</div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleOpenResetModal}
+            className="self-start px-6 py-3 bg-white text-slate-900 hover:bg-indigo-100 font-extrabold text-xs rounded-xl transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <RotateCcw size={14} /> Start New 20-Day Cycle
+          </button>
+        </div>
+      )}
+
+      {/* 5. 20 BADGES & CERTIFICATES GRID */}
+      <div className="bg-white border border-indigo-200/90 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100 pb-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              20-Day Badges & Certificates
+            </h2>
+            <p className="text-xs font-medium text-slate-500 mt-0.5">
+              Each completed day unlocks its official badge and downloadable Oratii Certificate.
+            </p>
+          </div>
+          <span className="text-xs font-bold text-[#1B2140] bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-full self-start sm:self-center">
+            {state.days_status.filter((d) => d.status === 'done').length} / 20 Unlocked
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {CHALLENGE_BADGES.map((b) => {
+            const dayStatusObj = state.days_status[b.day - 1] || { status: 'pending' };
+            const isUnlocked = dayStatusObj.status === 'done';
+
+            return (
+              <div
+                key={b.day}
+                className={`p-4 rounded-2xl border flex flex-col items-center text-center gap-3 transition-all relative group ${
+                  isUnlocked
+                    ? 'bg-white border-amber-300 shadow-2xs hover:shadow-md hover:border-amber-400'
+                    : 'bg-indigo-50/70 border-indigo-200 opacity-60'
+                }`}
+              >
+                {/* Badge Day Tag */}
+                <span
+                  className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                    isUnlocked
+                      ? 'bg-amber-100 text-amber-900 border border-amber-200'
+                      : 'bg-indigo-200 text-slate-500'
+                  }`}
+                >
+                  Day {b.day}
+                </span>
+
+                {/* Badge Icon */}
+                <div
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform group-hover:scale-105 ${
+                    isUnlocked
+                      ? 'bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-300 shadow-xs'
+                      : 'bg-indigo-200 text-slate-400 grayscale'
+                  }`}
+                >
+                  {b.icon}
+                </div>
+
+                {/* Badge Name & Desc */}
+                <div className="flex flex-col gap-1 w-full">
+                  <h3 className={`text-xs font-extrabold ${isUnlocked ? 'text-slate-900' : 'text-slate-500'}`}>
+                    {b.name}
+                  </h3>
+                  <p className="text-[10px] font-medium text-slate-500 leading-tight line-clamp-2">
+                    {b.desc}
+                  </p>
+                </div>
+
+                {/* Download Certificate Action */}
+                {isUnlocked ? (
+                  <button
+                    onClick={() =>
+                      setSelectedBadgeCert({
+                        badgeName: b.name,
+                        badgeIcon: b.icon,
+                        badgeDescription: b.desc,
+                        dayNumber: b.day,
+                        completedDate: dayStatusObj.completedAt,
+                      })
+                    }
+                    className="w-full mt-1 px-2.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-[11px] rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Award size={13} />
+                    <span>Certificate</span>
+                  </button>
+                ) : (
+                  <div className="w-full mt-1 px-2.5 py-1.5 bg-indigo-100 border border-indigo-200 text-slate-400 font-bold text-[10px] uppercase tracking-wider rounded-xl flex items-center justify-center gap-1 cursor-not-allowed">
+                    <Lock size={11} />
+                    <span>Locked</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* SKIP DAY OPTIONS MODAL */}
+      {showSkipModal && mounted && createPortal(
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4">
+          <div className="bg-white border border-indigo-200 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl flex flex-col gap-6 animate-scale-up">
+            <div className="flex items-center justify-between border-b border-indigo-100 pb-3">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">Skip Options for Day {currentDayNum}</h3>
+                <p className="text-xs font-medium text-slate-500">Choose how you wish to proceed</p>
+              </div>
+              <button onClick={() => setShowSkipModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              {/* Option 1: Freeze Token or Skip */}
+              {state.freeze_tokens_remaining > 0 ? (
+                <button
+                  onClick={handleUseTokenToSkip}
+                  className="p-4 border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-200/60 rounded-xl transition-all text-left flex items-center justify-between group shadow-2xs cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-extrabold text-[#1B2140]">Use 1 Freeze Token</span>
+                      <span className="text-[10px] font-bold bg-[#F2A93B]/20 text-[#1B2140] px-2 py-0.5 rounded-full">
+                        {state.freeze_tokens_remaining} left
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-medium text-[#151930] mt-0.5">Skip today & protect active day streak.</p>
+                  </div>
+                  <ChevronRight size={16} className="text-[#1B2140] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleConfirmSkipWithoutToken}
+                  className="p-4 border border-amber-200 bg-amber-50/60 hover:bg-amber-100/60 rounded-xl transition-all text-left flex items-center justify-between group shadow-2xs cursor-pointer"
+                >
+                  <div>
+                    <span className="text-xs font-extrabold text-amber-900 block">Skip & Reset Streak to 0</span>
+                    <p className="text-[11px] font-medium text-amber-700 mt-0.5">No tokens remaining. Advances to next day but resets streak.</p>
+                  </div>
+                  <ChevronRight size={16} className="text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              )}
+
+              {/* Option 2: Reset & Start from Day 1 */}
+              <button
+                onClick={handleOpenResetModal}
+                className="p-4 border border-rose-200 bg-rose-50/60 hover:bg-rose-100/60 rounded-xl transition-all text-left flex items-center justify-between group shadow-2xs cursor-pointer"
+              >
+                <div>
+                  <span className="text-xs font-extrabold text-rose-900 block">Reset & Start Fresh from Day 1</span>
+                  <p className="text-[11px] font-medium text-rose-700 mt-0.5">Clear challenge progress and restart from Day 1 task.</p>
+                </div>
+                <RotateCcw size={16} className="text-rose-600 group-hover:rotate-180 transition-transform duration-500" />
+              </button>
+            </div>
+
+            <div className="flex justify-end pt-2 border-t border-indigo-100">
+              <button
+                onClick={() => setShowSkipModal(false)}
+                className="px-5 py-2.5 border border-indigo-300 text-slate-700 font-semibold text-xs rounded-xl hover:bg-indigo-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* RESET CONFIRMATION MODAL */}
+      {showResetConfirmModal && mounted && createPortal(
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4">
+          <div className="bg-white border border-indigo-200 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl flex flex-col gap-5 animate-scale-up">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+              <ShieldAlert size={24} />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-extrabold text-slate-900">Reset Challenge to Day 1?</h3>
+              <p className="text-xs font-medium text-slate-600 mt-1.5 leading-relaxed">
+                Are you sure you want to reset your 20-Day Challenge progress? All 20 daily task statuses, streak counts, and milestones will be reset back to Day 1.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResetConfirmModal(false)}
+                className="flex-1 px-4 py-2.5 border border-indigo-300 text-slate-700 font-semibold text-xs rounded-xl hover:bg-indigo-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleExecuteReset}
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
+              >
+                Yes, Reset to Day 1
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* OFFICIAL ORATII CERTIFICATE MODAL */}
+      {selectedBadgeCert && (
+        <CertificateModal
+          isOpen={true}
+          onClose={() => setSelectedBadgeCert(null)}
+          badgeName={selectedBadgeCert.badgeName}
+          badgeIcon={selectedBadgeCert.badgeIcon}
+          badgeDescription={selectedBadgeCert.badgeDescription}
+          userName={userName}
+          dayNumber={selectedBadgeCert.dayNumber}
+          completedDate={selectedBadgeCert.completedDate}
+        />
+      )}
+
+      <GuestAuthModal isOpen={isGuestAuthModalOpen} onClose={() => setIsGuestAuthModalOpen(false)} featureName="20-Day Challenge" />
+      <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={1} currentBalance={creditBalance} featureName="20-Day Challenge" />
+    </div>
+  );
+}

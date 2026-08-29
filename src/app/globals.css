@@ -1,0 +1,639 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─── */
+:root {
+  /* Brand Gradient */
+  --color-brand-from: #1B2140;  /* navy */
+  --color-brand-via: #151930;   /* dark navy */
+  --color-brand-to: #F2A93B;    /* yellow */
+  --color-brand-light: #f8fafc; /* indigo-50 */
+  --color-brand-glow: rgba(242, 169, 59, 0.2); /* yellow glow */
+  --color-primary: #151930;
+  --color-accent: #4f46e5;
+  --color-accent-hover: #4338ca;
+  --color-accent-light: #e0e7ff;
+
+  /* Surfaces */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f8fafc;
+
+  /* Semantics */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Gamification */
+  --color-xp: #fbbf24;
+  --color-streak: #f97316;
+
+  /* Borders & Muted */
+  --color-border: #e2e8f0;
+  --color-muted: #94a3b8;
+  --color-text-secondary: #64748b;
+
+  /* Noise grain (tiny inline SVG, no external file needed) */
+  --noise-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* ─── Base Reset & Typography ─── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-primary);
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  padding-env: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  line-height: 1.6;
+}
+
+/* ─── Smooth Global Transitions ─── */
+/* Apply a universal smooth transition to all properties that commonly animate */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Smooth property transitions on interactive elements */
+a, button, [role="button"], summary, label[for], select,
+.transition-auto {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pointer cursor for all clickable elements */
+a, button, [role="button"], summary, label[for], select {
+  cursor: pointer;
+}
+
+/* Remove text selection and I-beam cursor globally, except for inputs */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+input, textarea, [contenteditable="true"] {
+  cursor: text;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Smooth Page-to-Page Navigation Transition — spring easing */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.page-enter {
+  animation: pageEnter 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.font-handwriting {
+  font-family: var(--font-handwriting), cursive;
+}
+
+/* ─── Selection Styling ─── */
+::selection {
+  background-color: var(--color-accent-light);
+  color: var(--color-primary);
+}
+
+/* ─── Premium UI Utilities ─── */
+
+/* Noise grain overlay — apply to hero sections or surfaces for depth */
+.noise-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise-grain);
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* Elevated card with layered, realistic shadows — smooth lift on hover */
+.card-elevated {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.055);
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.02),
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 16px rgba(0,0,0,0.05);
+  transition: box-shadow 0.35s cubic-bezier(0.4,0,0.2,1), transform 0.35s cubic-bezier(0.4,0,0.2,1), border-color 0.2s ease;
+}
+
+.card-elevated:hover {
+  box-shadow:
+    0 0 0 1px rgba(99,102,241,0.08),
+    0 2px 4px rgba(0,0,0,0.04),
+    0 16px 40px rgba(0,0,0,0.09);
+  transform: translateY(-3px);
+  border-color: rgba(99,102,241,0.12);
+}
+
+:is(.dark) .card-elevated {
+  background: rgb(15 23 42); /* slate-900 */
+  border-color: rgb(30 41 59); /* slate-800 */
+}
+
+/* Glassmorphism panel — more saturated and crisp */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Navbar glassmorphism — slightly heavier for legibility */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+:is(.dark) .glass {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Glow accent on interactive elements */
+.glow-accent {
+  transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glow-accent:hover {
+  box-shadow: 0 0 28px rgba(99, 102, 241, 0.22);
+}
+
+:is(.dark) .glow-accent:hover {
+  box-shadow: 0 0 28px rgba(139, 92, 246, 0.25);
+}
+
+/* Smooth interactive button press */
+.btn-press {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Accent stripe (left border) for cards */
+.accent-stripe {
+  position: relative;
+  overflow: hidden;
+}
+
+.accent-stripe::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(to bottom, var(--color-brand-from), var(--color-brand-to));
+}
+
+/* Top-edge gradient stripe for admin cards */
+.stripe-top {
+  position: relative;
+  overflow: hidden;
+}
+
+.stripe-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(to right, var(--stripe-color, var(--color-brand-from)), var(--stripe-color-to, var(--color-brand-to)));
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-brand-from), var(--color-brand-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shimmer effect for badges */
+.shimmer-badge {
+  background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.15) 37%, transparent 63%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* Gradient border (used for navbar bottom) */
+.border-gradient-bottom {
+  border-bottom: none;
+  position: relative;
+}
+
+.border-gradient-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-brand-from), var(--color-brand-to), transparent);
+  opacity: 0.3;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+
+/* ─── Page Transition ─── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: pageEnter 0.35s ease-out forwards;
+}
+
+/* ─── Fade In (Page Transitions) ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* ─── Live Alert Animations ─── */
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(120%); opacity: 0; }
+}
+
+.live-alert {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.live-alert.exiting {
+  animation: slideOutRight 0.25s ease-in forwards;
+}
+
+.live-alert-stack {
+  position: fixed;
+  top: 80px;
+  right: 12px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  max-width: calc(100vw - 24px);
+}
+
+@media (min-width: 640px) {
+  .live-alert-stack {
+    right: 20px;
+    max-width: none;
+  }
+}
+
+.live-alert-stack > * {
+  pointer-events: auto;
+}
+
+/* ─── XP Toast ─── */
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.xp-toast {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+.xp-toast.exiting {
+  animation: fadeInUp 0.25s ease-in reverse forwards;
+}
+
+.xp-toast-container {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  max-width: calc(100vw - 32px);
+  width: max-content;
+}
+
+@media (min-width: 640px) {
+  .xp-toast-container {
+    bottom: 24px;
+    max-width: none;
+  }
+}
+
+/* ─── Score Ring ─── */
+@keyframes ringDraw {
+  from { stroke-dashoffset: var(--circumference); }
+  to { stroke-dashoffset: var(--target-offset); }
+}
+
+.score-ring-circle {
+  animation: ringDraw 1s ease-out forwards;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+
+/* ─── Badge States ─── */
+.badge-locked {
+  filter: grayscale(100%) brightness(0.6);
+  opacity: 0.35;
+}
+
+.badge-unlocked {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+/* ─── Timeline ─── */
+.timeline-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  left: 16px;
+  border: 2px solid white;
+  z-index: 1;
+}
+
+.timeline-dot.success { background: var(--color-success); }
+.timeline-dot.warning { background: var(--color-warning); }
+.timeline-dot.danger  { background: var(--color-danger); }
+.timeline-dot.info    { background: var(--color-info); }
+
+/* ─── Jury Avatar ─── */
+.jury-speaking {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* ─── Recharts Tooltip ─── */
+.recharts-tooltip-wrapper .custom-tooltip {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+/* ─── Scrollbar — polished, thin, consistent ─── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.22);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.22) transparent;
+}
+
+/* Named class for components that want custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.18);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.35);
+}
+
+
+/* ─── Hero-style Card Animations ─── */
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes type-line-1 {
+  0% { max-width: 0; opacity: 1; }
+  20%, 100% { max-width: 100%; opacity: 1; }
+}
+
+@keyframes type-line-2 {
+  0%, 20% { max-width: 0; opacity: 0; }
+  21% { opacity: 1; }
+  40%, 100% { max-width: 100%; opacity: 1; }
+}
+
+@keyframes slide-in-tag {
+  0% { transform: translateX(20px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes laser-scan {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(180px); opacity: 0; }
+}
+
+@keyframes highlight-fade {
+  0%, 30% { opacity: 0; transform: scale(0.95); }
+  40%, 100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes soundwave-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(242, 169, 59, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(242, 169, 59, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(242, 169, 59, 0); }
+}
+
+@keyframes pop-up-bubble {
+  0% { transform: translateY(10px) scale(0.95); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes waveform-bounce {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes float-animation {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes float-animation-reverse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+.animate-pulse-dot { animation: pulse-dot 2s infinite; }
+.animate-type-1 { animation: type-line-1 6s infinite steps(40, end); white-space: nowrap; overflow: hidden; }
+.animate-type-2 { animation: type-line-2 6s infinite steps(40, end); white-space: nowrap; overflow: hidden; }
+.animate-slide-tag-1 { animation: slide-in-tag 6s infinite ease-out; animation-delay: 1.5s; opacity: 0; animation-fill-mode: forwards; }
+.animate-slide-tag-2 { animation: slide-in-tag 6s infinite ease-out; animation-delay: 2.5s; opacity: 0; animation-fill-mode: forwards; }
+.animate-laser { animation: laser-scan 4s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+.animate-highlight { animation: highlight-fade 4s infinite; }
+.animate-soundwave { animation: soundwave-pulse 2s infinite; }
+.animate-pop-1 { animation: pop-up-bubble 6s infinite cubic-bezier(0.34, 1.56, 0.64, 1); }
+.animate-pop-2 { animation: pop-up-bubble 6s infinite cubic-bezier(0.34, 1.56, 0.64, 1); animation-delay: 2s; opacity: 0; animation-fill-mode: forwards; }
+.animate-waveform { animation: waveform-bounce 1.2s ease-in-out infinite; transform-origin: bottom; }
+.animate-float-slow { animation: float-animation 6s ease-in-out infinite; }
+.animate-float-slow-reverse { animation: float-animation-reverse 8s ease-in-out infinite; }
+
+/* ─── Accessibility: Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Focus Ring — smooth, accessible ─── */
+:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.7);
+  outline-offset: 3px;
+  border-radius: 6px;
+  transition: outline-offset 0.1s ease;
+}
+
+/* ─── Link underline smooth animation ─── */
+a.animated-underline {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1.5px;
+  transition: background-size 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+a.animated-underline:hover {
+  background-size: 100% 1.5px;
+}
+
+/* ─── Smooth image loading (no layout shift jank) ─── */
+img {
+  display: block;
+  max-width: 100%;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ─── Section smooth entry utility ─── */
+.section-enter {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section-enter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Smooth Input Focus States ─── */
+input, textarea, select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* ─── Card interaction smoothness ─── */
+.smooth-card {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s ease;
+  will-change: transform;
+}
+
+.smooth-card:hover {
+  transform: translateY(-4px) scale(1.005);
+}
+
+.smooth-card:active {
+  transform: translateY(-1px) scale(0.998);
+  transition-duration: 0.1s;
+}

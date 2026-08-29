@@ -1,0 +1,51 @@
+{
+  "name": "ppt-analyzer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.35",
+    "@sentry/nextjs": "^10.58.0",
+    "@supabase/auth-helpers-nextjs": "^0.15.0",
+    "@supabase/supabase-js": "^2.108.1",
+    "date-fns": "^4.4.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.21.0",
+    "next": "14.2.1",
+    "pdf-parse": "^2.4.5",
+    "pptxgenjs": "^4.0.1",
+    "qrcode.react": "^4.2.0",
+    "razorpay": "^2.9.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-dropzone": "^15.0.0",
+    "react-webcam": "^7.2.0",
+    "recharts": "^3.8.1",
+    "recordrtc": "^5.6.2",
+    "resend": "^6.14.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.4",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.1",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^6.0.3"
+  }
+}
