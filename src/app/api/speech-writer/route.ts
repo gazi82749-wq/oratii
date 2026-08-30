@@ -4,13 +4,10 @@ import { generateAIContent } from '../../../lib/aiFallback';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function POST(request) {
   try {
-    if (await hasUsedTrial(request)) {
-      return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
-    }
-
     const body = await request.json();
     const { topic } = body;
 
@@ -23,33 +20,22 @@ export async function POST(request) {
     }
 
     const systemPrompt = `
-      You are a kind and friendly English teacher for class 5 and class 6 students (age 10-12 years old).
-      A student has asked you to write a simple speech on a topic they give you.
+      You are a kind and friendly English speech writer.
+      Write a simple, inspiring 150-200 word speech on the requested topic.
 
-      YOUR RULES:
-      1. Write a speech that is 150 to 200 words long â€” about one page when printed.
-      2. Use VERY SIMPLE English â€” short sentences, easy words that a 10-12 year old child can read and understand.
-      3. Do NOT use big or complex words. For example, say "important" instead of "significant", say "help" instead of "facilitate".
-      4. The speech should sound natural â€” like a child is speaking in front of their class at school.
-      5. Start with a greeting like "Good morning respected teachers and my dear friends" or similar.
-      6. End with a polite closing like "Thank you for listening" or "Thank you".
-      7. Break the speech into 3-4 short paragraphs.
-      8. The tone should be warm, positive, and enthusiastic â€” a child who is happy to share.
-      9. Give 3 simple tips on how to deliver this speech well (e.g. "Speak slowly", "Look at your audience", "Smile").
-
-      Respond ONLY in this strict JSON format â€” no extra text, no code blocks:
+      Respond STRICTLY in valid JSON format:
       {
-        "title": "Speech on [Topic]",
-        "speech": "The full speech text here with paragraph breaks using \\n\\n between paragraphs.",
+        "title": "Speech on ${topic.trim()}",
+        "speech": "Good morning everyone. Today I am honored to speak about ${topic.trim()}...",
         "tips": [
-          "Tip 1",
-          "Tip 2",
-          "Tip 3"
+          "Speak clearly and at a steady pace.",
+          "Maintain good eye contact with your audience.",
+          "Stand tall and speak with natural enthusiasm."
         ]
       }
     `;
 
-    const userPrompt = `Write a simple speech for a class 5-6 student on the topic: "${topic.trim()}"`;
+    const userPrompt = `Write an engaging speech on the topic: "${topic.trim()}"`;
 
     const aiResponse = await generateAIContent({
       systemPrompt,
@@ -57,35 +43,43 @@ export async function POST(request) {
       temperature: 0.7,
     });
 
-    // Clean up: AI sometimes wraps JSON in markdown code fences
-    const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("Could not parse AI response as JSON");
+    let title = `Speech on ${topic.trim()}`;
+    let speech = "";
+    let tips = [
+      "Speak clearly and at a steady pace.",
+      "Maintain good eye contact with your audience.",
+      "Stand tall and speak with confidence."
+    ];
+
+    try {
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        if (parsed.title) title = parsed.title;
+        if (parsed.speech) speech = parsed.speech;
+        if (Array.isArray(parsed.tips) && parsed.tips.length > 0) tips = parsed.tips;
+      }
+    } catch (e) {
+      console.warn("JSON parse fallback used for speech writer");
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
-
-    // Validate the response has required fields
-    if (!parsed.title || !parsed.speech || !parsed.tips) {
-      throw new Error("AI response missing required fields");
+    if (!speech) {
+      speech = aiResponse.replace(/```json|```/g, '').trim();
     }
-
-    // After a successful generation, mark trial as used
-    await setTrialUsed(request);
 
     return NextResponse.json({
       status: "success",
       data: {
-        title: parsed.title,
-        speech: parsed.speech,
-        tips: Array.isArray(parsed.tips) ? parsed.tips : [],
+        title,
+        speech,
+        tips,
       }
     });
 
   } catch (error) {
     console.error("Speech Writer Error:", error);
     return NextResponse.json(
-      { error: "Failed to generate speech. Please try again.", details: error.message },
+      { error: "Failed to generate speech. Please try again.", details: error?.message || String(error) },
       { status: 500 }
     );
   }
