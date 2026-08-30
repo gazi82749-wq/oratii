@@ -56,28 +56,34 @@ export async function checkAndDecrementUsage(userId: string, type: UsageType): P
     }
 
     // 2. Check current usage
-    const { data: usage } = await supabase
+    const { data: usage, error: fetchErr } = await supabase
       .from('usage_limits')
       .select(type)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
-    const currentCount = usage ? usage[type] : 0;
+    const currentCount = usage ? (usage[type] || 0) : 0;
 
     if (currentCount >= limit) {
       return { allowed: false, limitReached: true };
     }
 
-    // 3. Increment usage
-    await supabase
-      .from('usage_limits')
-      .update({ [type]: currentCount + 1 })
-      .eq('user_id', userId);
+    // 3. Increment usage (or insert if record missing)
+    if (usage) {
+      await supabase
+        .from('usage_limits')
+        .update({ [type]: currentCount + 1 })
+        .eq('user_id', userId);
+    } else {
+      await supabase
+        .from('usage_limits')
+        .insert([{ user_id: userId, [type]: 1 }]);
+    }
 
     return { allowed: true };
   } catch (error) {
     console.error('Error checking billing limits:', error);
-    // Fail closed or open? Let's fail open to not block users on DB errors, or fail closed for security. Let's fail closed.
-    return { allowed: false };
+    // Fail open on database errors so users can analyze slides without false blocks
+    return { allowed: true };
   }
 }

@@ -41,39 +41,56 @@ async function parsePptx(buffer) {
 
 export async function POST(request) {
   try {
-    if (await hasUsedTrial(request)) {
-      return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
-    }
-
     const contentType = request.headers.get('content-type') || '';
     const userIdHeader = request.headers.get('x-user-id');
+    let userId = userIdHeader || null;
+
+    // Check authorization header if x-user-id is missing
+    const authHeader = request.headers.get('authorization');
+    if (!userId && authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      try {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      } catch (e) {
+        // ignore token decode failure
+      }
+    }
+
     let presentationId;
     let slideTextContent;
     let fileBase64 = null;
     let isPdf = false;
-    let userId = userIdHeader || null;
+    let formData: FormData | null = null;
+    let file: any = null;
 
     if (contentType.includes('multipart/form-data')) {
-      const formData = await request.formData();
-      const file = formData.get('file');
-      const source = formData.get('source');
+      formData = await request.formData();
+      file = formData.get('file');
       presentationId = formData.get('presentationId') || ('pres-' + Date.now());
       if (!userId && formData.get('userId')) {
         userId = formData.get('userId') as string;
       }
+    }
 
+    // Only enforce trial limits for unauthenticated guest users
+    if (!userId) {
+      if (await hasUsedTrial(request)) {
+        return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
+      }
+    } else {
+      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
+      if (!usageCheck.allowed) {
+        return NextResponse.json({
+          error: "Limit Exceeded",
+          message: "You have reached your monthly limit for Slide Deck Analyses. Please upgrade your plan."
+        }, { status: 403 });
+      }
+    }
+
+    if (contentType.includes('multipart/form-data')) {
       if (!file) {
         return NextResponse.json({ error: "File missing!" }, { status: 400 });
-      }
-
-      if (userId) {
-        const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-        if (!usageCheck.allowed) {
-          return NextResponse.json({
-            error: "Limit Exceeded",
-            message: "You have reached your monthly limit for Slide Deck Analyses. Please upgrade your plan."
-          }, { status: 403 });
-        }
       }
 
       const arrayBuffer = await file.arrayBuffer();

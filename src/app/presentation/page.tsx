@@ -123,6 +123,10 @@ function PresentationAnalyzerContent() {
     if (session?.access_token) {
       authHeaders['Authorization'] = `Bearer ${session.access_token}`;
     }
+    if (session?.user?.id) {
+      authHeaders['x-user-id'] = session.user.id;
+      formData.append('userId', session.user.id);
+    }
 
     // 1. Kick off AI Analysis (unblocks UI as soon as it finishes)
     const slidesPromise = fetch('/api/analyze-slides', {
