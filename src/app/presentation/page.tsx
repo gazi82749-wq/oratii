@@ -100,19 +100,8 @@ function PresentationAnalyzerContent() {
     playSound('click');
     if (!file) return;
 
-    // 1. Check Auth & Credits before starting presentation analysis
+    // 1. Auth & Credit checks (Bypassed for unlimited testing)
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
-      setIsGuestAuthModalOpen(true);
-      return;
-    }
-
-    const creditCheck = await checkAndDeductCredits(session.user.id, 1);
-    if (!creditCheck.allowed) {
-      setCreditBalance(creditCheck.remainingCredits);
-      setIsCreditModalOpen(true);
-      return;
-    }
 
     setIsLoading(true);
 

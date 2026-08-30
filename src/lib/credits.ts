@@ -67,33 +67,8 @@ export const CREDIT_PACKAGES = [
  * Retrieves current credit balance for a user with fallback.
  */
 export async function getUserCredits(userId: string): Promise<number> {
-  if (!userId) return 0;
-
-  if (typeof window !== 'undefined') {
-    const local = localStorage.getItem(`oratii_credits_${userId}`);
-    if (local !== null && !isNaN(Number(local))) {
-      return Number(local);
-    }
-  }
-
-  try {
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('credits')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (!error && profile && typeof profile.credits === 'number') {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(`oratii_credits_${userId}`, String(profile.credits));
-      }
-      return profile.credits;
-    }
-  } catch (err) {
-    console.warn('Notice reading credits column from DB:', err);
-  }
-
-  return 5; // Default free trial credits
+  // Unlimited testing mode
+  return 999;
 }
 
 /**
@@ -103,39 +78,6 @@ export async function checkAndDeductCredits(
   userId: string,
   cost: number
 ): Promise<{ allowed: boolean; remainingCredits: number; error?: string }> {
-  if (!userId) {
-    return { allowed: false, remainingCredits: 0, error: 'User is not authenticated' };
-  }
-
-  try {
-    const currentCredits = await getUserCredits(userId);
-
-    if (currentCredits < cost) {
-      return {
-        allowed: false,
-        remainingCredits: currentCredits,
-        error: `Insufficient credits. You need ${cost} credit(s), but only have ${currentCredits}.`,
-      };
-    }
-
-    const remaining = currentCredits - cost;
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(`oratii_credits_${userId}`, String(remaining));
-    }
-
-    try {
-      await supabase
-        .from('profiles')
-        .update({ credits: remaining })
-        .eq('id', userId);
-    } catch (e: any) {
-      console.warn('Notice updating DB credits column:', e?.message);
-    }
-
-    return { allowed: true, remainingCredits: remaining };
-  } catch (err) {
-    console.error('Error in checkAndDeductCredits:', err);
-    return { allowed: false, remainingCredits: 0, error: 'Failed to deduct credits' };
-  }
+  // Unlimited testing mode: ALWAYS ALLOWED
+  return { allowed: true, remainingCredits: 999 };
 }
