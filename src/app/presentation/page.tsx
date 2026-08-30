@@ -100,13 +100,8 @@ function PresentationAnalyzerContent() {
     playSound('click');
     if (!file) return;
 
-    // 1. Auth & Credit checks (Bypassed for unlimited testing)
-    const { data: { session } } = await supabase.auth.getSession();
-
     setIsLoading(true);
-
-    const formData = new FormData();
-    formData.append('file', file);
+    const { data: { session } } = await supabase.auth.getSession();
 
     const authHeaders: Record<string, string> = {};
     if (session?.access_token) {
@@ -114,15 +109,42 @@ function PresentationAnalyzerContent() {
     }
     if (session?.user?.id) {
       authHeaders['x-user-id'] = session.user.id;
-      formData.append('userId', session.user.id);
     }
 
-    // 1. Kick off AI Analysis (unblocks UI as soon as it finishes)
-    const slidesPromise = fetch('/api/analyze-slides', {
-      method: 'POST',
-      headers: authHeaders,
-      body: formData
-    }).then(r => r.json());
+    // Client-side slide conversion & text extraction to bypass Vercel 4.5MB Serverless Payload Limit
+    let extractedSlides: any[] = [];
+    try {
+      extractedSlides = await convertPresentation(file);
+      const imagesMap = {};
+      extractedSlides.forEach(s => { imagesMap[s.slideNumber] = s.image; });
+      setSlideImages(prev => ({ ...prev, ...imagesMap }));
+    } catch (conversionErr) {
+      console.warn("Client presentation conversion notice:", conversionErr);
+    }
+
+    let slidesPromise: Promise<any>;
+
+    if (extractedSlides && extractedSlides.length > 0) {
+      const slideTextContent = extractedSlides.map(s => ({ slideNumber: s.slideNumber, text: s.text }));
+      slidesPromise = fetch('/api/analyze-slides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({
+          presentationId: 'pres-' + Date.now(),
+          slideTextContent
+        })
+      }).then(r => r.json());
+    } else {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (session?.user?.id) formData.append('userId', session.user.id);
+
+      slidesPromise = fetch('/api/analyze-slides', {
+        method: 'POST',
+        headers: authHeaders,
+        body: formData
+      }).then(r => r.json());
+    }
 
     let bodyLanguagePromise = Promise.resolve(null);
     if (file.type.startsWith('video/')) {
