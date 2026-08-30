@@ -55,11 +55,14 @@ export async function POST(req: NextRequest) {
 
   // 4. Create user via Supabase (server-side, using shared client)
 
+  const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ppt-analyzer.vercel.app';
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { full_name: fullName },
+      emailRedirectTo: `${origin}/dashboard`,
     },
   });
 
