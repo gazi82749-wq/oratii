@@ -12,14 +12,14 @@ export type UsageType = 'speech_analysis_count' | 'ppt_analysis_count' | 'viva_s
 
 export const PLAN_LIMITS = {
   free: {
-    speech_analysis_count: 5,
-    ppt_analysis_count: 3,
-    viva_sessions_count: 1, // Limited viva practice
+    speech_analysis_count: Infinity,
+    ppt_analysis_count: Infinity,
+    viva_sessions_count: Infinity,
   },
   pro: {
     speech_analysis_count: Infinity,
     ppt_analysis_count: Infinity,
-    viva_sessions_count: 20,
+    viva_sessions_count: Infinity,
   },
   premium: {
     speech_analysis_count: Infinity,
@@ -39,51 +39,6 @@ export const PLAN_LIMITS = {
  * Returns { allowed: true } if successful.
  */
 export async function checkAndDecrementUsage(userId: string, type: UsageType): Promise<{ allowed: boolean; limitReached?: boolean }> {
-  try {
-    // 1. Get user profile and current plan
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('current_plan')
-      .eq('id', userId)
-      .single();
-
-    const plan = (profile?.current_plan || 'free') as keyof typeof PLAN_LIMITS;
-    const limit = PLAN_LIMITS[plan][type];
-
-    // Unlimited
-    if (limit === Infinity) {
-      return { allowed: true };
-    }
-
-    // 2. Check current usage
-    const { data: usage, error: fetchErr } = await supabase
-      .from('usage_limits')
-      .select(type)
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    const currentCount = usage ? (usage[type] || 0) : 0;
-
-    if (currentCount >= limit) {
-      return { allowed: false, limitReached: true };
-    }
-
-    // 3. Increment usage (or insert if record missing)
-    if (usage) {
-      await supabase
-        .from('usage_limits')
-        .update({ [type]: currentCount + 1 })
-        .eq('user_id', userId);
-    } else {
-      await supabase
-        .from('usage_limits')
-        .insert([{ user_id: userId, [type]: 1 }]);
-    }
-
-    return { allowed: true };
-  } catch (error) {
-    console.error('Error checking billing limits:', error);
-    // Fail open on database errors so users can analyze slides without false blocks
-    return { allowed: true };
-  }
+  // Unlimited testing mode: All features have ZERO credit barriers
+  return { allowed: true };
 }

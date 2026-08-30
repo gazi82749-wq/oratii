@@ -33,31 +33,7 @@ export async function isUserLoggedIn(req?: NextRequest) {
 }
 
 export async function hasUsedTrial(req: NextRequest) {
-  if (await isUserLoggedIn(req)) return false; // Logged-in users are not restricted by anonymous trial flag
-
-  const trialCookieReq = req?.cookies?.get('Oratii_trial_used');
-  if (trialCookieReq && trialCookieReq.value === 'true') {
-    return true;
-  }
-
-  try {
-    const cookieStore = cookies();
-    const trialCookie = cookieStore.get('Oratii_trial_used');
-    if (trialCookie && trialCookie.value === 'true') {
-      return true;
-    }
-  } catch (e) {
-    // ignore server context errors if any
-  }
-
-  // Check IP
-  if (req) {
-    const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown';
-    if (ip !== 'unknown' && trialIps.has(ip)) {
-      return true;
-    }
-  }
-
+  // Unlimited trial mode: Never block any user with a trial limit barrier
   return false;
 }
 
