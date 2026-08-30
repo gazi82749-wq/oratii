@@ -74,20 +74,7 @@ export async function POST(request) {
       }
     }
 
-    // Only enforce trial limits for unauthenticated guest users
-    if (!userId) {
-      if (await hasUsedTrial(request)) {
-        return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
-      }
-    } else {
-      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Limit Exceeded",
-          message: "You have reached your monthly limit for Slide Deck Analyses. Please upgrade your plan."
-        }, { status: 403 });
-      }
-    }
+    // Unlimited testing mode: No guest trial blocks or billing limit restrictions
 
     if (contentType.includes('multipart/form-data')) {
       if (!file) {

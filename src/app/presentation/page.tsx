@@ -141,16 +141,6 @@ function PresentationAnalyzerContent() {
 
     Promise.all([slidesPromise, bodyLanguagePromise])
       .then(([data, bodyData]) => {
-        if (data.error === "Trial Expired") {
-          if (!session?.user) {
-            router.push('/login?message=trial_expired');
-          } else {
-            setError("Analysis failed: Trial limits apply to guest users. Please try again.");
-            setIsLoading(false);
-          }
-          return;
-        }
-
         if (data.status === 'success') {
           if (data.slideTextContent) {
             setExtractedSlideTexts(data.slideTextContent);
