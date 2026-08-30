@@ -111,40 +111,29 @@ function PresentationAnalyzerContent() {
       authHeaders['x-user-id'] = session.user.id;
     }
 
-    // Client-side slide conversion & text extraction to bypass Vercel 4.5MB Serverless Payload Limit
-    let extractedSlides: any[] = [];
-    try {
-      extractedSlides = await convertPresentation(file);
-      const imagesMap = {};
-      extractedSlides.forEach(s => { imagesMap[s.slideNumber] = s.image; });
-      setSlideImages(prev => ({ ...prev, ...imagesMap }));
-    } catch (conversionErr) {
-      console.warn("Client presentation conversion notice:", conversionErr);
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    if (session?.user?.id) formData.append('userId', session.user.id);
 
-    let slidesPromise: Promise<any>;
+    // 1. Kick off AI Analysis immediately (unblocks UI as soon as server responds)
+    const slidesPromise = fetch('/api/analyze-slides', {
+      method: 'POST',
+      headers: authHeaders,
+      body: formData
+    }).then(r => r.json());
 
-    if (extractedSlides && extractedSlides.length > 0) {
-      const slideTextContent = extractedSlides.map(s => ({ slideNumber: s.slideNumber, text: s.text }));
-      slidesPromise = fetch('/api/analyze-slides', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          presentationId: 'pres-' + Date.now(),
-          slideTextContent
-        })
-      }).then(r => r.json());
-    } else {
-      const formData = new FormData();
-      formData.append('file', file);
-      if (session?.user?.id) formData.append('userId', session.user.id);
-
-      slidesPromise = fetch('/api/analyze-slides', {
-        method: 'POST',
-        headers: authHeaders,
-        body: formData
-      }).then(r => r.json());
-    }
+    // 2. Kick off Image Thumbnail Extraction silently in background
+    setPreviewFailed(false);
+    convertPresentation(file)
+      .then(slides => {
+        const imagesMap = {};
+        slides.forEach(s => { imagesMap[s.slideNumber] = s.image; });
+        setSlideImages(prev => ({ ...prev, ...imagesMap }));
+      })
+      .catch(err => {
+        console.warn("Client image extraction notice:", err);
+        setPreviewFailed(true);
+      });
 
     let bodyLanguagePromise = Promise.resolve(null);
     if (file.type.startsWith('video/')) {
