@@ -1,7 +1,7 @@
 // src/app/api/auth/login/route.ts
 // Server-side login proxy with rate limiting (5 attempts per 15 minutes per IP)
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
 import { checkRateLimit, AUTH_RATE_LIMIT } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
@@ -42,11 +42,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
   }
 
-  // 3. Authenticate via Supabase (server-side, using anon key — same as client)
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // 3. Authenticate via Supabase (server-side, using shared client)
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 

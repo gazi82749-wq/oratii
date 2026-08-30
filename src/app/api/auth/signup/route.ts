@@ -1,7 +1,7 @@
 // src/app/api/auth/signup/route.ts
 // Server-side signup proxy with rate limiting (5 attempts per 15 minutes per IP)
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
 import { checkRateLimit, AUTH_RATE_LIMIT } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
@@ -53,11 +53,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
   }
 
-  // 4. Create user via Supabase (server-side, using anon key)
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // 4. Create user via Supabase (server-side, using shared client)
 
   const { data, error } = await supabase.auth.signUp({
     email,
