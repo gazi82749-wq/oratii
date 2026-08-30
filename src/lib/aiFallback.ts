@@ -28,7 +28,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 1️⃣ CEREBRAS (1st Priority for Text-Only requests)
   if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !cerebrasQuotaExhausted) {
-    const cerebrasModels = ["llama-3.3-70b", "llama3.1-70b", "gemma-4-31b"];
+    const cerebrasModels = ["gpt-oss-120b", "gemma-4-31b"];
     for (const model of cerebrasModels) {
       try {
         console.log(`[AIFallback] 1st Priority: Attempting Cerebras API (${model})...`);
@@ -63,8 +63,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
   // 2️⃣ GROQ (2nd Priority for Text or Image frames)
   if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !groqQuotaExhausted) {
     const groqModels = (options.images && options.images.length > 0)
-      ? ["llama-3.2-11b-vision-preview", "llama-3.2-90b-vision-preview", "qwen/qwen3.6-27b", "groq/compound-mini"]
-      : ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "groq/compound-mini"];
+      ? ["groq/compound-mini", "qwen/qwen3.6-27b"]
+      : ["groq/compound-mini", "qwen/qwen3.6-27b", "openai/gpt-oss-120b"];
 
     for (const model of groqModels) {
       try {
@@ -108,8 +108,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
   // 4️⃣ OPENROUTER (4th Priority - Ultimate Safety Net using active models)
   if (process.env.OPENROUTER_API_KEY && !disabled.has('openrouter')) {
     const openrouterModels = (options.images && options.images.length > 0)
-      ? ["qwen/qwen-2.5-vl-72b-instruct:free", "google/gemini-2.0-flash-exp:free", "qwen/qwen-2.5-vl-72b-instruct"]
-      : ["google/gemini-2.0-flash-exp:free", "meta-llama/llama-3.3-70b-instruct:free", "deepseek/deepseek-r1:free", "qwen/qwen-2.5-7b-instruct:free", "meta-llama/llama-3.3-70b-instruct"];
+      ? ["meta-llama/llama-3.3-70b-instruct", "qwen/qwen-2.5-72b-instruct"]
+      : ["meta-llama/llama-3.3-70b-instruct", "meta-llama/llama-3.1-8b-instruct", "qwen/qwen-2.5-72b-instruct"];
 
     for (const model of openrouterModels) {
       try {
