@@ -298,6 +298,13 @@ function PresentationAnalyzerContent() {
             </div>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold flex items-center justify-between animate-fade-in">
+              <span>⚠️ {error}</span>
+              <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-bold ml-4 cursor-pointer">✕</button>
+            </div>
+          )}
+
           <div className="border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-6 sm:p-10 flex flex-col items-center relative overflow-hidden" style={{ isolation: 'isolate' }}>
             {/* Top gradient stripe */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>

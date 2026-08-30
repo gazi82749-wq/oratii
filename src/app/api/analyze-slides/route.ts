@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
-const pdfParse = require('pdf-parse'); // eslint-disable-line
 import JSZip from 'jszip';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 import { checkAndDecrementUsage } from '../../../lib/billing';
