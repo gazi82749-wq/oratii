@@ -9,6 +9,7 @@ import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 async function parsePdf(buffer) {
   const result = await pdfParse(buffer);

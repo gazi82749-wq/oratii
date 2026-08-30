@@ -5,6 +5,7 @@ import { HINGLISH_FILLERS } from '../../../lib/constants';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function POST(request) {
   try {
