@@ -345,28 +345,28 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mobile-card-vibrant p-3.5 sm:p-8 text-slate-900 shadow-2xl relative overflow-hidden font-sans border border-indigo-200/80 rounded-2xl sm:rounded-3xl">
-      {/* Landing Page Indigo/Purple Aesthetic Glow Mesh */}
-      <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-200/40 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-200/30 blur-[100px] rounded-full pointer-events-none" />
+    <div className="w-full max-w-4xl mx-auto bg-[#0B0E27] border border-slate-800 p-4 sm:p-8 text-slate-100 shadow-2xl relative overflow-hidden font-sans rounded-2xl sm:rounded-3xl">
+      {/* Landing Page Gold/Indigo Aesthetic Glow Mesh */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
 
       {/* Module Title Pill & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-indigo-100 mb-6 gap-3 relative z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-6 gap-3 relative z-10">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1B2140] via-indigo-900 to-[#F2A93B] text-white font-black flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
-            <Briefcase className="w-5 h-5 text-amber-300" />
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] font-black flex items-center justify-center shadow-md shrink-0">
+            <Briefcase className="w-5 h-5 text-[#F2A93B]" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+              <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
                 AI Voice Mock Interviewer
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-100/90 text-amber-900 border border-amber-300 shadow-2xs">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-800 text-amber-300 border border-slate-700">
                 Unscripted AI
               </span>
             </div>
-            <p className="text-xs text-slate-600 font-medium mt-0.5">
-              Target Role: <span className="text-indigo-900 font-bold">{roleTitle}</span>
+            <p className="text-xs text-slate-400 font-medium mt-0.5">
+              Target Role: <span className="text-amber-400 font-bold">{roleTitle}</span>
             </p>
           </div>
         </div>
@@ -375,14 +375,14 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-              voiceEnabled ? 'bg-indigo-100/80 text-indigo-900 border-indigo-300 shadow-2xs' : 'bg-slate-100 text-slate-400 border-slate-200'
+              voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-800 text-slate-400 border-slate-700'
             }`}
             title={voiceEnabled ? 'Mute AI Voice' : 'Enable AI Voice Read-Aloud'}
           >
-            {voiceEnabled ? <Volume2 className="w-4 h-4 text-indigo-700" /> : <VolumeX className="w-4 h-4" />}
+            {voiceEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4" />}
           </button>
           {onCancel && (
-            <button onClick={onCancel} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-all cursor-pointer">
+            <button onClick={onCancel} className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer">
               <X className="w-4 h-4" />
             </button>
           )}
@@ -393,7 +393,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'setup' && (
         <div className="space-y-6 relative z-10 animate-in fade-in duration-300">
           <div className="space-y-2">
-            <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider block">
+            <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider block">
               1. Target Job Position / Role Specialty:
             </label>
             <input
@@ -401,28 +401,28 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               value={roleTitle}
               onChange={(e) => setRoleTitle(e.target.value)}
               placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Scientist"
-              className="w-full bg-white border border-indigo-200 rounded-2xl px-4 py-3.5 text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all shadow-xs"
+              className="w-full bg-[#151930] border border-slate-800 rounded-xl px-4 py-3.5 text-xs sm:text-sm text-white font-medium focus:outline-none focus:border-amber-400 transition-colors"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider block">
+            <label className="text-xs font-extrabold text-slate-300 uppercase tracking-wider block">
               2. Upload Resume / CV / Question Paper (Optional PDF or TXT):
             </label>
-            <div className="border-2 border-dashed border-indigo-200 hover:border-indigo-500 bg-white/90 hover:bg-indigo-50/40 rounded-2xl p-5 sm:p-6 text-center transition-all cursor-pointer relative group shadow-2xs">
+            <div className="border-2 border-dashed border-slate-800 hover:border-amber-400 bg-[#151930] rounded-xl p-5 sm:p-6 text-center transition-all cursor-pointer relative group">
               <input
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
                 onChange={handleFileUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              <Upload className="w-7 h-7 sm:w-8 sm:h-8 text-indigo-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+              <Upload className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
               {resumeFileName ? (
-                <span className="text-xs font-bold text-emerald-700 block">✓ Loaded Resume: {resumeFileName}</span>
+                <span className="text-xs font-bold text-emerald-400 block">✓ Loaded Resume: {resumeFileName}</span>
               ) : (
                 <div>
-                  <span className="text-xs font-extrabold text-slate-900 block">Drag & drop your Resume PDF here</span>
-                  <span className="text-[11px] text-slate-600 font-medium mt-0.5 block">
+                  <span className="text-xs font-extrabold text-white block">Drag & drop your Resume PDF here</span>
+                  <span className="text-[11px] text-slate-400 font-medium mt-0.5 block">
                     AI will ground technical questions directly in your projects & experience
                   </span>
                 </div>
@@ -433,9 +433,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             onClick={startInterviewSession}
             disabled={isLoading}
-            className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-[#1B2140] via-indigo-900 to-[#2A3464] hover:from-slate-900 hover:to-indigo-950 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-xl shadow-indigo-900/25 active-touch-scale transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer border border-amber-400/30"
+            className="w-full py-4 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 text-[#151930] font-black text-sm rounded-xl shadow-xl hover:shadow-amber-500/20 hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center space-x-2"
           >
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>{isLoading ? 'Starting Interview Session...' : 'Launch AI Voice Mock Interview'}</span>
           </button>
         </div>
@@ -445,40 +445,40 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'interview' && (
         <div className="space-y-5 sm:space-y-6 relative z-10 animate-in fade-in duration-300">
           {/* AI Voice Visualizer Stage Card */}
-          <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-gradient-to-b from-[#1B2140] via-indigo-950 to-[#151930] rounded-2xl border border-indigo-700/60 text-white relative overflow-hidden shadow-2xl px-4">
+          <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-[#151930] rounded-2xl border border-slate-800 text-white relative overflow-hidden shadow-2xl px-4">
             <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 ${
               isAiSpeaking
-                ? 'bg-gradient-to-tr from-amber-400 via-indigo-500 to-amber-300 glow-aura-amber scale-110 animate-pulse'
+                ? 'bg-amber-400 text-[#151930] scale-110 animate-pulse shadow-lg shadow-amber-500/30'
                 : isListening
-                ? 'bg-gradient-to-tr from-emerald-400 to-teal-500 glow-aura-indigo scale-105'
-                : 'bg-indigo-900/60 border-2 border-indigo-500/50'
+                ? 'bg-emerald-500 text-white scale-105 shadow-lg shadow-emerald-500/30'
+                : 'bg-slate-800 border-2 border-slate-700'
             }`}>
               {isAiSpeaking ? (
-                <span className="text-slate-950 font-black text-[10px] sm:text-xs uppercase tracking-wider animate-bounce">AI Speaking</span>
+                <span className="text-[#151930] font-black text-[10px] sm:text-xs uppercase tracking-wider animate-bounce">AI Speaking</span>
               ) : isListening ? (
-                <Mic className="w-7 h-7 sm:w-8 sm:h-8 text-slate-950 animate-pulse" />
+                <Mic className="w-7 h-7 sm:w-8 sm:h-8 text-white animate-pulse" />
               ) : (
                 <MessageSquare className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400" />
               )}
             </div>
 
-            <span className="mt-3 text-xs font-black text-amber-300 uppercase tracking-widest text-center">{stageLabel}</span>
-            <span className="text-[11px] text-slate-200 font-medium mt-1 text-center px-2">{answerFormatHint}</span>
+            <span className="mt-3 text-xs font-black text-amber-400 uppercase tracking-widest text-center">{stageLabel}</span>
+            <span className="text-[11px] text-slate-400 font-medium mt-1 text-center px-2">{answerFormatHint}</span>
           </div>
 
           {/* Chat Stream View */}
-          <div className="max-h-64 sm:max-h-80 overflow-y-auto space-y-3 p-3.5 sm:p-4 bg-white/95 rounded-2xl border border-indigo-100 text-xs shadow-inner">
+          <div className="max-h-64 sm:max-h-80 overflow-y-auto space-y-3 p-3.5 sm:p-4 bg-[#151930] rounded-2xl border border-slate-800 text-xs shadow-inner">
             {chatHistory.map((item, idx) => (
               <div key={idx} className="space-y-1.5">
                 {item.question && (
-                  <div className="flex items-start space-x-2 text-slate-900 p-2.5 rounded-xl bg-indigo-50/80 border border-indigo-100">
-                    <span className="font-extrabold text-indigo-900 shrink-0">Interviewer:</span>
+                  <div className="flex items-start space-x-2 text-white p-3 rounded-xl bg-[#0B0E27] border border-slate-800">
+                    <span className="font-extrabold text-amber-400 shrink-0">Interviewer:</span>
                     <p className="leading-relaxed font-semibold">{item.question}</p>
                   </div>
                 )}
                 {item.text && (
-                  <div className="flex items-start space-x-2 text-slate-900 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200">
-                    <span className="font-extrabold text-amber-900 shrink-0">Candidate:</span>
+                  <div className="flex items-start space-x-2 text-[#151930] p-3 rounded-xl bg-amber-500 font-medium">
+                    <span className="font-black shrink-0">Candidate:</span>
                     <p className="leading-relaxed font-semibold">{item.text}</p>
                   </div>
                 )}
@@ -492,12 +492,12 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="flex items-center space-x-2 flex-1">
               <button
                 onClick={toggleMic}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer shadow-sm active-touch-scale shrink-0 ${
-                  isListening ? 'bg-rose-600 text-white border-rose-500 shadow-rose-500/30' : 'bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200'
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer shrink-0 ${
+                  isListening ? 'bg-red-600 text-white border-red-500 animate-pulse' : 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700'
                 }`}
                 title={isListening ? 'Stop Listening' : 'Speak Your Answer'}
               >
-                {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-[#1B2140]" />}
+                {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
 
               <input
@@ -506,26 +506,26 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 onChange={(e) => setUserAnswerText(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submitAnswer()}
                 placeholder={isListening ? 'Listening to your voice...' : 'Type or speak your answer...'}
-                className="w-full bg-white border border-indigo-200 rounded-2xl px-4 py-3.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 shadow-xs"
+                className="w-full bg-[#151930] border border-slate-800 rounded-xl px-4 py-3.5 text-xs text-white font-medium focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <button
               onClick={submitAnswer}
               disabled={isLoading || !userAnswerText.trim()}
-              className="w-full sm:w-auto px-5 py-3.5 bg-gradient-to-r from-[#1B2140] to-indigo-900 hover:from-slate-900 hover:to-indigo-950 disabled:opacity-40 text-white font-extrabold text-xs rounded-2xl transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-md active-touch-scale shrink-0"
+              className="w-full sm:w-auto px-5 py-3.5 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-extrabold text-xs rounded-xl disabled:opacity-40 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shrink-0"
             >
               <span>Send</span>
               <Send className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-            <span className="text-[11px] text-slate-600 font-extrabold">Round {currentRound} of 4</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+            <span className="text-[11px] text-slate-400 font-extrabold">Round {currentRound} of 4</span>
             <button
               onClick={finishInterview}
               disabled={isLoading}
-              className="text-xs text-emerald-700 hover:text-emerald-800 font-black underline cursor-pointer"
+              className="text-xs text-amber-400 hover:text-amber-300 font-black underline cursor-pointer"
             >
               {isLoading ? 'Generating Evaluation Report...' : 'Finish & Generate Real AI Report ➔'}
             </button>
@@ -535,59 +535,59 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
       {/* STEP 3: REAL AI INTERVIEW SCORECARD & REPORT */}
       {step === 'results' && (
-        <div className="space-y-6 relative z-10 animate-in fade-in duration-300">
-          <div className="text-center space-y-1 mb-2">
-            <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-emerald-100 text-emerald-800 border border-emerald-300">
+        <div className="space-y-6 relative z-10 animate-in fade-in duration-300 pt-2 sm:pt-4">
+          <div className="text-center space-y-2 mb-3 pt-1">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 border border-slate-800 shadow-md">
               Verified AI Performance Report
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1">
-              Interview Scorecard: {roleTitle}
+            <h3 className="text-xl sm:text-2xl font-black text-white leading-snug tracking-tight px-2">
+              Interview Scorecard: <span className="text-[#F2A93B]">{roleTitle}</span>
             </h3>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100/70 border border-indigo-200 rounded-2xl p-3.5 sm:p-4 text-center shadow-xs">
-              <span className="text-[10px] font-extrabold text-indigo-900 uppercase tracking-wider block">Technical Score</span>
-              <span className="text-xl sm:text-2xl font-black text-indigo-700">{scores.technical}%</span>
+            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Score</span>
+              <span className="text-xl sm:text-2xl font-black text-amber-400">{scores.technical}%</span>
             </div>
-            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/70 border border-emerald-200 rounded-2xl p-3.5 sm:p-4 text-center shadow-xs">
-              <span className="text-[10px] font-extrabold text-emerald-900 uppercase tracking-wider block">Communication</span>
-              <span className="text-xl sm:text-2xl font-black text-emerald-700">{scores.communication}%</span>
+            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Communication</span>
+              <span className="text-xl sm:text-2xl font-black text-emerald-400">{scores.communication}%</span>
             </div>
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100/70 border border-amber-200 rounded-2xl p-4 text-center shadow-xs">
-              <span className="text-[10px] font-extrabold text-amber-900 uppercase tracking-wider block">STAR Alignment</span>
-              <span className="text-xl sm:text-2xl font-black text-amber-700">{scores.starAlignment}%</span>
+            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-center shadow-lg space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">STAR Alignment</span>
+              <span className="text-xl sm:text-2xl font-black text-blue-400">{scores.starAlignment}%</span>
             </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100/70 border border-purple-200 rounded-2xl p-3.5 sm:p-4 text-center shadow-xs">
-              <span className="text-[10px] font-extrabold text-purple-900 uppercase tracking-wider block">Overall Rating</span>
-              <span className="text-xl sm:text-2xl font-black text-slate-900">{scores.overall}%</span>
+            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Overall Rating</span>
+              <span className="text-xl sm:text-2xl font-black text-white">{scores.overall}%</span>
             </div>
           </div>
 
           {/* Dynamic AI Feedback Section */}
           <div className="space-y-4">
-            <div className="space-y-2.5 bg-white p-4 sm:p-5 rounded-2xl border border-indigo-100 text-xs shadow-sm">
-              <h4 className="font-black text-[#1B2140] uppercase tracking-wider flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
+              <h4 className="font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>Candidate Key Strengths</span>
               </h4>
               {strengths.map((str, idx) => (
-                <div key={idx} className="flex items-start space-x-2 text-slate-800 font-semibold leading-relaxed">
-                  <span className="text-emerald-600 font-bold shrink-0">•</span>
+                <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
+                  <span className="text-emerald-400 font-bold shrink-0">•</span>
                   <span>{str}</span>
                 </div>
               ))}
             </div>
 
             {weaknesses.length > 0 && (
-              <div className="space-y-2.5 bg-amber-50/50 p-4 sm:p-5 rounded-2xl border border-amber-200/80 text-xs shadow-sm">
-                <h4 className="font-black text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-amber-600" />
+              <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
+                <h4 className="font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-amber-400" />
                   <span>Areas to Improve</span>
                 </h4>
                 {weaknesses.map((wk, idx) => (
-                  <div key={idx} className="flex items-start space-x-2 text-slate-800 font-semibold leading-relaxed">
-                    <span className="text-amber-600 font-bold shrink-0">•</span>
+                  <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
+                    <span className="text-amber-400 font-bold shrink-0">•</span>
                     <span>{wk}</span>
                   </div>
                 ))}
@@ -595,14 +595,14 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             )}
 
             {aiSuggestions.length > 0 && (
-              <div className="space-y-2.5 bg-indigo-50/50 p-4 sm:p-5 rounded-2xl border border-indigo-200/80 text-xs shadow-sm">
-                <h4 className="font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
+              <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
+                <h4 className="font-black text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-indigo-400" />
                   <span>AI Coaching Recommendations</span>
                 </h4>
                 {aiSuggestions.map((sug, idx) => (
-                  <div key={idx} className="flex items-start space-x-2 text-slate-800 font-semibold leading-relaxed">
-                    <span className="text-indigo-600 font-bold shrink-0">•</span>
+                  <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
+                    <span className="text-indigo-400 font-bold shrink-0">•</span>
                     <span>{sug}</span>
                   </div>
                 ))}
@@ -616,7 +616,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               setChatHistory([]);
               setUserAnswerText('');
             }}
-            className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-[#1B2140] via-indigo-900 to-[#F2A93B] hover:opacity-95 text-white font-extrabold text-xs sm:text-sm rounded-2xl transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-md active-touch-scale"
+            className="w-full py-4 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 text-[#151930] font-black text-xs sm:text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Practice Another Job Role / Resume Session</span>

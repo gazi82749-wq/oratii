@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       slideAnalysisData = null,
       topic: bodyTopic = null,
       language = 'en',
-      interviewType = 'job_interview', // 'job_interview' | 'academic_viva' | 'presentation_defense'
+      interviewType = 'academic_viva', // 'academic_viva' | 'presentation_defense' | 'job_interview'
       documentContext = '', // Extracted resume/CV or question paper text
       mode = 'text' // 'text' | 'voice'
     } = await request.json();

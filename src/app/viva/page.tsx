@@ -151,7 +151,8 @@ export default function VivaCoachPage() {
           topic: finalTopic,
           slideAnalysisData,
           language,
-          mode
+          mode,
+          interviewType: 'academic_viva'
         })
       });
 
@@ -214,7 +215,8 @@ export default function VivaCoachPage() {
           topic: topic.trim() || 'General Presentation & Academic Defense',
           slideAnalysisData,
           language,
-          mode
+          mode,
+          interviewType: 'academic_viva'
         })
       });
 
