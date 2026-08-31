@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
       topic: bodyTopic = null,
       language = 'en',
       interviewType = 'job_interview', // 'job_interview' | 'academic_viva' | 'presentation_defense'
-      documentContext = '' // Extracted resume/CV or question paper text
+      documentContext = '', // Extracted resume/CV or question paper text
+      mode = 'text' // 'text' | 'voice'
     } = await request.json();
     const userId = request.headers.get('x-user-id') || bodyUserId;
 
@@ -150,6 +151,30 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       }
     }
 
+    const modeInstruction = mode === 'text'
+      ? `CRITICAL MODE DIRECTIVE — TEXT DEFENSE MODE:
+The candidate is TYPING their defense answer as text. They are NOT speaking or using a microphone.
+1. DO NOT comment on, evaluate, or score spoken delivery, vocal confidence, voice tone, speaking rate, mic clarity, or oral presentation skills. Spoken delivery evaluation is UNNECESSARY and INVALID in Text Mode.
+2. Evaluate strictly on: Content & Technical Accuracy, Depth of Logic & Reasoning, and Written Structure & Clarity.
+3. In your JSON output, return scores strictly for text mode using these metric keys:
+   "scores": {
+     "accuracy": <0-100 score for technical and content accuracy>,
+     "reasoning": <0-100 score for depth of logic and reasoning>,
+     "clarity": <0-100 score for written structure and clarity>,
+     "overall": <0-100 overall defense score>
+   }`
+      : `CRITICAL MODE DIRECTIVE — VOICE DEFENSE MODE:
+The candidate is SPEAKING their defense answer orally using speech-to-text.
+1. Evaluate spoken delivery, vocal confidence, speech pacing, technical accuracy, and spoken communication clarity.
+2. In your JSON output, return scores strictly for voice mode using these metric keys:
+   "scores": {
+     "accuracy": <0-100 score for technical accuracy>,
+     "confidence": <0-100 score for vocal & delivery confidence>,
+     "delivery": <0-100 score for spoken delivery & pacing>,
+     "communication": <0-100 score for spoken communication clarity>,
+     "overall": <0-100 overall defense score>
+   }`;
+
     const toneInstruction = examinerTone === 'hostile'
       ? `EXAMINER PERSONALITY: HOSTILE & SKEPTICAL EXAMINER. Be sharp, demanding, and uncompromising. Press hard on weak points, challenge unverified assumptions aggressively, and maintain a strict defense committee tone.`
       : `EXAMINER PERSONALITY: FRIENDLY & SUPPORTIVE PANEL. Be encouraging, warm, and constructive. Ask clarifying questions that guide the candidate to showcase their knowledge.`;
@@ -171,6 +196,8 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
 
       ${toneInstruction}
 
+      ${modeInstruction}
+
       ${documentInstruction}
 
       PROGRESSION CURVE RULES:
@@ -185,17 +212,23 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
          - Good answer? Praise their clarity, then point out 1 nuanced detail they can add.
          - Weak answer? Explain clearly what a top-scoring response looks like.
       4. Tips should be actionable, high-value advice for viva candidates.
-      5. Score honestly from 0 to 100 based on answer accuracy, confidence, and adherence to requested length.
+      5. Score honestly from 0 to 100 based on adherence to requested length and accuracy.
 
       Respond STRICTLY in valid JSON format:
       {
-        "feedbackToPreviousAnswer": "<Constructive evaluation of the candidate's previous response, or empty string if first turn>",
-        "scores": {
-          "confidence": 80,
+        "feedbackToPreviousAnswer": "<Constructive evaluation of candidate response, strictly adhering to ${mode.toUpperCase()} DEFENSE MODE directives>",
+        "scores": ${mode === 'text' ? `{
           "accuracy": 85,
-          "communication": 82,
-          "overall": 82
-        },
+          "reasoning": 82,
+          "clarity": 88,
+          "overall": 85
+        }` : `{
+          "accuracy": 85,
+          "confidence": 82,
+          "delivery": 84,
+          "communication": 86,
+          "overall": 84
+        }`},
         "currentStage": "${targetStage}",
         "stageLabel": "Level 1: Basic Warmup",
         "answerFormatHint": "Answer in 1 word or 1 single sentence.",

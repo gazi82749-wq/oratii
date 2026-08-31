@@ -6,6 +6,8 @@ import {
   ArrowRight, RotateCcw, MessageSquare, X, Volume2, VolumeX, Flame, Smile, Play, Pause
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import { saveSession } from '@/lib/storage';
+import { processSessionCompletion } from '@/lib/gamification';
 
 interface VivaDefenseModalProps {
   isOpen: boolean;
@@ -122,7 +124,8 @@ export default function VivaDefenseModal({
           topic: presentationTitle,
           slideAnalysisData,
           language,
-          interviewType
+          interviewType,
+          mode
         })
       });
 
@@ -185,7 +188,8 @@ export default function VivaDefenseModal({
           topic: presentationTitle,
           slideAnalysisData,
           language,
-          interviewType
+          interviewType,
+          mode
         })
       });
 
@@ -193,12 +197,21 @@ export default function VivaDefenseModal({
       const vivaPayload = data.data || data.viva;
       if (data.status === 'success' && vivaPayload) {
         setFeedback(vivaPayload.feedbackToPreviousAnswer || vivaPayload.feedback || 'Good defense response.');
-        const scoreObj = {
-          confidence: vivaPayload.scores?.confidence || 80,
-          accuracy: vivaPayload.scores?.accuracy || 82,
-          communication: vivaPayload.scores?.communication || 85,
-          overall: vivaPayload.scores?.overall || 82
-        };
+        const rawScores = vivaPayload.scores || {};
+        const scoreObj = mode === 'text'
+          ? {
+              accuracy: rawScores.accuracy || 84,
+              reasoning: rawScores.reasoning || 82,
+              clarity: rawScores.clarity || 85,
+              overall: rawScores.overall || 84
+            }
+          : {
+              confidence: rawScores.confidence || 82,
+              accuracy: rawScores.accuracy || 84,
+              delivery: rawScores.delivery || 84,
+              communication: rawScores.communication || 86,
+              overall: rawScores.overall || 84
+            };
         setScores(scoreObj);
         setAllScores(prev => [...prev, scoreObj]);
 
@@ -227,6 +240,12 @@ export default function VivaDefenseModal({
         if (nextCount >= 5) {
           // Final Viva Evaluation reached
           setPhase('results');
+          saveSession('viva', {
+            topic: presentationTitle || 'Viva Defense',
+            mode,
+            scores: scoreObj
+          });
+          processSessionCompletion('viva', { overall: scoreObj.overall });
         } else {
           speakText(nextQ);
         }
@@ -258,8 +277,28 @@ export default function VivaDefenseModal({
   if (!isOpen) return null;
 
   const avgOverallScore = allScores.length
-    ? Math.round(allScores.reduce((acc, curr) => acc + curr.overall, 0) / allScores.length)
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.overall || 80), 0) / allScores.length)
     : scores.overall || 85;
+
+  const avgAccuracy = allScores.length
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.accuracy || 80), 0) / allScores.length)
+    : scores.accuracy || 84;
+
+  const avgReasoning = allScores.length
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.reasoning || 80), 0) / allScores.length)
+    : scores.reasoning || 82;
+
+  const avgClarity = allScores.length
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.clarity || 80), 0) / allScores.length)
+    : scores.clarity || 85;
+
+  const avgDelivery = allScores.length
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.delivery || 80), 0) / allScores.length)
+    : scores.delivery || 84;
+
+  const avgConfidence = allScores.length
+    ? Math.round(allScores.reduce((acc, curr) => acc + (curr.confidence || 80), 0) / allScores.length)
+    : scores.confidence || 82;
 
   return (
     <div className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fade-in font-sans">
@@ -653,14 +692,54 @@ export default function VivaDefenseModal({
               </div>
 
               {/* Overall Score Card */}
-              <div className="bg-[#151930] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-2">
-                <div className="text-xs font-extrabold text-amber-400 uppercase tracking-widest">Final Defense Grade</div>
+              <div className="bg-[#151930] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-extrabold text-amber-400 uppercase tracking-widest">Final Defense Grade</div>
+                  <span className="text-[11px] font-extrabold px-3 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700">
+                    {mode === 'text' ? '⌨️ Text Defense Mode' : '🎙️ Voice Defense Mode'}
+                  </span>
+                </div>
                 <div className="text-4xl sm:text-5xl font-black text-white">{avgOverallScore}<span className="text-xl sm:text-2xl text-slate-400">/100</span></div>
                 <p className="text-xs text-slate-300 font-semibold">
                   {avgOverallScore >= 85
                     ? '🎉 Outstanding Defense! You answered probing technical questions with strong reasoning and clarity.'
                     : '👍 Good Defense. Review your slide data points and practice concise explanations.'}
                 </p>
+
+                {/* Mode-Specific Sub-Scores Breakdown */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800">
+                  {mode === 'text' ? (
+                    <>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Accuracy</span>
+                        <span className="text-xl font-black text-amber-400">{avgAccuracy}%</span>
+                      </div>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Depth of Reasoning</span>
+                        <span className="text-xl font-black text-emerald-400">{avgReasoning}%</span>
+                      </div>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Written Structure</span>
+                        <span className="text-xl font-black text-blue-400">{avgClarity}%</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Spoken Delivery</span>
+                        <span className="text-xl font-black text-amber-400">{avgDelivery}%</span>
+                      </div>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Vocal Confidence</span>
+                        <span className="text-xl font-black text-emerald-400">{avgConfidence}%</span>
+                      </div>
+                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Accuracy</span>
+                        <span className="text-xl font-black text-blue-400">{avgAccuracy}%</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Detailed 5-Round Question & Feedback Breakdown */}
