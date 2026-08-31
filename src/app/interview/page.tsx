@@ -12,7 +12,20 @@ export default function InterviewPage() {
       <div className="absolute top-[10%] right-[-10%] w-[60vw] h-[60vw] bg-amber-500/10 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
       <div className="absolute bottom-[-20%] left-[20%] w-[50vw] h-[50vw] bg-purple-900/15 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }}></div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto my-auto">
+      <div className="relative z-10 w-full max-w-4xl mx-auto my-auto space-y-4">
+        {/* Signature Outer Page Header (Matching Speech Coach) */}
+        <div className="text-left">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-md">
+            <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Job Interview AI Module
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-1 flex items-center gap-2">
+            <span>💼</span> AI Job Interview Studio
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 font-medium max-w-xl">
+            Practice unscripted mock interviews, behavioral STAR questions, and resume-grounded technical queries with an AI interviewer.
+          </p>
+        </div>
+
         <ChatGPTInterviewStudio />
       </div>
     </main>
