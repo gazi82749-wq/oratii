@@ -301,24 +301,26 @@ export default function VivaDefenseModal({
     : scores.confidence || 82;
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fade-in font-sans">
-      <div className="relative w-full max-w-4xl h-[88vh] max-h-[820px] min-h-[480px] bg-[#0B0E27] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-[99999] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fade-in font-sans">
+      <div className="relative w-full max-w-4xl h-[88vh] max-h-[820px] min-h-[480px] bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-slate-900">
+        {/* Top Accent Gradient Stripe */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
         {/* Top Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#151930] border-b border-slate-800/80 shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-slate-50 border-b border-slate-200 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] flex items-center justify-center font-black text-lg shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center font-black text-lg shadow-2xs">
               🎓
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-black text-white tracking-tight flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-black text-slate-950 tracking-tight flex items-center gap-2">
                 AI Viva Defense
-                <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30">
+                <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
                   Built-in AI Examiner Panel
                 </span>
               </h2>
-              <p className="text-xs text-slate-400 font-medium truncate max-w-xs sm:max-w-md">
-                Topic: <span className="text-slate-200 font-bold">{presentationTitle}</span>
+              <p className="text-xs text-slate-500 font-medium truncate max-w-xs sm:max-w-md">
+                Topic: <span className="text-slate-900 font-bold">{presentationTitle}</span>
               </p>
             </div>
           </div>
@@ -327,15 +329,15 @@ export default function VivaDefenseModal({
             <button
               onClick={() => setEnableVoiceAudio(!enableVoiceAudio)}
               title={enableVoiceAudio ? "Mute Examiner Voice" : "Enable Examiner Voice Read Aloud"}
-              className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${enableVoiceAudio ? 'bg-amber-500/20 text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-800 text-slate-400 border-slate-700'
+              className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${enableVoiceAudio ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-100 text-slate-500 border-slate-200'
                 }`}
             >
-              {enableVoiceAudio ? <Volume2 size={16} className="animate-pulse" /> : <VolumeX size={16} />}
+              {enableVoiceAudio ? <Volume2 size={16} className="animate-pulse text-amber-400" /> : <VolumeX size={16} />}
             </button>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 text-xs font-bold transition-all cursor-pointer"
               title="Close Viva Modal"
             >
               <X size={18} />
@@ -347,17 +349,17 @@ export default function VivaDefenseModal({
         {phase === 'setup' && (
           <div className="flex-1 overflow-y-auto p-6 flex flex-col justify-center max-w-xl mx-auto w-full space-y-6 animate-fade-in text-left">
             <div className="space-y-2">
-              <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider block">
+              <label className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">
                 Presentation / Defense Context:
               </label>
-              <div className="bg-[#151930] border border-slate-800 rounded-xl p-3 text-xs text-slate-300 font-medium leading-relaxed max-h-24 overflow-y-auto">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-semibold leading-relaxed max-h-24 overflow-y-auto">
                 {contextSummary || presentationTitle}
               </div>
             </div>
 
             {/* Session Type Selector */}
             <div className="space-y-1.5">
-              <label className="text-xs font-extrabold text-slate-300 uppercase tracking-wider block">
+              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
                 Session Type:
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -365,43 +367,43 @@ export default function VivaDefenseModal({
                   type="button"
                   onClick={() => setInterviewType('job_interview')}
                   className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${interviewType === 'job_interview'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">💼</span>
                     <div>
-                      <h4 className="font-extrabold text-white text-xs">Real Job Interview</h4>
-                      <p className="text-[10px] text-slate-400 font-medium">Unscripted & Technical Discussion</p>
+                      <h4 className="font-extrabold text-slate-950 text-xs">Real Job Interview</h4>
+                      <p className="text-[10px] text-slate-500 font-medium">Unscripted & Technical Discussion</p>
                     </div>
                   </div>
-                  {interviewType === 'job_interview' && <span className="text-amber-400 font-black text-xs">✓</span>}
+                  {interviewType === 'job_interview' && <span className="text-[#151930] font-black text-xs">✓</span>}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setInterviewType('academic_viva')}
                   className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${interviewType === 'academic_viva'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🎓</span>
                     <div>
-                      <h4 className="font-extrabold text-white text-xs">Academic Viva</h4>
-                      <p className="text-[10px] text-slate-400 font-medium">Progressive Committee Defense</p>
+                      <h4 className="font-extrabold text-slate-950 text-xs">Academic Viva</h4>
+                      <p className="text-[10px] text-slate-500 font-medium">Progressive Committee Defense</p>
                     </div>
                   </div>
-                  {interviewType === 'academic_viva' && <span className="text-amber-400 font-black text-xs">✓</span>}
+                  {interviewType === 'academic_viva' && <span className="text-[#151930] font-black text-xs">✓</span>}
                 </button>
               </div>
             </div>
 
             {/* Language Selector (Hinglish vs English) */}
             <div className="space-y-1.5">
-              <label className="text-xs font-extrabold text-slate-300 uppercase tracking-wider block">
+              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
                 Defense Language:
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -409,76 +411,86 @@ export default function VivaDefenseModal({
                   type="button"
                   onClick={() => setLanguage('hinglish')}
                   className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${language === 'hinglish'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🇮🇳</span>
                     <div>
-                      <h4 className="font-extrabold text-white text-xs">Hinglish</h4>
-                      <p className="text-[10px] text-slate-400 font-medium">Hindi + English mix</p>
+                      <h4 className="font-extrabold text-slate-950 text-xs">Hinglish</h4>
+                      <p className="text-[10px] text-slate-500 font-medium">Hindi + English mix</p>
                     </div>
                   </div>
-                  {language === 'hinglish' && <span className="text-amber-400 font-black text-xs">✓</span>}
+                  {language === 'hinglish' && <span className="text-[#151930] font-black text-xs">✓</span>}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setLanguage('en')}
                   className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${language === 'en'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🇬🇧</span>
                     <div>
-                      <h4 className="font-extrabold text-white text-xs">English</h4>
-                      <p className="text-[10px] text-slate-400 font-medium">Standard Formal</p>
+                      <h4 className="font-extrabold text-slate-950 text-xs">English</h4>
+                      <p className="text-[10px] text-slate-500 font-medium">Standard Formal</p>
                     </div>
                   </div>
-                  {language === 'en' && <span className="text-amber-400 font-black text-xs">✓</span>}
+                  {language === 'en' && <span className="text-[#151930] font-black text-xs">✓</span>}
                 </button>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-extrabold text-slate-300 uppercase tracking-wider block">
+              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
                 Choose Response Mode:
               </label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setMode('text')}
                   className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1.5 ${mode === 'text'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
-                  <span className="text-lg">⌨️</span>
-                  <h4 className="font-extrabold text-white text-xs">Text Mode</h4>
-                  <p className="text-[11px] text-slate-400 font-medium">Type responses</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg">⌨️</span>
+                    <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-800">Text</span>
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-950 text-xs">Text Defense</h4>
+                    <p className="text-[10px] text-slate-500 font-medium">Type answers</p>
+                  </div>
                 </button>
 
                 <button
                   onClick={() => setMode('voice')}
                   className={`p-3.5 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1.5 ${mode === 'voice'
-                      ? 'border-[#F2A93B] bg-amber-500/10 ring-2 ring-[#F2A93B]/30'
-                      : 'border-slate-800 bg-[#151930] hover:border-slate-700'
+                      ? 'border-[#151930] bg-slate-100 ring-2 ring-slate-900/10'
+                      : 'border-slate-200 bg-slate-50 hover:bg-slate-100/60'
                     }`}
                 >
-                  <span className="text-lg">🎙️</span>
-                  <h4 className="font-extrabold text-white text-xs">Live Mic Mode</h4>
-                  <p className="text-[11px] text-slate-400 font-medium">Speak responses</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg">🎙️</span>
+                    <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">Live Mic</span>
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-950 text-xs">Voice Defense</h4>
+                    <p className="text-[10px] text-slate-500 font-medium">Speak into mic</p>
+                  </div>
                 </button>
               </div>
             </div>
 
             <button
               onClick={startVivaSession}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 text-[#151930] font-black text-sm shadow-xl shadow-amber-500/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-sm rounded-xl shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <Play size={16} fill="currentColor" /> Start AI Defense Session
+              <Play size={16} className="text-amber-400" /> Start AI Defense Session
             </button>
           </div>
         )}
@@ -729,13 +741,17 @@ export default function VivaDefenseModal({
                         <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Spoken Delivery</span>
                         <span className="text-xl font-black text-amber-400">{avgDelivery}%</span>
                       </div>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Vocal Confidence</span>
-                        <span className="text-xl font-black text-emerald-400">{avgConfidence}%</span>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Spoken Delivery</span>
+                        <span className="text-xl font-black text-amber-600">{avgDelivery}%</span>
                       </div>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Accuracy</span>
-                        <span className="text-xl font-black text-blue-400">{avgAccuracy}%</span>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Vocal Confidence</span>
+                        <span className="text-xl font-black text-emerald-600">{avgConfidence}%</span>
+                      </div>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Technical Accuracy</span>
+                        <span className="text-xl font-black text-blue-600">{avgAccuracy}%</span>
                       </div>
                     </>
                   )}
@@ -744,75 +760,75 @@ export default function VivaDefenseModal({
 
                 {/* Deep 2-Column Strengths & Improvement Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
-                  <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-md space-y-2">
-                    <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                      <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
-                      <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Strengths</h4>
+                  <div className="bg-white border border-slate-200/80 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-xs space-y-2">
+                    <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                      <h4 className="text-xs font-black text-emerald-800 uppercase tracking-wider">Defense Strengths</h4>
                     </div>
-                    <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
-                      <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Accurate domain concepts and technical terminology</span></li>
-                      <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Responsive answering directly addressing committee questions</span></li>
+                    <ul className="space-y-1.5 text-xs text-slate-800 font-medium">
+                      <li className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold shrink-0">✅</span><span>Accurate domain concepts and technical terminology</span></li>
+                      <li className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold shrink-0">✅</span><span>Responsive answering directly addressing committee questions</span></li>
                     </ul>
                   </div>
 
-                  <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-md space-y-2">
-                    <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
-                      <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Areas to Improve</h4>
+                  <div className="bg-amber-50/40 border border-amber-200/60 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-xs space-y-2">
+                    <div className="flex items-center gap-2 pb-1.5 border-b border-amber-200/50">
+                      <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
+                      <h4 className="text-xs font-black text-amber-900 uppercase tracking-wider">Defense Areas to Improve</h4>
                     </div>
-                    <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
-                      <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Elaborate deeper on slide data points & architectural choices</span></li>
-                      <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Cite concrete trade-offs when answering technical challenges</span></li>
+                    <ul className="space-y-1.5 text-xs text-slate-800 font-medium">
+                      <li className="flex items-start gap-1.5"><span className="text-amber-700 font-bold shrink-0">⚠️</span><span>Elaborate deeper on slide data points & architectural choices</span></li>
+                      <li className="flex items-start gap-1.5"><span className="text-amber-700 font-bold shrink-0">⚠️</span><span>Cite concrete trade-offs when answering technical challenges</span></li>
                     </ul>
                   </div>
                 </div>
 
                 {/* Actionable Coaching Container */}
-                <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-indigo-500 rounded-2xl p-4 text-left shadow-md space-y-2">
-                  <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                    <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0">🎯</span>
-                    <h4 className="text-xs font-black text-white uppercase tracking-wider">Examiner Actionable Coaching Plan</h4>
+                <div className="bg-white border border-slate-200/80 border-t-4 border-t-indigo-600 rounded-2xl p-4 text-left shadow-xs space-y-2">
+                  <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
+                    <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold shrink-0">🎯</span>
+                    <h4 className="text-xs font-black text-indigo-900 uppercase tracking-wider">Examiner Actionable Coaching Plan</h4>
                   </div>
-                  <p className="text-xs text-slate-200 leading-relaxed font-medium bg-[#0B0E27] p-3 rounded-xl border border-slate-800">
+                  <p className="text-xs text-slate-800 leading-relaxed font-medium bg-slate-50 p-3 rounded-xl border border-slate-200">
                     Focus on grounding your defense statements directly in your slide figures, methodology data, and system design diagrams. Use structured 2-part explanations (Core Choice + Alternative Trade-off).
                   </p>
                 </div>
 
               {/* Detailed 5-Round Question & Feedback Breakdown */}
-              <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-left space-y-3.5 max-h-[300px] overflow-y-auto">
-                <div className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3.5 max-h-[300px] overflow-y-auto">
+                <div className="text-xs font-black text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-2 flex items-center justify-between">
                   <span>Detailed 5-Round Feedback Breakdown</span>
-                  <span className="text-slate-400 font-mono text-[10px]">All 5 Rounds Feedback</span>
+                  <span className="text-slate-500 font-mono text-[10px]">All 5 Rounds Feedback</span>
                 </div>
 
                 {chatHistory.filter(item => item.role === 'examiner').map((exItem, qIdx) => {
                   const candidateItem = chatHistory.find((cItem, cIdx) => cItem.role === 'candidate' && cIdx === (qIdx * 2 + 1));
                   return (
-                    <div key={qIdx} className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl space-y-2 text-xs">
+                    <div key={qIdx} className="bg-white border border-slate-200 p-3 rounded-xl space-y-2 text-xs shadow-2xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-extrabold text-amber-300">
+                        <span className="font-extrabold text-amber-800">
                           Round {qIdx + 1}: {exItem.stageLabel || `Question ${qIdx + 1}`}
                         </span>
                         {exItem.scores && (
-                          <span className="font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded text-[10px]">
+                          <span className="font-mono text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded text-[10px]">
                             Score: {exItem.scores.overall}/100
                           </span>
                         )}
                       </div>
 
                       {exItem.question && (
-                        <p className="text-slate-200 font-semibold"><span className="text-slate-400">Q:</span> {exItem.question}</p>
+                        <p className="text-slate-900 font-semibold"><span className="text-slate-500">Q:</span> {exItem.question}</p>
                       )}
 
                       {candidateItem && (
-                        <p className="text-amber-200/90 font-medium bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
-                          <span className="font-bold text-amber-400">Your Answer:</span> {candidateItem.text}
+                        <p className="text-slate-800 font-medium bg-slate-50 p-2 rounded-lg border border-slate-200">
+                          <span className="font-bold text-slate-900">Your Answer:</span> {candidateItem.text}
                         </p>
                       )}
 
                       {exItem.feedback && (
-                        <div className="bg-emerald-950/40 border border-emerald-800/60 p-2.5 rounded-lg text-emerald-300">
-                          <span className="font-bold text-emerald-400">Examiner Feedback:</span> {exItem.feedback}
+                        <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-emerald-900 font-medium">
+                          <span className="font-bold text-emerald-800">Examiner Feedback:</span> {exItem.feedback}
                         </div>
                       )}
                     </div>
