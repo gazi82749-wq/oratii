@@ -285,8 +285,8 @@ function PresentationAnalyzerContent() {
       {!analysis ? (
         <>
           <div className="mb-8 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-lg shadow-amber-500/10">
-              <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Slide Deck AI Module
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Slide Deck AI Module
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-2 flex items-center gap-2">
               <span>📊</span> Slide Analyzer

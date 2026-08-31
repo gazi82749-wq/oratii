@@ -345,30 +345,27 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-[#0B0E27] border border-slate-800 p-4 sm:p-6 text-slate-100 shadow-2xl relative overflow-hidden font-sans rounded-2xl sm:rounded-3xl max-h-[82vh] overflow-y-auto">
-      {/* Landing Page Gold/Indigo Aesthetic Glow Mesh */}
-      <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+    <div className="w-full max-w-4xl mx-auto border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-8 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans max-h-[85vh] overflow-y-auto" style={{ isolation: 'isolate' }}>
+      {/* Top Accent Gradient Stripe matching Speech Coach */}
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
-
-
-      {/* Module Title Pill & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-6 gap-3 relative z-10">
+      {/* Module Header & Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 mb-2 gap-3 relative z-10">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] font-black flex items-center justify-center shadow-md shrink-0">
-            <Briefcase className="w-5 h-5 text-[#F2A93B]" />
+            <Briefcase className="w-5 h-5 text-amber-700" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-black text-slate-950 tracking-tight">
                 AI Voice Mock Interviewer
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-800 text-amber-300 border border-slate-700">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-100 text-amber-900 border border-amber-300">
                 Unscripted AI
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium mt-0.5">
-              Target Role: <span className="text-amber-400 font-bold">{roleTitle}</span>
+            <p className="text-xs text-slate-500 font-medium mt-0.5">
+              Target Role: <span className="text-[#151930] font-bold">{roleTitle}</span>
             </p>
           </div>
         </div>
@@ -377,14 +374,14 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-              voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-800 text-slate-400 border-slate-700'
+              voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-100 text-slate-500 border-slate-200'
             }`}
             title={voiceEnabled ? 'Mute AI Voice' : 'Enable AI Voice Read-Aloud'}
           >
             {voiceEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4" />}
           </button>
           {onCancel && (
-            <button onClick={onCancel} className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer">
+            <button onClick={onCancel} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-all cursor-pointer">
               <X className="w-4 h-4" />
             </button>
           )}
@@ -395,7 +392,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'setup' && (
         <div className="space-y-6 relative z-10 animate-in fade-in duration-300">
           <div className="space-y-2">
-            <label className="text-xs font-extrabold text-amber-400 uppercase tracking-wider block">
+            <label className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">
               1. Target Job Position / Role Specialty:
             </label>
             <input
@@ -403,28 +400,28 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               value={roleTitle}
               onChange={(e) => setRoleTitle(e.target.value)}
               placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Scientist"
-              className="w-full bg-[#151930] border border-slate-800 rounded-xl px-4 py-3.5 text-xs sm:text-sm text-white font-medium focus:outline-none focus:border-amber-400 transition-colors"
+              className="w-full bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-3.5 text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-extrabold text-slate-300 uppercase tracking-wider block">
+            <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
               2. Upload Resume / CV / Question Paper (Optional PDF or TXT):
             </label>
-            <div className="border-2 border-dashed border-slate-800 hover:border-amber-400 bg-[#151930] rounded-xl p-5 sm:p-6 text-center transition-all cursor-pointer relative group">
+            <div className="border-2 border-dashed border-slate-200 hover:border-amber-500 bg-slate-50/80 hover:bg-amber-50/30 rounded-2xl p-5 sm:p-6 text-center transition-all cursor-pointer relative group">
               <input
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
                 onChange={handleFileUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              <Upload className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+              <Upload className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
               {resumeFileName ? (
-                <span className="text-xs font-bold text-emerald-400 block">✓ Loaded Resume: {resumeFileName}</span>
+                <span className="text-xs font-bold text-emerald-700 block">✓ Loaded Resume: {resumeFileName}</span>
               ) : (
                 <div>
-                  <span className="text-xs font-extrabold text-white block">Drag & drop your Resume PDF here</span>
-                  <span className="text-[11px] text-slate-400 font-medium mt-0.5 block">
+                  <span className="text-xs font-extrabold text-slate-900 block">Drag & drop your Resume PDF here</span>
+                  <span className="text-[11px] text-slate-500 font-medium mt-0.5 block">
                     AI will ground technical questions directly in your projects & experience
                   </span>
                 </div>
@@ -435,9 +432,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             onClick={startInterviewSession}
             disabled={isLoading}
-            className="w-full py-4 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 text-[#151930] font-black text-sm rounded-xl shadow-xl hover:shadow-amber-500/20 hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center space-x-2"
+            className="w-full py-4 bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center space-x-2"
           >
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
             <span>{isLoading ? 'Starting Interview Session...' : 'Launch AI Voice Mock Interview'}</span>
           </button>
         </div>
@@ -537,42 +534,42 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
       {/* STEP 3: REAL AI INTERVIEW SCORECARD & REPORT */}
       {step === 'results' && (
-        <div className="space-y-6 relative z-10 animate-in fade-in duration-300 pt-2 sm:pt-4">
+        <div className="space-y-6 relative z-10 animate-in fade-in duration-300 pt-2 sm:pt-4 text-slate-900">
           <div className="text-center space-y-2 mb-3 pt-1">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 border border-slate-800 shadow-md">
-              <Sparkles size={12} className="text-amber-400" /> Deep AI Performance Report
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-50 text-amber-900 border border-amber-200/80 shadow-2xs">
+              <Sparkles size={12} className="text-amber-600" /> Deep AI Performance Report
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-white leading-snug tracking-tight px-2">
-              Interview Scorecard: <span className="text-[#F2A93B]">{roleTitle}</span>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-950 leading-snug tracking-tight px-2">
+              Interview Scorecard: <span className="text-[#151930]">{roleTitle}</span>
             </h3>
-            <p className="text-xs text-slate-400 font-medium">Comprehensive breakdown of your technical answers, STAR method alignment, and communication style.</p>
+            <p className="text-xs text-slate-500 font-medium">Comprehensive breakdown of your technical answers, STAR method alignment, and communication style.</p>
           </div>
 
           {/* 4-Card Score Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Score</span>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 text-center shadow-xs space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Technical Score</span>
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-xl sm:text-2xl font-black text-amber-400">{scores.technical}%</span>
-                <span className="text-[10px] font-bold text-amber-300/80">{scores.technical >= 85 ? 'Top Tier' : scores.technical >= 70 ? 'Solid' : 'Needs Depth'}</span>
+                <span className="text-xl sm:text-2xl font-black text-amber-600">{scores.technical}%</span>
+                <span className="text-[10px] font-bold text-amber-800">{scores.technical >= 85 ? 'Top Tier' : scores.technical >= 70 ? 'Solid' : 'Needs Depth'}</span>
               </div>
             </div>
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Communication</span>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 sm:p-4 text-center shadow-xs space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Communication</span>
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-xl sm:text-2xl font-black text-emerald-400">{scores.communication}%</span>
-                <span className="text-[10px] font-bold text-emerald-300/80">{scores.communication >= 85 ? 'Clear' : 'Good'}</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-600">{scores.communication}%</span>
+                <span className="text-[10px] font-bold text-emerald-800">{scores.communication >= 85 ? 'Clear' : 'Good'}</span>
               </div>
             </div>
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-center shadow-lg space-y-1">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">STAR Alignment</span>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center shadow-xs space-y-1">
+              <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">STAR Alignment</span>
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-xl sm:text-2xl font-black text-blue-400">{scores.starAlignment}%</span>
-                <span className="text-[10px] font-bold text-blue-300/80">{scores.starAlignment >= 80 ? 'Structured' : 'Basic'}</span>
+                <span className="text-xl sm:text-2xl font-black text-blue-600">{scores.starAlignment}%</span>
+                <span className="text-[10px] font-bold text-blue-800">{scores.starAlignment >= 80 ? 'Structured' : 'Basic'}</span>
               </div>
             </div>
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Overall Rating</span>
+            <div className="bg-[#151930] text-white border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-md space-y-1">
+              <span className="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider block">Overall Rating</span>
               <div className="flex items-baseline justify-center gap-1">
                 <span className="text-xl sm:text-2xl font-black text-white">{scores.overall}%</span>
                 <span className="text-[10px] font-bold text-emerald-400">{scores.overall >= 85 ? 'Recommended' : scores.overall >= 70 ? 'Qualified' : 'Practice'}</span>
@@ -582,38 +579,38 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           {/* Deep 2-Column Strengths & Improvement Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-5 shadow-md flex flex-col space-y-3">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-                <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">
+            <div className="bg-white border border-slate-200/80 border-t-4 border-t-emerald-500 rounded-2xl p-5 shadow-xs flex flex-col space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0">
                   ✓
                 </span>
-                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                <h4 className="text-xs font-black text-emerald-800 uppercase tracking-widest">
                   Candidate Key Strengths
                 </h4>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-200 font-medium flex-1">
+              <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
                 {strengths.map((str, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-emerald-400 font-bold shrink-0">✅</span>
+                    <span className="text-emerald-600 font-bold shrink-0">✅</span>
                     <span className="leading-relaxed">{str}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-amber-500 rounded-2xl p-5 shadow-md flex flex-col space-y-3">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold shrink-0">
+            <div className="bg-amber-50/40 border border-amber-200/60 border-t-4 border-t-amber-500 rounded-2xl p-5 shadow-xs flex flex-col space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-amber-200/50">
+                <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold shrink-0">
                   !
                 </span>
-                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                <h4 className="text-xs font-black text-amber-900 uppercase tracking-widest">
                   Areas to Improve
                 </h4>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-200 font-medium flex-1">
+              <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
                 {weaknesses.length > 0 ? weaknesses.map((wk, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-amber-400 font-bold shrink-0">⚠️</span>
+                    <span className="text-amber-700 font-bold shrink-0">⚠️</span>
                     <span className="leading-relaxed">{wk}</span>
                   </li>
                 )) : <li className="text-slate-400 italic">No specific weak areas flagged.</li>}
@@ -623,19 +620,19 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           {/* Actionable Coaching Recommendations Container */}
           {aiSuggestions.length > 0 && (
-            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-indigo-500 rounded-2xl p-5 sm:p-6 shadow-md space-y-3">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-xs font-bold shrink-0">
+            <div className="bg-white border border-slate-200/80 border-t-4 border-t-indigo-600 rounded-2xl p-5 sm:p-6 shadow-xs space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold shrink-0">
                   🎯
                 </span>
-                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest">
                   Actionable Coaching & Next Steps
                 </h4>
               </div>
               <div className="space-y-2 text-xs font-medium">
                 {aiSuggestions.map((sug, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 text-slate-200 bg-[#0B0E27] p-3 rounded-xl border border-slate-800/80">
-                    <span className="text-indigo-400 font-bold shrink-0">🎯</span>
+                  <div key={idx} className="flex items-start gap-2.5 text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <span className="text-indigo-600 font-bold shrink-0">🎯</span>
                     <span className="leading-relaxed">{sug}</span>
                   </div>
                 ))}
@@ -645,22 +642,22 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           {/* Detailed Question-by-Question Discussion Stream Breakdown */}
           {chatHistory.length > 0 && (
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[340px] overflow-y-auto">
-              <div className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[340px] overflow-y-auto">
+              <div className="text-xs font-black text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-2 flex items-center justify-between">
                 <span>Detailed Interview Discussion & QA Critique</span>
-                <span className="text-slate-400 font-mono text-[10px]">All Interview Rounds</span>
+                <span className="text-slate-500 font-mono text-[10px]">All Interview Rounds</span>
               </div>
 
               {chatHistory.map((item, qIdx) => (
-                <div key={qIdx} className="bg-[#0B0E27] border border-slate-800 p-3.5 rounded-xl space-y-2 text-xs">
+                <div key={qIdx} className="bg-white border border-slate-200 p-3.5 rounded-xl space-y-2 text-xs shadow-2xs">
                   {item.question && (
-                    <p className="text-slate-200 font-semibold leading-relaxed">
-                      <span className="text-amber-400 font-extrabold">Interviewer Q:</span> {item.question}
+                    <p className="text-slate-900 font-semibold leading-relaxed">
+                      <span className="text-amber-800 font-extrabold">Interviewer Q:</span> {item.question}
                     </p>
                   )}
                   {item.text && (
-                    <p className="text-amber-200/90 font-medium bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 leading-relaxed">
-                      <span className="font-bold text-amber-400">Your Answer:</span> {item.text}
+                    <p className="text-slate-800 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-200 leading-relaxed">
+                      <span className="font-bold text-slate-900">Your Answer:</span> {item.text}
                     </p>
                   )}
                 </div>
@@ -674,9 +671,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               setChatHistory([]);
               setUserAnswerText('');
             }}
-            className="w-full py-4 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 text-[#151930] font-black text-xs sm:text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center space-x-2 cursor-pointer"
+            className="w-full py-4 bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-xs sm:text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4 text-amber-400" />
             <span>Practice Another Job Role / Resume Session</span>
           </button>
         </div>
