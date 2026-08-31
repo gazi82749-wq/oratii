@@ -36,7 +36,7 @@ export default function VivaDefenseModal({
   const [answer, setAnswer] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [scores, setScores] = useState({ confidence: 0, accuracy: 0, communication: 0, overall: 0 });
+  const [scores, setScores] = useState<Record<string, number>>({ confidence: 0, accuracy: 0, communication: 0, overall: 0 });
   const [questionsAnswered, setQuestionsAnswered] = useState<number>(0);
   const [allScores, setAllScores] = useState<any[]>([]);
 
