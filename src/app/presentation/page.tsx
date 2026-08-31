@@ -488,6 +488,26 @@ function PresentationAnalyzerContent() {
                 </div>
               </div>
 
+              {/* Actionable Coaching & Presentation Next Steps Container */}
+              {analysis.suggestions?.length > 0 && (
+                <div className="bg-[#151930] text-white border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                  <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
+                    <span className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-sm font-bold shrink-0">🎯</span>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-amber-400">
+                      Recommendations & Actionable Coaching Plan
+                    </h3>
+                  </div>
+                  <div className="space-y-2.5 text-xs sm:text-sm font-medium">
+                    {analysis.suggestions.map((sug: string, i: number) => (
+                      <div key={i} className="flex items-start gap-3 bg-[#0B0E27] p-3.5 rounded-xl border border-slate-800 text-slate-200">
+                        <span className="text-indigo-400 font-bold shrink-0">🎯</span>
+                        <span className="leading-relaxed">{sug}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Slide-by-Slide Detailed Breakdown with Widescreen Previews */}
               {analysis.slideBySlideFeedback?.length > 0 && (
                 <div className="mt-12">

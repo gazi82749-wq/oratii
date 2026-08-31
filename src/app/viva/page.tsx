@@ -751,48 +751,84 @@ export default function VivaCoachPage() {
                   </>
                 )}
               </div>
-            </div>
 
-            {/* Detailed 5-Round Question & Feedback Breakdown */}
-            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-left space-y-3.5 max-h-[300px] overflow-y-auto">
-              <div className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
-                <span>Detailed 5-Round Feedback Breakdown</span>
-                <span className="text-slate-400 font-mono text-[10px]">All 5 Rounds Feedback</span>
+              {/* Deep 2-Column Strengths & Improvement Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+                <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-md space-y-2">
+                  <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                    <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Strengths</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
+                    <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Accurate domain concepts and technical terminology</span></li>
+                    <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Responsive answering directly addressing committee questions</span></li>
+                  </ul>
+                </div>
+
+                <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-md space-y-2">
+                  <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
+                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
+                    <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Areas to Improve</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
+                    <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Elaborate deeper on slide data points & architectural choices</span></li>
+                    <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Cite concrete trade-offs when answering technical challenges</span></li>
+                  </ul>
+                </div>
               </div>
 
-              {chatHistory.filter(item => item.role === 'examiner').map((exItem, qIdx) => {
-                const candidateItem = chatHistory.find((cItem, cIdx) => cItem.role === 'candidate' && cIdx === (qIdx * 2 + 1));
-                return (
-                  <div key={qIdx} className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl space-y-2 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-amber-300">
-                        Round {qIdx + 1}: {exItem.stageLabel || `Question ${qIdx + 1}`}
-                      </span>
-                      {exItem.scores && (
-                        <span className="font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded text-[10px]">
-                          Score: {exItem.scores.overall}/100
+              {/* Actionable Coaching Container */}
+              <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-indigo-500 rounded-2xl p-4 text-left shadow-md space-y-2">
+                <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
+                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0">🎯</span>
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider">Examiner Actionable Coaching Plan</h4>
+                </div>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium bg-[#0B0E27] p-3 rounded-xl border border-slate-800">
+                  Focus on grounding your defense statements directly in your slide figures, methodology data, and system design diagrams. Use structured 2-part explanations (Core Choice + Alternative Trade-off).
+                </p>
+              </div>
+
+              {/* Detailed 5-Round Question & Feedback Breakdown */}
+              <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-left space-y-3.5 max-h-[300px] overflow-y-auto">
+                <div className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
+                  <span>Detailed 5-Round Feedback Breakdown</span>
+                  <span className="text-slate-400 font-mono text-[10px]">All 5 Rounds Feedback</span>
+                </div>
+
+                {chatHistory.filter(item => item.role === 'examiner').map((exItem, qIdx) => {
+                  const candidateItem = chatHistory.find((cItem, cIdx) => cItem.role === 'candidate' && cIdx === (qIdx * 2 + 1));
+                  return (
+                    <div key={qIdx} className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-amber-300">
+                          Round {qIdx + 1}: {exItem.stageLabel || `Question ${qIdx + 1}`}
                         </span>
+                        {exItem.scores && (
+                          <span className="font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded text-[10px]">
+                            Score: {exItem.scores.overall}/100
+                          </span>
+                        )}
+                      </div>
+
+                      {exItem.question && (
+                        <p className="text-slate-200 font-semibold"><span className="text-slate-400">Q:</span> {exItem.question}</p>
+                      )}
+
+                      {candidateItem && (
+                        <p className="text-amber-200/90 font-medium bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
+                          <span className="font-bold text-amber-400">Your Answer:</span> {candidateItem.text}
+                        </p>
+                      )}
+
+                      {exItem.feedback && (
+                        <div className="bg-emerald-950/40 border border-emerald-800/60 p-2.5 rounded-lg text-emerald-300">
+                          <span className="font-bold text-emerald-400">Examiner Feedback:</span> {exItem.feedback}
+                        </div>
                       )}
                     </div>
-
-                    {exItem.question && (
-                      <p className="text-slate-200 font-semibold"><span className="text-slate-400">Q:</span> {exItem.question}</p>
-                    )}
-
-                    {candidateItem && (
-                      <p className="text-amber-200/90 font-medium bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
-                        <span className="font-bold text-amber-400">Your Answer:</span> {candidateItem.text}
-                      </p>
-                    )}
-
-                    {exItem.feedback && (
-                      <div className="bg-emerald-950/40 border border-emerald-800/60 p-2.5 rounded-lg text-emerald-300">
-                        <span className="font-bold text-emerald-400">Examiner Feedback:</span> {exItem.feedback}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
             <div className="flex gap-3 pt-2">

@@ -537,78 +537,134 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'results' && (
         <div className="space-y-6 relative z-10 animate-in fade-in duration-300 pt-2 sm:pt-4">
           <div className="text-center space-y-2 mb-3 pt-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 border border-slate-800 shadow-md">
-              Verified AI Performance Report
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 border border-slate-800 shadow-md">
+              <Sparkles size={12} className="text-amber-400" /> Deep AI Performance Report
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-white leading-snug tracking-tight px-2">
               Interview Scorecard: <span className="text-[#F2A93B]">{roleTitle}</span>
             </h3>
+            <p className="text-xs text-slate-400 font-medium">Comprehensive breakdown of your technical answers, STAR method alignment, and communication style.</p>
           </div>
 
+          {/* 4-Card Score Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
             <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Score</span>
-              <span className="text-xl sm:text-2xl font-black text-amber-400">{scores.technical}%</span>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-xl sm:text-2xl font-black text-amber-400">{scores.technical}%</span>
+                <span className="text-[10px] font-bold text-amber-300/80">{scores.technical >= 85 ? 'Top Tier' : scores.technical >= 70 ? 'Solid' : 'Needs Depth'}</span>
+              </div>
             </div>
             <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Communication</span>
-              <span className="text-xl sm:text-2xl font-black text-emerald-400">{scores.communication}%</span>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-xl sm:text-2xl font-black text-emerald-400">{scores.communication}%</span>
+                <span className="text-[10px] font-bold text-emerald-300/80">{scores.communication >= 85 ? 'Clear' : 'Good'}</span>
+              </div>
             </div>
             <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 text-center shadow-lg space-y-1">
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">STAR Alignment</span>
-              <span className="text-xl sm:text-2xl font-black text-blue-400">{scores.starAlignment}%</span>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-xl sm:text-2xl font-black text-blue-400">{scores.starAlignment}%</span>
+                <span className="text-[10px] font-bold text-blue-300/80">{scores.starAlignment >= 80 ? 'Structured' : 'Basic'}</span>
+              </div>
             </div>
             <div className="bg-[#151930] border border-slate-800 rounded-2xl p-3.5 sm:p-4 text-center shadow-lg space-y-1">
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Overall Rating</span>
-              <span className="text-xl sm:text-2xl font-black text-white">{scores.overall}%</span>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-xl sm:text-2xl font-black text-white">{scores.overall}%</span>
+                <span className="text-[10px] font-bold text-emerald-400">{scores.overall >= 85 ? 'Recommended' : scores.overall >= 70 ? 'Qualified' : 'Practice'}</span>
+              </div>
             </div>
           </div>
 
-          {/* Dynamic AI Feedback Section */}
-          <div className="space-y-4">
-            <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
-              <h4 className="font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Candidate Key Strengths</span>
-              </h4>
-              {strengths.map((str, idx) => (
-                <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
-                  <span className="text-emerald-400 font-bold shrink-0">•</span>
-                  <span>{str}</span>
+          {/* Deep 2-Column Strengths & Improvement Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-5 shadow-md flex flex-col space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+                <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">
+                  ✓
+                </span>
+                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                  Candidate Key Strengths
+                </h4>
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-200 font-medium flex-1">
+                {strengths.map((str, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-emerald-400 font-bold shrink-0">✅</span>
+                    <span className="leading-relaxed">{str}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-amber-500 rounded-2xl p-5 shadow-md flex flex-col space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+                <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold shrink-0">
+                  !
+                </span>
+                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                  Areas to Improve
+                </h4>
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-200 font-medium flex-1">
+                {weaknesses.length > 0 ? weaknesses.map((wk, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-amber-400 font-bold shrink-0">⚠️</span>
+                    <span className="leading-relaxed">{wk}</span>
+                  </li>
+                )) : <li className="text-slate-400 italic">No specific weak areas flagged.</li>}
+              </ul>
+            </div>
+          </div>
+
+          {/* Actionable Coaching Recommendations Container */}
+          {aiSuggestions.length > 0 && (
+            <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-indigo-500 rounded-2xl p-5 sm:p-6 shadow-md space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+                <span className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-xs font-bold shrink-0">
+                  🎯
+                </span>
+                <h4 className="text-xs font-black text-white uppercase tracking-widest">
+                  Actionable Coaching & Next Steps
+                </h4>
+              </div>
+              <div className="space-y-2 text-xs font-medium">
+                {aiSuggestions.map((sug, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-slate-200 bg-[#0B0E27] p-3 rounded-xl border border-slate-800/80">
+                    <span className="text-indigo-400 font-bold shrink-0">🎯</span>
+                    <span className="leading-relaxed">{sug}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Detailed Question-by-Question Discussion Stream Breakdown */}
+          {chatHistory.length > 0 && (
+            <div className="bg-[#151930] border border-slate-800 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[340px] overflow-y-auto">
+              <div className="text-xs font-black text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-2 flex items-center justify-between">
+                <span>Detailed Interview Discussion & QA Critique</span>
+                <span className="text-slate-400 font-mono text-[10px]">All Interview Rounds</span>
+              </div>
+
+              {chatHistory.map((item, qIdx) => (
+                <div key={qIdx} className="bg-[#0B0E27] border border-slate-800 p-3.5 rounded-xl space-y-2 text-xs">
+                  {item.question && (
+                    <p className="text-slate-200 font-semibold leading-relaxed">
+                      <span className="text-amber-400 font-extrabold">Interviewer Q:</span> {item.question}
+                    </p>
+                  )}
+                  {item.text && (
+                    <p className="text-amber-200/90 font-medium bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 leading-relaxed">
+                      <span className="font-bold text-amber-400">Your Answer:</span> {item.text}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
-
-            {weaknesses.length > 0 && (
-              <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
-                <h4 className="font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-amber-400" />
-                  <span>Areas to Improve</span>
-                </h4>
-                {weaknesses.map((wk, idx) => (
-                  <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
-                    <span className="text-amber-400 font-bold shrink-0">•</span>
-                    <span>{wk}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {aiSuggestions.length > 0 && (
-              <div className="space-y-2.5 bg-[#151930] p-4 sm:p-5 rounded-2xl border border-slate-800 text-xs shadow-md">
-                <h4 className="font-black text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-indigo-400" />
-                  <span>AI Coaching Recommendations</span>
-                </h4>
-                {aiSuggestions.map((sug, idx) => (
-                  <div key={idx} className="flex items-start space-x-2 text-slate-200 font-medium leading-relaxed">
-                    <span className="text-indigo-400 font-bold shrink-0">•</span>
-                    <span>{sug}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
 
           <button
             onClick={() => {
