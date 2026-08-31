@@ -500,10 +500,10 @@ export default function VivaDefenseModal({
           <div className="flex-1 min-h-0 p-4 sm:p-5 flex flex-col justify-between space-y-3 overflow-hidden">
 
             {/* Modern 5-Stage Defense Stepper Timeline */}
-            <div className="flex items-center justify-between bg-[#151930] px-4 py-2.5 rounded-xl border border-slate-800 text-xs shrink-0 gap-2 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center justify-between bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 text-xs shrink-0 gap-2 overflow-x-auto scrollbar-hide">
               <div className="flex items-center gap-2 shrink-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-                <span className="font-extrabold text-amber-400 uppercase tracking-wider">{stageLabel}</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                <span className="font-extrabold text-amber-800 uppercase tracking-wider">{stageLabel}</span>
               </div>
 
               {/* Stage Pills Timeline */}
@@ -523,10 +523,10 @@ export default function VivaDefenseModal({
                       key={s.r}
                       className={`px-2 py-0.5 rounded transition-all ${
                         isActive 
-                          ? 'bg-[#F2A93B] text-[#151930] font-black shadow-sm' 
+                          ? 'bg-[#151930] text-white font-black shadow-xs' 
                           : isDone 
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/60' 
-                            : 'bg-slate-800/60 text-slate-500'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                            : 'bg-slate-200 text-slate-500'
                       }`}
                     >
                       {s.label}
@@ -535,8 +535,8 @@ export default function VivaDefenseModal({
                 })}
               </div>
 
-              <div className="font-mono text-slate-300 font-bold shrink-0">
-                Round <span className="text-amber-400 font-black">{questionsAnswered + 1}</span> of 5
+              <div className="font-mono text-slate-600 font-bold shrink-0">
+                Round <span className="text-[#151930] font-black">{questionsAnswered + 1}</span> of 5
               </div>
             </div>
 
@@ -548,26 +548,26 @@ export default function VivaDefenseModal({
                   {/* Examiner Question */}
                   {item.role === 'examiner' && item.question && (
                     <div className="flex gap-3 items-start">
-                      <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] flex items-center justify-center text-sm font-black shrink-0 mt-0.5 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-sm font-black shrink-0 mt-0.5 shadow-2xs">
                         🎓
                       </div>
-                      <div className="flex-1 bg-[#151930] border border-slate-800 p-4 rounded-2xl space-y-2">
-                        <div className="text-[10px] font-black text-amber-400 uppercase tracking-wider flex items-center justify-between">
+                      <div className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
+                        <div className="text-[10px] font-black text-amber-800 uppercase tracking-wider flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span>Examiner Panel Question</span>
                             {enableVoiceAudio && (
                               <div className="flex items-center gap-0.5">
-                                <span className="w-1 h-3 bg-amber-400 animate-pulse rounded-full"></span>
-                                <span className="w-1 h-4 bg-amber-300 animate-pulse delay-75 rounded-full"></span>
-                                <span className="w-1 h-2 bg-amber-500 animate-pulse delay-150 rounded-full"></span>
+                                <span className="w-1 h-3 bg-amber-500 animate-pulse rounded-full"></span>
+                                <span className="w-1 h-4 bg-amber-400 animate-pulse delay-75 rounded-full"></span>
+                                <span className="w-1 h-2 bg-amber-600 animate-pulse delay-150 rounded-full"></span>
                               </div>
                             )}
                           </div>
-                          {item.stageLabel && <span className="text-slate-400 font-mono">{item.stageLabel}</span>}
+                          {item.stageLabel && <span className="text-slate-500 font-mono">{item.stageLabel}</span>}
                         </div>
-                        <p className="text-sm sm:text-base font-bold text-white leading-relaxed">{item.question}</p>
+                        <p className="text-sm sm:text-base font-bold text-slate-950 leading-relaxed">{item.question}</p>
                         {answerFormatHint && idx === chatHistory.length - 1 && (
-                          <p className="text-[11px] text-amber-300/80 font-medium italic border-t border-slate-800/80 pt-2">
+                          <p className="text-[11px] text-amber-800 font-medium italic border-t border-slate-200 pt-2">
                             💡 Format Hint: {answerFormatHint}
                           </p>
                         )}
@@ -578,11 +578,11 @@ export default function VivaDefenseModal({
                   {/* Candidate Answer */}
                   {item.role === 'candidate' && (
                     <div className="flex gap-3 items-start justify-end">
-                      <div className="bg-amber-500 text-[#151930] p-4 rounded-2xl max-w-xl shadow-md font-medium text-sm sm:text-base">
-                        <div className="text-[10px] font-black uppercase tracking-wider opacity-80 mb-1">Your Defense Answer</div>
+                      <div className="bg-[#151930] text-white p-4 rounded-2xl max-w-xl shadow-md font-medium text-sm sm:text-base">
+                        <div className="text-[10px] font-black uppercase tracking-wider text-amber-400 mb-1">Your Defense Answer</div>
                         <p className="leading-relaxed font-semibold">{item.text}</p>
                       </div>
-                      <div className="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
                         👤
                       </div>
                     </div>
@@ -590,16 +590,16 @@ export default function VivaDefenseModal({
 
                   {/* AI Feedback on previous answer */}
                   {item.role === 'examiner' && item.feedback && (
-                    <div className="ml-11 bg-emerald-950/40 border border-emerald-800/60 p-3.5 rounded-xl text-xs space-y-2">
-                      <div className="flex items-center justify-between text-emerald-400 font-extrabold uppercase tracking-wider text-[10px]">
+                    <div className="ml-11 bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-xs space-y-2">
+                      <div className="flex items-center justify-between text-emerald-800 font-extrabold uppercase tracking-wider text-[10px]">
                         <span>Panel Evaluation</span>
                         {item.scores && (
-                          <span className="font-mono bg-emerald-900/60 px-2 py-0.5 rounded text-emerald-300">
+                          <span className="font-mono bg-emerald-100 px-2 py-0.5 rounded text-emerald-900">
                             Score: {item.scores.overall}/100
                           </span>
                         )}
                       </div>
-                      <p className="text-slate-200 font-medium leading-relaxed">{item.feedback}</p>
+                      <p className="text-slate-800 font-medium leading-relaxed">{item.feedback}</p>
                     </div>
                   )}
 
@@ -607,8 +607,8 @@ export default function VivaDefenseModal({
               ))}
 
               {isLoading && (
-                <div className="flex gap-3 items-center text-slate-400 text-xs font-bold animate-pulse p-4">
-                  <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex gap-3 items-center text-slate-500 text-xs font-bold animate-pulse p-4">
+                  <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
                   <span>Examiner panel is evaluating your response and formulating next question...</span>
                 </div>
               )}
@@ -617,11 +617,11 @@ export default function VivaDefenseModal({
             </div>
 
             {/* Bottom Response Input Area */}
-            <div className="border-t border-slate-800 pt-3 shrink-0 space-y-2">
+            <div className="border-t border-slate-200 pt-3 shrink-0 space-y-2">
               {/* Quick Answer Starter Chips */}
               {!isLoading && (
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[10px] font-bold scrollbar-hide">
-                  <span className="text-slate-400 shrink-0">Answer Starters:</span>
+                  <span className="text-slate-500 shrink-0">Answer Starters:</span>
                   {[
                     "From a practical perspective...",
                     "Looking at the core metrics...",
@@ -630,7 +630,7 @@ export default function VivaDefenseModal({
                     <button
                       key={cIdx}
                       onClick={() => setAnswer((prev) => (prev ? `${prev} ${chip}` : chip))}
-                      className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg shrink-0 transition-colors cursor-pointer"
+                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg shrink-0 transition-colors cursor-pointer"
                     >
                       {chip}
                     </button>
@@ -644,10 +644,10 @@ export default function VivaDefenseModal({
                     onClick={toggleVoiceListen}
                     className={`flex-1 py-3 px-4 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isListening
                         ? 'bg-red-600 text-white animate-pulse shadow-lg shadow-red-900'
-                        : 'bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] hover:from-amber-300'
+                        : 'bg-[#151930] text-white hover:bg-[#0B0E27]'
                       }`}
                   >
-                    <Mic size={18} />
+                    <Mic size={18} className="text-amber-400" />
                     <span>{isListening ? 'Listening... Speak Answer Now' : 'Click to Speak Answer (Mic)'}</span>
                   </button>
                   {answer && (
@@ -669,14 +669,14 @@ export default function VivaDefenseModal({
                     onKeyDown={(e) => e.key === 'Enter' && submitAnswer()}
                     placeholder="Type your defense answer here..."
                     disabled={isLoading}
-                    className="flex-1 bg-[#151930] border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                    className="flex-1 bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-semibold transition-all"
                   />
                   <button
                     onClick={submitAnswer}
                     disabled={!answer.trim() || isLoading}
-                    className="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-extrabold text-sm disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                    className="px-5 py-3 rounded-xl bg-[#151930] hover:bg-[#0B0E27] text-white font-extrabold text-sm disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
                   >
-                    <Send size={16} /> Submit
+                    <Send size={16} className="text-amber-400" /> Submit
                   </button>
                 </div>
               )}
@@ -693,54 +693,50 @@ export default function VivaDefenseModal({
 
           {/* RESULTS PHASE */}
           {phase === 'results' && (
-            <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] flex items-center justify-center text-3xl mx-auto shadow-xl">
+            <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2 text-slate-900">
+              <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-3xl mx-auto shadow-sm">
                 🏆
               </div>
 
               <div>
-                <h3 className="text-2xl sm:text-3xl font-black text-white">Viva Defense Complete</h3>
-                <p className="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Here is your complete 5-round defense evaluation and examiner feedback.</p>
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-950">Viva Defense Complete</h3>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Here is your complete 5-round defense evaluation and examiner feedback.</p>
               </div>
 
               {/* Overall Score Card */}
-              <div className="bg-[#151930] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-xs space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="text-xs font-extrabold text-amber-400 uppercase tracking-widest">Final Defense Grade</div>
-                  <span className="text-[11px] font-extrabold px-3 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700">
+                  <div className="text-xs font-extrabold text-amber-800 uppercase tracking-widest">Final Defense Grade</div>
+                  <span className="text-[11px] font-extrabold px-3 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300">
                     {mode === 'text' ? '⌨️ Text Defense Mode' : '🎙️ Voice Defense Mode'}
                   </span>
                 </div>
-                <div className="text-4xl sm:text-5xl font-black text-white">{avgOverallScore}<span className="text-xl sm:text-2xl text-slate-400">/100</span></div>
-                <p className="text-xs text-slate-300 font-semibold">
+                <div className="text-4xl sm:text-5xl font-black text-slate-950">{avgOverallScore}<span className="text-xl sm:text-2xl text-slate-400">/100</span></div>
+                <p className="text-xs text-slate-700 font-semibold">
                   {avgOverallScore >= 85
                     ? '🎉 Outstanding Defense! You answered probing technical questions with strong reasoning and clarity.'
                     : '👍 Good Defense. Review your slide data points and practice concise explanations.'}
                 </p>
 
                 {/* Mode-Specific Sub-Scores Breakdown */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
                   {mode === 'text' ? (
                     <>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Technical Accuracy</span>
-                        <span className="text-xl font-black text-amber-400">{avgAccuracy}%</span>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Technical Accuracy</span>
+                        <span className="text-xl font-black text-amber-600">{avgAccuracy}%</span>
                       </div>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Depth of Reasoning</span>
-                        <span className="text-xl font-black text-emerald-400">{avgReasoning}%</span>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Depth of Reasoning</span>
+                        <span className="text-xl font-black text-emerald-600">{avgReasoning}%</span>
                       </div>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Written Structure</span>
-                        <span className="text-xl font-black text-blue-400">{avgClarity}%</span>
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
+                        <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Written Structure</span>
+                        <span className="text-xl font-black text-blue-600">{avgClarity}%</span>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="bg-[#0B0E27] border border-slate-800 p-3 rounded-xl text-center space-y-1">
-                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Spoken Delivery</span>
-                        <span className="text-xl font-black text-amber-400">{avgDelivery}%</span>
-                      </div>
                       <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
                         <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Spoken Delivery</span>
                         <span className="text-xl font-black text-amber-600">{avgDelivery}%</span>
@@ -839,15 +835,15 @@ export default function VivaDefenseModal({
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setPhase('setup')}
-                  className="flex-1 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <RotateCcw size={15} /> Retake Viva
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 rounded-xl bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <CheckCircle size={15} /> Done
+                  <CheckCircle size={15} className="text-amber-400" /> Done
                 </button>
               </div>
             </div>

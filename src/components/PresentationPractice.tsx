@@ -372,7 +372,7 @@ export default function PresentationPractice({
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
     }
-  }, [isPaused, isRecording, hasVideo]);
+  }, [isPaused, isRecording, hasVideo, captureWebcamFrame]);
 
   const stopPracticeRecording = async () => {
     if (!isRecording) return;

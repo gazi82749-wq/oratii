@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Mail, Calendar, Crown, Mic, FileText, Video, Clock, Shield, Activity } from 'lucide-react';
 import { users, speechReports, pptReports, vivaSessions, payments } from '@/lib/admin/data';
 
@@ -49,7 +50,7 @@ export default function UserDetailPage() {
       {/* Profile Header */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-          <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-slate-800" />
+          <Image src={user.avatar || '/default-avatar.png'} alt={user.name} width={64} height={64} className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-slate-800" unoptimized />
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-xl font-bold text-slate-900 dark:text-white">{user.name}</h1>

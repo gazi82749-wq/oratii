@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Crown, Eye, MoreHorizontal, ArrowDownCircle } from 'lucide-react';
 import { users as mockUsers, type AdminUser, type UserPlan } from '@/lib/admin/data';
 import { supabase } from '@/lib/supabaseClient';
@@ -89,7 +90,7 @@ export default function PremiumUsersPage() {
                 <tr key={user.id} className="border-b border-indigo-50 dark:border-slate-800/50 hover:bg-indigo-50/50 dark:hover:bg-slate-800/30 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-slate-800" />
+                      <Image src={user.avatar || '/default-avatar.png'} alt={user.name} width={32} height={32} className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-slate-800" unoptimized />
                       <div>
                         <Link href={`/admin/users/${user.id}`} className="text-[13px] font-semibold text-slate-900 dark:text-white hover:text-[#F2A93B] dark:hover:text-indigo-500 transition-colors">{user.name}</Link>
                         <div className="text-[12px] text-slate-500 dark:text-slate-400">{user.email}</div>
