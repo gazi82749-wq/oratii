@@ -117,13 +117,9 @@ export default function VivaCoachPage() {
   const startVivaSession = async () => {
     // 1. Check Auth & Credits (1 credit per Viva session)
     const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id || 'guest-viva-user';
 
-    if (!session?.user) {
-      setIsGuestAuthModalOpen(true);
-      return;
-    }
-
-    const creditCheck = await checkAndDeductCredits(session.user.id, 1);
+    const creditCheck = await checkAndDeductCredits(userId, 1);
     if (!creditCheck.allowed) {
       setCreditBalance(creditCheck.remainingCredits);
       setIsCreditModalOpen(true);

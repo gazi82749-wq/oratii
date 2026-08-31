@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const currentQuestionIndex = validTurns.length + 1;
 
     // Deduct usage session credit only on the first turn of a viva session
-    if (userId && currentQuestionIndex === 1) {
+    if (userId && userId !== 'guest-viva-user' && currentQuestionIndex === 1) {
       const usageCheck = await checkAndDecrementUsage(userId, 'viva_sessions_count');
       if (!usageCheck.allowed) {
         return NextResponse.json({
