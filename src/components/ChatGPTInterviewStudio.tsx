@@ -345,7 +345,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-8 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans max-h-[85vh] overflow-y-auto" style={{ isolation: 'isolate' }}>
+    <div className="w-full max-w-5xl mx-auto border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-6 sm:p-10 flex flex-col gap-6 relative overflow-hidden text-slate-900 font-sans max-h-[85vh] overflow-y-auto" style={{ isolation: 'isolate' }}>
       {/* Top Accent Gradient Stripe matching Speech Coach */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
@@ -408,20 +408,20 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
               2. Upload Resume / CV / Question Paper (Optional PDF or TXT):
             </label>
-            <div className="border-2 border-dashed border-slate-200 hover:border-amber-500 bg-slate-50/80 hover:bg-amber-50/30 rounded-2xl p-5 sm:p-6 text-center transition-all cursor-pointer relative group">
+            <div className="border-2 border-dashed border-slate-200 hover:border-amber-500 bg-slate-50/80 hover:bg-amber-50/30 rounded-2xl p-8 sm:p-12 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center min-h-[160px] sm:min-h-[200px]">
               <input
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
                 onChange={handleFileUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              <Upload className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+              <Upload className="w-9 h-9 sm:w-10 sm:h-10 text-amber-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
               {resumeFileName ? (
                 <span className="text-xs font-bold text-emerald-700 block">✓ Loaded Resume: {resumeFileName}</span>
               ) : (
                 <div>
-                  <span className="text-xs font-extrabold text-slate-900 block">Drag & drop your Resume PDF here</span>
-                  <span className="text-[11px] text-slate-500 font-medium mt-0.5 block">
+                  <span className="text-sm font-extrabold text-slate-950 block mb-1">Drag & drop your Resume PDF here</span>
+                  <span className="text-xs text-slate-500 font-medium block">
                     AI will ground technical questions directly in your projects & experience
                   </span>
                 </div>
