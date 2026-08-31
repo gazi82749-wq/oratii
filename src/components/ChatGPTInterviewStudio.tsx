@@ -345,10 +345,17 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-[#0B0E27] border border-slate-800 p-4 sm:p-8 text-slate-100 shadow-2xl relative overflow-hidden font-sans rounded-2xl sm:rounded-3xl">
+    <div className="w-full max-w-4xl mx-auto bg-[#0B0E27] border border-slate-800 p-4 sm:p-6 text-slate-100 shadow-2xl relative overflow-hidden font-sans rounded-2xl sm:rounded-3xl max-h-[82vh] overflow-y-auto">
       {/* Landing Page Gold/Indigo Aesthetic Glow Mesh */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 blur-[100px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+
+      {/* Signature Module Header & Pill */}
+      <div className="mb-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-md">
+          <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Job Interview AI Studio
+        </div>
+      </div>
 
       {/* Module Title Pill & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-6 gap-3 relative z-10">

@@ -288,7 +288,9 @@ function PresentationAnalyzerContent() {
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-lg shadow-amber-500/10">
               <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Slide Deck AI Module
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950 mb-2">Slide Analyzer</h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-2 flex items-center gap-2">
+              <span>📊</span> Slide Analyzer
+            </h1>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl">Upload your PowerPoint (PPTX) or PDF presentation deck for instant text density, design clarity, and AI structural feedback.</p>
             <div className="mt-3 inline-flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 bg-amber-50 border border-amber-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
               <span className="text-amber-800 font-extrabold flex items-center gap-1">

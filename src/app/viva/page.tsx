@@ -330,9 +330,11 @@ export default function VivaCoachPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-3 shrink-0">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-1 shadow-md">
-            <Sparkles size={13} /> Built-in AI Viva Defense Studio
+            <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Viva Defense AI Module
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">AI Viva Defense</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight flex items-center gap-2">
+            <span>🎓</span> AI Viva Defense
+          </h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">Defend your slides, thesis, and presentation topic in a deep conversational Q&A with an AI committee panel.</p>
         </div>
 
@@ -350,7 +352,7 @@ export default function VivaCoachPage() {
       </div>
 
       {/* Main Studio Card */}
-      <div className="bg-[#0B0E27] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-5 text-slate-100 flex flex-col flex-1 min-h-0">
+      <div className="bg-[#0B0E27] border border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-5 text-slate-100 flex flex-col flex-1 min-h-0 max-h-[82vh] overflow-y-auto">
 
         {/* SETUP PHASE */}
         {phase === 'setup' && (

@@ -658,10 +658,12 @@ export default function SpeechCoach() {
         <>
           {/* Header Title */}
           <div className="mb-3 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Speech Coach AI Module
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-md">
+              <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Speech Coach AI Module
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-1">Speech Coach</h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-1 flex items-center gap-2">
+              <span>🎙️</span> Speech Coach
+            </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-xl">Record live speech, upload audio, or pick a topic to receive real-time pacing, WPM, and filler word AI analysis.</p>
           </div>
 
