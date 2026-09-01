@@ -353,205 +353,166 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {/* Top Accent Gradient Stripe matching Speech Coach */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
-      {/* Module Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 mb-2 gap-3 relative z-10">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-[#F2A93B] font-black flex items-center justify-center shadow-md shrink-0">
-            <Briefcase className="w-5 h-5 text-amber-700" />
-          </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black text-slate-950 tracking-tight">
-                AI Voice Mock Interviewer
-              </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-100 text-amber-900 border border-amber-300">
-                Unscripted AI
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Target Role: <span className="text-[#151930] font-bold">{roleTitle}</span>
-            </p>
-          </div>
+      {/* Header / Mode Switcher Navbar (Matching Speech Coach 100%) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+        <div>
+          <h2 className="text-lg font-black text-slate-950 flex items-center gap-2">
+            <span>💼</span> AI Voice Mock Interviewer
+          </h2>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Select target role, interviewer panel, and optional resume context for unscripted AI evaluation.
+          </p>
         </div>
 
-        <div className="flex items-center justify-end space-x-2">
+        {/* Mode Selector Navbar Pills (Matching Speech Coach) */}
+        <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/80 shrink-0">
           <button
-            onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-              voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-slate-100 text-slate-500 border-slate-200'
+            type="button"
+            onClick={() => setExaminerTone('friendly')}
+            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+              examinerTone === 'friendly' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
-            title={voiceEnabled ? 'Mute AI Voice' : 'Enable AI Voice Read-Aloud'}
           >
-            {voiceEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4" />}
+            🟢 Standard Mock
           </button>
-          {onCancel && (
-            <button onClick={onCancel} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-all cursor-pointer">
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setExaminerTone('strict')}
+            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+              examinerTone === 'strict' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            🔥 Technical Panel
+          </button>
+          <button
+            type="button"
+            onClick={() => setExaminerTone('star')}
+            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+              examinerTone === 'star' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            ⭐ STAR Method
+          </button>
         </div>
       </div>
 
-      {/* STEP 1: SETUP — TWO-PART SEPARATED DESIGN (DETAILS & UPLOAD) */}
+      {/* STEP 1: SETUP (Matching Speech Coach Layout 100%) */}
       {step === 'setup' && (
         <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
           
-          {/* PART 1: TARGET POSITION & INTERVIEW DETAILS SECTION */}
-          <div className="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 text-left">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#151930] text-amber-400 font-extrabold flex items-center justify-center text-xs shadow-2xs">1</span>
-                <h3 className="text-sm font-black text-slate-950 uppercase tracking-wider">Target Position & Interview Panel Settings</h3>
-              </div>
-              <span className="text-[11px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-full">Part 1 of 2</span>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider block">
-                Target Job Role / Specialty Title:
+          {/* Compact Settings Panel Grid (Matching Speech Coach) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
+            <div className="md:col-span-2 flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
+                <span>💼</span> Target Job Position / Role Specialty
               </label>
-              <input
+              <input 
                 type="text"
                 value={roleTitle}
                 onChange={(e) => setRoleTitle(e.target.value)}
-                placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Analyst, Financial Analyst..."
-                className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-xs sm:text-sm text-slate-950 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all shadow-xs"
+                placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Analyst..."
+                className="bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-[#151930]/30 focus:border-[#151930] font-bold shadow-2xs"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-                Interviewer Panel Style & Focus:
+            <div className="md:col-span-1 flex flex-col gap-1.5">
+              <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
+                <span>🔊</span> AI Voice Read-Aloud
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setExaminerTone('friendly')}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                    examinerTone === 'friendly' ? 'border-indigo-600 bg-indigo-50/80 ring-2 ring-indigo-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">🟢 Standard Professional</span>
-                    {examinerTone === 'friendly' && <CheckCircle2 className="w-4 h-4 text-indigo-600" />}
-                  </div>
-                  <span className="text-[11px] text-slate-500 mt-1">Balanced mix of technical background & experience queries.</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setExaminerTone('strict')}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                    examinerTone === 'strict' ? 'border-amber-600 bg-amber-50/80 ring-2 ring-amber-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">🔥 Strict Technical Panel</span>
-                    {examinerTone === 'strict' && <CheckCircle2 className="w-4 h-4 text-amber-600" />}
-                  </div>
-                  <span className="text-[11px] text-slate-500 mt-1">Deep architectural probes, code edge cases & reasoning stress.</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setExaminerTone('star')}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                    examinerTone === 'star' ? 'border-purple-600 bg-purple-50/80 ring-2 ring-purple-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-900">⭐ STAR Behavioral</span>
-                    {examinerTone === 'star' && <CheckCircle2 className="w-4 h-4 text-purple-600" />}
-                  </div>
-                  <span className="text-[11px] text-slate-500 mt-1">Focuses on Situation, Task, Action, and Result leadership metrics.</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setVoiceEnabled(!voiceEnabled)}
+                className={`w-full py-2.5 px-3 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-white text-slate-600 border-slate-200'
+                }`}
+              >
+                {voiceEnabled ? <Volume2 size={15} className="text-amber-400" /> : <VolumeX size={15} />}
+                <span>{voiceEnabled ? 'Voice Aloud ON' : 'Voice Muted'}</span>
+              </button>
             </div>
           </div>
 
-          {/* PART 2: RESUME & CANDIDATE CONTEXT UPLOAD SECTION */}
-          <div className="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 text-left">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#151930] text-amber-400 font-extrabold flex items-center justify-center text-xs shadow-2xs">2</span>
-                <h3 className="text-sm font-black text-slate-950 uppercase tracking-wider">Resume / Context Upload</h3>
-              </div>
-              <span className="text-[11px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-full">Part 2 of 2</span>
-            </div>
-
+          {/* Upload / Rehearsal Work Area (Matching Speech Coach 100%) */}
+          <div className="w-full flex flex-col items-center justify-center py-2 min-h-[180px]">
             {resumeFileName ? (
-              /* Loaded Resume State Card — Placeholder Hidden (Speech Coach Standard) */
-              <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg font-black shrink-0">
-                    📄
+              /* Clean Resume Ready State — Placeholder Hidden (Speech Coach Standard) */
+              <div className="w-full max-w-lg bg-indigo-50/90 border-2 border-indigo-300 rounded-2xl p-6 flex flex-col items-center gap-4 animate-fade-in shadow-lg">
+                <div className="flex items-center justify-between w-full pb-3 border-b border-indigo-200/80">
+                  <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">📄</span>
+                    <span>Resume Ready & Grounded</span>
+                  </span>
+                  <span className="text-xs font-extrabold text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-lg truncate max-w-[200px]">
+                    {resumeFileName}
+                  </span>
+                </div>
+
+                <p className="text-xs text-indigo-900/80 font-medium text-center">
+                  AI interviewer will ground technical questions directly in your resume experience & projects.
+                </p>
+
+                <div className="flex items-center gap-3 w-full pt-1">
+                  <button
+                    onClick={() => {
+                      setResumeFileName(null);
+                      setResumeText('');
+                      if (fileInputRef.current) fileInputRef.current.value = '';
+                    }}
+                    className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
+                    title="Remove resume and select a new file"
+                  >
+                    🔄 Change Resume
+                  </button>
+                  
+                  <button
+                    onClick={startInterviewSession}
+                    disabled={isLoading}
+                    className="flex-1 py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
+                  >
+                    🚀 Launch AI Mock Interview
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Single Spacious Drag & Drop Upload Container (Matching Speech Coach) */
+              <div className="w-full flex flex-col items-center justify-center">
+                <div 
+                  className={`w-full max-w-lg border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center transition-all cursor-pointer group ${
+                    isDragActive ? 'border-amber-500 bg-amber-50/60' : 'border-slate-300 bg-slate-50/80 hover:bg-indigo-50/40 hover:border-[#151930]'
+                  }`} 
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                  onDragLeave={() => setIsDragActive(false)}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    setIsDragActive(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) {
+                      setResumeFileName(file.name);
+                      const text = await file.text();
+                      setResumeText(text.slice(0, 3000));
+                    }
+                  }}
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
+                    📁
                   </div>
-                  <div>
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider block">Resume Loaded & Grounded</span>
-                    <span className="text-xs font-extrabold text-emerald-800 truncate block max-w-xs">{resumeFileName}</span>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">AI interviewer will ground questions directly in your resume projects.</p>
-                  </div>
+                  <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag & Drop Resume PDF here</p>
+                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">Optional: AI grounds technical questions in your resume (PDF, TXT, DOCX)</p>
+                  <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.txt,.doc,.docx" onChange={handleFileUpload} />
                 </div>
 
                 <button
-                  type="button"
-                  onClick={() => {
-                    setResumeFileName(null);
-                    setResumeText('');
-                    if (fileInputRef.current) fileInputRef.current.value = '';
-                  }}
-                  className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
+                  onClick={startInterviewSession}
+                  disabled={isLoading}
+                  className="mt-5 w-full max-w-lg py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
                 >
-                  🔄 Change Resume
+                  <Sparkles className="w-4 h-4 text-[#151930]" />
+                  <span>{isLoading ? 'Starting Interview Session...' : '🚀 Launch AI Mock Interview'}</span>
                 </button>
-              </div>
-            ) : (
-              /* Upload Dropzone Container */
-              <div
-                className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center min-h-[150px] ${
-                  isDragActive ? 'border-amber-500 bg-amber-50/60' : 'border-slate-300 bg-white hover:bg-amber-50/30 hover:border-amber-400'
-                }`}
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
-                onDragLeave={() => setIsDragActive(false)}
-                onDrop={async (e) => {
-                  e.preventDefault();
-                  setIsDragActive(false);
-                  const file = e.dataTransfer.files?.[0];
-                  if (file) {
-                    setResumeFileName(file.name);
-                    const text = await file.text();
-                    setResumeText(text.slice(0, 3000));
-                  }
-                }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".pdf,.txt,.doc,.docx"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <div className="w-12 h-12 rounded-2xl bg-[#151930] text-amber-400 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-md">
-                  📁
-                </div>
-                <span className="text-sm font-extrabold text-slate-950 block mb-0.5">Click or Drag & Drop Resume PDF here</span>
-                <span className="text-xs text-slate-500 font-medium block">
-                  Optional: AI will extract your projects & tech stack to personalize questions (PDF, TXT, DOCX)
-                </span>
               </div>
             )}
           </div>
-
-          {/* LAUNCH BUTTON */}
-          <button
-            onClick={startInterviewSession}
-            disabled={isLoading}
-            className="w-full py-4 bg-gradient-to-r from-[#151930] via-[#1c2242] to-[#151930] hover:from-[#0B0E27] hover:to-[#0B0E27] text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl hover:scale-[1.005] transition-all cursor-pointer flex items-center justify-center space-x-2"
-          >
-            <Sparkles className="w-5 h-5 text-amber-400" />
-            <span>{isLoading ? 'Starting Interview Session...' : '🚀 Launch AI Voice Mock Interview'}</span>
-          </button>
         </div>
       )}
 
