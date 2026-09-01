@@ -12,6 +12,8 @@ export async function POST(request: Request) {
     const totalFillers = formData.get('totalFillers') || '0';
     const timedTranscript = formData.get('timedTranscript');
     const situation = formData.get('situation') || 'a general presentation';
+    const reqLanguage = (formData.get('language') as string) || 'en-US';
+    const isHindi = reqLanguage.toLowerCase().startsWith('hi');
 
     if (!timedTranscript) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -31,13 +33,14 @@ export async function POST(request: Request) {
       You are a direct, no-nonsense speech coach. You analyze real speech data and give brutally honest scores. You NEVER give generic or default scores.
 
       CONTEXT: The student was speaking for "${situation}".
+      SPEECH LANGUAGE: ${isHindi ? 'Hindi / Hinglish (Indian Hindi + English mix)' : 'English'}
       
       MEASURED STATS:
       - Words per minute: ${wpm}
       - Total filler words: ${totalFillers}
       - Fillers per minute: ${(Number(totalFillers) / (Number(wpm) > 0 ? (Number(wpm) / 130) : 1)).toFixed(1)}
       
-      SCORING RULES â€” YOU MUST FOLLOW THIS FORMULA:
+      SCORING RULES — YOU MUST FOLLOW THIS FORMULA:
       Start at 100 and subtract:
       - WPM penalty: If WPM is outside 120-160 range, subtract 1 point per 5 WPM deviation. If outside 100-180, subtract 2 points per 5 WPM deviation beyond that.
       - Filler penalty: Subtract 3 points per filler word (fillers destroy credibility).
@@ -48,8 +51,8 @@ export async function POST(request: Request) {
       CRITICAL: Do NOT default to 65-75 range. A speech with 0 fillers and perfect pacing should score 90+. A speech with 10+ fillers should score below 50. CALCULATE HONESTLY based on the formula above.
 
       RESPONSE FORMAT RULES:
-      1. Address the speaker as "you". Be warm but honest.
-      2. Hinglish (Hindi+English mix) is fine â€” don't penalize language mixing.
+      1. Address the speaker as "you" (or "aap" if in Hinglish). Be warm, encouraging, but honest.
+      ${isHindi ? '2. LANGUAGE MANDATE: The user chose Hindi / Hinglish. Write ALL feedback, strengths, weaknesses, and suggestions in natural, clear Hinglish (Hindi words written using Latin/English script + English terms). Example: "Aapki speech ki opening bohot clear aur confident thi, but 0:15 pe filler words matlab/um ki jagah 2-second ka silent pause lein."' : '2. Respond in clear English. Hinglish mixing is fine if transcript is mixed.'}
       3. EVERY strength/weakness/suggestion MUST start with a timestamp in format [M:SS]. Reference the EXACT timestamp from the transcript.
       4. Give 2-4 strengths, 2-4 weaknesses, and 2-4 actionable suggestions.
       5. Suggestions must be specific actions they can do TODAY, not vague advice.

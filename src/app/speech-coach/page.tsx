@@ -291,6 +291,7 @@ export default function SpeechCoach() {
       deepFormData.append('totalFillers', data.analysis?.totalFillers || 0);
       deepFormData.append('timedTranscript', data.analysis?.timedTranscript || '');
       deepFormData.append('situation', situation);
+      deepFormData.append('language', language);
 
       const deepResponse = await fetch('/api/speech-analyzer-deep', {
         method: 'POST',
