@@ -9,7 +9,7 @@ import XPToast from '../../components/XPToast';
 import TrialSignupPrompt from '../../components/TrialSignupPrompt';
 import GuestAuthModal from '../../components/GuestAuthModal';
 import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
-import ConfidenceGraph from '../../components/ConfidenceGraph';
+import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -1439,62 +1439,95 @@ export default function SpeechCoach() {
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div className={`px-4 py-3 rounded-xl border flex items-center justify-between gap-3 ${
-                  results.overallScore >= 85 ? 'bg-emerald-50 border-emerald-200 text-emerald-950' :
-                  results.overallScore >= 70 ? 'bg-blue-50 border-blue-200 text-blue-950' :
-                  results.overallScore >= 50 ? 'bg-amber-50 border-amber-200 text-amber-950' :
-                  'bg-rose-50 border-rose-200 text-rose-950'
-                }`}>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold uppercase tracking-wider opacity-70">Overall Score</span>
-                    <div className="flex items-baseline gap-1 mt-0.5">
-                      <span className="text-2xl font-black">{results.overallScore}%</span>
-                      <span className="text-xs font-bold opacity-80">
-                        {results.overallScore >= 85 ? 'Excellent' : results.overallScore >= 70 ? 'Good' : results.overallScore >= 50 ? 'Needs Work' : 'Keep Practicing'}
-                      </span>
+              <div className="flex flex-col gap-6">
+                {/* Rounded Score Gauge Rings Bar */}
+                <div className="grid grid-cols-3 gap-3 bg-gradient-to-r from-indigo-50/60 via-slate-50 to-amber-50/40 p-4 rounded-2xl border border-indigo-100/80 shadow-2xs">
+                  <ScoreRing 
+                    value={parseInt(results.overallScore) || 85} 
+                    max={100} 
+                    size={76} 
+                    strokeWidth={8} 
+                    color="#6c5ce7" 
+                    label="Overall Score" 
+                    unit="%" 
+                  />
+                  <ScoreRing 
+                    value={results.wpm || 140} 
+                    max={200} 
+                    size={76} 
+                    strokeWidth={8} 
+                    color="#00cec9" 
+                    label="Pacing" 
+                    unit="WPM" 
+                  />
+                  <ScoreRing 
+                    value={Math.max(0, 100 - (results.fillers?.reduce((a: number, b: any) => a + b.count, 0) || 0) * 8)} 
+                    max={100} 
+                    size={76} 
+                    strokeWidth={8} 
+                    color="#fd79a8" 
+                    label="Fluency" 
+                    unit="%" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div className={`px-4 py-3 rounded-xl border flex items-center justify-between gap-3 ${
+                    results.overallScore >= 85 ? 'bg-emerald-50 border-emerald-200 text-emerald-950' :
+                    results.overallScore >= 70 ? 'bg-blue-50 border-blue-200 text-blue-950' :
+                    results.overallScore >= 50 ? 'bg-amber-50 border-amber-200 text-amber-950' :
+                    'bg-rose-50 border-rose-200 text-rose-950'
+                  }`}>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold uppercase tracking-wider opacity-70">Overall Rating</span>
+                      <div className="flex items-baseline gap-1 mt-0.5">
+                        <span className="text-2xl font-black">{results.overallScore}%</span>
+                        <span className="text-xs font-bold opacity-80">
+                          {results.overallScore >= 85 ? 'Excellent' : results.overallScore >= 70 ? 'Good' : results.overallScore >= 50 ? 'Needs Work' : 'Keep Practicing'}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Vocal Tone</span>
-                    {isDeepLoading ? (
-                      <div className="h-6 w-16 bg-slate-200 rounded animate-pulse mt-1"></div>
-                    ) : (
-                      <span className="text-lg font-black text-[#151930] truncate mt-0.5">{results.tone || "Neutral"}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Avg. Pacing</span>
-                    <div className="flex items-baseline gap-1.5 mt-0.5">
-                      <span className="text-xl font-black text-slate-950">{results.wpm}</span>
-                      <span className="text-xs font-bold text-slate-400">WPM</span>
-                      <span className={`text-xs font-extrabold px-1.5 py-0.5 rounded uppercase ${pacingInfo.color} bg-white border border-slate-200 ml-1`}>
-                        {pacingInfo.label}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Filler Words</span>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xl font-black text-slate-950">{results.fillers.reduce((a,b) => a+b.count, 0)}</span>
-                      {results.fillers.length > 0 && (
-                        <div className="flex items-center gap-1 overflow-hidden">
-                          {results.fillers.slice(0, 2).map(f => (
-                            <span key={f.word} className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600 truncate">
-                              &quot;{f.word}&quot; x{f.count}
-                            </span>
-                          ))}
-                        </div>
+                  <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Vocal Tone</span>
+                      {isDeepLoading ? (
+                        <div className="h-6 w-16 bg-slate-200 rounded animate-pulse mt-1"></div>
+                      ) : (
+                        <span className="text-lg font-black text-[#151930] truncate mt-0.5">{results.tone || "Neutral"}</span>
                       )}
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Avg. Pacing</span>
+                      <div className="flex items-baseline gap-1.5 mt-0.5">
+                        <span className="text-xl font-black text-slate-950">{results.wpm}</span>
+                        <span className="text-xs font-bold text-slate-400">WPM</span>
+                        <span className={`text-xs font-extrabold px-1.5 py-0.5 rounded uppercase ${pacingInfo.color} bg-white border border-slate-200 ml-1`}>
+                          {pacingInfo.label}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Filler Words</span>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xl font-black text-slate-950">{results.fillers.reduce((a: number, b: any) => a + b.count, 0)}</span>
+                        {results.fillers.length > 0 && (
+                          <div className="flex items-center gap-1 overflow-hidden">
+                            {results.fillers.slice(0, 2).map((f: any) => (
+                              <span key={f.word} className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600 truncate">
+                                &quot;{f.word}&quot; x{f.count}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
