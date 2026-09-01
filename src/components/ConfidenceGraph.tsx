@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 // Time-series confidence/metrics chart (Module 3, 8)
@@ -10,19 +10,36 @@ export default function ConfidenceGraph({
   label = 'Confidence',
   color = '#6c5ce7',
   height = 200,
-  showEvents = true
+  showEvents = true,
+  onSeekAudio
+}: {
+  data?: any[];
+  events?: any[];
+  type?: 'line' | 'area';
+  dataKey?: string;
+  label?: string;
+  color?: string;
+  height?: number;
+  showEvents?: boolean;
+  onSeekAudio?: (timestamp: number) => void;
 }) {
   const CustomTooltip = ({ active, payload, label: tooltipLabel }: any) => {
     if (active && payload && payload.length) {
       const matchingEvent = events.find((e: any) => e.timestamp === tooltipLabel);
       return (
-        <div className="custom-tooltip">
+        <div 
+          className={`custom-tooltip ${onSeekAudio ? 'cursor-pointer' : ''}`}
+          onClick={() => onSeekAudio && typeof tooltipLabel === 'number' && onSeekAudio(tooltipLabel)}
+        >
           <p className="font-bold text-slate-800">{formatTime(tooltipLabel)}</p>
-          <p style={{ color }}>{label}: <strong>{payload[0].value}%</strong></p>
+          <p style={{ color }}>{label}: <strong>{payload[0].value}</strong></p>
           {matchingEvent && (
             <p className="text-xs text-slate-500 mt-1 border-t border-indigo-100 pt-1">
-              ðŸ“Œ {matchingEvent.message || matchingEvent.type}
+              📌 {matchingEvent.message || matchingEvent.type}
             </p>
+          )}
+          {onSeekAudio && (
+            <p className="text-[10px] text-indigo-600 font-bold mt-1">▶ Click to jump audio</p>
           )}
         </div>
       );
@@ -31,12 +48,20 @@ export default function ConfidenceGraph({
   };
 
   const ChartComponent = type === 'area' ? AreaChart : LineChart;
-  const DataComponent = type === 'area' ? Area : Line;
 
   return (
     <div className="w-full">
       <ResponsiveContainer width="100%" height={height}>
-        <ChartComponent data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+        <ChartComponent 
+          data={data} 
+          margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+          onClick={(state: any) => {
+            if (onSeekAudio && state && state.activeLabel !== undefined) {
+              const ts = typeof state.activeLabel === 'number' ? state.activeLabel : parseFloat(state.activeLabel);
+              if (!isNaN(ts)) onSeekAudio(ts);
+            }
+          }}
+        >
           <XAxis
             dataKey="timestamp"
             tickFormatter={formatTime}
@@ -45,7 +70,7 @@ export default function ConfidenceGraph({
             tickLine={false}
           />
           <YAxis
-            domain={[0, 100]}
+            domain={[0, 'auto']}
             tick={{ fontSize: 9, fill: '#94a3b8' }}
             axisLine={false}
             tickLine={false}
@@ -59,7 +84,9 @@ export default function ConfidenceGraph({
               x={event.timestamp}
               stroke={getEventColor(event.type)}
               strokeDasharray="3 3"
-              strokeWidth={1.5}
+              strokeWidth={2}
+              onClick={() => onSeekAudio && onSeekAudio(event.timestamp)}
+              className={onSeekAudio ? 'cursor-pointer hover:stroke-width-3' : ''}
             />
           ))}
 

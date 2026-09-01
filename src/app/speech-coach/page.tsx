@@ -7,9 +7,9 @@ import { groupFillerWords } from '../../lib/constants';
 import { completeChallengeDay } from '../../lib/challenge';
 import XPToast from '../../components/XPToast';
 import TrialSignupPrompt from '../../components/TrialSignupPrompt';
-import VivaDefenseModal from '../../components/VivaDefenseModal';
 import GuestAuthModal from '../../components/GuestAuthModal';
 import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
+import ConfidenceGraph from '../../components/ConfidenceGraph';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -31,7 +31,6 @@ export default function SpeechCoach() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeepLoading, setIsDeepLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
-  const [isVivaModalOpen, setIsVivaModalOpen] = useState(false);
   const [isGuestAuthModalOpen, setIsGuestAuthModalOpen] = useState(false);
   const [isCreditModalOpen, setIsCreditModalOpen] = useState(false);
   const [creditBalance, setCreditBalance] = useState(0);
@@ -39,6 +38,23 @@ export default function SpeechCoach() {
   const [language, setLanguage] = useState('hi');
   const [situation, setSituation] = useState('');
   const [challengeDay, setChallengeDay] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const handleSpeakFeedback = (text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -1190,13 +1206,6 @@ export default function SpeechCoach() {
               <p className="text-slate-500 font-medium">Here is your detailed breakdown.</p>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsVivaModalOpen(true)}
-                disabled={isDeepLoading}
-                className="px-4.5 py-2.5 bg-[#1B2140] hover:bg-[#0B0E27] text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>🎓 Take AI Viva Voce</span>
-              </button>
               <button onClick={() => { reset(); if (section === 'topic') handleTopicReset(); }} disabled={isDeepLoading} className="px-5 py-2.5 bg-white border border-indigo-200 rounded-xl text-slate-900 text-sm font-bold shadow-sm hover:bg-indigo-50 transition-all disabled:opacity-50">
                 Start New Session
               </button>
@@ -1392,12 +1401,31 @@ export default function SpeechCoach() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Speaking Pace Over Time</span>
+                <div>
+                  <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Interactive Speaking Pace & Energy Timeline</span>
+                  <p className="text-[11px] text-indigo-600 font-medium">Click any point or event pin on the chart to jump audio playback</p>
+                </div>
                 <span className="text-xs font-semibold text-slate-400">
                   {results.duration ? `${Math.floor(results.duration / 60)}m ${Math.floor(results.duration % 60)}s total` : ''}
                 </span>
               </div>
-              <PaceGraph paceData={results.paceData} duration={results.duration} />
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-inner">
+                <ConfidenceGraph 
+                  data={results.paceData || []} 
+                  events={results.events || []} 
+                  type="area" 
+                  dataKey="wpm" 
+                  label="Pace (WPM)" 
+                  color="#6c5ce7" 
+                  height={220}
+                  onSeekAudio={(timestamp) => {
+                    if (audioRef.current) {
+                      audioRef.current.currentTime = timestamp;
+                      audioRef.current.play().catch(() => {});
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -1452,13 +1480,24 @@ export default function SpeechCoach() {
           </div>
 
           <div className="bg-white border border-slate-200/80 border-t-4 border-t-indigo-600 rounded-2xl p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
-              <span className="w-6 h-6 rounded-full bg-indigo-100 text-[#151930] flex items-center justify-center text-xs font-bold">
-                ★
-              </span>
-              <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest">
-                Recommendations & Actionable Coaching Plan
-              </h3>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-indigo-100 text-[#151930] flex items-center justify-center text-xs font-bold">
+                  ★
+                </span>
+                <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest">
+                  Recommendations & Actionable Coaching Plan
+                </h3>
+              </div>
+              {results?.feedback && (
+                <button
+                  onClick={() => handleSpeakFeedback(results.feedback)}
+                  className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Listen to AI Coach feedback aloud"
+                >
+                  {isSpeaking ? '⏹️ Stop Voice' : '🔊 Listen to AI Coach'}
+                </button>
+              )}
             </div>
             {isDeepLoading ? (
               <div className="space-y-2 animate-pulse mb-4">
@@ -1483,31 +1522,6 @@ export default function SpeechCoach() {
               </div>
             )}
           </div>
-
-          {/* Tool Cross-Sell Banner */}
-          {!isDeepLoading && (
-            <div className="mt-8 p-6 bg-gradient-to-r from-indigo-900 via-slate-900 to-slate-900 text-white rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl border border-white/10">
-              <div className="text-left">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Recommended Next Step</div>
-                <div className="text-lg font-bold">Prepare for tough Q&A with AI Viva Defense</div>
-                <p className="text-xs text-indigo-300 mt-0.5">Practice answering unexpected questions generated from your presentation slides.</p>
-              </div>
-              <button 
-                onClick={() => setIsVivaModalOpen(true)} 
-                className="px-5 py-2.5 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] font-black text-xs uppercase tracking-wider rounded-xl hover:shadow-glow transition-all shrink-0 cursor-pointer"
-              >
-                Launch Viva Defense →
-              </button>
-            </div>
-          )}
-
-          {/* Built-in AI Viva Voce Defense Modal */}
-          <VivaDefenseModal 
-            isOpen={isVivaModalOpen}
-            onClose={() => setIsVivaModalOpen(false)}
-            presentationTitle={situation || 'Speech Delivery Defense'}
-            contextSummary={results ? `SPEECH COACH SUMMARY: Topic: ${situation || 'Speech Delivery'}. Overall Score: ${results.scores?.overall || 85}/100 | WPM: ${results.scores?.wpm || '140'} | Filler Words: ${results.scores?.fillerWordsCount || 0}. Strengths: ${(results.strengths || []).join('; ')}. Weaknesses: ${(results.weaknesses || []).join('; ')}` : ''}
-          />
         </div>
       )}
 
