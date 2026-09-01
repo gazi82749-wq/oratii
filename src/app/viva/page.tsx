@@ -777,8 +777,8 @@ export default function VivaCoachPage() {
               />
             </div>
 
-              {/* Deep 2-Column Strengths & Improvement Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+            {/* Deep 2-Column Strengths & Improvement Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
                 <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-md space-y-2">
                   <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
                     <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
