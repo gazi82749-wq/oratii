@@ -18,6 +18,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const [roleTitle, setRoleTitle] = useState<string>('Full-Stack Software Engineer');
   const [resumeText, setResumeText] = useState<string>('');
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
+  const [examinerTone, setExaminerTone] = useState<'friendly' | 'strict' | 'star'>('friendly');
+  const [isDragActive, setIsDragActive] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Voice Interface State
   const [isListening, setIsListening] = useState<boolean>(false);
@@ -389,54 +392,165 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
         </div>
       </div>
 
-      {/* STEP 1: SETUP & RESUME UPLOAD */}
+      {/* STEP 1: SETUP — TWO-PART SEPARATED DESIGN (DETAILS & UPLOAD) */}
       {step === 'setup' && (
-        <div className="space-y-6 relative z-10 animate-in fade-in duration-300">
-          <div className="space-y-2">
-            <label className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">
-              1. Target Job Position / Role Specialty:
-            </label>
-            <input
-              type="text"
-              value={roleTitle}
-              onChange={(e) => setRoleTitle(e.target.value)}
-              placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Scientist"
-              className="w-full bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-3.5 text-xs sm:text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all"
-            />
-          </div>
+        <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
+          
+          {/* PART 1: TARGET POSITION & INTERVIEW DETAILS SECTION */}
+          <div className="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 text-left">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-[#151930] text-amber-400 font-extrabold flex items-center justify-center text-xs shadow-2xs">1</span>
+                <h3 className="text-sm font-black text-slate-950 uppercase tracking-wider">Target Position & Interview Panel Settings</h3>
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-full">Part 1 of 2</span>
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-              2. Upload Resume / CV / Question Paper (Optional PDF or TXT):
-            </label>
-            <div className="border-2 border-dashed border-slate-200 hover:border-amber-500 bg-slate-50/80 hover:bg-amber-50/30 rounded-2xl p-8 sm:p-12 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center min-h-[160px] sm:min-h-[200px]">
+            <div className="space-y-2">
+              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider block">
+                Target Job Role / Specialty Title:
+              </label>
               <input
-                type="file"
-                accept=".pdf,.txt,.doc,.docx"
-                onChange={handleFileUpload}
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                type="text"
+                value={roleTitle}
+                onChange={(e) => setRoleTitle(e.target.value)}
+                placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Analyst, Financial Analyst..."
+                className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-xs sm:text-sm text-slate-950 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all shadow-xs"
               />
-              <Upload className="w-9 h-9 sm:w-10 sm:h-10 text-amber-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
-              {resumeFileName ? (
-                <span className="text-xs font-bold text-emerald-700 block">✓ Loaded Resume: {resumeFileName}</span>
-              ) : (
-                <div>
-                  <span className="text-sm font-extrabold text-slate-950 block mb-1">Drag & drop your Resume PDF here</span>
-                  <span className="text-xs text-slate-500 font-medium block">
-                    AI will ground technical questions directly in your projects & experience
-                  </span>
-                </div>
-              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
+                Interviewer Panel Style & Focus:
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setExaminerTone('friendly')}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    examinerTone === 'friendly' ? 'border-indigo-600 bg-indigo-50/80 ring-2 ring-indigo-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-slate-900">🟢 Standard Professional</span>
+                    {examinerTone === 'friendly' && <CheckCircle2 className="w-4 h-4 text-indigo-600" />}
+                  </div>
+                  <span className="text-[11px] text-slate-500 mt-1">Balanced mix of technical background & experience queries.</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setExaminerTone('strict')}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    examinerTone === 'strict' ? 'border-amber-600 bg-amber-50/80 ring-2 ring-amber-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-slate-900">🔥 Strict Technical Panel</span>
+                    {examinerTone === 'strict' && <CheckCircle2 className="w-4 h-4 text-amber-600" />}
+                  </div>
+                  <span className="text-[11px] text-slate-500 mt-1">Deep architectural probes, code edge cases & reasoning stress.</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setExaminerTone('star')}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    examinerTone === 'star' ? 'border-purple-600 bg-purple-50/80 ring-2 ring-purple-600/20' : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-slate-900">⭐ STAR Behavioral</span>
+                    {examinerTone === 'star' && <CheckCircle2 className="w-4 h-4 text-purple-600" />}
+                  </div>
+                  <span className="text-[11px] text-slate-500 mt-1">Focuses on Situation, Task, Action, and Result leadership metrics.</span>
+                </button>
+              </div>
             </div>
           </div>
 
+          {/* PART 2: RESUME & CANDIDATE CONTEXT UPLOAD SECTION */}
+          <div className="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 text-left">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-[#151930] text-amber-400 font-extrabold flex items-center justify-center text-xs shadow-2xs">2</span>
+                <h3 className="text-sm font-black text-slate-950 uppercase tracking-wider">Resume / Context Upload</h3>
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-full">Part 2 of 2</span>
+            </div>
+
+            {resumeFileName ? (
+              /* Loaded Resume State Card — Placeholder Hidden (Speech Coach Standard) */
+              <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg font-black shrink-0">
+                    📄
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-wider block">Resume Loaded & Grounded</span>
+                    <span className="text-xs font-extrabold text-emerald-800 truncate block max-w-xs">{resumeFileName}</span>
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">AI interviewer will ground questions directly in your resume projects.</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setResumeFileName(null);
+                    setResumeText('');
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
+                >
+                  🔄 Change Resume
+                </button>
+              </div>
+            ) : (
+              /* Upload Dropzone Container */
+              <div
+                className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer relative group flex flex-col items-center justify-center min-h-[150px] ${
+                  isDragActive ? 'border-amber-500 bg-amber-50/60' : 'border-slate-300 bg-white hover:bg-amber-50/30 hover:border-amber-400'
+                }`}
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                onDragLeave={() => setIsDragActive(false)}
+                onDrop={async (e) => {
+                  e.preventDefault();
+                  setIsDragActive(false);
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) {
+                    setResumeFileName(file.name);
+                    const text = await file.text();
+                    setResumeText(text.slice(0, 3000));
+                  }
+                }}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.txt,.doc,.docx"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <div className="w-12 h-12 rounded-2xl bg-[#151930] text-amber-400 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-md">
+                  📁
+                </div>
+                <span className="text-sm font-extrabold text-slate-950 block mb-0.5">Click or Drag & Drop Resume PDF here</span>
+                <span className="text-xs text-slate-500 font-medium block">
+                  Optional: AI will extract your projects & tech stack to personalize questions (PDF, TXT, DOCX)
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* LAUNCH BUTTON */}
           <button
             onClick={startInterviewSession}
             disabled={isLoading}
-            className="w-full py-4 bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center space-x-2"
+            className="w-full py-4 bg-gradient-to-r from-[#151930] via-[#1c2242] to-[#151930] hover:from-[#0B0E27] hover:to-[#0B0E27] text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl hover:scale-[1.005] transition-all cursor-pointer flex items-center justify-center space-x-2"
           >
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
-            <span>{isLoading ? 'Starting Interview Session...' : 'Launch AI Voice Mock Interview'}</span>
+            <Sparkles className="w-5 h-5 text-amber-400" />
+            <span>{isLoading ? 'Starting Interview Session...' : '🚀 Launch AI Voice Mock Interview'}</span>
           </button>
         </div>
       )}
