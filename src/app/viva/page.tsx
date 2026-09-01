@@ -10,6 +10,7 @@ import GuestAuthModal from '../../components/GuestAuthModal';
 import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
+import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import {
   Sparkles, Send, Mic, HelpCircle, CheckCircle, RotateCcw,
   MessageSquare, Volume2, VolumeX, Flame, Smile, Play, ArrowLeft
@@ -706,55 +707,75 @@ export default function VivaCoachPage() {
               <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Here is your complete 5-round defense evaluation and examiner feedback.</p>
             </div>
 
-            {/* Overall Score Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="text-xs font-extrabold text-amber-800 uppercase tracking-widest">Final Defense Grade</div>
-                <span className="text-[11px] font-extrabold px-3 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300">
-                  {mode === 'text' ? '⌨️ Text Defense Mode' : '🎙️ Voice Defense Mode'}
-                </span>
-              </div>
-              <div className="text-4xl sm:text-5xl font-black text-slate-950">{avgOverallScore}<span className="text-xl sm:text-2xl text-slate-400">/100</span></div>
-              <p className="text-xs text-slate-700 font-semibold">
-                {avgOverallScore >= 85
-                  ? '🎉 Outstanding Defense! You answered probing technical questions with strong reasoning and clarity.'
-                  : '👍 Good Defense. Review your slide data points and practice concise explanations.'}
-              </p>
+            {/* Circular Score Ring Gauge Bar (Speech Coach Standard) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gradient-to-r from-indigo-50/60 via-slate-50 to-amber-50/40 p-5 rounded-2xl border border-indigo-100/80 shadow-2xs">
+              <ScoreRing 
+                value={avgOverallScore} 
+                max={100} 
+                size={76} 
+                strokeWidth={8} 
+                color="#6c5ce7" 
+                label="Defense Grade" 
+                unit="%" 
+              />
+              <ScoreRing 
+                value={mode === 'text' ? avgAccuracy : avgDelivery} 
+                max={100} 
+                size={76} 
+                strokeWidth={8} 
+                color="#00cec9" 
+                label={mode === 'text' ? 'Accuracy' : 'Delivery'} 
+                unit="%" 
+              />
+              <ScoreRing 
+                value={mode === 'text' ? avgReasoning : avgConfidence} 
+                max={100} 
+                size={76} 
+                strokeWidth={8} 
+                color="#fd79a8" 
+                label={mode === 'text' ? 'Reasoning' : 'Confidence'} 
+                unit="%" 
+              />
+              <ScoreRing 
+                value={mode === 'text' ? avgClarity : avgAccuracy} 
+                max={100} 
+                size={76} 
+                strokeWidth={8} 
+                color="#f2a93b" 
+                label={mode === 'text' ? 'Clarity' : 'Accuracy'} 
+                unit="%" 
+              />
+            </div>
 
-              {/* Mode-Specific Sub-Scores Breakdown */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
-                {mode === 'text' ? (
-                  <>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Technical Accuracy</span>
-                      <span className="text-xl font-black text-amber-600">{avgAccuracy}%</span>
-                    </div>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Depth of Reasoning</span>
-                      <span className="text-xl font-black text-emerald-600">{avgReasoning}%</span>
-                    </div>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Written Structure</span>
-                      <span className="text-xl font-black text-blue-600">{avgClarity}%</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Spoken Delivery</span>
-                      <span className="text-xl font-black text-amber-600">{avgDelivery}%</span>
-                    </div>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Vocal Confidence</span>
-                      <span className="text-xl font-black text-emerald-600">{avgConfidence}%</span>
-                    </div>
-                    <div className="bg-white border border-slate-200 p-3 rounded-xl text-center space-y-1">
-                      <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">Technical Accuracy</span>
-                      <span className="text-xl font-black text-blue-600">{avgAccuracy}%</span>
-                    </div>
-                  </>
-                )}
+            {/* Interactive Defense Progression Wave Timeline */}
+            <div className="bg-gradient-to-br from-indigo-50/50 via-slate-50 to-white border border-indigo-100 rounded-2xl p-5 shadow-sm space-y-2 text-left">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-black text-slate-900 uppercase tracking-wider">Viva Defense Performance Wave</span>
+                  <p className="text-[11px] text-indigo-600 font-medium">Scores and argument depth across 5 defense rounds</p>
+                </div>
+                <span className="text-xs font-bold text-slate-400">5 Rounds Complete</span>
               </div>
+              <ConfidenceGraph 
+                data={allScores.length > 0 ? allScores.map((s, i) => ({
+                  timestamp: (i + 1) * 30,
+                  wpm: s.score || 85,
+                  confidence: s.score || 85
+                })) : [
+                  { timestamp: 30, wpm: 80 },
+                  { timestamp: 60, wpm: 88 },
+                  { timestamp: 90, wpm: 82 },
+                  { timestamp: 120, wpm: 92 },
+                  { timestamp: 150, wpm: 86 }
+                ]} 
+                events={[]} 
+                type="area" 
+                dataKey="wpm" 
+                label="Round Score" 
+                color="#6c5ce7" 
+                height={170}
+              />
+            </div>
 
               {/* Deep 2-Column Strengths & Improvement Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
