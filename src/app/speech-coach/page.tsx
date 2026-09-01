@@ -155,13 +155,39 @@ export default function SpeechCoach() {
     }
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setMediaFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setMediaFile(file);
+      e.target.value = ''; // Reset so re-uploading same file triggers onChange
     }
   };
 
-  const handleAnalyze = async (fileOrBlob) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|m4a|aac|flac|webm|ogg)$/i)) {
+        setMediaFile(file);
+      } else {
+        alert("Please upload a valid audio file (MP3, WAV, M4A, AAC, FLAC, WEBM).");
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleAnalyze = async (fileOrBlob?: any) => {
+    const targetFile = fileOrBlob || mediaFile;
+    if (!targetFile) {
+      alert("No audio file found to analyze. Please upload or record an audio file first.");
+      return;
+    }
+
     // 1. Check Auth & Credits before starting analysis
     const { data: { session } } = await supabase.auth.getSession();
 
@@ -189,7 +215,7 @@ export default function SpeechCoach() {
     
     try {
       const formData = new FormData();
-      formData.append('audio', fileOrBlob, fileOrBlob.name || 'recording.webm');
+      formData.append('audio', targetFile, targetFile.name || 'recording.webm');
       formData.append('language', language);
       
       const headers: Record<string, string> = {};
@@ -824,6 +850,8 @@ export default function SpeechCoach() {
                         <div 
                           className="w-full max-w-lg border-2 border-dashed border-slate-300 hover:border-[#151930] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-indigo-50/40 transition-all cursor-pointer group" 
                           onClick={() => fileInputRef.current?.click()}
+                          onDragOver={handleDragOver}
+                          onDrop={handleDrop}
                         >
                           <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
                             📁
