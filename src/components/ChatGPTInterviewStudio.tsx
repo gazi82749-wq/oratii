@@ -349,7 +349,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-6 sm:p-10 flex flex-col gap-6 relative overflow-hidden text-slate-900 font-sans max-h-[85vh] overflow-y-auto" style={{ isolation: 'isolate' }}>
+    <div className="w-full max-w-5xl mx-auto border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans" style={{ isolation: 'isolate' }}>
       {/* Top Accent Gradient Stripe matching Speech Coach */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
