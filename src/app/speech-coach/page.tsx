@@ -1316,40 +1316,87 @@ export default function SpeechCoach() {
           </div>
 
           {mediaUrl && (
-            <div className="bg-slate-900 rounded-2xl p-6 shadow-lg flex flex-col gap-4 w-full text-white">
-              <audio ref={audioRef} controls src={mediaUrl} className="w-full h-12 rounded-lg" />
-              
+            <div className="flex flex-col gap-5 w-full">
+              {/* Dark Compact Audio Player Header */}
+              <div className="bg-slate-900 rounded-2xl p-5 shadow-md flex flex-col gap-3 w-full text-white">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Recording Audio Player</span>
+                  </span>
+                  <span className="text-xs font-semibold text-slate-400">
+                    {results.duration ? `${Math.floor(results.duration / 60)}m ${Math.floor(results.duration % 60)}s total` : ''}
+                  </span>
+                </div>
+                <audio ref={audioRef} controls src={mediaUrl} className="w-full h-11 rounded-xl" />
+              </div>
+
+              {/* Dedicated Full-Width Timestamp Coaching Suggestions Section */}
               {results.timeMarkers && results.timeMarkers.length > 0 && (
-                <div className="pt-3 border-t border-slate-800/80">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <p className="text-[11px] font-black text-indigo-300 uppercase tracking-widest flex items-center gap-1.5">
-                      <span>⏱️ Click Timestamp to Jump Audio</span>
-                    </p>
-                    <span className="text-[11px] font-semibold text-slate-400">
-                      {results.timeMarkers.length} Key Moments
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                    <div>
+                      <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest flex items-center gap-2">
+                        <span>⏱️ Timestamp Coaching Suggestions</span>
+                      </h3>
+                      <p className="text-xs text-slate-500 font-medium mt-0.5">
+                        Click any moment card to jump audio playback directly to that timestamp
+                      </p>
+                    </div>
+                    <span className="text-xs font-extrabold px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full shrink-0">
+                      {results.timeMarkers.length} Moments Flagged
                     </span>
                   </div>
 
-                  {/* Compact Horizontal Scrollable Pills */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                  {/* Full Spacious Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mt-1">
                     {results.timeMarkers.map((marker, idx) => (
-                      <button 
+                      <div
                         key={idx}
                         onClick={() => jumpToTime(marker.time)}
-                        className={`shrink-0 text-xs px-3 py-1.5 rounded-xl font-bold transition-all hover:scale-105 flex items-center gap-2 border cursor-pointer ${
-                          marker.type === 'strength' 
-                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25' 
-                            : marker.type === 'weakness' 
-                            ? 'bg-rose-500/15 text-rose-300 border-rose-500/30 hover:bg-rose-500/25' 
-                            : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/25'
+                        className={`group p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3.5 hover:shadow-md ${
+                          marker.type === 'strength'
+                            ? 'bg-emerald-50/40 hover:bg-emerald-50 border-emerald-200/80 hover:border-emerald-400'
+                            : marker.type === 'weakness'
+                            ? 'bg-rose-50/40 hover:bg-rose-50 border-rose-200/80 hover:border-rose-400'
+                            : 'bg-indigo-50/40 hover:bg-indigo-50 border-indigo-200/80 hover:border-indigo-400'
                         }`}
-                        title={marker.feedback}
                       >
-                        <span className="bg-slate-950/80 px-1.5 py-0.5 rounded text-[11px] font-mono text-white">
-                          ▶ {Math.floor(marker.time / 60)}:{(Math.floor(marker.time % 60)).toString().padStart(2, '0')}
-                        </span>
-                        <span className="text-xs font-medium max-w-[240px] truncate">{marker.feedback}</span>
-                      </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); jumpToTime(marker.time); }}
+                          className={`shrink-0 mt-0.5 px-3 py-1.5 rounded-lg text-xs font-mono font-black flex items-center gap-1.5 shadow-2xs group-hover:scale-105 transition-transform ${
+                            marker.type === 'strength'
+                              ? 'bg-emerald-600 text-white'
+                              : marker.type === 'weakness'
+                              ? 'bg-rose-600 text-white'
+                              : 'bg-indigo-600 text-white'
+                          }`}
+                        >
+                          <span>▶</span>
+                          <span>
+                            {Math.floor(marker.time / 60)}:{(Math.floor(marker.time % 60)).toString().padStart(2, '0')}
+                          </span>
+                        </button>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span
+                              className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
+                                marker.type === 'strength'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : marker.type === 'weakness'
+                                  ? 'bg-rose-100 text-rose-800'
+                                  : 'bg-indigo-100 text-indigo-800'
+                              }`}
+                            >
+                              {marker.type === 'strength' ? 'Strength' : marker.type === 'weakness' ? 'Area to Improve' : 'Suggestion'}
+                            </span>
+                          </div>
+                          <p className="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed break-words">
+                            {marker.feedback}
+                          </p>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
