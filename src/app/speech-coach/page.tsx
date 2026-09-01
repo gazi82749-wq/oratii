@@ -1319,77 +1319,36 @@ export default function SpeechCoach() {
               <audio ref={audioRef} controls src={mediaUrl} className="w-full h-12 rounded-lg" />
               
               {results.timeMarkers && results.timeMarkers.length > 0 && (
-                <div className="mt-2 pt-4 border-t border-slate-800">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                    <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest flex items-center gap-1.5">
-                      <span>⏱️ Timestamp Coaching Suggestions</span>
+                <div className="pt-3 border-t border-slate-800/80">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <p className="text-[11px] font-black text-indigo-300 uppercase tracking-widest flex items-center gap-1.5">
+                      <span>⏱️ Click Timestamp to Jump Audio</span>
                     </p>
-                    <span className="text-xs font-medium text-slate-400">
-                      Click any timestamp to play audio from that moment
+                    <span className="text-[11px] font-semibold text-slate-400">
+                      {results.timeMarkers.length} Key Moments
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  {/* Compact Horizontal Scrollable Pills */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
                     {results.timeMarkers.map((marker, idx) => (
                       <button 
                         key={idx}
                         onClick={() => jumpToTime(marker.time)}
-                        className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-transform hover:scale-105 flex items-center gap-1.5 ${
-                          marker.type === 'strength' ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/30' :
-                          marker.type === 'weakness' ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30' :
-                          'bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/30'
+                        className={`shrink-0 text-xs px-3 py-1.5 rounded-xl font-bold transition-all hover:scale-105 flex items-center gap-2 border cursor-pointer ${
+                          marker.type === 'strength' 
+                            ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25' 
+                            : marker.type === 'weakness' 
+                            ? 'bg-rose-500/15 text-rose-300 border-rose-500/30 hover:bg-rose-500/25' 
+                            : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/25'
                         }`}
                         title={marker.feedback}
                       >
-                        <span className="bg-slate-800/80 px-1.5 py-0.5 rounded text-xs font-mono">
+                        <span className="bg-slate-950/80 px-1.5 py-0.5 rounded text-[11px] font-mono text-white">
                           ▶ {Math.floor(marker.time / 60)}:{(Math.floor(marker.time % 60)).toString().padStart(2, '0')}
                         </span>
-                        <span className="text-xs capitalize opacity-90">{marker.type}</span>
+                        <span className="text-xs font-medium max-w-[240px] truncate">{marker.feedback}</span>
                       </button>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-2.5 max-h-[320px] overflow-y-auto pr-1">
-                    {results.timeMarkers.map((marker, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => jumpToTime(marker.time)}
-                        className="group bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-slate-600 rounded-xl p-3.5 flex items-start gap-3 transition-all cursor-pointer"
-                      >
-                        <button
-                          onClick={(e) => { e.stopPropagation(); jumpToTime(marker.time); }}
-                          className={`shrink-0 mt-0.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1 transition-transform group-hover:scale-105 ${
-                            marker.type === 'strength'
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                              : marker.type === 'weakness'
-                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                              : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                          }`}
-                        >
-                          <span>▶</span>
-                          <span>
-                            {Math.floor(marker.time / 60)}:{(Math.floor(marker.time % 60)).toString().padStart(2, '0')}
-                          </span>
-                        </button>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span
-                              className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
-                                marker.type === 'strength'
-                                  ? 'bg-emerald-500/15 text-emerald-400'
-                                  : marker.type === 'weakness'
-                                  ? 'bg-rose-500/15 text-rose-400'
-                                  : 'bg-blue-500/15 text-blue-400'
-                              }`}
-                            >
-                              {marker.type === 'strength' ? 'Strength' : marker.type === 'weakness' ? 'Area to Improve' : 'Suggestion'}
-                            </span>
-                          </div>
-                          <p className="text-sm font-medium text-indigo-100 leading-relaxed break-words">
-                            {marker.feedback}
-                          </p>
-                        </div>
-                      </div>
                     ))}
                   </div>
                 </div>
