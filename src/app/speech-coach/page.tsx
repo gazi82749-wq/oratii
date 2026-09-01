@@ -845,96 +845,105 @@ export default function SpeechCoach() {
                   </div>
                 ) : (
                   <>
-                    {mode === 'upload' ? (
-                      <div className="w-full flex flex-col items-center justify-center">
-                        <div 
-                          className="w-full max-w-lg border-2 border-dashed border-slate-300 hover:border-[#151930] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-indigo-50/40 transition-all cursor-pointer group" 
-                          onClick={() => fileInputRef.current?.click()}
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
-                        >
-                          <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
-                            📁
-                          </div>
-                          <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag & Drop Audio File</p>
-                          <p className="text-[11px] text-slate-500 font-medium mt-0.5">Supports MP3, WAV, M4A, AAC, FLAC (Max 50MB)</p>
-                          <input type="file" ref={fileInputRef} className="hidden" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac" onChange={handleFileUpload} />
+                    {mediaFile && !isRecording ? (
+                      /* Clean Audio Ready State — Placeholder Hidden */
+                      <div className="w-full max-w-lg bg-indigo-50/90 border-2 border-indigo-300 rounded-2xl p-6 flex flex-col items-center gap-4 animate-fade-in shadow-lg">
+                        <div className="flex items-center justify-between w-full pb-3 border-b border-indigo-200/80">
+                          <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">🎵</span>
+                            <span>Audio File Ready</span>
+                          </span>
+                          <span className="text-xs font-extrabold text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-lg truncate max-w-[200px]">
+                            {mediaFile.name || 'Recorded Audio'}
+                          </span>
+                        </div>
+
+                        {mediaUrl && <audio controls src={mediaUrl} className="w-full h-10 rounded-lg border border-indigo-200 shadow-inner" />}
+
+                        <div className="flex items-center gap-3 w-full pt-1">
+                          <button
+                            onClick={() => { setMediaFile(null); setMediaUrl(''); }}
+                            className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
+                            title="Remove audio and select or record a new file"
+                          >
+                            🔄 Change File
+                          </button>
+                          
+                          <button
+                            onClick={() => handleAnalyze(mediaFile)}
+                            className="flex-1 py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
+                          >
+                            🚀 Analyze Audio
+                          </button>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center py-1">
-                        <div className="relative">
-                          {isRecording && !isPaused && <div className="absolute -inset-3 rounded-full border-4 border-rose-500 animate-ping opacity-30"></div>}
-                          <button 
-                            onClick={isRecording ? stopRecording : startRecording}
-                            className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-4xl sm:text-5xl transition-all duration-300 shadow-2xl cursor-pointer ${
-                              isRecording 
-                                ? 'bg-gradient-to-br from-rose-500 to-rose-600 text-white scale-95 shadow-rose-500/40' 
-                                : 'bg-gradient-to-br from-[#151930] via-indigo-950 to-[#1B2140] text-white hover:scale-105 shadow-[0_15px_30px_-8px_rgba(21,25,48,0.4)] border-4 border-white/20'
-                            }`}
+                      /* Upload Dropzone or Live Mic Recorder Placeholder */
+                      mode === 'upload' ? (
+                        <div className="w-full flex flex-col items-center justify-center">
+                          <div 
+                            className="w-full max-w-lg border-2 border-dashed border-slate-300 hover:border-[#151930] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-indigo-50/40 transition-all cursor-pointer group" 
+                            onClick={() => fileInputRef.current?.click()}
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
                           >
-                            {isRecording ? '⏹️' : '🎙️'}
-                          </button>
+                            <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
+                              📁
+                            </div>
+                            <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag & Drop Audio File</p>
+                            <p className="text-[11px] text-slate-500 font-medium mt-0.5">Supports MP3, WAV, M4A, AAC, FLAC (Max 50MB)</p>
+                            <input type="file" ref={fileInputRef} className="hidden" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac" onChange={handleFileUpload} />
+                          </div>
                         </div>
-                        <p className={`mt-4 text-sm sm:text-base font-extrabold ${isRecording ? (isPaused ? 'text-amber-600' : 'text-rose-600 animate-pulse') : 'text-slate-950'}`}>
-                          {isRecording ? (isPaused ? 'Recording Paused' : 'Recording in Progress...') : 'Click Mic to Start Recording'}
-                        </p>
-                        
-                        {isRecording && (
-                          <div className="flex items-center gap-3 mt-3">
-                            <button
-                              onClick={isPaused ? resumeRecording : pauseRecording}
-                              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-1">
+                          <div className="relative">
+                            {isRecording && !isPaused && <div className="absolute -inset-3 rounded-full border-4 border-rose-500 animate-ping opacity-30"></div>}
+                            <button 
+                              onClick={isRecording ? stopRecording : startRecording}
+                              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-4xl sm:text-5xl transition-all duration-300 shadow-2xl cursor-pointer ${
+                                isRecording 
+                                  ? 'bg-gradient-to-br from-rose-500 to-rose-600 text-white scale-95 shadow-rose-500/40' 
+                                  : 'bg-gradient-to-br from-[#151930] via-indigo-950 to-[#1B2140] text-white hover:scale-105 shadow-[0_15px_30px_-8px_rgba(21,25,48,0.4)] border-4 border-white/20'
+                              }`}
                             >
-                              {isPaused ? '▶ Resume Recording' : '⏸ Pause Recording'}
-                            </button>
-                            <button
-                              onClick={stopRecording}
-                              className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
-                            >
-                              ⏹ Finish Recording
+                              {isRecording ? '⏹️' : '🎙️'}
                             </button>
                           </div>
-                        )}
-
-                        {!isRecording && (
-                          <p className="text-xs font-medium text-slate-500 mt-0.5">
-                            Ensure your microphone is clear and speak naturally.
+                          <p className={`mt-4 text-sm sm:text-base font-extrabold ${isRecording ? (isPaused ? 'text-amber-600' : 'text-rose-600 animate-pulse') : 'text-slate-950'}`}>
+                            {isRecording ? (isPaused ? 'Recording Paused' : 'Recording in Progress...') : 'Click Mic to Start Recording'}
                           </p>
-                        )}
-                        
-                        {/* Security & Privacy Guarantee Badge */}
-                        <div className="flex items-center justify-center gap-1.5 mt-3 text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3.5 py-1 rounded-full shadow-2xs">
-                          <span className="text-emerald-500">🔒</span>
-                          <span>100% Encrypted & Private • Voice analyzed live</span>
-                        </div>
-                      </div>
-                    )}
+                          
+                          {isRecording && (
+                            <div className="flex items-center gap-3 mt-3">
+                              <button
+                                onClick={isPaused ? resumeRecording : pauseRecording}
+                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                              >
+                                {isPaused ? '▶ Resume Recording' : '⏸ Pause Recording'}
+                              </button>
+                              <button
+                                onClick={stopRecording}
+                                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                              >
+                                ⏹ Finish Recording
+                              </button>
+                            </div>
+                          )}
 
-                    {/* Dedicated Analyze Audio Button Card */}
-                    {mediaFile && !isRecording && !isLoading && (
-                      <div className="w-full max-w-lg bg-indigo-50/80 border-2 border-indigo-200 rounded-2xl p-5 mt-5 flex flex-col items-center gap-3 animate-fade-in shadow-md">
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                            <span>🎵</span> Audio File Ready ({mediaFile.name || 'Recorded Audio'})
-                          </span>
-                          <button 
-                            onClick={() => { setMediaFile(null); setMediaUrl(''); }}
-                            className="text-xs text-slate-400 hover:text-slate-700 font-bold cursor-pointer"
-                          >
-                            Clear Audio ✕
-                          </button>
+                          {!isRecording && (
+                            <p className="text-xs font-medium text-slate-500 mt-0.5">
+                              Ensure your microphone is clear and speak naturally.
+                            </p>
+                          )}
+                          
+                          {/* Security & Privacy Guarantee Badge */}
+                          <div className="flex items-center justify-center gap-1.5 mt-3 text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3.5 py-1 rounded-full shadow-2xs">
+                            <span className="text-emerald-500">🔒</span>
+                            <span>100% Encrypted & Private • Voice analyzed live</span>
+                          </div>
                         </div>
-                        
-                        {mediaUrl && <audio controls src={mediaUrl} className="w-full h-10 rounded-lg border border-indigo-200 shadow-inner" />}
-                        
-                        <button
-                          onClick={() => handleAnalyze(mediaFile)}
-                          className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
-                        >
-                          🚀 Analyze Audio
-                        </button>
-                      </div>
+                      )
                     )}
                   </>
                 )}
