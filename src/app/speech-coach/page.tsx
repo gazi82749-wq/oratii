@@ -1544,10 +1544,14 @@ export default function SpeechCoach() {
                   {results.duration ? `${Math.floor(results.duration / 60)}m ${Math.floor(results.duration % 60)}s total` : ''}
                 </span>
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-inner">
+              <div className="bg-gradient-to-br from-indigo-50/50 via-slate-50 to-white border border-indigo-100 rounded-2xl p-5 shadow-sm">
                 <ConfidenceGraph 
                   data={results.paceData || []} 
-                  events={results.events || []} 
+                  events={results.events && results.events.length > 0 ? results.events : (results.timeMarkers || []).map((m: any) => ({
+                    timestamp: m.time,
+                    type: m.type === 'strength' ? 'excellent_moment' : (m.type === 'weakness' ? 'speaking_fast' : 'filler_word'),
+                    message: m.feedback
+                  }))} 
                   type="area" 
                   dataKey="wpm" 
                   label="Pace (WPM)" 

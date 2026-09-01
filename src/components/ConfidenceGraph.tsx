@@ -112,12 +112,23 @@ export default function ConfidenceGraph({
   const ChartComponent = type === 'area' ? AreaChart : LineChart;
   const gradientId = `areaGradient_${color.replace('#', '')}`;
 
+  // Normalize incoming data keys (supports both 'time' & 'timestamp')
+  const chartData = (data && data.length > 0 ? data : []).map((item: any) => {
+    const rawTime = item.timestamp !== undefined ? item.timestamp : (item.time !== undefined ? item.time : 0);
+    const rawVal = item[dataKey] !== undefined ? item[dataKey] : (item.wpm !== undefined ? item.wpm : (item.confidence !== undefined ? item.confidence : 0));
+    return {
+      ...item,
+      timestamp: Number(rawTime) || 0,
+      [dataKey]: Number(rawVal) || 0
+    };
+  });
+
   return (
     <div className="w-full flex flex-col gap-3">
       <ResponsiveContainer width="100%" height={height}>
         <ChartComponent 
-          data={data} 
-          margin={{ top: 10, right: 10, left: -20, bottom: 5 }}
+          data={chartData} 
+          margin={{ top: 10, right: 15, left: -15, bottom: 5 }}
           onClick={(state: any) => {
             if (onSeekAudio && state && state.activeLabel !== undefined) {
               const ts = typeof state.activeLabel === 'number' ? state.activeLabel : parseFloat(state.activeLabel);
@@ -127,8 +138,8 @@ export default function ConfidenceGraph({
         >
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.45} />
-              <stop offset="95%" stopColor={color} stopOpacity={0.02} />
+              <stop offset="5%" stopColor={color} stopOpacity={0.4} />
+              <stop offset="95%" stopColor={color} stopOpacity={0.01} />
             </linearGradient>
           </defs>
 
@@ -140,7 +151,7 @@ export default function ConfidenceGraph({
             tickLine={false}
           />
           <YAxis
-            domain={['auto', 'auto']}
+            domain={[0, (max: number) => Math.max(max + 20, 160)]}
             tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }}
             axisLine={false}
             tickLine={false}
@@ -167,8 +178,8 @@ export default function ConfidenceGraph({
               stroke={color}
               fill={`url(#${gradientId})`}
               strokeWidth={3}
-              dot={false}
-              activeDot={{ r: 5, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
+              dot={{ r: 3, fill: color }}
+              activeDot={{ r: 6, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
             />
           ) : (
             <Line
@@ -176,8 +187,8 @@ export default function ConfidenceGraph({
               dataKey={dataKey}
               stroke={color}
               strokeWidth={3}
-              dot={false}
-              activeDot={{ r: 5, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
+              dot={{ r: 3, fill: color }}
+              activeDot={{ r: 6, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
             />
           )}
         </ChartComponent>
