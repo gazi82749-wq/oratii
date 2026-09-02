@@ -191,19 +191,17 @@ export default function SidebarLayout({ children }) {
             {!authLoading && (
               user ? (
                 <div className="hidden md:flex items-center gap-2.5">
-                  <Link href="/pricing" title="View or Top Up Credits" className="px-3 py-1.5 rounded-xl bg-amber-50/90 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs">
-                    <Coins size={14} className="text-amber-600 shrink-0" />
-                    <span>
-                      {userCredits !== null && userCredits >= 99999
-                        ? '👑 Admin Pass'
-                        : userCredits !== null
-                        ? `${userCredits} Credits`
-                        : 'Credits'}
-                    </span>
+                  <Link href="/pricing" title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
                     {userCredits !== null && userCredits >= 99999 ? (
-                      <span className="text-[10px] bg-[#151930] text-amber-400 font-black px-1.5 py-0.5 rounded-md uppercase ml-0.5 border border-amber-400/30">VIP</span>
+                      <span className="flex items-center gap-1">
+                        <span>👑</span>
+                        <span>Admin</span>
+                      </span>
                     ) : (
-                      <span className="text-[10px] text-indigo-700 font-extrabold ml-0.5">+ Top Up</span>
+                      <span className="flex items-center gap-1 font-bold">
+                        <Coins size={13} className="text-amber-600 shrink-0" />
+                        <span>{userCredits !== null ? `${userCredits}` : 'Credits'}</span>
+                      </span>
                     )}
                   </Link>
 
