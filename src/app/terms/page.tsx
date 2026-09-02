@@ -38,7 +38,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">2. Description of Service</h2>
               <p className="text-slate-700 font-medium">
-                Oratii provides an AI-powered public speaking, slide deck analysis, and Viva Q&A defense practice platform. Features include real-time WPM pacing metrics, filler word detection, text density heatmaps, and simulated committee Q&A.
+                Oratii provides an AI-powered public speaking, PowerPoint slide deck analysis, AI Job Interview Studio, and Viva Q&A defense practice platform. Features include real-time WPM pacing metrics, filler word detection, text density heatmaps, STAR method interview scoring, and WASM posture telemetry.
               </p>
             </section>
 
@@ -50,9 +50,9 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-black text-slate-950 mb-3">4. Subscription Tiers & Billing</h2>
+              <h2 className="text-xl font-black text-slate-950 mb-3">4. Trial Credits & Credit Packages</h2>
               <p className="text-slate-700 font-medium">
-                Oratii offers Free Starter tiers and Pro subscription plans. Subscriptions renew automatically based on your selected billing cycle (monthly or annual) unless cancelled prior to the renewal date. Payments are securely processed via Razorpay or Stripe.
+                Oratii provides 10 Free Trial Credits upon account creation. Additional credit packages can be purchased on a pay-as-you-go basis without recurring monthly subscription traps. Payments are securely processed via Razorpay.
               </p>
             </section>
 

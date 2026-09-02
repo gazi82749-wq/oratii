@@ -44,10 +44,10 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">1. Information We Collect</h2>
             <div className="space-y-3 text-slate-700 font-medium">
-              <p><strong>a. Audio & Speech Data:</strong> When you use our Speech Coach or 20-Day Challenge, microphone audio is recorded temporarily in your browser and processed via encrypted API endpoints to evaluate WPM pacing, filler word density, and vocal tone.</p>
-              <p><strong>b. Presentation Slides & Content:</strong> Uploaded PowerPoint (PPTX) or PDF decks are analyzed solely to produce slide density scores and generate simulated Viva Q&A defense questions.</p>
-              <p><strong>c. Account & Contact Information:</strong> Name, email address, and authentication tokens collected during sign-up to manage your account and subscription tier.</p>
-              <p><strong>d. Payment Records:</strong> Billing details are handled directly by payment gateway partners. Oratii does not store full credit card numbers or UPI PINs on our servers.</p>
+              <p><strong>a. Audio & Vocal Telemetry:</strong> When you use our Speech Coach, AI Job Interview Studio, or 20-Day Challenge, microphone audio is processed in real-time to evaluate WPM pacing, filler word density, vocal tone, and posture telemetry.</p>
+              <p><strong>b. Presentation Slides & Resume Documents:</strong> Uploaded PowerPoint (PPTX), PDF decks, or Resume/CV documents are parsed solely to produce slide density scores, extract resume context, and generate simulated STAR method technical questions.</p>
+              <p><strong>c. Account & Authentication Data:</strong> Full name, email address, and secure auth tokens collected during sign-up to manage your 10 free trial credits and account preferences.</p>
+              <p><strong>d. Payment & Transaction Records:</strong> Credit top-up transactions are processed through encrypted payment gateway partners (such as Razorpay). Oratii does not store credit card numbers or banking passwords on our servers.</p>
             </div>
           </section>
 
