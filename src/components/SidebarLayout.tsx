@@ -306,7 +306,7 @@ export default function SidebarLayout({ children }) {
       </nav>
 
       {/* Main Content Area */}
-      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-20 md:pb-5 ${isHomePage ? '' : ['/pricing', '/about', '/support'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
+      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-20 md:pb-5 ${isHomePage ? '' : ['/pricing', '/about', '/support', '/privacy', '/terms', '/security'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
         {children}
       </main>
 

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 
 export default function SecurityEthicsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 w-full">
       
-      <div className="flex-1 max-w-5xl mx-auto py-12 sm:py-16 px-4 sm:px-6 relative">
+      <div className="flex-1 w-full max-w-5xl mx-auto py-12 sm:py-16 px-4 sm:px-6 relative">
         
         {/* Header */}
         <div className="border-b border-slate-200 pb-8 mb-10 text-center sm:text-left">

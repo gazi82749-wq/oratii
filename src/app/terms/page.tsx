@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-      <div className="flex-1 max-w-4xl mx-auto py-12 px-4 sm:px-6 text-slate-800 animate-fade-in relative">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] w-full">
+      <div className="flex-1 w-full max-w-4xl mx-auto py-12 px-4 sm:px-6 text-slate-800 animate-fade-in relative">
           
           {/* Header */}
           <div className="border-b border-slate-200 pb-8 mb-8">

@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-      <div className="flex-1 max-w-4xl mx-auto py-12 px-4 sm:px-6 text-slate-800 animate-fade-in relative">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] w-full">
+      <div className="flex-1 w-full max-w-4xl mx-auto py-12 px-4 sm:px-6 text-slate-800 animate-fade-in relative">
         {/* Header */}
         <div className="border-b border-slate-200 pb-8 mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-slate-800 border border-slate-200 text-xs font-extrabold uppercase tracking-wider mb-4 shadow-2xs">
