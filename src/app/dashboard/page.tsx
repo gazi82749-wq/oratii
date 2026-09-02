@@ -34,6 +34,7 @@ import { getHistory, getStatistics, getProfile, saveProfile, getSettings, saveSe
 import { getGamificationSummary } from '@/lib/gamification';
 import { getChallengeState } from '@/lib/challenge';
 import EmptyState from '@/components/EmptyState';
+import ReferralCard from '@/components/ReferralCard';
 
 function AnimatedNumber({ value, duration = 800 }: { value: number; duration?: number }) {
   const [display, setDisplay] = useState(0);
@@ -446,6 +447,9 @@ export default function ProfessionalDashboard() {
           </div>
         </div>
       </div>
+
+      {/* VIRAL REFERRAL PROGRAM CARD */}
+      <ReferralCard />
 
       {/* 3. CORE AI MODULES GRID (Vibrant Landing Page Cards) */}
       <div className="space-y-4">

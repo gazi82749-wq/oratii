@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import Footer from '@/components/Footer';
+import ReferralCard from '@/components/ReferralCard';
 import { supabase } from '@/lib/supabaseClient';
 import { CREDIT_PACKAGES, getUserCredits } from '@/lib/credits';
 import { initializePayment } from '@/lib/razorpay';
@@ -162,6 +163,11 @@ export default function PricingClient() {
               </span>
             </div>
           )}
+
+          {/* VIRAL REFERRAL PROGRAM CARD */}
+          <div className="mt-10 text-left max-w-5xl mx-auto">
+            <ReferralCard />
+          </div>
         </section>
 
         {/* Credit Breakdown Bar */}
