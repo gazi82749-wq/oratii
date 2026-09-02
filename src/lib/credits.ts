@@ -65,15 +65,20 @@ export const CREDIT_PACKAGES = [
 
 /**
  * Retrieves current credit balance for a user with fallback to 10 for new users.
+ * Administrator accounts (role === 'admin' or current_plan === 'admin_unlimited') receive unlimited credits.
  */
 export async function getUserCredits(userId: string): Promise<number> {
   if (!userId) return 0;
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('credits')
+      .select('credits, role, current_plan')
       .eq('id', userId)
       .maybeSingle();
+
+    if (data?.role === 'admin' || data?.current_plan === 'admin_unlimited') {
+      return 999999; // Unlimited access for Administrator accounts
+    }
 
     if (error || !data || typeof data.credits !== 'number') {
       return 10;
@@ -86,6 +91,7 @@ export async function getUserCredits(userId: string): Promise<number> {
 
 /**
  * Checks if user has enough credits and deducts from Supabase profiles database.
+ * Administrator accounts bypass credit deductions completely.
  */
 export async function checkAndDeductCredits(
   userId: string,
@@ -95,29 +101,41 @@ export async function checkAndDeductCredits(
     return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
   }
 
-  const currentCredits = await getUserCredits(userId);
-  if (currentCredits < cost) {
-    return {
-      allowed: false,
-      remainingCredits: currentCredits,
-      error: `Insufficient credits (${currentCredits} remaining). Please top up to continue AI analysis.`,
-    };
-  }
-
-  const newCredits = currentCredits - cost;
   try {
-    const { error } = await supabase
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('credits, role, current_plan')
+      .eq('id', userId)
+      .maybeSingle();
+
+    // Bypass deduction for Administrators
+    if (profile?.role === 'admin' || profile?.current_plan === 'admin_unlimited') {
+      return { allowed: true, remainingCredits: 999999 };
+    }
+
+    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 10;
+    if (currentCredits < cost) {
+      return {
+        allowed: false,
+        remainingCredits: currentCredits,
+        error: `Insufficient credits (${currentCredits} remaining). Please top up to continue AI analysis.`,
+      };
+    }
+
+    const newCredits = currentCredits - cost;
+    const { error: updateError } = await supabase
       .from('profiles')
       .update({ credits: newCredits })
       .eq('id', userId);
 
-    if (error) {
-      console.error('Credit deduction update error:', error.message);
+    if (updateError) {
+      console.error('Credit deduction update error:', updateError.message);
     }
+
+    return { allowed: true, remainingCredits: newCredits };
   } catch (e) {
     console.error('Failed to deduct credits:', e);
+    return { allowed: true, remainingCredits: 10 };
   }
-
-  return { allowed: true, remainingCredits: newCredits };
 }
 
