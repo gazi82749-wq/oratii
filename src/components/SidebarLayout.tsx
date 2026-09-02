@@ -207,10 +207,17 @@ export default function SidebarLayout({ children }) {
                     )}
                   </Link>
 
-                  {/* Single Unified Sleek Dashboard Button */}
-                  <Link href="/dashboard" title="Dashboard & Profile" className="px-4 py-2 bg-[#1B2140] hover:bg-[#151930] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-2 border border-slate-800 shrink-0">
-                    <User size={14} className="text-amber-400" />
-                    <span>Dashboard</span>
+                  {/* Sleek Profile Icon Button */}
+                  <Link
+                    href="/dashboard"
+                    title="Dashboard & Profile"
+                    className={`p-2.5 border rounded-xl transition-all flex items-center justify-center shrink-0 ${
+                      pathname === '/dashboard'
+                        ? 'bg-slate-900 border-slate-900 text-amber-400 shadow-sm'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  >
+                    <User size={18} />
                   </Link>
                 </div>
               ) : (
