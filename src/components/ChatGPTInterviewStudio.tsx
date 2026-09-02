@@ -356,11 +356,11 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {/* Header / Mode Switcher Navbar (Matching Speech Coach 100%) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div>
-          <h2 className="text-lg font-black text-slate-950 flex items-center gap-2">
-            <span>💼</span> AI Voice Mock Interviewer
+          <h2 className="text-base sm:text-lg font-black text-slate-950 flex items-center gap-2">
+            <span>🎙️</span> Practice & Rehearse Mock Interview
           </h2>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Select target role, interviewer panel, and optional resume context for unscripted AI evaluation.
+            Select interviewer panel, enter target role, and optionally ground questions in your resume.
           </p>
         </div>
 
@@ -369,7 +369,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             type="button"
             onClick={() => setExaminerTone('friendly')}
-            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
               examinerTone === 'friendly' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -378,7 +378,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             type="button"
             onClick={() => setExaminerTone('strict')}
-            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
               examinerTone === 'strict' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -387,7 +387,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <button
             type="button"
             onClick={() => setExaminerTone('star')}
-            className={`px-4 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
               examinerTone === 'star' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
