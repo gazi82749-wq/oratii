@@ -4,6 +4,10 @@ import { supabase } from '../../../lib/supabaseClient';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   try {
     // 1. Get the current user session (needs to be sent from client, so we'll do an alternative: we'll just let the user hit this from the browser if they are logged in)
     // Wait, since it's a server route and we are using client-side auth in this app (as seen in layout), the server might not have the session.

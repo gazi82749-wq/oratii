@@ -8,8 +8,14 @@ export async function POST(request) {
     const formData = await request.formData();
     const file = formData.get('file');
 
-    if (!file) {
+    if (!file || typeof file === 'string') {
       return NextResponse.json({ error: "File missing!" }, { status: 400 });
+    }
+
+    // 25MB Max file size limit to prevent memory exhaustion / DoS
+    const MAX_FILE_SIZE = 25 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: "File size exceeds 25MB limit." }, { status: 400 });
     }
 
     const secret = process.env.CONVERT_API_SECRET;

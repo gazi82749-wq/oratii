@@ -10,15 +10,15 @@ export const CREDIT_PACKAGES = [
   {
     id: 'free_starter',
     name: 'Free Trial',
-    badge: '5 Free Credits',
+    badge: '10 Free Credits',
     price: 0,
-    credits: 5,
+    credits: 10,
     subtitle: 'Everything you need to try out Oratii AI presentation analysis',
     popular: false,
     cta: 'Get Started Free',
     validity: 'Lifetime',
     features: [
-      '5 Free Credits on signup',
+      '10 Free Credits on signup',
       'Try Speech Coach (1 credit)',
       'Try PPT Slide Analyzer (1 credit)',
       'Try AI Viva Defense (1 credit)',
@@ -64,20 +64,60 @@ export const CREDIT_PACKAGES = [
 ];
 
 /**
- * Retrieves current credit balance for a user with fallback.
+ * Retrieves current credit balance for a user with fallback to 10 for new users.
  */
 export async function getUserCredits(userId: string): Promise<number> {
-  // Unlimited testing mode
-  return 999;
+  if (!userId) return 0;
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('credits')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (error || !data || typeof data.credits !== 'number') {
+      return 10;
+    }
+    return data.credits;
+  } catch {
+    return 10;
+  }
 }
 
 /**
- * Checks if user has enough credits and deducts.
+ * Checks if user has enough credits and deducts from Supabase profiles database.
  */
 export async function checkAndDeductCredits(
   userId: string,
   cost: number
 ): Promise<{ allowed: boolean; remainingCredits: number; error?: string }> {
-  // Unlimited testing mode: ALWAYS ALLOWED
-  return { allowed: true, remainingCredits: 999 };
+  if (!userId) {
+    return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
+  }
+
+  const currentCredits = await getUserCredits(userId);
+  if (currentCredits < cost) {
+    return {
+      allowed: false,
+      remainingCredits: currentCredits,
+      error: `Insufficient credits (${currentCredits} remaining). Please top up to continue AI analysis.`,
+    };
+  }
+
+  const newCredits = currentCredits - cost;
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ credits: newCredits })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Credit deduction update error:', error.message);
+    }
+  } catch (e) {
+    console.error('Failed to deduct credits:', e);
+  }
+
+  return { allowed: true, remainingCredits: newCredits };
 }
+
