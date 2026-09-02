@@ -1,9 +1,10 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 
-export const metadata = {
-  title: 'Terms of Service | Oratii',
-  description: 'Oratii Terms of Service - Legal agreement governing user accounts, subscriptions, and AI coaching services.',
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'Oratii Terms of Service - Legal agreement governing user accounts, subscription billing, and AI speech coaching usage.',
 };
 
 export default function TermsOfServicePage() {

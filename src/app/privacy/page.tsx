@@ -1,5 +1,15 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'Oratii voice & data privacy policy guarantee. Your speech recordings and presentation decks are never sold or used to train public AI models.',
+  openGraph: {
+    title: 'Privacy Policy | Oratii AI Speech Coach',
+    description: 'Learn how Oratii protects your voice recordings, presentation slides, and account privacy.',
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (
