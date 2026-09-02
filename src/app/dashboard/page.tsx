@@ -266,7 +266,7 @@ export default function ProfessionalDashboard() {
     },
     {
       num: '04',
-      title: '20-Day Speech Gym & Streaks',
+      title: '20-Day Speech Challenge & Streaks',
       desc: 'Daily 2-to-5 minute adaptive speech exercises to fix vocal crutches, track streaks, and earn XP badges.',
       href: '/challenge',
       icon: <Flame size={22} className="text-white" />,

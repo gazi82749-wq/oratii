@@ -25,7 +25,7 @@ export default function Footer() {
               <li><Link href="/speech-coach" className="hover:text-[#F2A93B] transition-colors">Speech Coach</Link></li>
               <li><Link href="/interview" className="hover:text-[#F2A93B] transition-colors">AI Job Interview Studio</Link></li>
               <li><Link href="/presentation" className="hover:text-[#F2A93B] transition-colors">Slide Deck & Viva Studio</Link></li>
-              <li><Link href="/challenge" className="hover:text-[#F2A93B] transition-colors">20-Day Speech Gym</Link></li>
+              <li><Link href="/challenge" className="hover:text-[#F2A93B] transition-colors">20-Day Speech Challenge</Link></li>
               <li><Link href="/reports" className="hover:text-[#F2A93B] transition-colors">Reports & Analytics</Link></li>
               <li><Link href="/pricing" className="hover:text-[#F2A93B] transition-colors">Pricing Plans</Link></li>
             </ul>

@@ -702,7 +702,7 @@ export default function HomeClient() {
       cta: 'Launch Presentation & Viva Studio'
     },
     {
-      title: '20-Day Speech Gym',
+      title: '20-Day Speech Challenge',
       headline: 'Build a daily speaking habit.',
       desc: 'Transform your public speaking confidence in 20 days. Complete daily targeted practice prompts, track streaks, and earn downloadable certificates.',
       highlights: ['Daily Speaking Prompts', 'Streak Tracking & XP Badges', 'PDF Completion Certificate'],
@@ -932,7 +932,7 @@ export default function HomeClient() {
                       {(f.title.includes('Speech') || f.title.includes('Vocal')) && <SpeechCoachMockup />}
                       {(f.title.includes('Slide') || f.title.includes('Presenter')) && <SlideAnalyzerMockup />}
                       {(f.title.includes('Interview') || f.title.includes('Viva')) && <VivaDefenseMockup />}
-                      {(f.title.includes('Gym') || f.title.includes('Challenge')) && <ChallengeMockup />}
+                      {f.title.includes('Challenge') && <ChallengeMockup />}
                     </div>
                   </div>
 
@@ -956,7 +956,7 @@ export default function HomeClient() {
                          <span className="text-xl font-bold">Tech & STAR Scoring 🛡️</span>
                        </div>
                      )}
-                     {(f.title.includes('Gym') || f.title.includes('Challenge')) && (
+                     {f.title.includes('Challenge') && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Streak Active</span>
                          <span className="text-xl font-bold">7 Days 🔥</span>
