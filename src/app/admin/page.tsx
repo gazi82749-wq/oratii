@@ -137,9 +137,42 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Welcome back. Here’s what’s happening with Oratii.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Welcome back. Here’s what’s happening with Oratii.</p>
+        </div>
+        <a
+          href="/admin/ai-settings"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-all shadow-sm w-max"
+        >
+          <Zap size={14} className="text-amber-400" />
+          <span>Manage AI Token Limits →</span>
+        </a>
+      </div>
+
+      {/* 🚨 AI Model Health & Token Limit Alert Banner */}
+      <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-300 dark:border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 animate-pulse">
+            <Zap size={20} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">AI Token & Model Health Monitor Active</h3>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300">Waterfall Active</span>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+              Gemini 2.5 Flash & Cerebras Llama-3.3 daily tokens are monitored in real-time. Automatic fallback triggers if any model reaches 80% usage capacity.
+            </p>
+          </div>
+        </div>
+        <a
+          href="/admin/ai-settings"
+          className="px-3.5 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl hover:bg-amber-400 transition-colors shrink-0 text-center"
+        >
+          Check AI Health
+        </a>
       </div>
 
       {/* KPI Cards */}
