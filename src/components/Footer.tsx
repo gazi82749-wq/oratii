@@ -15,7 +15,7 @@ export default function Footer() {
               <Logo className="text-white text-3xl" />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm mb-6 font-medium">
-              The AI-powered speech & presentation coach. Analyze pacing, filler words, slide deck density, and viva Q&A in real-time.
+              The AI-powered speech, presentation & job interview coach. Analyze vocal pacing, filler words, slide decks, and mock interviews in real-time.
             </p>
           </div>
           
@@ -23,7 +23,9 @@ export default function Footer() {
             <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Product</h4>
             <ul className="space-y-3 text-sm font-medium text-slate-400">
               <li><Link href="/speech-coach" className="hover:text-[#F2A93B] transition-colors">Speech Coach</Link></li>
-              <li><Link href="/viva" className="hover:text-[#F2A93B] transition-colors">Viva Defense Q&A</Link></li>
+              <li><Link href="/interview" className="hover:text-[#F2A93B] transition-colors">AI Job Interview Studio</Link></li>
+              <li><Link href="/presentation" className="hover:text-[#F2A93B] transition-colors">Slide Deck & Viva Studio</Link></li>
+              <li><Link href="/challenge" className="hover:text-[#F2A93B] transition-colors">20-Day Speech Gym</Link></li>
               <li><Link href="/reports" className="hover:text-[#F2A93B] transition-colors">Reports & Analytics</Link></li>
               <li><Link href="/pricing" className="hover:text-[#F2A93B] transition-colors">Pricing Plans</Link></li>
             </ul>
