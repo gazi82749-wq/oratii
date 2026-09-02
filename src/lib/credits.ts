@@ -65,18 +65,29 @@ export const CREDIT_PACKAGES = [
 
 /**
  * Retrieves current credit balance for a user with fallback to 10 for new users.
- * Administrator accounts (role === 'admin' or current_plan === 'admin_unlimited') receive unlimited credits.
+ * Administrator accounts (role === 'admin', current_plan === 'admin_unlimited', or admin_verified) receive unlimited credits.
  */
 export async function getUserCredits(userId: string): Promise<number> {
   if (!userId) return 0;
+
+  // 1. Check client-side admin session flag
+  if (typeof window !== 'undefined' && sessionStorage.getItem('admin_verified') === 'true') {
+    return 999999;
+  }
+
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('credits, role, current_plan')
+      .select('credits, role, current_plan, email')
       .eq('id', userId)
       .maybeSingle();
 
-    if (data?.role === 'admin' || data?.current_plan === 'admin_unlimited') {
+    // 2. Check profile role, plan, or admin email prefix
+    if (
+      data?.role === 'admin' ||
+      data?.current_plan === 'admin_unlimited' ||
+      (data?.email && (data.email.startsWith('admin') || data.email.includes('admin@')))
+    ) {
       return 999999; // Unlimited access for Administrator accounts
     }
 
@@ -101,15 +112,24 @@ export async function checkAndDeductCredits(
     return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
   }
 
+  // 1. Check client-side admin session flag
+  if (typeof window !== 'undefined' && sessionStorage.getItem('admin_verified') === 'true') {
+    return { allowed: true, remainingCredits: 999999 };
+  }
+
   try {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('credits, role, current_plan')
+      .select('credits, role, current_plan, email')
       .eq('id', userId)
       .maybeSingle();
 
-    // Bypass deduction for Administrators
-    if (profile?.role === 'admin' || profile?.current_plan === 'admin_unlimited') {
+    // 2. Bypass deduction for Administrators
+    if (
+      profile?.role === 'admin' ||
+      profile?.current_plan === 'admin_unlimited' ||
+      (profile?.email && (profile.email.startsWith('admin') || profile.email.includes('admin@')))
+    ) {
       return { allowed: true, remainingCredits: 999999 };
     }
 

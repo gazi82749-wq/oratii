@@ -193,8 +193,18 @@ export default function SidebarLayout({ children }) {
                 <div className="hidden md:flex items-center gap-2">
                   <Link href="/pricing" title="View or Top Up Credits" className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs">
                     <Coins size={14} className="text-amber-600" />
-                    <span>{userCredits !== null ? `${userCredits} Credits` : 'Credits'}</span>
-                    <span className="text-[10px] text-indigo-700 font-extrabold ml-0.5">+ Top Up</span>
+                    <span>
+                      {userCredits !== null && userCredits >= 99999
+                        ? '👑 Admin (Unlimited)'
+                        : userCredits !== null
+                        ? `${userCredits} Credits`
+                        : 'Credits'}
+                    </span>
+                    {userCredits !== null && userCredits >= 99999 ? (
+                      <span className="text-[10px] bg-[#151930] text-amber-400 font-black px-1.5 py-0.5 rounded-md uppercase ml-0.5 border border-amber-400/30">VIP</span>
+                    ) : (
+                      <span className="text-[10px] text-indigo-700 font-extrabold ml-0.5">+ Top Up</span>
+                    )}
                   </Link>
                   <Link href="/dashboard" className="px-4 lg:px-5 py-2.5 bg-[#1B2140] text-white text-sm font-semibold rounded-xl hover:shadow-glow transition-all shadow-sm whitespace-nowrap">
                     Dashboard
