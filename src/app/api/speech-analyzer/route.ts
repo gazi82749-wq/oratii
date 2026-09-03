@@ -1,5 +1,5 @@
 // src/app/api/speech-analyzer/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { HINGLISH_FILLERS } from '../../../lib/constants';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
@@ -7,7 +7,7 @@ import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     if (await hasUsedTrial(request)) {
       return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
@@ -15,14 +15,17 @@ export async function POST(request) {
 
     // Receive raw audio blob from frontend
     const formData = await request.formData();
-    const audioFile = formData.get('audio');
+    const audioFile = formData.get('audio') as Blob | null;
 
     if (!audioFile) {
       return NextResponse.json({ error: "No audio data received!" }, { status: 400 });
     }
 
     const apiKey = process.env.DEEPGRAM_API_KEY;
-    const reqLanguage = formData.get('language') || 'en-US';
+    if (!apiKey) {
+      return NextResponse.json({ error: "Speech analysis service is temporarily unconfigured. Missing DEEPGRAM_API_KEY." }, { status: 503 });
+    }
+    const reqLanguage = (formData.get('language') as string) || 'en-US';
     
     // Deepgram API URL using the specified language
     const deepgramUrl = `https://api.deepgram.com/v1/listen?model=nova-2&smart_formatting=true&filler_words=true&language=${reqLanguage}`;
@@ -132,8 +135,8 @@ export async function POST(request) {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Speech Analyzer Error:", error);
-    return NextResponse.json({ error: "Speech analysis failed", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Speech analysis failed", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }

@@ -6,7 +6,7 @@ import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { topic } = body;
@@ -76,7 +76,7 @@ export async function POST(request) {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Speech Writer Error:", error);
     return NextResponse.json(
       { error: "Failed to generate speech. Please try again.", details: error?.message || String(error) },

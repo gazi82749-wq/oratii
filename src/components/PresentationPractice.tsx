@@ -131,6 +131,15 @@ export default function PresentationPractice({
     }
   }, [hasVideo, cameraLayout, isRecording]);
 
+  // Revoke practice media URL on cleanup to prevent browser memory leak
+  useEffect(() => {
+    return () => {
+      if (practiceMediaUrl) {
+        URL.revokeObjectURL(practiceMediaUrl);
+      }
+    };
+  }, [practiceMediaUrl]);
+
   // --- Draggable PiP handlers ---
   const handlePipPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();

@@ -1,18 +1,38 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+    const token = authHeader.substring(7).trim();
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid session token.' }, { status: 401 });
+    }
+
     const { planName, userId, billingCycle } = await req.json();
 
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!userId || !planName) {
+      return NextResponse.json({ error: 'userId and planName are required' }, { status: 400 });
+    }
+
+    // Verify caller is modifying their own account or is an admin
+    const supabaseAdmin = getServiceSupabase();
+    if (user.id !== userId) {
+      const { data: callerProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (callerProfile?.role !== 'admin') {
+        return NextResponse.json({ error: "Forbidden: You cannot modify another user's subscription." }, { status: 403 });
+      }
     }
 
     const endDate = new Date();

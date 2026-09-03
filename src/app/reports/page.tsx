@@ -18,11 +18,18 @@ const VideoPlayer = ({ sessionId }: { sessionId: string }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let activeUrl: string | null = null;
     getVideoBlob(sessionId).then(blob => {
       if (blob) {
-        setVideoUrl(URL.createObjectURL(blob));
+        activeUrl = URL.createObjectURL(blob);
+        setVideoUrl(activeUrl);
       }
     });
+    return () => {
+      if (activeUrl) {
+        URL.revokeObjectURL(activeUrl);
+      }
+    };
   }, [sessionId]);
 
   if (!videoUrl) return null;

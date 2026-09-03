@@ -254,8 +254,8 @@ export async function POST(request) {
       slideTextContent: slideTextContent 
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Backend Route Error:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }
