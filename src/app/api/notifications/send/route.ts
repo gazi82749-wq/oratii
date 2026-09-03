@@ -140,3 +140,79 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// GET: Fetch push notification system stats & subscribers for Admin
+export async function GET(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7).trim();
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+    }
+
+    const supabaseAdmin = getServiceSupabase();
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
+    // Query all subscriptions
+    const { data: subscriptions, error: subsError } = await supabaseAdmin
+      .from('push_subscriptions')
+      .select('id, user_id, endpoint, created_at, last_used_at')
+      .order('created_at', { ascending: false });
+
+    if (subsError) {
+      return NextResponse.json({ error: subsError.message }, { status: 500 });
+    }
+
+    const totalSubscriptions = subscriptions?.length || 0;
+    const userIds = Array.from(new Set(subscriptions?.map(s => s.user_id).filter(Boolean)));
+    const uniqueUsers = userIds.length;
+
+    // Fetch user profiles for context
+    let usersInfo: Record<string, { email: string; full_name?: string }> = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabaseAdmin
+        .from('profiles')
+        .select('id, email, full_name')
+        .in('id', userIds);
+
+      profiles?.forEach(p => {
+        usersInfo[p.id] = { email: p.email, full_name: p.full_name };
+      });
+    }
+
+    return NextResponse.json({
+      vapidConfigured: Boolean(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY),
+      totalSubscriptions,
+      uniqueUsers,
+      subscriptions: (subscriptions || []).map(s => ({
+        id: s.id,
+        user_id: s.user_id,
+        email: s.user_id ? usersInfo[s.user_id]?.email || 'Unknown user' : 'Anonymous device',
+        user_name: s.user_id ? usersInfo[s.user_id]?.full_name || '' : '',
+        created_at: s.created_at,
+        last_used_at: s.last_used_at,
+        endpoint_domain: s.endpoint ? new URL(s.endpoint).hostname : '',
+      })),
+    });
+  } catch (error: any) {
+    console.error('[Push Stats GET] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch notification stats', details: error?.message },
+      { status: 500 }
+    );
+  }
+}
+

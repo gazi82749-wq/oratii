@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, Crown, Mic, FileText, Video,
   MessageSquare, CreditCard, Receipt, MessageCircle, Headphones,
   Bot, ScrollText, Settings, ChevronDown, ChevronLeft, Menu, X,
-  BarChart3
+  BarChart3, Bell
 } from 'lucide-react';
 
 interface NavItem {
@@ -74,6 +74,7 @@ const navigation: SidebarEntry[] = [
     ],
   },
   { label: 'AI Settings & Limits', href: '/admin/ai-settings', icon: <Bot size={18} /> },
+  { label: 'Push Notifications', href: '/admin/notifications', icon: <Bell size={18} /> },
   { label: 'System Logs', href: '/admin/logs', icon: <ScrollText size={18} /> },
   { label: 'Settings', href: '/admin/settings', icon: <Settings size={18} /> },
 ];
