@@ -36,7 +36,6 @@
     "global.d.ts"
   ],
   "exclude": [
-    "node_modules",
-    "future-features"
+    "node_modules"
   ]
 }

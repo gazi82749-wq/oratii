@@ -335,7 +335,7 @@ export default function PresentationPractice({
     }
   };
 
-  const captureWebcamFrame = () => {
+  const captureWebcamFrame = useCallback(() => {
     if (!videoRef.current || !hasVideo) return;
     try {
       const canvas = document.createElement('canvas');
@@ -350,7 +350,7 @@ export default function PresentationPractice({
     } catch (e) {
       console.warn("Frame capture skipped:", e);
     }
-  };
+  }, [hasVideo]);
 
   const togglePauseRecording = useCallback(() => {
     if (!mediaRecorderRef.current || !isRecording) return;
