@@ -6,31 +6,45 @@ const trialIps = new Set<string>();
 
 import { supabase } from '@/lib/supabaseClient';
 
-export async function isUserLoggedIn(req?: NextRequest) {
+export async function isUserLoggedIn(req?: NextRequest): Promise<boolean> {
   try {
+    // 1. Check Authorization Bearer header
+    let token: string | null = null;
     if (req) {
-      const OratiiLoggedInReq = req.cookies.get('Oratii_logged_in');
-      if (OratiiLoggedInReq?.value === 'true') return true;
-
       const authHeader = req.headers.get('authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) return true;
-
-      const reqAuthCookie = req.cookies.getAll().find(c => c.name.startsWith('sb-') && c.name.includes('-auth-token'));
-      if (reqAuthCookie) return true;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7).trim();
+      }
     }
 
-    const cookieStore = cookies();
-    const OratiiLoggedIn = cookieStore.get('Oratii_logged_in');
-    if (OratiiLoggedIn?.value === 'true') return true;
+    // 2. Check Supabase auth cookie if no header token
+    if (!token) {
+      const cookieStore = req ? req.cookies : cookies();
+      const authCookie = cookieStore.getAll().find(
+        (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
+      );
 
-    const authCookie = cookieStore.getAll().find(c => c.name.startsWith('sb-') && c.name.includes('-auth-token'));
-    if (authCookie) return true;
+      if (authCookie) {
+        try {
+          // Supabase auth cookies may be JSON array [access_token, refresh_token]
+          const parsed = JSON.parse(decodeURIComponent(authCookie.value));
+          token = Array.isArray(parsed) ? parsed[0] : (parsed?.access_token || authCookie.value);
+        } catch {
+          token = authCookie.value;
+        }
+      }
+    }
 
-    return false;
+    if (!token) return false;
+
+    // Cryptographically verify token validity with Supabase auth server
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    return !!(user && !error);
   } catch (err) {
     return false;
   }
 }
+
 
 export async function hasUsedTrial(req: NextRequest) {
   // Unlimited trial mode: Never block any user with a trial limit barrier

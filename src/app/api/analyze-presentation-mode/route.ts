@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { checkAndDecrementUsage } from '../../../lib/billing';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,19 @@ export async function POST(request: Request) {
       userId: bodyUserId
     } = body;
 
-    const userId = request.headers.get('x-user-id') || bodyUserId;
+    // Securely verify caller identity from Bearer token
+    let userId: string | null = null;
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        userId = user.id;
+      }
+    }
+    if (!userId && bodyUserId) {
+      userId = bodyUserId;
+    }
 
     // Enforce server-side billing limits
     if (userId) {

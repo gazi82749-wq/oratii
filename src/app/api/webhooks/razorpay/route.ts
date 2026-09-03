@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize a Supabase client with the service role key to bypass RLS for webhook updates
-// Note: We need a service role key in production, but we'll use ANON for now if SERVICE_ROLE isn't set
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+import { getServiceSupabase } from '@/lib/supabaseClient';
 
 export async function POST(req: Request) {
   try {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    if (!secret) {
+      console.error('[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET is not configured on the server.');
+      return NextResponse.json({ error: 'Webhook signature verification unconfigured.' }, { status: 500 });
+    }
+
     const body = await req.text();
     const signature = req.headers.get('x-razorpay-signature');
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET || 'placeholder';
 
     if (!signature) {
       return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
@@ -27,6 +26,9 @@ export async function POST(req: Request) {
     if (expectedSignature !== signature) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
+
+    const supabase = getServiceSupabase();
+
 
     const event = JSON.parse(body);
 

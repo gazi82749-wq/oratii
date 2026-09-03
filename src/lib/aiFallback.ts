@@ -11,9 +11,28 @@ export interface AIContentOptions {
   disableProviders?: ('cerebras' | 'groq' | 'gemini' | 'openrouter')[]; // Debug flag to simulate provider failures
 }
 
-// In-memory circuit breakers to skip quota-exhausted providers instantly without 6s timeouts
-let cerebrasQuotaExhausted = false;
-let groqQuotaExhausted = false;
+// In-memory circuit breakers with automated 5-minute TTL auto-recovery
+let cerebrasQuotaExhaustedTime: number | null = null;
+let groqQuotaExhaustedTime: number | null = null;
+const CIRCUIT_BREAKER_TTL = 5 * 60 * 1000; // 5 minutes
+
+function isCerebrasQuotaExhausted(): boolean {
+  if (!cerebrasQuotaExhaustedTime) return false;
+  if (Date.now() - cerebrasQuotaExhaustedTime > CIRCUIT_BREAKER_TTL) {
+    cerebrasQuotaExhaustedTime = null; // auto reset after TTL
+    return false;
+  }
+  return true;
+}
+
+function isGroqQuotaExhausted(): boolean {
+  if (!groqQuotaExhaustedTime) return false;
+  if (Date.now() - groqQuotaExhaustedTime > CIRCUIT_BREAKER_TTL) {
+    groqQuotaExhaustedTime = null; // auto reset after TTL
+    return false;
+  }
+  return true;
+}
 
 /**
  * Executes a 4-Stage AI Fallback Waterfall:
@@ -27,7 +46,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
   const disabled = new Set(options.disableProviders || []);
 
   // 1️⃣ CEREBRAS (1st Priority for Text-Only requests)
-  if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !cerebrasQuotaExhausted) {
+  if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !isCerebrasQuotaExhausted()) {
     const cerebrasModels = ["gpt-oss-120b", "gemma-4-31b"];
     for (const model of cerebrasModels) {
       try {
@@ -45,14 +64,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         
         // Circuit break Cerebras if payment/quota limit is hit
         if (err.message?.includes('402') || err.message?.includes('payment_required') || err.message?.includes('quota')) {
-          console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated — skipping Cerebras for future requests.");
-          cerebrasQuotaExhausted = true;
+          console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated for 5 minutes.");
+          cerebrasQuotaExhaustedTime = Date.now();
           break;
         }
       }
     }
-  } else if (disabled.has('cerebras') || cerebrasQuotaExhausted) {
-    if (cerebrasQuotaExhausted) {
+  } else if (disabled.has('cerebras') || isCerebrasQuotaExhausted()) {
+    if (isCerebrasQuotaExhausted()) {
       console.log("[AIFallback] Skipping Cerebras (quota exhausted circuit breaker active)");
     } else {
       console.log("[AIFallback Debug] Simulating Cerebras failure...");
@@ -61,7 +80,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
   }
 
   // 2️⃣ GROQ (2nd Priority for Text or Image frames)
-  if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !groqQuotaExhausted) {
+  if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
     const groqModels = (options.images && options.images.length > 0)
       ? ["groq/compound-mini", "qwen/qwen3.6-27b"]
       : ["groq/compound-mini", "qwen/qwen3.6-27b", "openai/gpt-oss-120b"];
@@ -82,12 +101,13 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
         if (err.message?.includes('402') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
           console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
+          groqQuotaExhaustedTime = Date.now();
         }
       }
     }
-  } else if (disabled.has('groq') || groqQuotaExhausted) {
-    console.log("[AIFallback Debug] Simulating Groq failure...");
-    errors.push("Groq: Simulated failure");
+  } else if (disabled.has('groq') || isGroqQuotaExhausted()) {
+    console.log("[AIFallback Debug] Simulating Groq failure or skipping due to active circuit breaker...");
+    errors.push("Groq: Simulated failure or Quota Exhausted");
   }
 
   // 3️⃣ GEMINI (3rd Priority, or 1st if PDF binary attached)

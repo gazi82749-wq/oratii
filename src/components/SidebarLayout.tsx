@@ -38,23 +38,11 @@ export default function SidebarLayout({ children }) {
 
   // Auth-aware: check user session for conditional nav buttons
   useEffect(() => {
-    const syncAuthCookie = (session: any) => {
-      if (typeof document !== 'undefined') {
-        const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
-        if (session?.user) {
-          document.cookie = `Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax${isSecure}`;
-        } else {
-          document.cookie = `Oratii_logged_in=; path=/; max-age=0; SameSite=Lax${isSecure}`;
-        }
-      }
-    };
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
       if (session?.user) {
         getUserCredits(session.user.id).then((cr) => setUserCredits(cr));
       }
-      syncAuthCookie(session);
       setAuthLoading(false);
     });
 
@@ -65,7 +53,6 @@ export default function SidebarLayout({ children }) {
       } else {
         setUserCredits(null);
       }
-      syncAuthCookie(session);
       setAuthLoading(false);
     });
 

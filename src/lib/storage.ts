@@ -22,20 +22,33 @@ const KEYS = {
   STREAK_FREEZES: 'Oratii_streak_freezes'
 };
 
-// ─── Generic Helpers ───
+// In-memory fallback for private browsing modes or quota errors
+const memoryStorageFallback = new Map<string, string>();
+
 function getJSON<T = any>(key: string, fallback: T | null = null): T | null {
   if (typeof window === 'undefined') return fallback;
   try {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    if (raw) return JSON.parse(raw);
   } catch {
-    return fallback;
+    // Check in-memory fallback if localStorage access fails
+    const memRaw = memoryStorageFallback.get(key);
+    if (memRaw) {
+      try { return JSON.parse(memRaw); } catch { return fallback; }
+    }
   }
+  return fallback;
 }
 
 function setJSON(key: string, value: any): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(key, JSON.stringify(value));
+  const stringified = JSON.stringify(value);
+  try {
+    localStorage.setItem(key, stringified);
+  } catch (err) {
+    console.warn(`[Storage] Failed to save key "${key}" to localStorage (QuotaExceeded or Private Browsing mode):`, err);
+    memoryStorageFallback.set(key, stringified);
+  }
 }
 
 // ─── Supabase Sync Helpers ───

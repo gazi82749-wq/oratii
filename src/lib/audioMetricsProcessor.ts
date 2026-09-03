@@ -18,12 +18,14 @@ export class RealtimeAudioProcessor {
   private audioCtx: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private mediaStreamSource: MediaStreamAudioSourceNode | null = null;
+  private rawStream: MediaStream | null = null;
   private pitchHistory: number[] = [];
   private lastSpeakingTimestamp: number = Date.now();
   private isProcessing: boolean = false;
 
   public initialize(stream: MediaStream): boolean {
     try {
+      this.rawStream = stream;
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       this.audioCtx = new AudioContextClass();
       this.analyser = this.audioCtx.createAnalyser();
@@ -171,12 +173,24 @@ export class RealtimeAudioProcessor {
 
   public stop(): void {
     this.isProcessing = false;
+    if (this.rawStream) {
+      try {
+        this.rawStream.getTracks().forEach(track => {
+          if (track.readyState === 'live') {
+            track.stop();
+          }
+        });
+      } catch (e) {
+        // ignore track stop notice
+      }
+      this.rawStream = null;
+    }
     if (this.mediaStreamSource) {
-      this.mediaStreamSource.disconnect();
+      try { this.mediaStreamSource.disconnect(); } catch {}
       this.mediaStreamSource = null;
     }
     if (this.audioCtx && this.audioCtx.state !== 'closed') {
-      this.audioCtx.close();
+      try { this.audioCtx.close(); } catch {}
       this.audioCtx = null;
     }
   }

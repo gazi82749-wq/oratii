@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, Globe, Mail, Shield, Key, Smartphone, Clock } from 'lucide-react';
+import { Save, Globe, Mail, Shield, Key, Smartphone, Clock, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function SettingsPage() {
   const [platformName, setPlatformName] = useState('Oratii');
@@ -11,16 +12,67 @@ export default function SettingsPage() {
   const [sessionTimeout, setSessionTimeout] = useState(30);
   const [upiId, setUpiId] = useState('Oratii@upi');
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedUpiId = localStorage.getItem('admin_upi_id');
-    if (savedUpiId) setUpiId(savedUpiId);
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/admin/settings');
+        const data = await res.json();
+        if (data?.settings) {
+          setPlatformName(data.settings.platform_name || 'Oratii');
+          setContactEmail(data.settings.contact_email || 'contact@Oratii.app');
+          setSupportEmail(data.settings.support_email || 'support@Oratii.app');
+          setUpiId(data.settings.upi_id || 'Oratii@upi');
+          setTwoFactorEnabled(data.settings.two_factor_enabled ?? true);
+          setSessionTimeout(data.settings.session_timeout_minutes || 30);
+        }
+      } catch (err: any) {
+        console.error('Failed to load settings:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSettings();
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem('admin_upi_id', upiId);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    setSaveLoading(true);
+    setError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || '';
+
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          platform_name: platformName,
+          contact_email: contactEmail,
+          support_email: supportEmail,
+          upi_id: upiId,
+          two_factor_enabled: twoFactorEnabled,
+          session_timeout_minutes: sessionTimeout,
+        }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        setError(result.error || 'Failed to save settings');
+      } else {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2500);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Network error saving settings');
+    } finally {
+      setSaveLoading(false);
+    }
   };
 
   return (
@@ -32,13 +84,21 @@ export default function SettingsPage() {
         </div>
         <button
           onClick={handleSave}
-          className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-lg text-[13px] font-semibold transition-all shadow-sm ${
-            saved ? 'bg-emerald-600 text-white' : 'bg-indigo-900 hover:bg-indigo-900 text-white'
+          disabled={saveLoading}
+          className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-lg text-[13px] font-semibold transition-all shadow-sm disabled:opacity-60 ${
+            saved ? 'bg-emerald-600 text-white' : 'bg-indigo-900 hover:bg-indigo-800 text-white'
           }`}
         >
-          <Save size={14} /> {saved ? 'Saved!' : 'Save Changes'}
+          {saveLoading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+          {saved ? 'Saved to Database!' : saveLoading ? 'Saving...' : 'Save Changes'}
         </button>
       </div>
+
+      {error && (
+        <div className="p-3 bg-red-100 border border-red-200 text-red-700 text-xs rounded-lg font-medium">
+          {error}
+        </div>
+      )}
 
       {/* Platform Settings */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-6">

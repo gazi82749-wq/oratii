@@ -43,6 +43,20 @@ export interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
+const MAX_STORE_SIZE = 10000;
+
+function pruneStoreIfTooLarge() {
+  if (store.size > MAX_STORE_SIZE) {
+    // Delete first 2000 oldest keys to prevent Node.js Out-Of-Memory (OOM) memory leaks
+    let count = 0;
+    for (const key of store.keys()) {
+      store.delete(key);
+      count++;
+      if (count >= 2000) break;
+    }
+  }
+}
+
 /**
  * Check and consume a rate limit attempt for the given key.
  * Returns whether the request is allowed, remaining attempts, and retry-after time.
@@ -54,6 +68,7 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
   let entry = store.get(key);
 
   if (!entry) {
+    pruneStoreIfTooLarge();
     entry = { attempts: [] };
     store.set(key, entry);
   }
@@ -63,8 +78,8 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
 
   if (entry.attempts.length >= config.maxAttempts) {
     // Rate limited — calculate retry-after from the oldest attempt in window
-    const oldestAttempt = entry.attempts[0];
-    const retryAfterMs = config.windowMs - (now - oldestAttempt);
+    const oldestAttempt = entry.attempts[0] || now;
+    const retryAfterMs = Math.max(1000, config.windowMs - (now - oldestAttempt));
     return {
       allowed: false,
       remaining: 0,
@@ -72,8 +87,11 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
     };
   }
 
-  // Record this attempt
+  // Record this attempt and cap attempts length to prevent unbounded growth
   entry.attempts.push(now);
+  if (entry.attempts.length > config.maxAttempts + 5) {
+    entry.attempts = entry.attempts.slice(-config.maxAttempts);
+  }
 
   return {
     allowed: true,

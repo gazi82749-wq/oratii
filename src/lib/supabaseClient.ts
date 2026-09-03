@@ -12,9 +12,16 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_ANO
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Server-side service client for administrative / backend operations
+// Note: For high-concurrency production deployments (10,000+ RPM), configure NEXT_PUBLIC_SUPABASE_URL
+// to use Supabase Supavisor Connection Pooler (Transaction Mode, Port 6543)
 export const getServiceSupabase = () => {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceRoleKey) return supabase;
+  if (!serviceRoleKey) {
+    if (typeof window === 'undefined') {
+      console.warn('[Supabase] SUPABASE_SERVICE_ROLE_KEY is missing in server environment. Admin database operations may fail RLS policies.');
+    }
+    return supabase;
+  }
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: {
       persistSession: false,

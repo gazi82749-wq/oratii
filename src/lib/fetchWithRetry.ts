@@ -1,4 +1,4 @@
-﻿// src/lib/fetchWithRetry.ts
+// src/lib/fetchWithRetry.ts
 
 /**
  * A wrapper around the native fetch API that automatically retries the request
@@ -7,46 +7,54 @@
 export async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
-  maxRetries: number = 5,
-  baseDelayMs: number = 2000
+  maxRetries: number = 2,
+  baseDelayMs: number = 1000,
+  timeoutMs: number = 8000
 ): Promise<Response> {
   let attempt = 0;
 
   while (attempt <= maxRetries) {
-    try {
-      const response = await fetch(url, options);
+    let controller: AbortController | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
 
-      // If the response is successful, or it's a client error (400-499) that is NOT a rate limit (429),
-      // we return the response immediately. We do not retry bad requests because they will always fail.
+    try {
+      let fetchOptions = { ...options };
+
+      // Attach timeout controller if signal is not explicitly passed
+      if (!fetchOptions.signal && typeof AbortController !== 'undefined') {
+        controller = new AbortController();
+        timeoutId = setTimeout(() => controller?.abort(), timeoutMs);
+        fetchOptions.signal = controller.signal;
+      }
+
+      const response = await fetch(url, fetchOptions);
+      if (timeoutId) clearTimeout(timeoutId);
+
+      // If successful, or 4xx client error (except 429), return immediately
       if (response.ok || (response.status >= 400 && response.status < 500 && response.status !== 429)) {
         return response;
       }
 
-      // If we reach here, it's either a 429 (Rate Limit) or a 5xx (Server Error).
       if (attempt >= maxRetries) {
-        // We've exhausted all retries, return the last response.
         return response;
       }
-      
-      console.warn(`[API Retry] Request to ${url} failed with status ${response.status}. Retrying (Attempt ${attempt + 1}/${maxRetries})...`);
+
+      console.warn(`[API Retry] Request to ${url} failed with status ${response.status}. Retrying (${attempt + 1}/${maxRetries})...`);
     } catch (error: unknown) {
-      // This catches network-level errors (e.g. DNS failure, connection refused)
+      if (timeoutId) clearTimeout(timeoutId);
       if (attempt >= maxRetries) {
         throw error;
       }
       const message = error instanceof Error ? error.message : 'Unknown error';
-      console.warn(`[API Retry] Network error connecting to ${url}: ${message}. Retrying (Attempt ${attempt + 1}/${maxRetries})...`);
+      console.warn(`[API Retry] Network error or timeout connecting to ${url}: ${message}. Retrying (${attempt + 1}/${maxRetries})...`);
     }
 
-    // Exponential backoff with Jitter: (baseDelayMs * 2^attempt) + random(0, 1000)ms
-    // This prevents multiple concurrent requests from retrying at the exact same millisecond
-    const delay = (baseDelayMs * Math.pow(2, attempt)) + Math.random() * 1000;
-    console.log(`[API Retry] Waiting ${Math.round(delay)}ms before next attempt...`);
-    await new Promise(resolve => setTimeout(resolve, delay));
-    
+    // Exponential backoff with Jitter capped at 3000ms max per delay
+    const calculatedDelay = Math.min(3000, (baseDelayMs * Math.pow(2, attempt)) + Math.random() * 500);
+    await new Promise(resolve => setTimeout(resolve, calculatedDelay));
+
     attempt++;
   }
 
-  // This should never be reached, but TypeScript requires a return
   throw new Error(`fetchWithRetry: exhausted all retries for ${url}`);
 }

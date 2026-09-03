@@ -46,9 +46,6 @@ export default function LoginClient() {
         });
       }
 
-      if (typeof document !== 'undefined') {
-        document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
-      }
       router.push('/dashboard');
     } catch (err) {
       setError('Network error. Please try again.');
