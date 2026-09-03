@@ -108,8 +108,15 @@ export default function PresentationPractice({
 
   // Cleanup stream on unmount
   useEffect(() => {
+    const videoEl = videoRef.current;
     return () => {
-      stopMediaStream();
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        mediaStreamRef.current = null;
+      }
+      if (videoEl) {
+        videoEl.srcObject = null;
+      }
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
     };
@@ -204,7 +211,7 @@ export default function PresentationPractice({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentSlide, isProcessing, isSlideShowMode, handleSlideChange]);
 
-  const stopMediaStream = () => {
+  const stopMediaStream = useCallback(() => {
     if (mediaStreamRef.current) {
       mediaStreamRef.current.getTracks().forEach(track => track.stop());
       mediaStreamRef.current = null;
@@ -212,7 +219,9 @@ export default function PresentationPractice({
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-  };
+  }, []);
+
+
 
   const toggleCamera = async (enableVideo: boolean) => {
     if (!enableVideo) {
