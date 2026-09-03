@@ -16,5 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/x-icon',
       },
     ],
-  };
+    // Required for Chrome Web Push compatibility (standard FCM compat value)
+    gcm_sender_id: '103953800507',
+  } as MetadataRoute.Manifest & { gcm_sender_id: string };
 }

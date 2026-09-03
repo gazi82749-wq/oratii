@@ -35,6 +35,7 @@ import { getGamificationSummary } from '@/lib/gamification';
 import { getChallengeState } from '@/lib/challenge';
 import EmptyState from '@/components/EmptyState';
 import ReferralCard from '@/components/ReferralCard';
+import NotificationPrompt from '@/components/NotificationPrompt';
 
 function AnimatedNumber({ value, duration = 800 }: { value: number; duration?: number }) {
   const [display, setDisplay] = useState(0);
@@ -297,6 +298,9 @@ export default function ProfessionalDashboard() {
       {/* Background Soft Glow Gradients (Matching Landing Page Theme) */}
       <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-indigo-200/40 blur-[130px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute top-80 -left-20 w-[450px] h-[450px] bg-purple-200/30 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+
+      {/* Push Notification Opt-In (non-intrusive, shows on 2nd+ visit) */}
+      <NotificationPrompt />
 
       {/* 1. HERO HEROIC PROFILE CARD (Landing Page Palette) */}
       <div className="relative bg-gradient-to-br from-[#1E1B4B] via-[#312E81] to-[#4338CA] text-white rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden border border-indigo-500/30 flex flex-col md:flex-row md:items-center justify-between gap-6">
