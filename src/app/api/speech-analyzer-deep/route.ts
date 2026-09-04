@@ -29,60 +29,63 @@ export async function POST(request: Request) {
       }
     }
 
-    const tonePrompt = `
-      You are a direct, no-nonsense speech coach. You analyze real speech data and give brutally honest scores. You NEVER give generic or default scores.
+    const numWpm = Number(wpm) || 0;
+    const numFillers = Number(totalFillers) || 0;
 
-      CONTEXT: The student was speaking for "${situation}".
+    const tonePrompt = `
+      You are an accredited Senior Speech & Communication Evaluator and IELTS/CEFR Speaking Assessor.
+      You analyze real speech data and provide transparent, mathematically anchored feedback.
+
+      SPEECH CONTEXT: "${situation}"
       SPEECH LANGUAGE: ${isHindi ? 'Hindi / Hinglish (Indian Hindi + English mix)' : 'English'}
       
-      MEASURED STATS:
-      - Words per minute: ${wpm}
-      - Total filler words: ${totalFillers}
-      - Fillers per minute: ${(Number(totalFillers) / (Number(wpm) > 0 ? (Number(wpm) / 130) : 1)).toFixed(1)}
+      MEASURED AUDIO METRICS:
+      - Words per minute: ${numWpm} (Optimal target: 130-155 WPM)
+      - Total filler words: ${numFillers}
+      - Fillers per minute: ${(numFillers / (numWpm > 0 ? (numWpm / 130) : 1)).toFixed(1)}
       
-      SCORING RULES — YOU MUST FOLLOW THIS FORMULA:
-      Start at 100 and subtract:
-      - WPM penalty: If WPM is outside 120-160 range, subtract 1 point per 5 WPM deviation. If outside 100-180, subtract 2 points per 5 WPM deviation beyond that.
-      - Filler penalty: Subtract 3 points per filler word (fillers destroy credibility).
-      - If transcript shows repetition/rambling, subtract 5-15 points.
-      - If structure is clear (intro/body/conclusion visible), ADD 5 points.
-      - Minimum score is 15, maximum is 98.
-      
-      CRITICAL: Do NOT default to 65-75 range. A speech with 0 fillers and perfect pacing should score 90+. A speech with 10+ fillers should score below 50. CALCULATE HONESTLY based on the formula above.
+      OBJECTIVE SCORING FORMULA (CEFR/IELTS ALIGNED):
+      Start at 100 points:
+      1. Pacing: Deduct 1 pt per 5 WPM deviation outside 130-155. If outside 100-180, deduct 2 pts per 5 WPM beyond that.
+      2. Fillers: Deduct 3 pts per detected filler word (fillers break listener retention).
+      3. Repetition / Rambling: Deduct 4-10 pts if repetitive phrasing or lack of transitions.
+      4. Structure: Add 5 pts bonus if clear intro, body, and conclusion or logical transition markers are observed.
+      5. Clamp final score between 15 and 98.
 
       RESPONSE FORMAT RULES:
-      1. Address the speaker as "you" (or "aap" if in Hinglish). Be warm, encouraging, but honest.
-      ${isHindi ? '2. LANGUAGE MANDATE: The user chose Hindi / Hinglish. Write ALL feedback, strengths, weaknesses, and suggestions in natural, clear Hinglish (Hindi words written using Latin/English script + English terms). Example: "Aapki speech ki opening bohot clear aur confident thi, but 0:15 pe filler words matlab/um ki jagah 2-second ka silent pause lein."' : '2. Respond in clear English. Hinglish mixing is fine if transcript is mixed.'}
-      3. EVERY strength/weakness/suggestion MUST start with a timestamp in format [M:SS]. Reference the EXACT timestamp from the transcript.
-      4. Give 2-4 strengths, 2-4 weaknesses, and 2-4 actionable suggestions.
-      5. Suggestions must be specific actions they can do TODAY, not vague advice.
-      6. For timeMarkers, use REAL timestamps from the transcript data.
+      1. Address the speaker as "you" (or respectful "aap" if Hinglish). Be direct, honest, and actionable.
+      ${isHindi ? '2. LANGUAGE MANDATE: The user chose Hindi / Hinglish. Write feedback, strengths, weaknesses, and suggestions in natural, clear Hinglish (Hindi written in English/Latin alphabet with English tech terms). Example: "Aapka flow bohot accha tha, par 0:18 pe filler word \'basically\' ki jagah 1-second silence maintain karein."' : '2. Respond in clear, professional English.'}
+      3. EVERY strength, weakness, and suggestion MUST start with an exact timestamp from the transcript in [M:SS] format.
+      4. Suggest concrete vocal exercises they can do today (e.g. pause replacement drill, half-speed rehearsal).
+      5. Align CEFR Level strictly with score: 88-98 = C2, 78-87 = C1, 65-77 = B2, 50-64 = B1, 35-49 = A2, <35 = A1.
       
-      Respond in valid JSON:
+      Respond STRICTLY in valid JSON:
       {
-        "tone": "One or two word tone label (e.g. Confident, Nervous, Monotone, Energetic, Hesitant, Rushed, Calm & Clear)",
-        "toneScore": <number 15-98 calculated from formula above>,
-        "feedback": "2-3 sentence overall coaching feedback referencing specific moments from the transcript",
+        "tone": "Confident / Nervous / Energetic / Monotone / Hesitant / Rushed / Articulate & Clear",
+        "toneScore": <number 15-98 calculated strictly from formula>,
+        "cefrBand": "C1",
+        "ieltsBand": 7.5,
+        "scoringRationale": "Pacing at ${numWpm} WPM and ${numFillers} filler words with clear structure.",
+        "feedback": "2-3 sentence overall coaching feedback referencing specific transcript moments.",
         "strengths": [
-          "[0:05] Your opening was clear and confident â€” you stated the topic immediately",
-          "[0:22] Good use of examples to support your argument"
+          "[0:05] Clear opening — stated primary objective immediately",
+          "[0:22] Effective structured reasoning supporting the core thesis"
         ],
         "weaknesses": [
-          "[0:15] You said 'um' and 'basically' back-to-back 3 times here â€” lost momentum",
-          "[0:35] Pacing sped up significantly â€” felt rushed through your main point"
+          "[0:15] Used filler words in quick succession — breaks vocal momentum",
+          "[0:32] Pacing accelerated abruptly — key takeaway felt slightly rushed"
         ],
         "suggestions": [
-          "[0:15] Replace the 'um basically' habit with a 2-second silent pause â€” silence sounds more confident than fillers",
-          "[0:35] Practice the middle section separately at half speed, then gradually increase"
+          "[0:15] Practice 2-second silent pauses where you normally say fillers — silence conveys authority",
+          "[0:32] Slow down by 15 WPM on your conclusion to allow key points to resonate"
         ],
         "timeMarkers": [
-          { "time": 5.0, "type": "strength", "feedback": "Clear confident opening â€” got straight to the point" },
-          { "time": 15.0, "type": "weakness", "feedback": "Triple filler words here â€” pause instead of saying 'um basically'" },
-          { "time": 35.0, "type": "suggestion", "feedback": "You rushed your key takeaway â€” slow down and let it land" }
+          { "time": 5.0, "type": "strength", "feedback": "Clear, structured opening statement" },
+          { "time": 15.0, "type": "weakness", "feedback": "Filler cluster detected — substitute with silence" },
+          { "time": 32.0, "type": "suggestion", "feedback": "Pacing spike — decelerate on crucial data" }
         ]
       }
     `;
-
 
     // 4-Stage AI Fallback Waterfall (Cerebras -> Groq -> Gemini -> OpenRouter)
     const toneText = await generateAIContent({

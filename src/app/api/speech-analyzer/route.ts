@@ -1,7 +1,8 @@
 // src/app/api/speech-analyzer/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
-import { HINGLISH_FILLERS } from '../../../lib/constants';
+import { STANDARD_ENGLISH_FILLERS, HINGLISH_FILLERS, groupFillerWords } from '../../../lib/constants';
+import { generateAuditedSpeechRubric } from '../../../lib/scoringRubric';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 
 export const dynamic = 'force-dynamic';
@@ -56,24 +57,34 @@ export async function POST(request: NextRequest) {
     
     // Extract words array containing filler word details
     const words = data.results?.channels[0]?.alternatives[0]?.words || [];
+    const totalDuration = data.metadata?.duration || 1;
 
-    // Filter and count filler words
-    // Deepgram marks "uh", "um", "mm", "ah" etc. with filler labels
-    const detectedFillers = words.filter(w => w.vowel_confidence || w.word === "um" || w.word === "uh" || w.word === "ah");
-    
-    // Total filler word count
-    const fillerCount = detectedFillers.length;
-
-    // Hinglish-specific manual checks for common Indian conversational fillers
+    // Deduplicated filler detection (prevents counting 'um'/'uh' twice)
+    let englishFillerCount = 0;
     let hinglishFillerCount = 0;
-    
+
     words.forEach(w => {
-      if (HINGLISH_FILLERS.includes(w.word.toLowerCase())) {
+      const cleanWord = (w.word || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!cleanWord) return;
+
+      const isNative = w.type === 'filler' || w.filler === true || STANDARD_ENGLISH_FILLERS.includes(cleanWord);
+      const isHinglish = HINGLISH_FILLERS.includes(cleanWord);
+
+      if (isNative) {
+        englishFillerCount++;
+      } else if (isHinglish) {
         hinglishFillerCount++;
       }
     });
-    const totalFillers = fillerCount + hinglishFillerCount;
-    const wpm = Math.round((words.length / (data.metadata?.duration || 1)) * 60);
+
+    const totalFillers = englishFillerCount + hinglishFillerCount;
+    const wpm = totalDuration > 0 ? Math.round((words.length / totalDuration) * 60) : 0;
+
+    // Quality Guardrail Check
+    const isSampleTooShort = totalDuration < 5 || words.length < 10;
+    const guardrailWarning = isSampleTooShort 
+      ? `Sample is too brief (${words.length} words, ${Math.round(totalDuration)}s). For an official benchmark, speak for at least 20-30 seconds.`
+      : null;
 
     let timedTranscript = "";
     let currentSentence = "";
@@ -90,10 +101,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    let toneAnalysis = null;
-
     // Calculate per-segment WPM for pace graph (5-second windows)
-    const totalDuration = data.metadata?.duration || 1;
     const segmentDuration = 5; // seconds per segment
     const paceData: { time: number; wpm: number; wordCount: number }[] = [];
     
@@ -104,7 +112,6 @@ export async function POST(request: NextRequest) {
         const segEnd = (i + 1) * segmentDuration;
         const segWords = words.filter((w: any) => w.start >= segStart && w.start < segEnd);
         const segWordCount = segWords.length;
-        // WPM = words in segment / segment duration in minutes
         const actualSegDuration = Math.min(segmentDuration, totalDuration - segStart);
         const segWpm = actualSegDuration > 0 ? Math.round((segWordCount / actualSegDuration) * 60) : 0;
         paceData.push({
@@ -115,6 +122,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Generate Standardized Academic Rubric
+    const auditedRubric = generateAuditedSpeechRubric(wpm, totalFillers, totalDuration, transcript);
+    const topFillers = groupFillerWords(words);
+
     // After a successful analysis, mark trial as used (only affects anonymous users)
     await setTrialUsed(request);
 
@@ -124,14 +135,18 @@ export async function POST(request: NextRequest) {
       words: words,
       analysis: {
         totalWords: words.length,
-        nativeFillerCount: fillerCount,
+        nativeFillerCount: englishFillerCount,
         hinglishFillerCount: hinglishFillerCount,
         totalFillers: totalFillers,
+        topFillers: topFillers,
         wpm: wpm,
         paceData: paceData,
         duration: totalDuration,
         timedTranscript: timedTranscript,
-        tone: toneAnalysis
+        tone: null,
+        isSampleTooShort: isSampleTooShort,
+        guardrailWarning: guardrailWarning,
+        rubric: auditedRubric
       }
     });
 

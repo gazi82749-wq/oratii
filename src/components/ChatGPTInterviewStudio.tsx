@@ -230,10 +230,10 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
         .map((item) => item.text);
 
       if (candidateAnswers.length === 0) {
-        setScores({ technical: 72, communication: 75, starAlignment: 70, overall: 72 });
-        setStrengths(['Promptly initiated the mock interview session.']);
-        setWeaknesses(['No responses recorded yet. Answer interviewer questions to receive deeper technical scoring.']);
-        setAiSuggestions(['Provide 2-3 sentence technical responses using the STAR method.']);
+        setScores({ technical: 0, communication: 0, starAlignment: 0, overall: 0 });
+        setStrengths(['Session initialized.']);
+        setWeaknesses(['No interview responses recorded. Practice answering questions aloud or by typing to receive authentic evaluation.']);
+        setAiSuggestions(['Start by answering the first introductory question using the STAR technique.']);
         setStep('results');
         return;
       }
@@ -265,9 +265,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       const data = await res.json();
       if (data.status === 'success' && data.data) {
         const evalData = data.data;
-        const techScore = Math.min(98, Math.max(65, evalData.structureScore || evalData.overallScore || 82));
-        const commScore = Math.min(98, Math.max(65, evalData.deliveryScore || evalData.overallScore || 85));
-        const starScore = Math.min(98, Math.max(65, evalData.persuasivenessScore || evalData.overallScore || 80));
+        const techScore = Math.min(98, Math.max(20, evalData.structureScore || evalData.overallScore || 65));
+        const commScore = Math.min(98, Math.max(20, evalData.deliveryScore || evalData.overallScore || 65));
+        const starScore = Math.min(98, Math.max(20, evalData.persuasivenessScore || evalData.overallScore || 60));
         const overallScore = Math.round((techScore + commScore + starScore) / 3);
 
         setScores({

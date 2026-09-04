@@ -263,24 +263,45 @@ export function getScoreLabel(score: number): string {
   return 'Needs Work';
 }
 
-// â”€â”€â”€ Filler Words â”€â”€â”€
-export const HINGLISH_FILLERS = ['matlab', 'like', 'basically', 'yani', 'um', 'uh', 'ah', 'mm'];
+// ——— Standardized Filler Lexicons ———
+export const STANDARD_ENGLISH_FILLERS = [
+  'um', 'uh', 'ah', 'er', 'mm', 'hmm', 'like', 'basically', 'actually', 'literally'
+];
+
+export const HINGLISH_FILLERS = [
+  'matlab', 'yani', 'samjhe', 'na', 'bhai', 'arre', 'dekho', 'toh'
+];
+
+export const ALL_AUDITED_FILLERS = Array.from(new Set([...STANDARD_ENGLISH_FILLERS, ...HINGLISH_FILLERS]));
 
 /**
- * Groups and counts filler words from a Deepgram words array.
- * Returns the top N fillers sorted by frequency.
+ * Deduplicates and counts filler words from speech word tokens.
+ * Matches Deepgram's native filler tokens as well as audited English and Hinglish conversational fillers.
  */
-export function groupFillerWords(words: any[], topN: number = 5): { word: string; count: number }[] {
+export function groupFillerWords(words: any[], topN: number = 6): { word: string; count: number; category: 'english' | 'hinglish' }[] {
   if (!words || !Array.isArray(words)) return [];
-  const counts: Record<string, number> = {};
+  const counts: Record<string, { count: number; category: 'english' | 'hinglish' }> = {};
+
   words.forEach(w => {
-    const word = w.word.toLowerCase();
-    if (w.vowel_confidence || HINGLISH_FILLERS.includes(word)) {
-      counts[word] = (counts[word] || 0) + 1;
+    const cleanWord = (w.word || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!cleanWord) return;
+
+    const isNativeFiller = w.type === 'filler' || w.filler === true;
+    const isEnglish = STANDARD_ENGLISH_FILLERS.includes(cleanWord);
+    const isHinglish = HINGLISH_FILLERS.includes(cleanWord);
+
+    if (isNativeFiller || isEnglish || isHinglish) {
+      const category: 'english' | 'hinglish' = isHinglish ? 'hinglish' : 'english';
+      if (!counts[cleanWord]) {
+        counts[cleanWord] = { count: 0, category };
+      }
+      counts[cleanWord].count += 1;
     }
   });
+
   return Object.entries(counts)
-    .map(([word, count]) => ({ word, count }))
+    .map(([word, data]) => ({ word, count: data.count, category: data.category }))
     .sort((a, b) => b.count - a.count)
     .slice(0, topN);
 }
+

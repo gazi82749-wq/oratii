@@ -12,6 +12,7 @@ import InsufficientCreditsModal from '../../components/InsufficientCreditsModal'
 import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
+import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } from '../../lib/scoringRubric';
 
 const SUGGESTED_TOPICS = [
   'Nature', 'My School', 'Save Water', 'My Best Friend',
@@ -31,6 +32,7 @@ export default function SpeechCoach() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeepLoading, setIsDeepLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [showScoreAudit, setShowScoreAudit] = useState(false);
   const [isGuestAuthModalOpen, setIsGuestAuthModalOpen] = useState(false);
   const [isCreditModalOpen, setIsCreditModalOpen] = useState(false);
   const [creditBalance, setCreditBalance] = useState(0);
@@ -261,30 +263,32 @@ export default function SpeechCoach() {
 
       const duration = data.analysis?.duration || 0;
       const transcript = data.transcript || '';
+      const totalWords = data.analysis?.totalWords || (transcript ? transcript.split(/\s+/).filter(Boolean).length : 0);
       
-      if (duration < 3 || transcript.trim().length === 0) {
+      if (duration < 4 || totalWords < 8 || transcript.trim().length === 0) {
         setResults({ 
           error: true,
-          title: "Audio Too Short",
-          message: "We couldn't detect enough speech in that recording. Please try again and speak for at least a few seconds."
+          title: "Insufficient Speech Sample",
+          message: `We detected only ${totalWords} words (${Math.round(duration)}s). An authentic, reliable assessment requires at least 15-20 seconds of continuous speaking. Please re-record and share a full thought.`
         });
         setIsLoading(false);
         return;
       }
 
       // Group filler words using shared utility
-      const mappedFillers = groupFillerWords(data.words);
-      if (mappedFillers.length === 0 && data.analysis?.totalFillers > 0) {
-        mappedFillers.push({ word: 'detected fillers', count: data.analysis.totalFillers });
-      }
-
+      const mappedFillers = data.analysis?.topFillers || groupFillerWords(data.words);
       const fillerCount = data.analysis?.totalFillers || 0;
+      const wpm = data.analysis?.wpm || 0;
+
+      // Deterministic Academic Rubric
+      const auditedRubric: AuditedSpeechRubric = data.analysis?.rubric || generateAuditedSpeechRubric(wpm, fillerCount, duration, transcript);
 
       const initialResults = {
-        overallScore: '...',
-        wpm: data.analysis?.wpm || 0,
-        targetWpm: '120 - 160',
+        overallScore: auditedRubric.overallScore,
+        wpm: wpm,
+        targetWpm: '130 - 155',
         fillers: mappedFillers,
+        totalFillers: fillerCount,
         transcript: data.transcript || "No transcript detected.",
         feedback: "Generating deep insights...",
         strengths: [],
@@ -293,7 +297,13 @@ export default function SpeechCoach() {
         tone: "Analyzing...",
         timeMarkers: [],
         paceData: data.analysis?.paceData || [],
-        duration: data.analysis?.duration || 0
+        duration: duration,
+        rubric: auditedRubric,
+        cefrBand: auditedRubric.benchmark.cefrLevel,
+        cefrTitle: auditedRubric.benchmark.cefrTitle,
+        ieltsBand: auditedRubric.benchmark.ieltsBand,
+        ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
+        trustGuarantee: auditedRubric.trustGuarantee
       };
       
       setResults(initialResults);
@@ -302,8 +312,8 @@ export default function SpeechCoach() {
 
       // Phase 2: Deep Analysis (no media file needed, only metadata)
       const deepFormData = new FormData();
-      deepFormData.append('wpm', data.analysis?.wpm || 0);
-      deepFormData.append('totalFillers', data.analysis?.totalFillers || 0);
+      deepFormData.append('wpm', String(wpm));
+      deepFormData.append('totalFillers', String(fillerCount));
       deepFormData.append('timedTranscript', data.analysis?.timedTranscript || '');
       deepFormData.append('situation', situation);
       deepFormData.append('language', language);
@@ -314,47 +324,33 @@ export default function SpeechCoach() {
         body: deepFormData,
       });
 
-      // Compute a metric-based fallback score from real data
-      const currentWpm = data.analysis?.wpm || 0;
-      const computeFallbackScore = () => {
-        let score = 100;
-        // WPM penalty
-        const idealMin = 120, idealMax = 160;
-        if (currentWpm < idealMin) score -= Math.ceil((idealMin - currentWpm) / 5) * 2;
-        else if (currentWpm > idealMax) score -= Math.ceil((currentWpm - idealMax) / 5) * 2;
-        // Filler penalty: 3 pts per filler
-        score -= fillerCount * 3;
-        // Clamp
-        return Math.max(15, Math.min(98, score));
-      };
-      let finalOverallScore = computeFallbackScore();
+      let finalOverallScore = auditedRubric.overallScore;
       let finalFeedback = "Your pacing and tone were analyzed successfully.";
-      let finalStrengths = [];
-      let finalWeaknesses = [];
-      let finalSuggestions = [];
+      let finalStrengths: string[] = [];
+      let finalWeaknesses: string[] = [];
+      let finalSuggestions: string[] = [];
       let finalTone = "Neutral";
-      let finalTimeMarkers = [];
+      let finalTimeMarkers: any[] = [];
+      let finalCefr = auditedRubric.benchmark.cefrLevel;
+      let finalIelts = auditedRubric.benchmark.ieltsBand;
 
       try {
         if (deepResponse.ok) {
           const deepData = await deepResponse.json();
           if (deepData.status === 'success' && deepData.tone) {
-            finalOverallScore = deepData.tone.toneScore || computeFallbackScore();
+            finalOverallScore = deepData.tone.toneScore || auditedRubric.overallScore;
             finalFeedback = deepData.tone.feedback || finalFeedback;
             finalStrengths = deepData.tone.strengths || [];
             finalWeaknesses = deepData.tone.weaknesses || [];
             finalSuggestions = deepData.tone.suggestions || [];
             finalTone = deepData.tone.tone || finalTone;
             finalTimeMarkers = deepData.tone.timeMarkers || [];
+            if (deepData.tone.cefrBand) finalCefr = deepData.tone.cefrBand;
+            if (deepData.tone.ieltsBand) finalIelts = deepData.tone.ieltsBand;
           }
         }
       } catch (err) {
         console.error("Deep analysis failed:", err);
-        setResults(prev => ({
-          ...prev,
-          feedback: "We could not generate deep insights at this time.",
-          overallScore: 50
-        }));
       }
 
       setResults(prev => ({
@@ -365,7 +361,9 @@ export default function SpeechCoach() {
         weaknesses: finalWeaknesses,
         suggestions: finalSuggestions,
         tone: finalTone,
-        timeMarkers: finalTimeMarkers
+        timeMarkers: finalTimeMarkers,
+        cefrBand: finalCefr,
+        ieltsBand: finalIelts
       }));
 
       saveSession('speech', {
@@ -1457,11 +1455,134 @@ export default function SpeechCoach() {
                   <span>📊 Executive Speech Analysis & Pacing</span>
                 </h3>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Compact breakdown of your overall performance, vocal tone, and delivery speed
+                  Academic evaluation aligned with international CEFR & IELTS Spoken Fluency benchmarks
                 </p>
               </div>
-              
-              <div className="flex flex-col gap-6">
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {results.cefrBand && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-indigo-50 border border-indigo-200 text-indigo-700 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    CEFR: {results.cefrBand}
+                  </span>
+                )}
+                {results.ieltsBand && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-teal-50 border border-teal-200 text-teal-700 shadow-2xs">
+                    🎓 IELTS: Band {results.ieltsBand}
+                  </span>
+                )}
+                <button
+                  onClick={() => setShowScoreAudit(prev => !prev)}
+                  className="px-3 py-1 rounded-full text-xs font-extrabold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  ⚖️ {showScoreAudit ? 'Close Audit' : 'Verify Score Audit'}
+                </button>
+              </div>
+            </div>
+
+            {/* Collapsible Scientific Score Audit Modal / Banner */}
+            {showScoreAudit && results.rubric && (
+              <div className="mb-6 bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xl animate-in fade-in slide-in-from-top-3 duration-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[11px] font-bold uppercase tracking-wider border border-emerald-500/30">
+                        100% Deterministic Rubric
+                      </span>
+                      <span className="text-xs text-slate-400 font-semibold">Institutional Grade Audit</span>
+                    </div>
+                    <h4 className="text-lg font-black text-white mt-1">
+                      Academic Score Calculation: {results.rubric.overallScore}/100 pts
+                    </h4>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-right">
+                      <span className="text-[10px] uppercase tracking-wider text-slate-400 block font-bold">Standard</span>
+                      <span className="text-xs font-black text-indigo-400">{results.rubric.benchmark.cefrTitle}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3 Pillars Breakdown */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-5">
+                  {/* Pillar 1 */}
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">1. Pacing Control</span>
+                      <span className="text-sm font-black text-white">{results.rubric.pacing.score}/30 pts</span>
+                    </div>
+                    <div className="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                      <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${results.rubric.pacing.percentage}%` }}></div>
+                    </div>
+                    <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.pacing.summary}</p>
+                    {results.rubric.pacing.deductions.length > 0 && (
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
+                        ⚠️ {results.rubric.pacing.deductions[0]}
+                      </p>
+                    )}
+                    {results.rubric.pacing.bonuses.length > 0 && (
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
+                        ✓ {results.rubric.pacing.bonuses[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Pillar 2 */}
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-pink-300">2. Fluency & Fillers</span>
+                      <span className="text-sm font-black text-white">{results.rubric.fluency.score}/30 pts</span>
+                    </div>
+                    <div className="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                      <div className="bg-pink-500 h-full rounded-full" style={{ width: `${results.rubric.fluency.percentage}%` }}></div>
+                    </div>
+                    <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.fluency.summary}</p>
+                    {results.rubric.fluency.deductions.length > 0 && (
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
+                        ⚠️ {results.rubric.fluency.deductions[0]}
+                      </p>
+                    )}
+                    {results.rubric.fluency.bonuses.length > 0 && (
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
+                        ✓ {results.rubric.fluency.bonuses[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Pillar 3 */}
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-teal-300">3. Coherence & Lexicon</span>
+                      <span className="text-sm font-black text-white">{results.rubric.vocabularyAndStructure.score}/40 pts</span>
+                    </div>
+                    <div className="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                      <div className="bg-teal-500 h-full rounded-full" style={{ width: `${results.rubric.vocabularyAndStructure.percentage}%` }}></div>
+                    </div>
+                    <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.vocabularyAndStructure.summary}</p>
+                    {results.rubric.vocabularyAndStructure.deductions.length > 0 && (
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
+                        ⚠️ {results.rubric.vocabularyAndStructure.deductions[0]}
+                      </p>
+                    )}
+                    {results.rubric.vocabularyAndStructure.bonuses.length > 0 && (
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
+                        ✓ {results.rubric.vocabularyAndStructure.bonuses[0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Trust Guarantee note */}
+                <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-800 flex items-start gap-2.5">
+                  <span className="text-base">🛡️</span>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    <strong className="text-slate-200">Institutional Transparency Guarantee:</strong> {results.rubric.trustGuarantee}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-6">
                 {/* Rounded Score Gauge Rings Bar */}
                 <div className="grid grid-cols-3 gap-3 bg-gradient-to-r from-indigo-50/60 via-slate-50 to-amber-50/40 p-4 rounded-2xl border border-indigo-100/80 shadow-2xs">
                   <ScoreRing 
@@ -1554,7 +1675,6 @@ export default function SpeechCoach() {
                   </div>
                 </div>
               </div>
-            </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">

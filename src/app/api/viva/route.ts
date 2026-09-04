@@ -212,22 +212,28 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
          - Good answer? Praise their clarity, then point out 1 nuanced detail they can add.
          - Weak answer? Explain clearly what a top-scoring response looks like.
       4. Tips should be actionable, high-value advice for viva candidates.
-      5. Score honestly from 0 to 100 based on adherence to requested length and accuracy.
+      RIGOROUS ACADEMIC SCORING DIRECTIVE (MANDATORY FOR TRUST):
+      - DO NOT default to the 80-85 range! Every score must reflect the actual quality of the candidate's latest answer.
+      - Insufficient / Evasive / 1-3 word answers ("yes", "idk", "maybe"): Score strictly between 15 and 35. Explain what is missing.
+      - Superficial / Partially correct answers: Score between 45 and 65.
+      - Competent, clear, accurate answers: Score between 70 and 82.
+      - Outstanding, detailed answers with trade-offs / examples: Score between 85 and 96.
+      - "overall" MUST equal the rounded average of the subscores.
 
       Respond STRICTLY in valid JSON format:
       {
-        "feedbackToPreviousAnswer": "<Constructive evaluation of candidate response, strictly adhering to ${mode.toUpperCase()} DEFENSE MODE directives>",
+        "feedbackToPreviousAnswer": "<Objective evaluation of candidate response, strictly adhering to ${mode.toUpperCase()} DEFENSE MODE directives>",
         "scores": ${mode === 'text' ? `{
-          "accuracy": 85,
-          "reasoning": 82,
-          "clarity": 88,
-          "overall": 85
+          "accuracy": <number 15-98 based on technical correctness>,
+          "reasoning": <number 15-98 based on depth of logic>,
+          "clarity": <number 15-98 based on written articulation>,
+          "overall": <number 15-98 average of the above>
         }` : `{
-          "accuracy": 85,
-          "confidence": 82,
-          "delivery": 84,
-          "communication": 86,
-          "overall": 84
+          "accuracy": <number 15-98 based on factual correctness>,
+          "confidence": <number 15-98 based on vocal certainty>,
+          "delivery": <number 15-98 based on pacing and pause discipline>,
+          "communication": <number 15-98 based on clarity of explanation>,
+          "overall": <number 15-98 average of the above>
         }`},
         "currentStage": "${targetStage}",
         "stageLabel": "Level 1: Basic Warmup",

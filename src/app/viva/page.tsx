@@ -227,17 +227,17 @@ export default function VivaCoachPage() {
         const rawScores = vivaPayload.scores || {};
         const scoreObj = mode === 'text'
           ? {
-              accuracy: rawScores.accuracy || 84,
-              reasoning: rawScores.reasoning || 82,
-              clarity: rawScores.clarity || 85,
-              overall: rawScores.overall || 84
+              accuracy: typeof rawScores.accuracy === 'number' ? rawScores.accuracy : 70,
+              reasoning: typeof rawScores.reasoning === 'number' ? rawScores.reasoning : 70,
+              clarity: typeof rawScores.clarity === 'number' ? rawScores.clarity : 70,
+              overall: typeof rawScores.overall === 'number' ? rawScores.overall : 70
             }
           : {
-              confidence: rawScores.confidence || 82,
-              accuracy: rawScores.accuracy || 84,
-              delivery: rawScores.delivery || 84,
-              communication: rawScores.communication || 86,
-              overall: rawScores.overall || 84
+              confidence: typeof rawScores.confidence === 'number' ? rawScores.confidence : 70,
+              accuracy: typeof rawScores.accuracy === 'number' ? rawScores.accuracy : 70,
+              delivery: typeof rawScores.delivery === 'number' ? rawScores.delivery : 70,
+              communication: typeof rawScores.communication === 'number' ? rawScores.communication : 70,
+              overall: typeof rawScores.overall === 'number' ? rawScores.overall : 70
             };
         setScores(scoreObj);
         setAllScores(prev => [...prev, scoreObj]);
