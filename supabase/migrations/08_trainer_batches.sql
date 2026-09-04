@@ -100,23 +100,29 @@ ALTER TABLE public.batch_assignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.batch_submissions ENABLE ROW LEVEL SECURITY;
 
 -- Academies: Owner can manage their academy; anyone can read basic academy info for co-branding
+DROP POLICY IF EXISTS "Academies owner access" ON public.academies;
 CREATE POLICY "Academies owner access" ON public.academies
   FOR ALL USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
 
+DROP POLICY IF EXISTS "Public academy read" ON public.academies;
 CREATE POLICY "Public academy read" ON public.academies
   FOR SELECT USING (true);
 
 -- Batches: Trainer/Academy owner can manage; enrolled students or anyone with valid code can read
+DROP POLICY IF EXISTS "Trainer manage batches" ON public.batches;
 CREATE POLICY "Trainer manage batches" ON public.batches
   FOR ALL USING (auth.uid() = trainer_id) WITH CHECK (auth.uid() = trainer_id);
 
+DROP POLICY IF EXISTS "Public batch read by code" ON public.batches;
 CREATE POLICY "Public batch read by code" ON public.batches
   FOR SELECT USING (true);
 
 -- Batch Members: Students can view their enrollments; trainers can view members in their batches
+DROP POLICY IF EXISTS "Students manage own batch enrollments" ON public.batch_members;
 CREATE POLICY "Students manage own batch enrollments" ON public.batch_members
   FOR ALL USING (auth.uid() = student_id) WITH CHECK (auth.uid() = student_id);
 
+DROP POLICY IF EXISTS "Trainers view batch members" ON public.batch_members;
 CREATE POLICY "Trainers view batch members" ON public.batch_members
   FOR SELECT USING (
     EXISTS (
@@ -127,9 +133,11 @@ CREATE POLICY "Trainers view batch members" ON public.batch_members
   );
 
 -- Batch Assignments: Trainer can manage assignments; enrolled students can read
+DROP POLICY IF EXISTS "Trainers manage assignments" ON public.batch_assignments;
 CREATE POLICY "Trainers manage assignments" ON public.batch_assignments
   FOR ALL USING (auth.uid() = trainer_id) WITH CHECK (auth.uid() = trainer_id);
 
+DROP POLICY IF EXISTS "Enrolled students view assignments" ON public.batch_assignments;
 CREATE POLICY "Enrolled students view assignments" ON public.batch_assignments
   FOR SELECT USING (
     EXISTS (
@@ -140,9 +148,11 @@ CREATE POLICY "Enrolled students view assignments" ON public.batch_assignments
   );
 
 -- Batch Submissions: Students can insert their submissions; trainers of the batch can read and update notes
+DROP POLICY IF EXISTS "Students manage own submissions" ON public.batch_submissions;
 CREATE POLICY "Students manage own submissions" ON public.batch_submissions
   FOR ALL USING (auth.uid() = student_id) WITH CHECK (auth.uid() = student_id);
 
+DROP POLICY IF EXISTS "Trainers view and grade submissions" ON public.batch_submissions;
 CREATE POLICY "Trainers view and grade submissions" ON public.batch_submissions
   FOR ALL USING (
     EXISTS (
