@@ -13,8 +13,20 @@ CREATE TABLE IF NOT EXISTS public.academies (
   commission_rate NUMERIC DEFAULT 0.20, -- 20% affiliate kickback for student top-ups
   total_earnings NUMERIC DEFAULT 0.00,
   created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  CONSTRAINT unique_academy_owner UNIQUE (owner_id)
 );
+
+-- Ensure unique constraint exists if table was already created
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'unique_academy_owner'
+  ) THEN
+    ALTER TABLE public.academies ADD CONSTRAINT unique_academy_owner UNIQUE (owner_id);
+  END IF;
+END $$;
+
 
 -- 2. Batches Table (Classrooms/Cohorts)
 CREATE TABLE IF NOT EXISTS public.batches (
@@ -139,3 +151,16 @@ CREATE POLICY "Trainers view and grade submissions" ON public.batch_submissions
       AND batches.trainer_id = auth.uid()
     )
   );
+
+-- 8. Profiles: Trainers can view basic student profile info for students enrolled in their batches
+DROP POLICY IF EXISTS "Trainers can view enrolled student profiles" ON public.profiles;
+CREATE POLICY "Trainers can view enrolled student profiles" ON public.profiles
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.batch_members bm
+      JOIN public.batches b ON b.id = bm.batch_id
+      WHERE bm.student_id = profiles.id
+      AND b.trainer_id = auth.uid()
+    )
+  );
+

@@ -2,7 +2,7 @@
 // Handles Academy profile creation and status retrieval for trainers/institutes
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { getServiceSupabase, getTrainerDbClient, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,13 +19,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const db = getTrainerDbClient(token);
 
-    const { data: academy } = await supabaseAdmin
+    const { data: academy, error } = await db
       .from('academies')
       .select('*')
       .eq('owner_id', user.id)
       .maybeSingle();
+
+    if (error) {
+      console.error('[Trainer Academy GET] Query error:', error);
+    }
 
     return NextResponse.json({ academy: academy || null });
   } catch (error: any) {
@@ -55,34 +59,63 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Institute name is required' }, { status: 400 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const db = getTrainerDbClient(token);
 
-    // 1. Upsert Academy
-    const { data: academy, error: academyError } = await supabaseAdmin
+    // 1. Check if an academy profile already exists for this owner
+    const { data: existingAcademy } = await db
       .from('academies')
-      .upsert(
-        {
+      .select('id')
+      .eq('owner_id', user.id)
+      .maybeSingle();
+
+    let academy: any;
+    let academyError: any;
+
+    if (existingAcademy) {
+      const res = await db
+        .from('academies')
+        .update({
+          name: name.trim(),
+          city: city?.trim() || null,
+          phone: phone?.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingAcademy.id)
+        .select()
+        .single();
+      academy = res.data;
+      academyError = res.error;
+    } else {
+      const res = await db
+        .from('academies')
+        .insert({
           owner_id: user.id,
           name: name.trim(),
           city: city?.trim() || null,
           phone: phone?.trim() || null,
           updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'owner_id' }
-      )
-      .select()
-      .single();
+        })
+        .select()
+        .single();
+      academy = res.data;
+      academyError = res.error;
+    }
 
     if (academyError) {
       console.error('[Trainer Academy POST] Error:', academyError.message);
       return NextResponse.json({ error: academyError.message }, { status: 500 });
     }
 
-    // 2. Set profile role to 'trainer'
-    await supabaseAdmin
-      .from('profiles')
-      .update({ role: 'trainer' })
-      .eq('id', user.id);
+    // 2. Set profile role to 'trainer' safely
+    try {
+      const adminClient = getServiceSupabase();
+      await adminClient
+        .from('profiles')
+        .update({ role: 'trainer' })
+        .eq('id', user.id);
+    } catch (roleErr) {
+      console.warn('[Trainer Academy POST] Profile role update notice:', roleErr);
+    }
 
     return NextResponse.json({ success: true, academy });
   } catch (error: any) {
@@ -93,3 +126,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

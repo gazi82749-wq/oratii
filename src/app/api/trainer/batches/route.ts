@@ -2,7 +2,7 @@
 // Lists and creates batches for a trainer with auto-generated 6-character invite codes
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { getTrainerDbClient, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient(token);
 
     // Query batches owned by this trainer
     const { data: batches, error: batchError } = await supabaseAdmin
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Batch name is required' }, { status: 400 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient(token);
 
     // Check trainer's academy
     let { data: academy } = await supabaseAdmin

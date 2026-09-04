@@ -2,7 +2,7 @@
 // Resolves batch info by 6-digit code and enrolls students
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { getTrainerDbClient, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Code is required' }, { status: 400 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient();
 
     const { data: batch, error } = await supabaseAdmin
       .from('batches')
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Batch code is required' }, { status: 400 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient(token);
 
     // 1. Resolve batch
     const { data: batch, error: batchError } = await supabaseAdmin

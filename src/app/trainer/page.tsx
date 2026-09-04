@@ -23,7 +23,8 @@ import {
   RefreshCw,
   MessageCircle,
   Clock,
-  ChevronRight
+  ChevronRight,
+  AlertCircle
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -58,6 +59,7 @@ export default function TrainerDashboardPage() {
   const [instituteName, setInstituteName] = useState('');
   const [instituteCity, setInstituteCity] = useState('');
   const [submittingOnboarding, setSubmittingOnboarding] = useState(false);
+  const [onboardingError, setOnboardingError] = useState<string | null>(null);
 
   // Create Batch modal
   const [showCreateBatch, setShowCreateBatch] = useState(false);
@@ -113,13 +115,19 @@ export default function TrainerDashboardPage() {
     if (!instituteName.trim()) return;
 
     setSubmittingOnboarding(true);
+    setOnboardingError(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login?redirect=/trainer');
+        return;
+      }
+
       const res = await fetch('/api/trainer/academy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           name: instituteName.trim(),
@@ -127,13 +135,17 @@ export default function TrainerDashboardPage() {
         }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && data.academy) {
         setAcademy(data.academy);
-        fetchTrainerData();
+        // Refresh batch data to load clean dashboard
+        await fetchTrainerData();
+      } else {
+        setOnboardingError(data.error || 'Failed to save academy details. Please try again.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Onboarding failed:', err);
+      setOnboardingError(err?.message || 'Connection error. Please try again.');
     } finally {
       setSubmittingOnboarding(false);
     }
@@ -217,6 +229,13 @@ export default function TrainerDashboardPage() {
               <li>20% affiliate kickback when students buy top-up packs</li>
             </ul>
           </div>
+
+          {onboardingError && (
+            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2.5">
+              <AlertCircle size={16} className="text-rose-500 shrink-0" />
+              <p className="font-medium">{onboardingError}</p>
+            </div>
+          )}
 
           <form onSubmit={handleRegisterAcademy} className="space-y-4">
             <div>

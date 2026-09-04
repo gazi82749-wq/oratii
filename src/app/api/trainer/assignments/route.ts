@@ -2,7 +2,7 @@
 // Creates new assignments across the 3 Master Tracks (Speech, Interview, Presentation/Viva)
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { getTrainerDbClient, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'batchId and title are required' }, { status: 400 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient(token);
 
     // Verify trainer owns the batch
     const { data: batch } = await supabaseAdmin

@@ -2,7 +2,7 @@
 // Detailed batch roster, assignments, and student gradebook
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { getTrainerDbClient, supabase } from '@/lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +23,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    const supabaseAdmin = getServiceSupabase();
+    const supabaseAdmin = getTrainerDbClient(token);
 
     // 1. Fetch batch info
     const { data: batch, error: batchError } = await supabaseAdmin
