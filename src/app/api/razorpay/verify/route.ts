@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import { CREDIT_PACKAGES } from '@/lib/credits';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -31,8 +32,9 @@ export async function POST(req: Request) {
       }
     }
 
-    // Calculate credits to add based on package
-    const creditsToAdd = planId === 'pro_180' ? 180 : planId === 'value_50' ? 50 : 0;
+    // Calculate credits to add based on package definition
+    const targetPackage = CREDIT_PACKAGES.find((p) => p.id === planId);
+    const creditsToAdd = targetPackage ? targetPackage.credits : 10;
 
     // Fetch existing credits
     const { data: profile } = await supabase
