@@ -39,8 +39,8 @@ export default function TermsOfServicePage() {
 
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">2. Description of Service</h2>
-              <p className="text-slate-700 font-medium">
-                Oratii provides an AI-powered public speaking, PowerPoint slide deck analysis, AI Job Interview Studio, and Viva Q&A defense practice platform. Features include real-time WPM pacing metrics, filler word detection, text density heatmaps, STAR method interview scoring, and WASM posture telemetry.
+              <p className="text-slate-700 font-medium leading-relaxed">
+                Oratii provides an AI-powered public speaking, PowerPoint slide deck analysis, AI Job Interview Studio, and Viva Q&amp;A defense practice platform. Features include real-time WPM pacing metrics, filler word detection in English and Hinglish, CEFR and IELTS speaking band assessments, PowerPoint (PPTX) and PDF slide density heatmaps, STAR method campus placement simulations (including high-stakes presets for TCS/Infosys, SDE-1, Data Analyst, and MBA defenses), a structured 20-Day Placement Challenge curriculum, educational institution and trainer batch portals, and on-device WebAssembly (WASM) camera posture telemetry.
               </p>
             </section>
 
@@ -54,7 +54,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">4. Trial Credits & Credit Packages</h2>
               <p className="text-slate-700 font-medium">
-                Oratii provides 10 Free Trial Credits upon account creation. Additional credit packages can be purchased on a pay-as-you-go basis without recurring monthly subscription traps. Payments are securely processed via Razorpay. All purchases and eligible refund requests are governed by our <Link href="/refund-policy" className="font-bold text-[#151930] underline">Cancellation & Refund Policy</Link>.
+                Oratii provides 10 Free Trial Credits upon account creation. Additional credit packages can be purchased on a pay-as-you-go basis without recurring monthly subscription traps. Payments are securely processed via Razorpay. All purchases and eligible refund requests are governed by our <Link href="/refund-policy" className="font-bold text-[#151930] underline">Cancellation &amp; Refund Policy</Link>.
               </p>
             </section>
 
@@ -75,7 +75,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">7. Contact & Notices</h2>
               <p className="text-slate-700 font-medium">
-                For questions or legal notices regarding these Terms, please contact us at <a href="mailto:support@oratii.ai" className="font-bold text-[#151930] underline">support@oratii.ai</a> or submit a message on our <Link href="/support" className="font-bold text-[#151930] underline">Support Page</Link>.
+                For questions or legal notices regarding these Terms, please contact us at <a href="mailto:support@oratii.app" className="font-bold text-[#151930] underline">support@oratii.app</a> or submit a message on our <Link href="/support" className="font-bold text-[#151930] underline">Support Page</Link>.
               </p>
             </section>
 

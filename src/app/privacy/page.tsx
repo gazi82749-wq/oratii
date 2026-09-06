@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 text-slate-900">
               <p className="font-extrabold text-sm mb-1">Have questions about your privacy?</p>
               <p className="text-xs text-slate-600 font-medium">
-                Contact our privacy compliance officer at <a href="mailto:privacy@oratii.ai" className="font-bold underline text-[#151930]">privacy@oratii.ai</a> or reach out through our <Link href="/support" className="font-bold underline text-[#151930]">Support Page</Link>.
+                Contact our privacy compliance officer at <a href="mailto:privacy@oratii.app" className="font-bold underline text-[#151930]">privacy@oratii.app</a> or reach out through our <Link href="/support" className="font-bold underline text-[#151930]">Support Page</Link>.
               </p>
             </div>
           </section>
