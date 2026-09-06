@@ -327,9 +327,18 @@ export default function PresentationPractice({
       setSlideEventLog(initialLog);
       logEvent(EVENT_TYPES.SLIDE_CHANGE, { slideNumber: currentSlide });
 
-      // 100ms Polling Loop for Realtime Edge HUD (0ms Network Latency)
+      // 100ms Polling Loop for Realtime Edge HUD (0ms Network Latency) with 3-Min Free Drill Cap
       timerIntervalRef.current = setInterval(() => {
-        setElapsedSeconds(prev => prev + 1);
+        setElapsedSeconds(prev => {
+          if (prev + 1 >= 180) {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            setTimeout(() => {
+              stopPracticeRecording();
+            }, 0);
+            return 180;
+          }
+          return prev + 1;
+        });
 
         if (audioProcessorRef.current) {
           const metrics = audioProcessorRef.current.getMetrics();
@@ -637,7 +646,7 @@ export default function PresentationPractice({
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <div className={`text-xs font-mono px-2.5 py-1 rounded-lg border flex items-center gap-2 transition-colors ${isRecording ? (isPaused ? 'text-amber-400 bg-amber-950/50 border-amber-800/80' : 'text-red-400 bg-red-950/50 border-red-800/80') : 'text-[#F2A93B] bg-[#0B0E27] border-slate-800'}`}>
               <span className={`w-2 h-2 rounded-full ${isRecording ? (isPaused ? 'bg-amber-500' : 'bg-red-500 animate-ping') : 'bg-slate-600'}`}></span>
-              <span className="font-extrabold tracking-wider">{isRecording ? (isPaused ? 'PAUSED' : 'REC') : 'READY'} {formatTimer(elapsedSeconds)}</span>
+              <span className="font-extrabold tracking-wider">{isRecording ? (isPaused ? 'PAUSED' : 'REC') : 'READY'} {formatTimer(elapsedSeconds)} / 03:00</span>
             </div>
 
             <div className="hidden sm:flex text-xs font-extrabold text-slate-300 bg-[#0B0E27] px-2.5 py-1 rounded-lg border border-slate-800">

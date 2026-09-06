@@ -33,28 +33,28 @@ import InsufficientCreditsModal from '@/components/InsufficientCreditsModal';
 import { checkAndDeductCredits } from '@/lib/credits';
 import { supabase } from '@/lib/supabaseClient';
 
-// 20 Custom Badge Definitions for the 20-Day Challenge
+// 20 Custom Badge Definitions for the 20-Day Campus Placement & Viva Defense Bootcamp
 const CHALLENGE_BADGES = [
-  { day: 1, name: 'Day 1 Explorer', icon: '🚀', desc: 'Recorded 2-minute self introduction' },
-  { day: 2, name: 'Hobby Master', icon: '🎨', desc: 'Explained favorite hobby clearly' },
-  { day: 3, name: 'Product Pitcher', icon: '💡', desc: 'Pitched a dream product or app' },
-  { day: 4, name: 'Storyteller', icon: '📖', desc: 'Told a memorable childhood story' },
-  { day: 5, name: 'Day 5 Pioneer', icon: '🌟', desc: 'Explained a complex topic simply' },
-  { day: 6, name: 'Elevator Pitcher', icon: '⚡', desc: 'Delivered a 90-second elevator pitch' },
-  { day: 7, name: 'Inspirer', icon: '🔥', desc: 'Gave an inspiring motivational speech' },
-  { day: 8, name: 'Negotiator', icon: '🤝', desc: 'Handled a tough objection under pressure' },
-  { day: 9, name: 'Status Updater', icon: '📊', desc: 'Presented a 2-minute project update' },
-  { day: 10, name: 'Day 10 Vanguard', icon: '🛡️', desc: 'Delivered an empathetic 1-minute apology' },
-  { day: 11, name: 'Debater', icon: '⚖️', desc: 'Argued opposing view with logical flow' },
-  { day: 12, name: 'Toastmaker', icon: '🥂', desc: 'Gave a warm toast for a colleague' },
-  { day: 13, name: 'TED Speaker', icon: '🎤', desc: 'Delivered a mini TED-style talk' },
-  { day: 14, name: 'Interview Master', icon: '💼', desc: 'Answered "What is your greatest weakness?"' },
-  { day: 15, name: 'Day 15 Veteran', icon: '🏅', desc: 'Summarized favorite book or movie' },
-  { day: 16, name: 'Instructor', icon: '🎓', desc: 'Taught a quick 2-minute skill tutorial' },
-  { day: 17, name: 'Keynote Speaker', icon: '🏛️', desc: 'Gave an opening speech for a conference' },
-  { day: 18, name: 'Pitch Master', icon: '🏆', desc: 'Explained why you should be hired' },
-  { day: 19, name: 'Award Winner', icon: '👑', desc: 'Delivered a mock award acceptance speech' },
-  { day: 20, name: '20-Day Champion', icon: '🎖️', desc: 'Completed full 20-Day Capstone Presentation' },
+  { day: 1, name: 'Campus Initiator', icon: '🚀', desc: 'Delivered crisp 90s professional introduction' },
+  { day: 2, name: 'Architecture Defender', icon: '💻', desc: 'Defended major engineering project stack & flow' },
+  { day: 3, name: 'STAR Problem Solver', icon: '⭐', desc: 'Resolved behavioral crisis with STAR methodology' },
+  { day: 4, name: 'Concept Simplifier', icon: '💡', desc: 'Explained complex engineering logic simply' },
+  { day: 5, name: 'Campus Negotiator', icon: '🤝', desc: 'Mastered placement offer & role dialogue' },
+  { day: 6, name: 'Hostile Cross-Examiner', icon: '🛡️', desc: 'Maintained composure against skeptical examiners' },
+  { day: 7, name: 'IELTS Band 8 Speaker', icon: '🗣️', desc: 'Delivered 2-minute technology cue card speech' },
+  { day: 8, name: 'Teamwork Diplomat', icon: '👥', desc: 'De-escalated team friction with active listening' },
+  { day: 9, name: 'Executive Pitcher', icon: '📊', desc: 'Presented 2-minute project progress & metrics' },
+  { day: 10, name: 'Verbal Enunciator', icon: '🎯', desc: 'Cleared TCS/Infosys accent & filler audit' },
+  { day: 11, name: 'Trade-off Strategist', icon: '⚖️', desc: 'Justified architectural limits with maturity' },
+  { day: 12, name: 'GD Moderator', icon: '🎙️', desc: 'Delivered structured group discussion interjections' },
+  { day: 13, name: 'Database Architect', icon: '🗄️', desc: 'Defended indexing, scaling, and ACID principles' },
+  { day: 14, name: 'Resilient Engineer', icon: '🏅', desc: 'Framed past technical failures into learnings' },
+  { day: 15, name: 'Rapid Fire Defender', icon: '⚡', desc: 'Passed rapid-fire university viva panel' },
+  { day: 16, name: 'Technical Translator', icon: '🌐', desc: 'Translated complex code for HR recruiters' },
+  { day: 17, name: 'Global Debate Master', icon: '🏛️', desc: 'Mastered abstract IELTS Part 3 discussion' },
+  { day: 18, name: 'Placement Finalist', icon: '🏆', desc: 'Delivered compelling "Why Hire Me" pitch' },
+  { day: 19, name: 'Stress Test Survivor', icon: '🔥', desc: 'Withstood high-intensity hostile cross-exam' },
+  { day: 20, name: 'Placement & Viva Champion', icon: '🎖️', desc: 'Completed full 20-Day Capstone Simulation' },
 ];
 
 export default function ChallengePage() {
@@ -170,13 +170,13 @@ export default function ChallengePage() {
         
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> 20-Day Habit Engine
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> 20-Day Placement &amp; Viva Bootcamp
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950 leading-tight mb-1">
-            20-Day Speaking Challenge
+            20-Day Campus Placement &amp; Viva Bootcamp
           </h1>
           <p className="text-xs sm:text-sm font-medium text-slate-500 max-w-xl">
-            Build unshakeable public speaking confidence. Practice 2 minutes daily, earn milestone certificates, and track your filler word reductions.
+            Eliminate &ldquo;matlab&rdquo; &amp; &ldquo;basically&rdquo; filler habits, master STAR method interviews for TCS/Infosys drives, and pass university project vivas without freezing.
           </p>
         </div>
 
@@ -311,6 +311,43 @@ export default function ChallengePage() {
           <p className="text-sm font-medium text-slate-600 leading-relaxed">
             {todayTask.description}. Click below to launch Speech Coach pre-configured for this task.
           </p>
+
+          {/* Pre-Drill Guide: What to Include vs What to Cut */}
+          {(todayTask.dos || todayTask.donts) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+              {todayTask.dos && todayTask.dos.length > 0 && (
+                <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-emerald-800 uppercase tracking-wider">
+                    <span>✅</span> What to Include (Recruiter Rubric):
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-emerald-950 font-medium">
+                    {todayTask.dos.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-emerald-600 font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {todayTask.donts && todayTask.donts.length > 0 && (
+                <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-rose-800 uppercase tracking-wider">
+                    <span>❌</span> What NOT to Say (Cut Unwanted Fluff):
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-rose-950 font-medium">
+                    {todayTask.donts.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-rose-600 font-bold shrink-0">✕</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
             <button

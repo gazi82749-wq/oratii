@@ -20,9 +20,10 @@ export default function SidebarLayout({ children }) {
 
   const mobileNavItems = [
     { href: '/', label: 'Home', icon: <Home size={18} /> },
-    { href: '/speech-coach', label: 'Speech', icon: <Mic size={18} /> },
-    { href: '/interview', label: 'Interview', icon: <Briefcase size={18} /> },
+    { href: '/speech-coach', label: '3m Drills', icon: <Mic size={18} /> },
+    { href: '/interview', label: 'Placement', icon: <Briefcase size={18} /> },
     { href: '/presentation', label: 'Viva Studio', icon: <FileText size={18} /> },
+    { href: '/trainer', label: 'Academy', icon: <Sparkles size={18} /> },
     { href: '/dashboard', label: 'Dashboard', icon: <User size={18} /> },
   ];
 
@@ -91,10 +92,11 @@ export default function SidebarLayout({ children }) {
 
   // Product dropdown items with Oratii brand theme icons
   const productItems = [
-    { href: '/speech-coach', label: 'Speech Coach', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
-    { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
+    { href: '/speech-coach', label: 'Speech Coach (3-Min Drills)', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
+    { href: '/interview', label: 'Campus Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/presentation', label: 'Slide Deck & Viva Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
-    { href: '/challenge', label: '20-Day Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
+    { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
+    { href: '/trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold' },
     { type: 'divider' },
     { href: '/reports', label: 'Reports & Analytics', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
   ];

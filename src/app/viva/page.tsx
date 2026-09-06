@@ -16,6 +16,49 @@ import {
   MessageSquare, Volume2, VolumeX, Flame, Smile, Play, ArrowLeft
 } from 'lucide-react';
 
+const POPULAR_COLLEGE_VIVA_PRESETS = [
+  {
+    id: 'cs_btech',
+    title: 'B.Tech CS Final Project (Full-Stack & DB Defense)',
+    icon: '💻',
+    topicText: 'B.Tech Computer Science Final Project: Full-Stack Architecture, REST APIs & Database Schema Defense',
+    tag: 'B.Tech / BCA',
+    desc: 'Schema normalization, indexing, API security, and server load handling'
+  },
+  {
+    id: 'ai_ml',
+    title: 'AI / ML Capstone (Model Accuracy & Overfitting)',
+    icon: '🤖',
+    topicText: 'Machine Learning & AI Capstone: Model Evaluation, Overfitting Defense & Dataset Validation',
+    tag: 'M.Tech / Data Science',
+    desc: 'Precision/Recall metrics, cross-validation, regularization, and baseline comparisons'
+  },
+  {
+    id: 'mba_case',
+    title: 'MBA Business Strategy & Financial Break-even',
+    icon: '📊',
+    topicText: 'MBA Business Strategy: Market Sizing, Unit Economics & Financial Break-even Defense',
+    tag: 'MBA / Management',
+    desc: 'CAC/LTV ratios, fixed vs variable costs, competitive moats, and projection stress testing'
+  },
+  {
+    id: 'iot_embedded',
+    title: 'IoT & Embedded Systems Hardware Architecture',
+    icon: '⚡',
+    topicText: 'IoT & Embedded Systems: Sensor Protocols (MQTT/I2C), Microcontroller Latency & Power Optimization',
+    tag: 'ECE / Mechanical',
+    desc: 'Communication protocols, battery consumption, hardware interrupts, and real-time edge processing'
+  },
+  {
+    id: 'cloud_microservices',
+    title: 'Cloud Computing & Microservices Scalability',
+    icon: '☁️',
+    topicText: 'Cloud Computing & Distributed Systems: Microservices, Containerization, Docker & Kubernetes Scaling',
+    tag: 'Cloud & DevOps',
+    desc: 'Stateless services, Redis caching, message queues, and failover redundancy'
+  }
+];
+
 export default function VivaCoachPage() {
   const router = useRouter();
   const [phase, setPhase] = useState<'setup' | 'viva' | 'results'>('setup');
@@ -24,6 +67,7 @@ export default function VivaCoachPage() {
   const [enableVoiceAudio, setEnableVoiceAudio] = useState<boolean>(true);
   const [language, setLanguage] = useState<'en' | 'hinglish'>('hinglish');
   const [topic, setTopic] = useState<string>('');
+  const [selectedVivaPresetId, setSelectedVivaPresetId] = useState<string | null>(null);
   const [slideAnalysisData, setSlideAnalysisData] = useState<any>(null);
 
   const [chatHistory, setChatHistory] = useState<any[]>([]);
@@ -361,6 +405,52 @@ export default function VivaCoachPage() {
         {phase === 'setup' && (
           <div className="my-auto max-w-2xl mx-auto w-full space-y-6 animate-fade-in text-left">
 
+            {/* 1-Click Popular College Viva Defense Presets */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🎓</span> Popular College Project Viva Presets (1-Click)
+                </label>
+                <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/70">
+                  University Viva Calibrated
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {POPULAR_COLLEGE_VIVA_PRESETS.map((p) => {
+                  const isSelected = selectedVivaPresetId === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedVivaPresetId(p.id);
+                        setTopic(p.topicText);
+                      }}
+                      className={`p-3 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-1.5 cursor-pointer active-touch-scale ${
+                        isSelected
+                          ? 'border-indigo-600 bg-indigo-50/80 shadow-md ring-2 ring-indigo-600/10'
+                          : 'border-slate-200 bg-slate-50/70 hover:bg-slate-100 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-lg shrink-0">{p.icon}</span>
+                        <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
+                          isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'
+                        }`}>
+                          {p.tag}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-xs text-slate-900 leading-snug line-clamp-1">{p.title}</h4>
+                        <p className="text-[11px] text-slate-500 font-medium line-clamp-2 mt-0.5 leading-tight">{p.desc}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Topic Input */}
             <div className="space-y-2">
               <label className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">
@@ -369,11 +459,14 @@ export default function VivaCoachPage() {
               <input
                 type="text"
                 value={topic}
-                onChange={(e) => setTopic(e.target.value)}
+                onChange={(e) => {
+                  setTopic(e.target.value);
+                  setSelectedVivaPresetId(null);
+                }}
                 placeholder="e.g. AI Ethics in Modern Software, Financial Projections Slide 4, Machine Learning Thesis..."
                 className="w-full bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-semibold transition-all"
               />
-              <p className="text-[11px] text-slate-500 font-medium">Leave default or type a custom presentation topic for your defense panel.</p>
+              <p className="text-[11px] text-slate-500 font-medium">Click a college preset above or type your customized project viva defense topic.</p>
             </div>
 
             {/* Defense Language Selector (Hinglish vs English) */}

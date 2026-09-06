@@ -92,6 +92,16 @@ export default function HomeClient() {
       iconBg: 'bg-emerald-50 border-emerald-100',
       href: '/challenge',
       cta: 'Join 20-Day Challenge'
+    },
+    {
+      title: 'Partner Academy & Coaching Hub',
+      headline: 'Automate student speaking drills & viva homework.',
+      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, auto-grade student homework, and earn 20% affiliate kickbacks.',
+      highlights: ['📱 1-Click WhatsApp Batch Invites', '📊 Class Leaderboard & CEFR Band Grades', '💰 20% Student Top-Up Kickback'],
+      icon: <GraduationCap size={28} className="text-indigo-600" />,
+      iconBg: 'bg-indigo-50 border-indigo-100',
+      href: '/trainer',
+      cta: 'Open Partner Academy Portal'
     }
   ];
 
@@ -128,20 +138,21 @@ export default function HomeClient() {
           <div className="w-full text-center md:text-left flex flex-col items-center md:items-start min-w-0 max-w-full">
           <FadeUp delay={50}>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-4 shimmer-badge shadow-xs">
-              <span className="text-sm sm:text-base">✦</span> AI-Powered Coaching Platform
+              <span className="text-sm sm:text-base">✦</span> Campus Placements, Viva Defense & Academy Lab
             </div>
           </FadeUp>
 
           <FadeUp delay={150}>
             <h1 className="text-[clamp(2.2rem,4vw,3.5rem)] lg:text-6xl leading-[1.15] font-black tracking-tight text-slate-900 mb-4 pb-1 break-words break-normal max-w-full">
-              Master your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">public speaking</span><br className="hidden sm:block" />
-              & job interviews with AI.
+              Crack campus placements, <br className="hidden sm:block" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600">vivas & job interviews</span><br className="hidden sm:block" />
+              without freezing.
             </h1>
           </FadeUp>
 
           <FadeUp delay={200}>
-            <p className="text-slate-500 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-6 leading-relaxed font-normal">
-              Get real-time AI feedback on your vocal pacing, presentation slides, and job interview delivery.
+            <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-6 leading-relaxed font-normal">
+              The AI speaking &amp; interview simulator for students and coaching institutes. Eliminate filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;), defend your slides in front of unscripted AI examiners, and track 3-minute placement drills.
             </p>
           </FadeUp>
 
@@ -149,8 +160,8 @@ export default function HomeClient() {
             {/* Hero Launch Badge — Desktop only to prevent stacking on mobile */}
             <div className="hidden sm:flex items-center justify-center md:justify-start gap-2 mb-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-xs font-bold tracking-wide uppercase shadow-2xs">
-                <span className="flex h-2 w-2 rounded-full bg-[#1B2140] animate-pulse"></span>
-                <span>✨ AI-Powered Speech & Presentation Coach</span>
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>🎯 Free 3-Min Placement Drills • IELTS/CEFR Rubric • Regional Filler Audit</span>
               </div>
             </div>
 

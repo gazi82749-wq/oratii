@@ -14,9 +14,17 @@ import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
 import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } from '../../lib/scoringRubric';
 
+const MAX_FREE_RECORDING_SECONDS = 180; // 3-Minute Free Drill Cap
+
 const SUGGESTED_TOPICS = [
-  'Nature', 'My School', 'Save Water', 'My Best Friend',
-  'Importance of Trees', 'My Favourite Festival', 'Health is Wealth', 'My Country'
+  'Tell Me About Yourself (Placement HR)',
+  'Explain Your Final Year Project (Tech Viva)',
+  'Why Should We Hire You Over Others?',
+  'STAR Method: Handled High Pressure Situation',
+  'IELTS Cue Card: A Life Changing Decision',
+  'Why Do You Want to Work in Tech / IT?',
+  'Extempore: Future of AI in Engineering',
+  'Describe a Difficult Technical Bug You Solved'
 ];
 
 export default function SpeechCoach() {
@@ -28,6 +36,9 @@ export default function SpeechCoach() {
   // --- Record section state (existing) ---
   const [mode, setMode] = useState('live-audio');
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [showTimeLimitNotice, setShowTimeLimitNotice] = useState(false);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [mediaFile, setMediaFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeepLoading, setIsDeepLoading] = useState(false);
@@ -92,12 +103,16 @@ export default function SpeechCoach() {
   const audioChunksRef = useRef([]);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Stop microphone stream on unmount
+  // Stop microphone stream & recording timer on unmount
   useEffect(() => {
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
+      }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
       }
     };
   }, []);
@@ -118,7 +133,7 @@ export default function SpeechCoach() {
 
   const [isPaused, setIsPaused] = useState(false);
 
-  // --- Recording logic (shared) ---
+  // --- Recording logic (shared with 3-minute cap) ---
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -144,6 +159,21 @@ export default function SpeechCoach() {
       mediaRecorderRef.current.start();
       setIsRecording(true);
       setIsPaused(false);
+      setRecordingSeconds(0);
+      setShowTimeLimitNotice(false);
+
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => {
+          if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
+            if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+            stopRecording();
+            setShowTimeLimitNotice(true);
+            return MAX_FREE_RECORDING_SECONDS;
+          }
+          return prev + 1;
+        });
+      }, 1000);
     } catch (err) {
       console.error("Microphone access error:", err);
       alert("Could not access the microphone. Please check permissions.");
@@ -154,6 +184,10 @@ export default function SpeechCoach() {
     if (mediaRecorderRef.current && isRecording && !isPaused) {
       mediaRecorderRef.current.pause();
       setIsPaused(true);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
     }
   };
 
@@ -161,10 +195,26 @@ export default function SpeechCoach() {
     if (mediaRecorderRef.current && isRecording && isPaused) {
       mediaRecorderRef.current.resume();
       setIsPaused(false);
+      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => {
+          if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
+            if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+            stopRecording();
+            setShowTimeLimitNotice(true);
+            return MAX_FREE_RECORDING_SECONDS;
+          }
+          return prev + 1;
+        });
+      }, 1000);
     }
   };
 
   const stopRecording = () => {
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
@@ -927,6 +977,40 @@ export default function SpeechCoach() {
                           <p className={`mt-4 text-sm sm:text-base font-extrabold ${isRecording ? (isPaused ? 'text-amber-600' : 'text-rose-600 animate-pulse') : 'text-slate-950'}`}>
                             {isRecording ? (isPaused ? 'Recording Paused' : 'Recording in Progress...') : 'Click Mic to Start Recording'}
                           </p>
+
+                          {/* 3-Minute Free Practice Drill Cap HUD */}
+                          {isRecording && (
+                            <div className="w-full max-w-xs flex flex-col items-center mt-2.5">
+                              <div className="flex items-center justify-between w-full text-xs font-bold px-1 mb-1">
+                                <span className={recordingSeconds > 150 ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
+                                  ⏱️ {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+                                </span>
+                                <span className="text-[11px] font-semibold text-slate-400">
+                                  03:00 Max (Free Drill)
+                                </span>
+                              </div>
+                              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+                                <div 
+                                  className={`h-full transition-all duration-500 rounded-full ${
+                                    recordingSeconds > 150 ? 'bg-rose-500' : recordingSeconds > 100 ? 'bg-amber-500' : 'bg-gradient-to-r from-indigo-500 to-violet-600'
+                                  }`}
+                                  style={{ width: `${Math.min(100, (recordingSeconds / MAX_FREE_RECORDING_SECONDS) * 100)}%` }}
+                                />
+                              </div>
+                              {recordingSeconds >= 165 && (
+                                <p className="text-[10px] font-bold text-rose-500 mt-1 animate-pulse">
+                                  ⚠️ Approaching 3-min practice cap
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                          {showTimeLimitNotice && (
+                            <div className="mt-3.5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-semibold flex items-center gap-2 max-w-md text-center">
+                              <span>⏱️</span>
+                              <span>3-Minute Free Practice Drill Limit reached! Your audio was saved and is ready for AI analysis.</span>
+                            </div>
+                          )}
                           
                           {isRecording && (
                             <div className="flex items-center gap-3 mt-3">
@@ -947,7 +1031,7 @@ export default function SpeechCoach() {
 
                           {!isRecording && (
                             <p className="text-xs font-medium text-slate-500 mt-0.5">
-                              Ensure your microphone is clear and speak naturally.
+                              Free drills are evaluated on up to 3 minutes. Ensure clear mic input.
                             </p>
                           )}
                           
@@ -975,15 +1059,15 @@ export default function SpeechCoach() {
                     <div className="absolute top-4 right-8 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl pointer-events-none"></div>
                     <div className="relative z-10">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-3 border border-white/10">
-                        ✍️ AI Speech Writer
+                        🎯 Campus Placement & Viva Drills
                       </div>
-                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">Pick a Topic 📝</h2>
-                      <p className="text-slate-300 text-sm md:text-base font-medium">Type any topic and we’ll write a simple speech for you. Then practice speaking it live!</p>
+                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">Placement & Viva Speech Prompts 🎙️</h2>
+                      <p className="text-slate-300 text-sm md:text-base font-medium">Generate structured answer scripts for high-frequency HR rounds, engineering viva defenses, and IELTS cue cards. Then practice speaking live!</p>
                     </div>
                   </div>
 
                   <div className="max-w-lg mx-auto">
-                    <label className="block text-sm font-bold text-slate-700 mb-3">What topic do you want to speak on?</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-3">Interview Question / Viva Topic:</label>
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                       <input
                         id="speech-topic-input"
@@ -991,7 +1075,7 @@ export default function SpeechCoach() {
                         value={topicInput}
                         onChange={(e) => { setTopicInput(e.target.value); setTopicError(''); }}
                         onKeyDown={(e) => { if (e.key === 'Enter' && !topicLoading) handleGenerateSpeech(); }}
-                        placeholder="e.g. Nature, My School, Save Water..."
+                        placeholder="e.g. Tell me about yourself, Explain my final project, STAR behavioral..."
                         className="flex-1 px-5 py-3.5 bg-indigo-50 border border-indigo-200 rounded-xl text-slate-900 text-base font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 transition-all"
                         disabled={topicLoading}
                         maxLength={200}
@@ -1018,7 +1102,7 @@ export default function SpeechCoach() {
                     )}
 
                     <div className="mt-6">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">Popular Topics</p>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">High-Frequency Placement & Viva Topics</p>
                       <div className="flex flex-wrap gap-2">
                         {SUGGESTED_TOPICS.map((t) => (
                           <button
