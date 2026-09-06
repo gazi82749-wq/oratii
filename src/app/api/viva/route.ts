@@ -243,21 +243,26 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
       }
     `;
 
-    let userPrompt = `Start or continue the Viva Voce defense session for topic: "${topicName}".`;
-    if (chatHistory && chatHistory.length > 0) {
-      const condensedHistory = chatHistory
+    // Defensive Input Truncation: Prevent token exhaustion & cost inflation attacks
+    const sanitizedAnswer = typeof currentAnswer === 'string' ? currentAnswer.slice(0, 2000).trim() : '';
+
+    let userPrompt = `Start or continue the Viva Voce defense session for topic: "${topicName.slice(0, 200)}".`;
+    if (chatHistory && Array.isArray(chatHistory) && chatHistory.length > 0) {
+      // Keep only recent 8 turns max to protect context window & latency
+      const recentHistory = chatHistory.slice(-8);
+      const condensedHistory = recentHistory
         .map((h: any) => {
-          if (h.role === 'examiner' && h.question) return `Host Question: ${h.question}`;
-          if (h.role === 'candidate' && h.text) return `Candidate Answer: ${h.text}`;
-          if (h.question && h.question.startsWith('Provide Context:')) return h.question;
+          if (h.role === 'examiner' && h.question) return `Host Question: ${String(h.question).slice(0, 400)}`;
+          if (h.role === 'candidate' && h.text) return `Candidate Answer: ${String(h.text).slice(0, 1000)}`;
+          if (h.question && h.question.startsWith('Provide Context:')) return String(h.question).slice(0, 1000);
           return null;
         })
         .filter(Boolean)
         .join('\n');
       userPrompt += `\n\nViva History Summary:\n${condensedHistory}`;
     }
-    if (currentAnswer) {
-      userPrompt += `\n\nLatest Candidate Answer: ${currentAnswer}`;
+    if (sanitizedAnswer) {
+      userPrompt += `\n\nLatest Candidate Answer: ${sanitizedAnswer}`;
     }
 
     const aiTextResponse = await generateAIContent({
@@ -275,6 +280,18 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
         parsedResponse = JSON.parse(jsonMatch[0]);
       } else {
         throw new Error('Failed to parse AI JSON response: ' + aiTextResponse);
+      }
+    }
+
+    // Defensive Output Clamping: Ensure all score fields are safely bounded numbers (15-98)
+    if (parsedResponse && typeof parsedResponse === 'object') {
+      if (parsedResponse.scores && typeof parsedResponse.scores === 'object') {
+        for (const key of Object.keys(parsedResponse.scores)) {
+          const rawVal = Number(parsedResponse.scores[key]);
+          if (!isNaN(rawVal)) {
+            parsedResponse.scores[key] = Math.min(98, Math.max(15, Math.round(rawVal)));
+          }
+        }
       }
     }
 

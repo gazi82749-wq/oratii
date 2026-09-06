@@ -42,14 +42,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Legal & Privacy</h4>
-            <ul className="space-y-3 text-sm font-medium text-slate-400">
-              <li><Link href="/privacy" className="hover:text-[#F2A93B] transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-[#F2A93B] transition-colors">Terms of Service</Link></li>
-              <li><Link href="/security" className="hover:text-[#F2A93B] transition-colors">Security & Ethics</Link></li>
-            </ul>
-          </div>
+            <div>
+              <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Legal & Privacy</h4>
+              <ul className="space-y-3 text-sm font-medium text-slate-400">
+                <li><Link href="/privacy" className="hover:text-[#F2A93B] transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-[#F2A93B] transition-colors">Terms of Service</Link></li>
+                <li><Link href="/refund-policy" className="hover:text-[#F2A93B] transition-colors">Refund Policy</Link></li>
+                <li><Link href="/security" className="hover:text-[#F2A93B] transition-colors">Security & Ethics</Link></li>
+              </ul>
+            </div>
         </div>
         
         <div className="border-t border-slate-800/80 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">

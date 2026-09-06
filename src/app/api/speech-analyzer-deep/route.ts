@@ -87,10 +87,15 @@ export async function POST(request: Request) {
       }
     `;
 
+    // Defensive Input Truncation: Limit transcript length to 15,000 characters (~30 min of speech)
+    const sanitizedTranscript = typeof timedTranscript === 'string' 
+      ? timedTranscript.slice(0, 15000) 
+      : String(timedTranscript).slice(0, 15000);
+
     // 4-Stage AI Fallback Waterfall (Cerebras -> Groq -> Gemini -> OpenRouter)
     const toneText = await generateAIContent({
       systemPrompt: tonePrompt,
-      userPrompt: `Timed Transcript:\n${timedTranscript}`
+      userPrompt: `Timed Transcript:\n${sanitizedTranscript}`
     });
 
     const jsonMatch = toneText.match(/\{[\s\S]*\}/);
@@ -98,6 +103,14 @@ export async function POST(request: Request) {
       throw new Error("No JSON object found in AI response");
     }
     const toneAnalysis = JSON.parse(jsonMatch[0]);
+
+    // Defensive Output Clamping: Ensure toneScore is strictly bounded between 15 and 98
+    if (toneAnalysis && typeof toneAnalysis === 'object' && toneAnalysis.toneScore !== undefined) {
+      const rawScore = Number(toneAnalysis.toneScore);
+      if (!isNaN(rawScore)) {
+        toneAnalysis.toneScore = Math.min(98, Math.max(15, Math.round(rawScore)));
+      }
+    }
 
     return NextResponse.json({
       status: "success",

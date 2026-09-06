@@ -54,7 +54,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">4. Trial Credits & Credit Packages</h2>
               <p className="text-slate-700 font-medium">
-                Oratii provides 10 Free Trial Credits upon account creation. Additional credit packages can be purchased on a pay-as-you-go basis without recurring monthly subscription traps. Payments are securely processed via Razorpay.
+                Oratii provides 10 Free Trial Credits upon account creation. Additional credit packages can be purchased on a pay-as-you-go basis without recurring monthly subscription traps. Payments are securely processed via Razorpay. All purchases and eligible refund requests are governed by our <Link href="/refund-policy" className="font-bold text-[#151930] underline">Cancellation & Refund Policy</Link>.
               </p>
             </section>
 
