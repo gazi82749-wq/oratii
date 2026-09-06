@@ -55,6 +55,12 @@ export default function PresentationPractice({
   const [practiceMediaUrl, setPracticeMediaUrl] = useState<string | null>(null);
   const [showLocalResults, setShowLocalResults] = useState<boolean>(false);
 
+  // Verbatim Slide Reading Detection (Coach Extempore Metric)
+  const [liveVerbatimAlert, setLiveVerbatimAlert] = useState<string | null>(null);
+  const [extemporeScore, setExtemporeScore] = useState<number>(90);
+  const [verbatimSlideFlags, setVerbatimSlideFlags] = useState<Array<{ slide: number; overlapPercent: number }>>([]);
+  const presentationSpeechRecRef = useRef<any>(null);
+
   const audioProcessorRef = useRef<RealtimeAudioProcessor | null>(null);
   const faceLandmarkerRef = useRef<any>(null);
   const poseLandmarkerRef = useRef<any>(null);
@@ -68,6 +74,11 @@ export default function PresentationPractice({
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop();
       }
+      if (presentationSpeechRecRef.current) {
+        try { presentationSpeechRecRef.current.stop(); } catch (e) {}
+        presentationSpeechRecRef.current = null;
+      }
+      setLiveVerbatimAlert(null);
       stopRecording();
       stopMediaStream();
       setElapsedSeconds(0);
@@ -94,6 +105,7 @@ export default function PresentationPractice({
   const handleSlideChange = useCallback((newSlideNumber: number) => {
     if (newSlideNumber < 1 || newSlideNumber > totalSlides) return;
     setCurrentSlide(newSlideNumber);
+    setLiveVerbatimAlert(null);
 
     if (isRecording) {
       const m = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
@@ -323,6 +335,54 @@ export default function PresentationPractice({
       startRecording();
       setIsRecording(true);
 
+      // Initialize Speech Recognition for Realtime Verbatim Slide Reading Detection
+      if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+        try {
+          const SpeechClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+          const rec = new SpeechClass();
+          rec.continuous = true;
+          rec.interimResults = true;
+          rec.lang = 'en-US';
+
+          rec.onresult = (event: any) => {
+            let fullText = '';
+            for (let i = 0; i < event.results.length; i++) {
+              fullText += event.results[i][0].transcript + ' ';
+            }
+            const spokenTokens = fullText.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+            const activeSlideText = (slideTextContent[currentSlide - 1] || '').toLowerCase();
+
+            if (activeSlideText && spokenTokens.length >= 6) {
+              const slideWords = new Set(
+                activeSlideText.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, '')).filter(w => w.length > 3)
+              );
+              if (slideWords.size > 0) {
+                let matches = 0;
+                spokenTokens.forEach(token => {
+                  if (slideWords.has(token.replace(/[^a-z0-9]/g, ''))) matches++;
+                });
+                const overlapRatio = Math.round((matches / spokenTokens.length) * 100);
+                if (overlapRatio > 55) {
+                  setLiveVerbatimAlert(`⚠️ Verbatim Reading Detected (${overlapRatio}% overlap on Slide ${currentSlide}): Summarize the 'Why' rather than reading bullet points word-for-word.`);
+                  setVerbatimSlideFlags(prev => {
+                    if (prev.some(p => p.slide === currentSlide)) return prev;
+                    return [...prev, { slide: currentSlide, overlapPercent: overlapRatio }];
+                  });
+                  setExtemporeScore(prev => Math.max(50, prev - 3));
+                } else {
+                  setLiveVerbatimAlert(null);
+                }
+              }
+            }
+          };
+
+          rec.start();
+          presentationSpeechRecRef.current = rec;
+        } catch (recErr) {
+          console.warn('Speech recognition for verbatim detection init notice:', recErr);
+        }
+      }
+
       const initialLog = [{ slideNumber: currentSlide, timestamp: 0, time: '00:00' }];
       setSlideEventLog(initialLog);
       logEvent(EVENT_TYPES.SLIDE_CHANGE, { slideNumber: currentSlide });
@@ -420,6 +480,13 @@ export default function PresentationPractice({
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop();
     }
+    if (presentationSpeechRecRef.current) {
+      try {
+        presentationSpeechRecRef.current.stop();
+      } catch (e) {}
+      presentationSpeechRecRef.current = null;
+    }
+    setLiveVerbatimAlert(null);
     stopRecording();
     stopMediaStream();
 
@@ -497,7 +564,7 @@ export default function PresentationPractice({
         )}
 
         {/* Circular Score Ring Gauge Bar (Speech Coach Standard) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#151930] p-5 rounded-2xl border border-slate-800/80 shadow-md">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-[#151930] p-5 rounded-2xl border border-slate-800/80 shadow-md">
           <ScoreRing 
             value={overallDelivery} 
             max={100} 
@@ -505,6 +572,15 @@ export default function PresentationPractice({
             strokeWidth={8} 
             color="#6c5ce7" 
             label="Delivery Grade" 
+            unit="%" 
+          />
+          <ScoreRing 
+            value={extemporeScore} 
+            max={100} 
+            size={76} 
+            strokeWidth={8} 
+            color="#10b981" 
+            label="Extempore (Indep.)" 
             unit="%" 
           />
           <ScoreRing 
@@ -534,6 +610,44 @@ export default function PresentationPractice({
             label="Pacing Speed" 
             unit="WPM" 
           />
+        </div>
+
+        {/* Human Coach Verbatim Slide Reading Audit */}
+        <div className={`p-5 rounded-2xl border flex flex-col gap-3 text-left shadow-sm animate-fade-in ${
+          verbatimSlideFlags.length === 0
+            ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
+            : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black ${
+                verbatimSlideFlags.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+              }`}>
+                {verbatimSlideFlags.length === 0 ? '✓' : '⚠️'}
+              </span>
+              <div>
+                <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+                  Verbatim Slide Reading Audit & Debrief
+                </h4>
+                <p className="text-[11px] text-slate-300 font-medium">
+                  {verbatimSlideFlags.length === 0 
+                    ? 'Elite Executive Delivery • Zero verbatim slide reading detected' 
+                    : `Verbatim reading flagged on ${verbatimSlideFlags.length} slide(s)`}
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-amber-400">
+              {extemporeScore}% Independence
+            </span>
+          </div>
+
+          <p className="text-xs leading-relaxed text-slate-200">
+            {verbatimSlideFlags.length === 0 ? (
+              'Outstanding delivery! You explained slide takeaways conversationally rather than reading bullets word-for-word. Real executive audiences value presenters who elaborate on the "Why" and maintain personal presence.'
+            ) : (
+              `High word-for-word text overlap was detected on Slide(s): ${verbatimSlideFlags.map(f => f.slide).join(', ')}. Remember: Audiences can read slides faster than you can speak. Use slides for diagrams, numbers, and anchors; use your voice to provide insights and context.`
+            )}
+          </p>
         </div>
 
         {/* Interactive Delivery & Pacing Wave Timeline */}
@@ -684,6 +798,20 @@ export default function PresentationPractice({
             onTouchEnd={handleTouchEnd}
             className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex items-center justify-center p-2 sm:p-4 touch-pan-y"
           >
+            {/* Live Verbatim Slide Reading Coach Alert */}
+            {liveVerbatimAlert && (
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-rose-950/95 border-2 border-rose-500/80 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-bold animate-bounce max-w-md sm:max-w-lg">
+                <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+                <span className="leading-snug text-[11px] sm:text-xs">{liveVerbatimAlert}</span>
+                <button
+                  onClick={() => setLiveVerbatimAlert(null)}
+                  className="text-slate-400 hover:text-white text-xs ml-auto shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             <div className="w-full h-full flex items-center justify-center overflow-auto">
               {slideImages[currentSlide] ? (
                 /* eslint-disable-next-line @next/next/no-img-element */

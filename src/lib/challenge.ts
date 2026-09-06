@@ -113,7 +113,7 @@ export const DAILY_TASKS: ChallengeTask[] = [
   },
   {
     day: 10,
-    title: 'TCS / Infosys Verbal Communication & Accent Clarity Drill',
+    title: 'Global Tech Verbal Communication & Accent Clarity Drill',
     description: 'Scored on pronunciation, pace (130-150 WPM), and regional filler elimination',
     targetDuration: '2 min',
     dos: ['Enunciate clearly with consistent volume', 'Eliminate regional filler words ("matlab", "basically", "actually")', 'Speak in complete, grammatically sound sentences'],

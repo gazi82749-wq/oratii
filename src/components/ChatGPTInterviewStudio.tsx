@@ -2,10 +2,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Mic, MicOff, Upload, FileText, Send, Sparkles, X, CheckCircle2,
   Volume2, VolumeX, ArrowRight, RotateCcw, Award, ChevronRight, MessageSquare, Briefcase, Zap,
-  GraduationCap, Code2, BarChart3, Globe, LineChart, Headphones, Check, AlertCircle, Scissors, Target
+  GraduationCap, Code2, BarChart3, Globe, LineChart, Headphones, Check, AlertCircle, Scissors, Target,
+  Timer, Flame, RefreshCw, Play, Square, CheckCircle, Volume1
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
@@ -16,8 +18,8 @@ interface ChatGPTInterviewStudioProps {
 
 export const HIGH_STAKES_ROLE_PRESETS = [
   {
-    id: 'tcs_infosys',
-    title: 'TCS / Infosys Campus Interview (HR + Tech)',
+    id: 'campus_tech',
+    title: 'Top Tech MNC Campus Placement (HR + Tech)',
     tag: 'Campus Placement',
     desc: 'Core OOPs, project logic, situational adaptability & structured communication'
   },
@@ -54,9 +56,10 @@ export const HIGH_STAKES_ROLE_PRESETS = [
 ];
 
 export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStudioProps) {
+  const [mounted, setMounted] = useState<boolean>(false);
   const [step, setStep] = useState<'setup' | 'interview' | 'results'>('setup');
-  const [roleTitle, setRoleTitle] = useState<string>('TCS / Infosys Campus Interview (HR + Tech)');
-  const [selectedPresetId, setSelectedPresetId] = useState<string>('tcs_infosys');
+  const [roleTitle, setRoleTitle] = useState<string>('Top Tech MNC Campus Placement (HR + Tech)');
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('campus_tech');
   const [difficultyLevel, setDifficultyLevel] = useState<'fresher' | 'pro'>('fresher');
   const [resumeText, setResumeText] = useState<string>('');
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
@@ -91,36 +94,189 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const [whatToCut, setWhatToCut] = useState<string[]>([]);
   const [modelAnswer, setModelAnswer] = useState<string>('');
 
+  // Live Real-Time Coach Speaking Time & Guidance Cues
+  const [speakingSeconds, setSpeakingSeconds] = useState<number>(0);
+  const speakingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 45-Second Rapid Re-Do Drill State ("Human Coach Gym")
+  const [showDrillModal, setShowDrillModal] = useState<boolean>(false);
+  const [drillTargetQuestion, setDrillTargetQuestion] = useState<string>('');
+  const [drillWeakness, setDrillWeakness] = useState<string>('');
+  const [drillModelSnippet, setDrillModelSnippet] = useState<string>('');
+  const [drillCountdown, setDrillCountdown] = useState<number>(45);
+  const [isDrillRecording, setIsDrillRecording] = useState<boolean>(false);
+  const [drillTranscript, setDrillTranscript] = useState<string>('');
+  const [drillCompleted, setDrillCompleted] = useState<boolean>(false);
+  const [drillFillersFound, setDrillFillersFound] = useState<string[]>([]);
+  const [drillBonusXp, setDrillBonusXp] = useState<number>(0);
+  const drillCountdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const drillRecognitionRef = useRef<any>(null);
+
   const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Initialize Web Speech API
+  // Common filler patterns for drill detection
+  const COMMON_FILLERS = ['um', 'uh', 'like', 'matlab', 'basically', 'actually', 'you know', 'literally', 'so yeah', 'sort of'];
+
+  // Mounted check for client-side portal rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Escape key listener to dismiss drill modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showDrillModal) {
+        closeDrillModal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showDrillModal]);
+
+  // Initialize Web Speech API for both Interview & Rapid Re-Do Drill
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      
+      // Main interview speech recognition
       const recognition = new SpeechRecognitionClass();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.interimResults = true;
       recognition.lang = 'en-US';
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setUserAnswerText(transcript);
-        setIsListening(false);
+        let fullTranscript = '';
+        for (let i = 0; i < event.results.length; i++) {
+          fullTranscript += event.results[i][0].transcript + ' ';
+        }
+        setUserAnswerText(fullTranscript.trim());
       };
 
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
-        setIsListening(false);
+        stopListeningTimer();
       };
 
       recognition.onend = () => {
-        setIsListening(false);
+        stopListeningTimer();
       };
 
       recognitionRef.current = recognition;
+
+      // Dedicated 45s Rapid Re-Do Drill recognition
+      const drillRec = new SpeechRecognitionClass();
+      drillRec.continuous = true;
+      drillRec.interimResults = true;
+      drillRec.lang = 'en-US';
+
+      drillRec.onresult = (event: any) => {
+        let text = '';
+        for (let i = 0; i < event.results.length; i++) {
+          text += event.results[i][0].transcript + ' ';
+        }
+        const clean = text.trim();
+        setDrillTranscript(clean);
+
+        // Real-time filler detection
+        const words = clean.toLowerCase().split(/\s+/);
+        const detected = words.filter(w => COMMON_FILLERS.includes(w.replace(/[^a-z]/g, '')));
+        setDrillFillersFound(detected);
+      };
+
+      drillRec.onerror = (event: any) => {
+        console.error('Drill speech recognition error:', event.error);
+        setIsDrillRecording(false);
+      };
+
+      drillRec.onend = () => {
+        setIsDrillRecording(false);
+      };
+
+      drillRecognitionRef.current = drillRec;
     }
   }, []);
+
+  // Speaking timer handlers
+  const startListeningTimer = () => {
+    setIsListening(true);
+    setSpeakingSeconds(0);
+    if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
+    speakingTimerRef.current = setInterval(() => {
+      setSpeakingSeconds(prev => prev + 1);
+    }, 1000);
+  };
+
+  const stopListeningTimer = () => {
+    setIsListening(false);
+    if (speakingTimerRef.current) {
+      clearInterval(speakingTimerRef.current);
+      speakingTimerRef.current = null;
+    }
+  };
+
+  // Re-Do Drill Handlers
+  const openDrillModal = (question?: string, weakness?: string, model?: string) => {
+    setDrillTargetQuestion(question || currentQuestion || (chatHistory[0]?.question || `Tell me about a challenging engineering situation and how you handled it.`));
+    setDrillWeakness(weakness || (whatToCut[0] || 'Cut redundant filler phrasing and start directly with your actions.'));
+    setDrillModelSnippet(model || (modelAnswer || 'Structure your answer: Situation (10s), Action (25s), Result (10s).'));
+    setDrillCountdown(45);
+    setDrillTranscript('');
+    setDrillFillersFound([]);
+    setDrillCompleted(false);
+    setDrillBonusXp(0);
+    setShowDrillModal(true);
+  };
+
+  const startDrillRecording = () => {
+    setDrillTranscript('');
+    setDrillFillersFound([]);
+    setDrillCountdown(45);
+    setDrillCompleted(false);
+    setIsDrillRecording(true);
+
+    if (drillRecognitionRef.current) {
+      try {
+        drillRecognitionRef.current.start();
+      } catch (e) {
+        console.warn('Drill recognition start error:', e);
+      }
+    }
+
+    if (drillCountdownTimerRef.current) clearInterval(drillCountdownTimerRef.current);
+    drillCountdownTimerRef.current = setInterval(() => {
+      setDrillCountdown(prev => {
+        if (prev <= 1) {
+          stopDrillRecording();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const stopDrillRecording = () => {
+    setIsDrillRecording(false);
+    if (drillCountdownTimerRef.current) {
+      clearInterval(drillCountdownTimerRef.current);
+      drillCountdownTimerRef.current = null;
+    }
+    if (drillRecognitionRef.current) {
+      try {
+        drillRecognitionRef.current.stop();
+      } catch (e) {
+        console.warn('Drill recognition stop error:', e);
+      }
+    }
+    setDrillCompleted(true);
+    // Reward bonus XP for completing the coach drill
+    setDrillBonusXp(drillFillersFound.length === 0 ? 50 : 30);
+  };
+
+  const closeDrillModal = () => {
+    stopDrillRecording();
+    setShowDrillModal(false);
+  };
 
   // Auto-scroll chat
   useEffect(() => {
@@ -412,11 +568,18 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       return;
     }
     if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+      stopListeningTimer();
     } else {
-      setIsListening(true);
-      recognitionRef.current.start();
+      try {
+        recognitionRef.current.start();
+        startListeningTimer();
+      } catch (e) {
+        console.warn('Speech recognition start failed:', e);
+        stopListeningTimer();
+      }
     }
   };
 
@@ -503,7 +666,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs">
-                        {p.id === 'tcs_infosys' && <GraduationCap size={16} className="text-indigo-600" />}
+                        {p.id === 'campus_tech' && <GraduationCap size={16} className="text-indigo-600" />}
                         {p.id === 'sde1' && <Code2 size={16} className="text-blue-600" />}
                         {p.id === 'data_analyst' && <BarChart3 size={16} className="text-emerald-600" />}
                         {p.id === 'ielts_speaking' && <Globe size={16} className="text-purple-600" />}
@@ -686,7 +849,18 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
       {/* STEP 2: INTERACTIVE VOICE INTERVIEW STAGE */}
       {step === 'interview' && (
-        <div className="space-y-5 sm:space-y-6 relative z-10 animate-in fade-in duration-300">
+        <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
+          {/* Voice-First Header Ribbon */}
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-black uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Voice-First Practice Mode Active</span>
+            </div>
+            <span className="text-xs text-slate-500 font-extrabold">
+              Round {currentRound} of 4 • Speaking aloud builds 3x more retention
+            </span>
+          </div>
+
           {/* AI Voice Visualizer Stage Card */}
           <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-[#151930] rounded-2xl border border-slate-800 text-white relative overflow-hidden shadow-2xl px-4">
             <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 ${
@@ -708,6 +882,30 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <span className="mt-3 text-xs font-black text-amber-400 uppercase tracking-widest text-center">{stageLabel}</span>
             <span className="text-[11px] text-slate-400 font-medium mt-1 text-center px-2">{answerFormatHint}</span>
           </div>
+
+          {/* Real-Time Pacing & Delivery Guidance */}
+          {isListening && (
+            <div className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all animate-fade-in shadow-xs ${
+              speakingSeconds > 75
+                ? 'bg-rose-50 border-rose-300 text-rose-900'
+                : speakingSeconds > 45
+                ? 'bg-amber-50 border-amber-300 text-amber-900'
+                : 'bg-indigo-50 border-indigo-200 text-indigo-900'
+            }`}>
+              <div className="flex items-center gap-2 font-bold shrink-0">
+                <Timer size={15} className={speakingSeconds > 75 ? 'text-rose-600 animate-pulse' : 'text-amber-600'} />
+                <span className="font-mono">{speakingSeconds}s elapsed</span>
+                <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-white/80 border border-current">
+                  Pacing Cue
+                </span>
+              </div>
+              <div className="text-xs font-medium">
+                {speakingSeconds <= 45 && "🟢 State your Situation & your direct role clearly."}
+                {speakingSeconds > 45 && speakingSeconds <= 75 && "🟡 Transition into specific Actions & technical trade-offs."}
+                {speakingSeconds > 75 && "🟠 Wrap up: Recruiters lose focus after 90s. State your quantitative Result now!"}
+              </div>
+            </div>
+          )}
 
           {/* Chat Stream View */}
           <div className="max-h-64 sm:max-h-80 overflow-y-auto space-y-3 p-3.5 sm:p-4 bg-[#151930] rounded-2xl border border-slate-800 text-xs shadow-inner">
@@ -787,6 +985,30 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               Interview Scorecard: <span className="text-[#151930]">{roleTitle}</span>
             </h3>
             <p className="text-xs text-slate-500 font-medium">Comprehensive breakdown of your technical answers, STAR method alignment, and communication style.</p>
+          </div>
+
+          {/* Placement Practice Gym Action Banner */}
+          <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-2xl p-0.5 shadow-lg animate-fade-in">
+            <div className="bg-white rounded-[15px] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black uppercase tracking-wider">
+                  <Flame size={12} className="text-amber-600" /> Placement Practice Gym
+                </div>
+                <h4 className="text-sm sm:text-base font-black text-slate-950">
+                  Don't just read the scorecard — Re-Deliver in a 45-Second Rapid Drill
+                </h4>
+                <p className="text-xs text-slate-600 font-medium max-w-xl">
+                  Repeated spoken rehearsal builds interview confidence. Click to re-record with live filler detection and zero fluff.
+                </p>
+              </div>
+              <button
+                onClick={() => openDrillModal()}
+                className="px-5 py-3 bg-[#151930] hover:bg-slate-900 text-[#F2A93B] font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:scale-105"
+              >
+                <Play size={14} className="fill-[#F2A93B]" />
+                <span>Start 45s Rapid Re-Do</span>
+              </button>
+            </div>
           </div>
 
           {/* Circular Score Ring Gauge Bar (Speech Coach Design Standard) */}
@@ -916,11 +1138,21 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   What to Cut (Off-Topic &amp; Fluff)
                 </h4>
               </div>
-              <ul className="space-y-2 text-xs text-rose-950 font-medium">
+              <ul className="space-y-2.5 text-xs text-rose-950 font-medium">
                 {whatToCut.map((cut, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-rose-600 font-bold shrink-0">✕</span>
-                    <span className="leading-relaxed">{cut}</span>
+                  <li key={idx} className="flex items-center justify-between gap-2 bg-white/70 p-2.5 rounded-xl border border-rose-200/60">
+                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                      <span className="text-rose-600 font-bold shrink-0 mt-0.5">✕</span>
+                      <span className="leading-relaxed text-slate-900">{cut}</span>
+                    </div>
+                    <button
+                      onClick={() => openDrillModal(chatHistory[0]?.question, cut, modelAnswer)}
+                      className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[10px] uppercase tracking-wider rounded-lg shadow-2xs transition-all cursor-pointer shrink-0 flex items-center gap-1"
+                      title="Practice this question eliminating this specific fluff"
+                    >
+                      <Zap size={10} />
+                      <span>45s Re-Do</span>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -965,7 +1197,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           {/* Detailed Question-by-Question Discussion Stream Breakdown */}
           {chatHistory.length > 0 && (
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[340px] overflow-y-auto">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[380px] overflow-y-auto">
               <div className="text-xs font-black text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-2 flex items-center justify-between">
                 <span>Detailed Interview Discussion & QA Critique</span>
                 <span className="text-slate-500 font-mono text-[10px]">All Interview Rounds</span>
@@ -979,9 +1211,21 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                     </p>
                   )}
                   {item.text && (
-                    <p className="text-slate-800 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-200 leading-relaxed">
-                      <span className="font-bold text-slate-900">Your Answer:</span> {item.text}
-                    </p>
+                    <div className="space-y-2">
+                      <p className="text-slate-800 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-200 leading-relaxed">
+                        <span className="font-bold text-slate-900">Your Answer:</span> {item.text}
+                      </p>
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[10px] text-slate-400 font-bold">Turn {qIdx + 1}</span>
+                        <button
+                          onClick={() => openDrillModal(item.question, 'Cut unnecessary preamble and deliver using the STAR framework', modelAnswer)}
+                          className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-[11px] rounded-lg border border-indigo-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                        >
+                          <RefreshCw size={11} />
+                          <span>Practice 45s Re-Do</span>
+                        </button>
+                      </div>
+                    </div>
                   )}
                 </div>
               ))}
@@ -1000,6 +1244,156 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <span>Practice Another Job Role / Resume Session</span>
           </button>
         </div>
+      )}
+
+      {/* RAPID RE-DO DRILL MODAL (REHEARSAL GYM) */}
+      {showDrillModal && mounted && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[9999] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeDrillModal();
+          }}
+        >
+          <div className="bg-[#0B0E27] border border-slate-700/80 rounded-3xl max-w-xl w-full p-5 sm:p-7 text-white shadow-2xl relative overflow-hidden flex flex-col gap-4 my-auto max-h-[90vh] overflow-y-auto">
+            {/* Top Accent Gradient Stripe */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-orange-500 to-indigo-600"></div>
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center text-xs font-black">
+                  <Flame size={14} />
+                </span>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-white">45-Second Rapid Re-Do Drill</h3>
+                  <p className="text-[11px] text-slate-400 font-medium">Placement Gym • Re-deliver without fillers or hesitation</p>
+                </div>
+              </div>
+              <button
+                onClick={closeDrillModal}
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+                title="Close drill (Esc)"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Drill Target Card */}
+            <div className="bg-[#151930] rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">Target Question</span>
+                <p className="text-slate-200 font-semibold leading-relaxed mt-0.5">{drillTargetQuestion}</p>
+              </div>
+              {drillWeakness && (
+                <div className="pt-2 border-t border-slate-800/80 flex items-start gap-1.5 text-rose-300">
+                  <span className="font-bold text-[10px] uppercase text-rose-400 shrink-0">Fluff to Cut:</span>
+                  <span className="font-medium text-[11px]">{drillWeakness}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Drill Recording & Timer Area */}
+            <div className="bg-[#0e1233] border border-indigo-950/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center gap-3">
+              {/* 45s Circular Countdown Gauge */}
+              <div className="relative flex items-center justify-center">
+                <div className={`w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all ${
+                  isDrillRecording 
+                    ? 'bg-red-600/20 border-2 border-red-500 animate-pulse text-red-400' 
+                    : drillCompleted
+                    ? 'bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400'
+                    : 'bg-slate-800 border-2 border-slate-700 text-slate-300'
+                }`}>
+                  <span className="text-2xl font-black font-mono leading-none">{drillCountdown}</span>
+                  <span className="text-[9px] uppercase font-bold tracking-wider mt-0.5">SEC</span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-3">
+                {!isDrillRecording && !drillCompleted && (
+                  <button
+                    onClick={startDrillRecording}
+                    className="px-6 py-3 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
+                  >
+                    <Mic size={15} />
+                    <span>Start 45s Drill</span>
+                  </button>
+                )}
+
+                {isDrillRecording && (
+                  <button
+                    onClick={stopDrillRecording}
+                    className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <Square size={14} className="fill-white" />
+                    <span>Complete &amp; Evaluate</span>
+                  </button>
+                )}
+
+                {drillCompleted && (
+                  <button
+                    onClick={startDrillRecording}
+                    className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <RotateCcw size={13} />
+                    <span>Try Drill Again</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Real-time Filler Count Pill */}
+              <div className="flex items-center gap-2 text-xs font-semibold">
+                <span className="text-slate-400">Fillers detected in retry:</span>
+                <span className={`px-2 py-0.5 rounded-full font-mono font-black ${
+                  drillFillersFound.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                }`}>
+                  {drillFillersFound.length} {drillFillersFound.length === 1 ? 'word' : 'words'}
+                </span>
+              </div>
+
+              {/* Live Transcript / Speech Feedback */}
+              {drillTranscript && (
+                <div className="w-full bg-[#151930] border border-slate-800 rounded-xl p-3 text-left max-h-24 overflow-y-auto text-xs font-medium text-slate-200 leading-relaxed">
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Your Re-Spoken Delivery:</span>
+                  &ldquo;{drillTranscript}&rdquo;
+                </div>
+              )}
+
+              {/* Drill Evaluation Result */}
+              {drillCompleted && (
+                <div className={`w-full p-3.5 rounded-xl border text-left text-xs font-medium space-y-1 animate-fade-in ${
+                  drillFillersFound.length === 0
+                    ? 'bg-emerald-950/40 border-emerald-600/60 text-emerald-200'
+                    : 'bg-amber-950/40 border-amber-600/60 text-amber-200'
+                }`}>
+                  <div className="flex items-center justify-between font-black uppercase text-[11px]">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 size={14} className={drillFillersFound.length === 0 ? 'text-emerald-400' : 'text-amber-400'} />
+                      <span>{drillFillersFound.length === 0 ? 'Zero-Filler Mastery Achieved!' : 'Drill Completed!'}</span>
+                    </span>
+                    <span className="text-amber-400 font-extrabold">+{drillBonusXp} Bonus XP</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">
+                    {drillFillersFound.length === 0
+                      ? 'Exceptional execution. You cut all hesitation markers and delivered a clean, punchy explanation.'
+                      : `Solid repetition. You reduced filler dependency. Practice replacing '${drillFillersFound[0] || 'fillers'}' with 1 second of deliberate silence.`}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end gap-2 pt-1 border-t border-slate-800">
+              <button
+                onClick={closeDrillModal}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+              >
+                Back to Full Report
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

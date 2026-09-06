@@ -89,7 +89,7 @@ const CHALLENGE_BADGES = [
   { day: 7, name: 'IELTS Band 8 Speaker', iconName: 'volume2', desc: 'Delivered 2-minute technology cue card speech' },
   { day: 8, name: 'Teamwork Diplomat', iconName: 'users', desc: 'De-escalated team friction with active listening' },
   { day: 9, name: 'Executive Pitcher', iconName: 'barchart3', desc: 'Presented 2-minute project progress & metrics' },
-  { day: 10, name: 'Verbal Enunciator', iconName: 'target', desc: 'Cleared TCS/Infosys accent & filler audit' },
+  { day: 10, name: 'Verbal Enunciator', iconName: 'target', desc: 'Cleared Tier-1 Tech accent & filler audit' },
   { day: 11, name: 'Trade-off Strategist', iconName: 'scale', desc: 'Justified architectural limits with maturity' },
   { day: 12, name: 'GD Moderator', iconName: 'mic', desc: 'Delivered structured group discussion interjections' },
   { day: 13, name: 'Database Architect', iconName: 'database', desc: 'Defended indexing, scaling, and ACID principles' },
@@ -221,7 +221,7 @@ export default function ChallengePage() {
             20-Day Campus Placement &amp; Viva Bootcamp
           </h1>
           <p className="text-xs sm:text-sm font-medium text-slate-500 max-w-xl">
-            Eliminate &ldquo;matlab&rdquo; &amp; &ldquo;basically&rdquo; filler habits, master STAR method interviews for TCS/Infosys drives, and pass university project vivas without freezing.
+            Eliminate &ldquo;matlab&rdquo; &amp; &ldquo;basically&rdquo; filler habits, master STAR method interviews for campus placement drives, and pass university project vivas without freezing.
           </p>
         </div>
 

@@ -16,7 +16,7 @@ import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } fr
 import {
   Mic, FileText, Upload, Sparkles, X, CheckCircle2, RotateCcw, Award, Zap, Globe,
   Target, AlertCircle, Check, HelpCircle, Volume2, Square, Play, Pause, BookOpen,
-  Edit3, Copy, Shield, GraduationCap, Scale, BarChart3, ArrowRight
+  Edit3, Copy, Shield, GraduationCap, Scale, BarChart3, ArrowRight, Flame, Timer
 } from 'lucide-react';
 
 const MAX_FREE_RECORDING_SECONDS = 180; // 3-Minute Free Drill Cap
@@ -57,6 +57,86 @@ export default function SpeechCoach() {
   const [situation, setSituation] = useState('');
   const [challengeDay, setChallengeDay] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // 30-Second Clean Re-Do Drill State ("Muscle Memory Gym")
+  const [showCleanDrill, setShowCleanDrill] = useState(false);
+  const [cleanDrillSeconds, setCleanDrillSeconds] = useState(30);
+  const [isCleanDrillRecording, setIsCleanDrillRecording] = useState(false);
+  const [cleanDrillTranscript, setCleanDrillTranscript] = useState('');
+  const [cleanDrillFillers, setCleanDrillFillers] = useState<string[]>([]);
+  const [cleanDrillCompleted, setCleanDrillCompleted] = useState(false);
+  const [cleanDrillXp, setCleanDrillXp] = useState(0);
+  const cleanDrillTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const cleanDrillRecRef = useRef<any>(null);
+
+  const DRILL_FILLERS = ['um', 'uh', 'like', 'matlab', 'basically', 'actually', 'you know', 'literally', 'yaani', 'toh'];
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      const SpeechClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const rec = new SpeechClass();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = language === 'hi' ? 'hi-IN' : language || 'en-US';
+
+      rec.onresult = (event: any) => {
+        let text = '';
+        for (let i = 0; i < event.results.length; i++) {
+          text += event.results[i][0].transcript + ' ';
+        }
+        const clean = text.trim();
+        setCleanDrillTranscript(clean);
+
+        const words = clean.toLowerCase().split(/\s+/);
+        const found = words.filter(w => DRILL_FILLERS.includes(w.replace(/[^a-zA-Z]/g, '')));
+        setCleanDrillFillers(found);
+      };
+
+      rec.onerror = () => setIsCleanDrillRecording(false);
+      rec.onend = () => setIsCleanDrillRecording(false);
+      cleanDrillRecRef.current = rec;
+    }
+  }, [language]);
+
+  const startCleanDrill = () => {
+    setCleanDrillSeconds(30);
+    setCleanDrillTranscript('');
+    setCleanDrillFillers([]);
+    setCleanDrillCompleted(false);
+    setIsCleanDrillRecording(true);
+
+    if (cleanDrillRecRef.current) {
+      try {
+        cleanDrillRecRef.current.start();
+      } catch (e) {}
+    }
+
+    if (cleanDrillTimerRef.current) clearInterval(cleanDrillTimerRef.current);
+    cleanDrillTimerRef.current = setInterval(() => {
+      setCleanDrillSeconds(prev => {
+        if (prev <= 1) {
+          stopCleanDrill();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const stopCleanDrill = () => {
+    setIsCleanDrillRecording(false);
+    if (cleanDrillTimerRef.current) {
+      clearInterval(cleanDrillTimerRef.current);
+      cleanDrillTimerRef.current = null;
+    }
+    if (cleanDrillRecRef.current) {
+      try {
+        cleanDrillRecRef.current.stop();
+      } catch (e) {}
+    }
+    setCleanDrillCompleted(true);
+    setCleanDrillXp(cleanDrillFillers.length === 0 ? 50 : 25);
+  };
 
   const handleSpeakFeedback = (text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -1414,6 +1494,141 @@ export default function SpeechCoach() {
               <button onClick={() => { reset(); if (section === 'topic') handleTopicReset(); }} disabled={isDeepLoading} className="px-5 py-2.5 bg-white border border-indigo-200 rounded-xl text-slate-900 text-sm font-bold shadow-sm hover:bg-indigo-50 transition-all disabled:opacity-50">
                 Start New Session
               </button>
+            </div>
+          </div>
+
+          {/* Placement & Delivery Practice Gym: 30-Second Clean Re-Do Drill */}
+          <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-3xl p-0.5 shadow-xl animate-fade-in">
+            <div className="bg-white rounded-[23px] p-5 sm:p-6 flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-black uppercase tracking-wider">
+                    <Flame size={13} className="text-amber-600" /> Interactive Practice Drill
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-950">
+                    The 30-Second Clean Re-Do Challenge
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Spoken repetition eliminates verbal crutches. Re-speak your thesis in 30 seconds with <strong>ZERO filler words</strong>.
+                  </p>
+                </div>
+                {!showCleanDrill ? (
+                  <button
+                    onClick={() => setShowCleanDrill(true)}
+                    className="px-5 py-3 bg-[#151930] hover:bg-slate-900 text-[#F2A93B] font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:scale-105"
+                  >
+                    <Play size={14} className="fill-[#F2A93B]" />
+                    <span>Open 30s Clean Drill</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { stopCleanDrill(); setShowCleanDrill(false); }}
+                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer"
+                  >
+                    Close Drill
+                  </button>
+                )}
+              </div>
+
+              {showCleanDrill && (
+                <div className="bg-slate-950 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 flex flex-col items-center gap-4 animate-fade-in text-center">
+                  <div className="space-y-1 max-w-md">
+                    <span className="text-[11px] text-amber-400 font-black uppercase tracking-widest">
+                      Muscle Memory Rule
+                    </span>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                      Whenever you feel the urge to say &quot;um&quot;, &quot;like&quot;, or &quot;basically&quot;, <strong>pause silently for 1 second</strong>. Silence conveys executive authority.
+                    </p>
+                  </div>
+
+                  {/* 30-Second Circular Timer */}
+                  <div className="relative flex items-center justify-center">
+                    <div className={`w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all ${
+                      isCleanDrillRecording 
+                        ? 'bg-rose-500/20 border-2 border-rose-500 animate-pulse text-rose-400' 
+                        : cleanDrillCompleted
+                        ? 'bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400'
+                        : 'bg-slate-800 border-2 border-slate-700 text-slate-200'
+                    }`}>
+                      <span className="text-2xl font-black font-mono leading-none">{cleanDrillSeconds}</span>
+                      <span className="text-[9px] uppercase font-bold tracking-wider mt-0.5">SEC</span>
+                    </div>
+                  </div>
+
+                  {/* Controls */}
+                  <div className="flex items-center gap-3">
+                    {!isCleanDrillRecording && !cleanDrillCompleted && (
+                      <button
+                        onClick={startCleanDrill}
+                        className="px-6 py-3 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
+                      >
+                        <Mic size={16} />
+                        <span>Start 30s Clean Drill</span>
+                      </button>
+                    )}
+
+                    {isCleanDrillRecording && (
+                      <button
+                        onClick={stopCleanDrill}
+                        className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Square size={14} className="fill-white" />
+                        <span>Finish &amp; Check Cleanliness</span>
+                      </button>
+                    )}
+
+                    {cleanDrillCompleted && (
+                      <button
+                        onClick={startCleanDrill}
+                        className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <RotateCcw size={13} />
+                        <span>Repeat Drill</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Filler counter */}
+                  <div className="flex items-center gap-2 text-xs font-semibold">
+                    <span className="text-slate-400">Fillers detected in retry:</span>
+                    <span className={`px-2 py-0.5 rounded-full font-mono font-black ${
+                      cleanDrillFillers.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                    }`}>
+                      {cleanDrillFillers.length} {cleanDrillFillers.length === 1 ? 'filler' : 'fillers'}
+                    </span>
+                  </div>
+
+                  {/* Live Transcript */}
+                  {cleanDrillTranscript && (
+                    <div className="w-full max-w-lg bg-[#151930] border border-slate-800 rounded-xl p-3 text-left text-xs font-medium text-slate-200 leading-relaxed max-h-24 overflow-y-auto">
+                      <span className="text-[10px] font-bold text-slate-400 block mb-1">Live Re-Spoken Text:</span>
+                      &ldquo;{cleanDrillTranscript}&rdquo;
+                    </div>
+                  )}
+
+                  {/* Completion Evaluation */}
+                  {cleanDrillCompleted && (
+                    <div className={`w-full max-w-lg p-3.5 rounded-xl border text-left text-xs font-medium space-y-1 animate-fade-in ${
+                      cleanDrillFillers.length === 0
+                        ? 'bg-emerald-950/40 border-emerald-600/60 text-emerald-200'
+                        : 'bg-amber-950/40 border-amber-600/60 text-amber-200'
+                    }`}>
+                      <div className="flex items-center justify-between font-black uppercase text-[11px]">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 size={14} className={cleanDrillFillers.length === 0 ? 'text-emerald-400' : 'text-amber-400'} />
+                          <span>{cleanDrillFillers.length === 0 ? 'Zero-Filler Mastery!' : 'Drill Completed!'}</span>
+                        </span>
+                        <span className="text-amber-400 font-extrabold">+{cleanDrillXp} Bonus XP</span>
+                      </div>
+                      <p className="text-[11px] leading-relaxed">
+                        {cleanDrillFillers.length === 0
+                          ? 'Outstanding control. Pausing instead of uttering filler words immediately elevates your perceived confidence and leadership presence.'
+                          : `Good attempt! You noted '${cleanDrillFillers.join(', ')}'. Do 1 more rep and consciously inhale quietly whenever you want to fill the silence.`}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

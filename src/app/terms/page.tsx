@@ -40,7 +40,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl font-black text-slate-950 mb-3">2. Description of Service</h2>
               <p className="text-slate-700 font-medium leading-relaxed">
-                Oratii provides an AI-powered public speaking, PowerPoint slide deck analysis, AI Job Interview Studio, and Viva Q&amp;A defense practice platform. Features include real-time WPM pacing metrics, filler word detection in English and Hinglish, CEFR and IELTS speaking band assessments, PowerPoint (PPTX) and PDF slide density heatmaps, STAR method campus placement simulations (including high-stakes presets for TCS/Infosys, SDE-1, Data Analyst, and MBA defenses), a structured 20-Day Placement Challenge curriculum, educational institution and trainer batch portals, and on-device WebAssembly (WASM) camera posture telemetry.
+                Oratii provides an AI-powered public speaking, PowerPoint slide deck analysis, AI Job Interview Studio, and Viva Q&amp;A defense practice platform. Features include real-time WPM pacing metrics, filler word detection in English and Hinglish, CEFR and IELTS speaking band assessments, PowerPoint (PPTX) and PDF slide density heatmaps, STAR method campus placement simulations (including high-stakes presets for Top Tech MNCs, SDE-1, Data Analyst, and MBA defenses), a structured 20-Day Placement Challenge curriculum, educational institution and trainer batch portals, and on-device WebAssembly (WASM) camera posture telemetry.
               </p>
             </section>
 
