@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 
 export default function VivaDefenseMockup() {
   const sampleQuestions = [
@@ -40,7 +41,7 @@ export default function VivaDefenseMockup() {
           onClick={() => setQIndex((prev) => (prev + 1) % sampleQuestions.length)}
           className="text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-600 text-white shadow-xs hover:bg-indigo-700 transition-all cursor-pointer flex items-center gap-1"
         >
-          <span>🎲 Next AI Question</span>
+          <Sparkles size={11} /> Next AI Question
         </button>
       </div>
 

@@ -62,7 +62,7 @@ export default function HomeClient() {
       title: 'AI Voice Mock Interviewer',
       headline: 'Unscripted tech & behavioral interviews.',
       desc: 'Upload your Resume PDF or question paper into an interactive voice window. Experience realistic 4-round technical discussions & STAR method scoring.',
-      highlights: ['📄 Resume PDF & Role Upload', '🎙️ Interactive Voice AI Interface', '⭐ STAR Method & Tech Scoring'],
+      highlights: ['Resume PDF & Role Upload', 'Interactive Voice AI Interface', 'STAR Method & Tech Scoring'],
       icon: <Briefcase size={28} className="text-amber-600" />,
       iconBg: 'bg-amber-50 border-amber-100',
       href: '/interview',
@@ -97,7 +97,7 @@ export default function HomeClient() {
       title: 'Partner Academy & Coaching Hub',
       headline: 'Automate student speaking drills & viva homework.',
       desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, auto-grade student homework, and earn 20% affiliate kickbacks.',
-      highlights: ['📱 1-Click WhatsApp Batch Invites', '📊 Class Leaderboard & CEFR Band Grades', '💰 20% Student Top-Up Kickback'],
+      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', '20% Student Top-Up Kickback'],
       icon: <GraduationCap size={28} className="text-indigo-600" />,
       iconBg: 'bg-indigo-50 border-indigo-100',
       href: '/trainer',
@@ -138,7 +138,7 @@ export default function HomeClient() {
           <div className="w-full text-center md:text-left flex flex-col items-center md:items-start min-w-0 max-w-full">
           <FadeUp delay={50}>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-4 shimmer-badge shadow-xs">
-              <span className="text-sm sm:text-base">✦</span> Campus Placements, Viva Defense & Academy Lab
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> Campus Placements, Viva Defense & Academy Lab
             </div>
           </FadeUp>
 
@@ -161,7 +161,7 @@ export default function HomeClient() {
             <div className="hidden sm:flex items-center justify-center md:justify-start gap-2 mb-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-xs font-bold tracking-wide uppercase shadow-2xs">
                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>🎯 Free 3-Min Placement Drills • IELTS/CEFR Rubric • Regional Filler Audit</span>
+                <span>Free 3-Min Placement Drills • IELTS/CEFR Rubric • Regional Filler Audit</span>
               </div>
             </div>
 
@@ -190,16 +190,16 @@ export default function HomeClient() {
               </a>
             </div>
             <p className="mt-3.5 text-[11px] sm:text-xs font-medium text-slate-400 text-center md:text-left">
-              ⚡ No credit card required • Free plan includes 5 speech analyses per month
+              No credit card required • Free plan includes 5 speech analyses per month
             </p>
 
             {/* Mobile-Only Sleek Value Banner (Clean alternative to heavy animations on mobile) */}
             <div className="flex lg:hidden flex-wrap items-center justify-center md:justify-start gap-2 mt-5 px-3.5 py-2.5 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-2xs text-[11px] font-bold text-slate-700">
-              <span className="flex items-center gap-1"><span className="text-amber-500">⚡</span> Sub-Second AI Latency</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Sub-Second AI Latency</span>
               <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1"><span className="text-emerald-500">🔒</span> 100% On-Device Privacy</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% On-Device Privacy</span>
               <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1"><span className="text-indigo-500">⭐</span> STAR Method Scoring</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> STAR Method Scoring</span>
             </div>
           </FadeUp>
 
@@ -333,26 +333,26 @@ export default function HomeClient() {
                   <div className="absolute -top-4 -right-4 z-20 hidden md:block animate-float-slow">
                      {(f.title.includes('Speech') || f.title.includes('Vocal')) && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Good Pace!</span>
-                         <span className="text-xl font-bold">145 wpm 👍</span>
+                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Good Pace</span>
+                         <span className="text-xl font-bold">145 WPM</span>
                        </div>
                      )}
                      {(f.title.includes('Slide') || f.title.includes('Presenter')) && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Live Presenter Active</span>
-                         <span className="text-xl font-bold">142 WPM • 🎥 CAM</span>
+                         <span className="text-xl font-bold">142 WPM • Live Cam</span>
                        </div>
                      )}
                      {(f.title.includes('Interview') || f.title.includes('Viva')) && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">Unscripted Discussion</span>
-                         <span className="text-xl font-bold">Tech & STAR Scoring 🛡️</span>
+                         <span className="text-xl font-bold">Tech & STAR Scoring</span>
                        </div>
                      )}
                      {f.title.includes('Challenge') && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Streak Active</span>
-                         <span className="text-xl font-bold">7 Days 🔥</span>
+                         <span className="text-xl font-bold">7-Day Streak</span>
                        </div>
                      )}
                   </div>
@@ -363,7 +363,7 @@ export default function HomeClient() {
                          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Mic size={18} /></div>
                          <div className="flex flex-col">
                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Recording</span>
-                           <span className="text-sm font-bold text-slate-900">03:45 🔴</span>
+                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> 03:45</span>
                          </div>
                        </div>
                      )}
@@ -511,7 +511,7 @@ export default function HomeClient() {
           <FadeUp>
             <div className="text-center max-w-2xl mx-auto mb-14">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-4 border border-white/10">
-                ⚡ Proven Results
+                Proven Results
               </div>
               <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
                 Master Pacing, Eliminate Fillers & Ace Q&A
@@ -648,7 +648,7 @@ export default function HomeClient() {
         <div className="max-w-4xl mx-auto relative z-10">
           <FadeUp>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-6 border border-white/10">
-              ✨ Start Improving Today
+              Start Improving Today
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
               Ready to lead the room?

@@ -12,7 +12,7 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts';
-import { Cloud, CloudOff, TrendingUp, FileText } from 'lucide-react';
+import { Cloud, CloudOff, TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive } from 'lucide-react';
 
 const VideoPlayer = ({ sessionId }: { sessionId: string }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -124,14 +124,14 @@ export default function Reports() {
 
   const filteredHistory = filter === 'all' ? history : history.filter(h => h.type === filter);
 
-  const getModuleIcon = (type: string) => {
+  const renderModuleIcon = (type: string) => {
     switch (type) {
-      case 'speech': return '🎙️';
-      case 'presentation': return '📊';
-      case 'viva': return '🎓';
-      case 'interview': return '💼';
-      case 'jury': return '⚖️';
-      default: return '📋';
+      case 'speech': return <Mic size={24} className="text-emerald-600" />;
+      case 'presentation': return <BarChart3 size={24} className="text-blue-600" />;
+      case 'viva': return <GraduationCap size={24} className="text-rose-600" />;
+      case 'interview': return <Briefcase size={24} className="text-amber-600" />;
+      case 'jury': return <Scale size={24} className="text-orange-600" />;
+      default: return <ClipboardList size={24} className="text-slate-600" />;
     }
   };
 
@@ -380,7 +380,7 @@ export default function Reports() {
 
       {filteredHistory.length === 0 ? (
         <div className="w-full bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-xl p-16 text-center">
-          <span className="text-5xl block mb-4">📭</span>
+          <Inbox size={48} className="mx-auto mb-4 text-indigo-400" />
           <h2 className="text-xl font-bold text-slate-900 mb-2 uppercase">No History Found</h2>
           <p className="text-slate-500 font-medium">You haven’t completed any {filter !== 'all' ? filter : ''} sessions yet. Keep practicing!</p>
         </div>
@@ -390,15 +390,15 @@ export default function Reports() {
             <h3 className="text-xl font-bold text-slate-900 uppercase tracking-widest">Session Breakdown</h3>
             {/* Video Storage Cap Notice (Step 3.2) */}
             <div className="text-xs text-slate-500 font-medium bg-indigo-100/90 border border-indigo-200 px-3.5 py-2 rounded-xl flex items-center gap-2">
-              <span>💾</span>
+              <HardDrive size={14} className="text-indigo-600 shrink-0" />
               <span>Recorded videos are saved locally via IndexedDB. Export to MP4 or clear browser data anytime to free space.</span>
             </div>
           </div>
           {filteredHistory.map((session, i) => (
             <div key={i} className={`bg-white border border-indigo-200 rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center shadow-sm hover:shadow-elevated transition-all break-inside-avoid accent-stripe`} style={{'--color-brand-from': {'speech':'#10b981','presentation':'#3b82f6','viva':'#e11d48','interview':'#f59e0b','jury':'#fa7c42'}[session.type] || '#94a3b8', '--color-brand-to': {'speech':'#34d399','presentation':'#60a5fa','viva':'#fb7185','interview':'#fbbf24','jury':'#818cf8'}[session.type] || '#cbd5e1'} as React.CSSProperties}>
               
-              <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl bg-indigo-100 flex-shrink-0 shadow-sm">
-                {getModuleIcon(session.type)}
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-indigo-50 border border-indigo-100 flex-shrink-0 shadow-xs">
+                {renderModuleIcon(session.type)}
               </div>
               
               <div className="flex-1 w-full">

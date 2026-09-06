@@ -25,7 +25,7 @@ export default function ReferralCard() {
     ? `${origin}/signup?ref=${userId.slice(0, 8)}`
     : `${origin}/signup`;
 
-  const shareText = `🚀 Practice public speaking, audit slide decks, and ace technical job interviews with Oratii AI! Sign up using my link for 10 free trial credits: ${referralLink}`;
+  const shareText = `Practice public speaking, audit slide decks, and ace technical job interviews with Oratii AI! Sign up using my link for 10 free trial credits: ${referralLink}`;
 
   const handleCopy = async () => {
     try {
@@ -71,7 +71,7 @@ export default function ReferralCard() {
           </div>
 
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-            <span>🎁</span> Invite Friends & Earn +5 Free Credits!
+            Invite Friends & Earn +5 Free Credits!
           </h2>
 
           <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
@@ -120,21 +120,21 @@ export default function ReferralCard() {
               onClick={shareWhatsapp}
               className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <span>💬 WhatsApp</span>
+              <span>WhatsApp</span>
             </button>
 
             <button
               onClick={shareLinkedin}
               className="px-3 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/40 text-blue-300 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <span>💼 LinkedIn</span>
+              <span>LinkedIn</span>
             </button>
 
             <button
               onClick={shareTwitter}
               className="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <span>𝕏 Twitter</span>
+              <span>Twitter (X)</span>
             </button>
           </div>
 

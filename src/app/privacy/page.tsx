@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Lock, ShieldCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -18,7 +19,8 @@ export default function PrivacyPolicyPage() {
         {/* Header */}
         <div className="border-b border-slate-200 pb-8 mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-slate-800 border border-slate-200 text-xs font-extrabold uppercase tracking-wider mb-4 shadow-2xs">
-            🔒 Voice & Data Privacy Guarantee
+            <Lock size={13} className="text-slate-800" />
+            <span>Voice & Data Privacy Guarantee</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-950 mb-3">
             Privacy Policy
@@ -34,7 +36,7 @@ export default function PrivacyPolicyPage() {
           <section className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-md relative overflow-hidden" style={{ isolation: 'isolate' }}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
             <h2 className="text-lg font-black text-slate-950 mb-2 flex items-center gap-2">
-              <span>🛡️</span> Our Core Privacy Promise
+              <ShieldCheck size={20} className="text-indigo-600" /> Our Core Privacy Promise
             </h2>
             <p className="text-slate-700 font-medium">
               At <strong>Oratii</strong>, we understand that your speech recordings, presentation slides, and practice responses contain valuable ideas. Your voice recordings and uploaded decks are processed strictly for generating real-time coaching feedback and <strong>are never sold, leased, or used to train public third-party AI models</strong>.

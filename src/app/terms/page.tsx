@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { FileText } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -15,7 +16,8 @@ export default function TermsOfServicePage() {
           {/* Header */}
           <div className="border-b border-slate-200 pb-8 mb-8">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-slate-800 border border-slate-200 text-xs font-extrabold uppercase tracking-wider mb-4 shadow-2xs">
-              📜 Platform Agreement
+              <FileText size={13} className="text-slate-800" />
+              <span>Platform Agreement</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-950 mb-3">
               Terms of Service

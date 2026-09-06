@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { FileText, Sparkles } from 'lucide-react';
 
 export default function SpeechCoachMockup() {
   const [isRecording, setIsRecording] = useState(true);
@@ -108,7 +109,7 @@ export default function SpeechCoachMockup() {
           <div className="flex items-center justify-between mb-2 z-10">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs border border-indigo-100 shadow-xs">
-                📝
+                <FileText size={12} className="text-indigo-600" />
               </div>
               <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider">Live Audio Transcript</span>
             </div>
@@ -145,7 +146,7 @@ export default function SpeechCoachMockup() {
           {/* Interactive AI Coach Tip Popover */}
           {selectedWord && (
             <div className="mt-2 bg-indigo-950 text-white p-2.5 rounded-xl border border-indigo-700/60 shadow-lg flex items-start gap-2 text-[9px] sm:text-[10px] animate-fade-in z-20">
-              <span className="text-amber-400 text-xs">💡</span>
+              <Sparkles size={13} className="text-amber-400 shrink-0 mt-0.5" />
               <div className="flex-1">
                 <span className="font-bold text-indigo-200 uppercase tracking-wider block text-[8px] mb-0.5">
                   AI Recommendation for &quot;{selectedWord}&quot;

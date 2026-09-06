@@ -72,7 +72,7 @@ export default function NotificationPrompt() {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800">
-            🔔 Get daily practice reminders?
+            Get daily practice reminders?
           </p>
           <p className="mt-0.5 text-xs text-slate-500">
             We&apos;ll remind you to keep your streak alive and notify you when sessions complete.

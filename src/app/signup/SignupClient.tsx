@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { Sparkles, Mic, BarChart3, Trophy, Check } from 'lucide-react';
 
 export default function SignupClient() {
   const router = useRouter();
@@ -111,7 +112,7 @@ export default function SignupClient() {
         {/* Main Branding Content */}
         <div className="relative z-10 flex-1 flex flex-col justify-center -mt-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-6 border border-white/10 w-max">
-            ✨ Free Starter Account
+            <Sparkles size={13} className="text-amber-400" /> Free Starter Account
           </div>
           <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-6">
             Present with <span className="text-[#F2A93B]">unshakeable confidence.</span>
@@ -124,15 +125,20 @@ export default function SignupClient() {
         {/* Feature Highlights */}
         <div className="relative z-10 space-y-4 border-t border-white/10 pt-8">
           {[
-            { icon: '🎙️', text: 'Real-time speech analysis' },
-            { icon: '📊', text: 'Instant slide deck evaluation' },
-            { icon: '🏆', text: 'Gamified challenges & badges' },
-          ].map((f, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <span className="text-lg">{f.icon}</span>
-              <span className="text-sm font-bold text-slate-200">{f.text}</span>
-            </div>
-          ))}
+            { icon: Mic, text: 'Real-time speech analysis' },
+            { icon: BarChart3, text: 'Instant slide deck evaluation' },
+            { icon: Trophy, text: 'Gamified challenges & badges' },
+          ].map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <div key={i} className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-amber-400 shrink-0">
+                  <Icon size={16} />
+                </span>
+                <span className="text-sm font-bold text-slate-200">{f.text}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -143,9 +149,9 @@ export default function SignupClient() {
         <nav className="w-full px-6 md:px-10 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 lg:hidden">
             <div className="w-10 h-10 rounded-xl bg-[#151930] text-[#F2A93B] flex items-center justify-center font-black text-lg shadow-sm">O</div>
-            <span className="text-xl font-black text-slate-950 tracking-tight">Oratii</span>
+            <span className="font-extrabold text-xl text-slate-900 tracking-tight">Oratii</span>
           </Link>
-          <div className="lg:hidden"></div>
+          <div className="flex-1" />
           <Link 
             href="/login"
             className="text-xs font-black text-slate-700 hover:text-slate-950 border border-slate-200 hover:border-slate-300 px-4 py-2 rounded-xl transition-all bg-white shadow-2xs"
@@ -160,8 +166,8 @@ export default function SignupClient() {
             
             {success ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-emerald-200">
-                  ✓
+                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                  <Check size={32} className="stroke-[3]" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">Check your email!</h3>
                 <p className="text-sm text-slate-500 mb-6 leading-relaxed">

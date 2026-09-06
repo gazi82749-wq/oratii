@@ -24,7 +24,8 @@ import {
   MessageCircle,
   Clock,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  MapPin
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -221,7 +222,10 @@ export default function TrainerDashboardPage() {
           </div>
 
           <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 text-xs text-slate-700 space-y-2">
-            <p className="font-bold text-indigo-900">✨ What you get as a verified partner (₹0 Cost):</p>
+            <p className="font-bold text-indigo-900 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-500" />
+              <span>What you get as a verified partner (₹0 Cost):</span>
+            </p>
             <ul className="list-disc list-inside space-y-1 text-slate-600">
               <li>Automatic grading for all speech, interview & viva homework</li>
               <li>Your Institute’s name co-branded on student PDF scorecards</li>
@@ -312,7 +316,7 @@ export default function TrainerDashboardPage() {
               </span>
             </div>
             <p className="text-xs sm:text-sm text-indigo-200 mt-0.5 flex items-center gap-2">
-              <span>📍 {academy.city || 'India'}</span>
+              <span className="flex items-center gap-1"><MapPin size={12} className="text-indigo-300" /> {academy.city || 'India'}</span>
               <span>•</span>
               <span>20% Student Top-Up Commission Active</span>
             </p>
@@ -528,10 +532,10 @@ export default function TrainerDashboardPage() {
                   onChange={(e) => setNewBatchTrack(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-slate-900 bg-white"
                 >
-                  <option value="all">🌟 All Tracks (Speech, Interview & Viva)</option>
-                  <option value="speech">🎙️ Speech Delivery & Fluency Track</option>
-                  <option value="interview">💼 Campus Placement & Mock Interview Track</option>
-                  <option value="presentation_viva">📊 Slide Deck & Academic Viva Track</option>
+                  <option value="all">All Tracks (Speech, Interview & Viva)</option>
+                  <option value="speech">Speech Delivery & Fluency Track</option>
+                  <option value="interview">Campus Placement & Mock Interview Track</option>
+                  <option value="presentation_viva">Slide Deck & Academic Viva Track</option>
                 </select>
               </div>
 

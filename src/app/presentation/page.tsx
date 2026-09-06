@@ -18,6 +18,7 @@ import GuestAuthModal from '../../components/GuestAuthModal';
 import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
+import { BarChart3, Video, AlertCircle, FileText, GraduationCap, Mic, Check, X, Target } from 'lucide-react';
 
 function PresentationAnalyzerContent() {
   const router = useRouter();
@@ -288,22 +289,22 @@ function PresentationAnalyzerContent() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-xs">
               <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Slide Deck AI Module
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-2 flex items-center gap-2">
-              <span>📊</span> Slide Analyzer
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-2 flex items-center gap-2.5">
+              <BarChart3 size={28} className="text-amber-500" /> Slide Analyzer
             </h1>
             <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl">Upload your PowerPoint (PPTX) or PDF presentation deck for instant text density, design clarity, and AI structural feedback.</p>
             <div className="mt-3 inline-flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 bg-amber-50 border border-amber-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
-              <span className="text-amber-800 font-extrabold flex items-center gap-1">
-                🎥 Practice Mode Included:
+              <span className="text-amber-800 font-extrabold flex items-center gap-1.5">
+                <Video size={14} /> Practice Mode Included:
               </span>
-              <span>Upload your deck below to run an AI audit, or launch <strong>&quot;🎥 Practice Live Presentation&quot;</strong> for full-screen webcam rehearsal!</span>
+              <span>Upload your deck below to run an AI audit, or launch <strong>&quot;Practice Live Presentation&quot;</strong> for full-screen webcam rehearsal!</span>
             </div>
           </div>
 
           {error && (
             <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold flex items-center justify-between animate-fade-in">
-              <span>⚠️ {error}</span>
-              <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-bold ml-4 cursor-pointer">✕</button>
+              <span className="flex items-center gap-2"><AlertCircle size={16} /> {error}</span>
+              <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-bold ml-4 cursor-pointer" aria-label="Dismiss error"><X size={16} /></button>
             </div>
           )}
 
@@ -322,8 +323,8 @@ function PresentationAnalyzerContent() {
                   }`}
                 >
                   <input {...getInputProps()} />
-                  <div className="w-14 h-14 rounded-2xl bg-[#151930] text-[#F2A93B] flex items-center justify-center text-2xl mb-4 shadow-md group-hover:scale-110 transition-transform">
-                    📄
+                  <div className="w-14 h-14 rounded-2xl bg-[#151930] text-[#F2A93B] flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform">
+                    <FileText size={28} />
                   </div>
                   <p className="text-lg font-extrabold text-slate-950 text-center mb-2 group-hover:-translate-y-0.5 transition-transform">
                     {file ? file.name : 'Drag & drop PPTX or PDF here'}
@@ -337,7 +338,7 @@ function PresentationAnalyzerContent() {
                       onClick={analyzeFile}
                       className="flex-1 py-3.5 px-4 rounded-xl text-sm font-extrabold bg-[#151930] hover:bg-[#0B0E27] text-white shadow-md transition-all text-center cursor-pointer flex items-center justify-center gap-2"
                     >
-                      📊 Analyze Slide Deck →
+                      <BarChart3 size={16} /> Analyze Slide Deck →
                     </button>
                     <button 
                       onClick={async () => {
@@ -362,7 +363,7 @@ function PresentationAnalyzerContent() {
                       }}
                       className="flex-1 py-3.5 px-4 rounded-xl text-sm font-black bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 hover:to-[#e0992b] text-[#151930] shadow-md shadow-amber-500/20 transition-all text-center cursor-pointer flex items-center justify-center gap-2"
                     >
-                      🎥 Practice Live Presentation →
+                      <Video size={16} /> Practice Live Presentation →
                     </button>
                   </div>
                 )}
@@ -372,8 +373,8 @@ function PresentationAnalyzerContent() {
         </>
       ) : error ? (
         <div className="w-full flex flex-col items-center justify-center py-20 text-center animate-fade-in bg-rose-50 border border-rose-200 rounded-xl">
-          <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm">
-            ⚠️
+          <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+            <AlertCircle size={36} />
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-rose-900 mb-3">Analysis Failed</h2>
           <p className="text-rose-700 font-medium mb-8 max-w-md">{error}</p>
@@ -396,13 +397,13 @@ function PresentationAnalyzerContent() {
               <button onClick={() => {
                 setIsVivaModalOpen(true);
               }} className="flex-1 sm:flex-none px-4 py-2.5 bg-[#1B2140] hover:bg-[#0B0E27] text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                <span>🎓 Take Viva Defense</span>
+                <GraduationCap size={16} /> Take Viva Defense
               </button>
               <button 
                 onClick={() => setIsPracticeMode(true)}
                 className="flex-1 sm:flex-none px-4.5 py-2.5 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 hover:to-[#e0992b] text-[#151930] font-black text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>🎥 Practice Live Presentation</span>
+                <Video size={16} /> Practice Live Presentation
               </button>
               <button onClick={handleTryAgain} className="flex-1 sm:flex-none px-4 sm:px-5 py-2.5 bg-slate-900 border border-slate-900 rounded-xl text-white font-extrabold text-xs shadow-sm hover:bg-black transition-all text-center cursor-pointer">
                 Try again
@@ -436,7 +437,7 @@ function PresentationAnalyzerContent() {
               {(analysis.deliveryAnalysis || analysis.visualBodyLanguageAnalysis) && (
                 <div className="bg-[#151930] text-white border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
                   <div className="text-xs font-black text-amber-400 uppercase tracking-widest flex items-center justify-between">
-                    <span>🎙️ Live Vocal Pacing & Body Language Breakdown</span>
+                    <span className="flex items-center gap-1.5"><Mic size={14} className="text-amber-400" /> Live Vocal Pacing & Body Language Breakdown</span>
                     <span className="text-slate-400 font-mono text-[10px]">Real-time Performance Metrics</span>
                   </div>
 
@@ -471,7 +472,9 @@ function PresentationAnalyzerContent() {
                   <ul className="space-y-3">
                     {analysis.strengths?.map((item: string, i: number) => (
                       <li key={i} className="text-slate-800 text-sm sm:text-base font-semibold flex items-start gap-2.5">
-                        <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">✓</span> 
+                        <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          <Check size={11} className="stroke-[3]" />
+                        </span> 
                         <span>{item}</span>
                       </li>
                     ))}
@@ -482,7 +485,9 @@ function PresentationAnalyzerContent() {
                   <ul className="space-y-3">
                     {analysis.weaknesses?.map((item: string, i: number) => (
                       <li key={i} className="text-slate-800 text-sm sm:text-base font-semibold flex items-start gap-2.5">
-                        <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">✕</span> 
+                        <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          <X size={11} className="stroke-[3]" />
+                        </span> 
                         <span>{item}</span>
                       </li>
                     ))}
@@ -494,7 +499,9 @@ function PresentationAnalyzerContent() {
               {analysis.suggestions?.length > 0 && (
                 <div className="bg-[#151930] text-white border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
                   <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-                    <span className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-sm font-bold shrink-0">🎯</span>
+                    <span className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-sm font-bold shrink-0">
+                      <Target size={14} />
+                    </span>
                     <h3 className="text-sm font-black uppercase tracking-widest text-amber-400">
                       Recommendations & Actionable Coaching Plan
                     </h3>
@@ -502,7 +509,7 @@ function PresentationAnalyzerContent() {
                   <div className="space-y-2.5 text-xs sm:text-sm font-medium">
                     {analysis.suggestions.map((sug: string, i: number) => (
                       <div key={i} className="flex items-start gap-3 bg-[#0B0E27] p-3.5 rounded-xl border border-slate-800 text-slate-200">
-                        <span className="text-indigo-400 font-bold shrink-0">🎯</span>
+                        <span className="text-indigo-400 font-bold shrink-0 mt-0.5"><Target size={14} /></span>
                         <span className="leading-relaxed">{sug}</span>
                       </div>
                     ))}

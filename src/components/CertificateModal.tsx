@@ -50,7 +50,7 @@ export default function CertificateModal({
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800 print:hidden bg-[#0A0D20] text-white">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 via-[#F2A93B] to-amber-500 text-[#0B0E27] flex items-center justify-center font-black text-sm shadow-md">
-              ✨
+              <Sparkles size={16} className="text-[#0B0E27]" />
             </div>
             <div>
               <h2 className="text-xs sm:text-sm font-black text-white flex items-center gap-2 tracking-tight">
@@ -140,7 +140,7 @@ export default function CertificateModal({
                   <div className="bg-[#151930]/80 border border-slate-800 rounded-2xl p-3 space-y-1">
                     <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Module Badge</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xl">{badgeIcon}</span>
+                      <Award size={16} className="text-amber-400 shrink-0" />
                       <span className="text-xs font-black text-white truncate">{badgeName}</span>
                     </div>
                   </div>

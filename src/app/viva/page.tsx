@@ -13,14 +13,25 @@ import { supabase } from '../../lib/supabaseClient';
 import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import {
   Sparkles, Send, Mic, HelpCircle, CheckCircle, RotateCcw,
-  MessageSquare, Volume2, VolumeX, Flame, Smile, Play, ArrowLeft
+  MessageSquare, Volume2, VolumeX, Flame, Smile, Play, ArrowLeft,
+  Code2, Cpu, BarChart3, Zap, Cloud, GraduationCap, Keyboard, User, Award, Check, AlertCircle, Target
 } from 'lucide-react';
+
+const renderPresetIcon = (id: string) => {
+  switch (id) {
+    case 'cs_btech': return <Code2 size={16} className="text-indigo-600" />;
+    case 'ai_ml': return <Cpu size={16} className="text-purple-600" />;
+    case 'mba_case': return <BarChart3 size={16} className="text-emerald-600" />;
+    case 'iot_embedded': return <Zap size={16} className="text-amber-500" />;
+    case 'cloud_microservices': return <Cloud size={16} className="text-sky-600" />;
+    default: return <GraduationCap size={16} className="text-indigo-600" />;
+  }
+};
 
 const POPULAR_COLLEGE_VIVA_PRESETS = [
   {
     id: 'cs_btech',
     title: 'B.Tech CS Final Project (Full-Stack & DB Defense)',
-    icon: '💻',
     topicText: 'B.Tech Computer Science Final Project: Full-Stack Architecture, REST APIs & Database Schema Defense',
     tag: 'B.Tech / BCA',
     desc: 'Schema normalization, indexing, API security, and server load handling'
@@ -28,7 +39,6 @@ const POPULAR_COLLEGE_VIVA_PRESETS = [
   {
     id: 'ai_ml',
     title: 'AI / ML Capstone (Model Accuracy & Overfitting)',
-    icon: '🤖',
     topicText: 'Machine Learning & AI Capstone: Model Evaluation, Overfitting Defense & Dataset Validation',
     tag: 'M.Tech / Data Science',
     desc: 'Precision/Recall metrics, cross-validation, regularization, and baseline comparisons'
@@ -36,7 +46,6 @@ const POPULAR_COLLEGE_VIVA_PRESETS = [
   {
     id: 'mba_case',
     title: 'MBA Business Strategy & Financial Break-even',
-    icon: '📊',
     topicText: 'MBA Business Strategy: Market Sizing, Unit Economics & Financial Break-even Defense',
     tag: 'MBA / Management',
     desc: 'CAC/LTV ratios, fixed vs variable costs, competitive moats, and projection stress testing'
@@ -44,7 +53,6 @@ const POPULAR_COLLEGE_VIVA_PRESETS = [
   {
     id: 'iot_embedded',
     title: 'IoT & Embedded Systems Hardware Architecture',
-    icon: '⚡',
     topicText: 'IoT & Embedded Systems: Sensor Protocols (MQTT/I2C), Microcontroller Latency & Power Optimization',
     tag: 'ECE / Mechanical',
     desc: 'Communication protocols, battery consumption, hardware interrupts, and real-time edge processing'
@@ -52,7 +60,6 @@ const POPULAR_COLLEGE_VIVA_PRESETS = [
   {
     id: 'cloud_microservices',
     title: 'Cloud Computing & Microservices Scalability',
-    icon: '☁️',
     topicText: 'Cloud Computing & Distributed Systems: Microservices, Containerization, Docker & Kubernetes Scaling',
     tag: 'Cloud & DevOps',
     desc: 'Stateless services, Redis caching, message queues, and failover redundancy'
@@ -378,7 +385,7 @@ export default function VivaCoachPage() {
             <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Viva Defense AI Module
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight flex items-center gap-2">
-            <span>🎓</span> AI Viva Defense
+            <GraduationCap size={24} className="text-indigo-600" /> AI Viva Defense
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Defend your slides, thesis, and presentation topic in a deep conversational Q&A with an AI committee panel.</p>
         </div>
@@ -409,7 +416,7 @@ export default function VivaCoachPage() {
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>🎓</span> Popular College Project Viva Presets (1-Click)
+                  <GraduationCap size={15} className="text-indigo-600" /> Popular College Project Viva Presets (1-Click)
                 </label>
                 <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/70">
                   University Viva Calibrated
@@ -434,7 +441,9 @@ export default function VivaCoachPage() {
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-lg shrink-0">{p.icon}</span>
+                        <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs">
+                          {renderPresetIcon(p.id)}
+                        </div>
                         <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
                           isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'
                         }`}>
@@ -484,13 +493,13 @@ export default function VivaCoachPage() {
                     }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">🇮🇳</span>
+                    <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-indigo-600 shrink-0">HI</div>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-sm">Hinglish Defense</h4>
                       <p className="text-xs text-slate-500 font-medium mt-0.5">Hindi + English mix (Conversational)</p>
                     </div>
                   </div>
-                  {language === 'hinglish' && <span className="text-[#151930] font-black text-sm">✓</span>}
+                  {language === 'hinglish' && <Check size={16} className="text-[#151930]" />}
                 </button>
 
                 <button
@@ -502,13 +511,13 @@ export default function VivaCoachPage() {
                     }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">🇬🇧</span>
+                    <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-700 shrink-0">EN</div>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-sm">English Defense</h4>
                       <p className="text-xs text-slate-500 font-medium mt-0.5">Standard Formal Academic</p>
                     </div>
                   </div>
-                  {language === 'en' && <span className="text-[#151930] font-black text-sm">✓</span>}
+                  {language === 'en' && <Check size={16} className="text-[#151930]" />}
                 </button>
               </div>
             </div>
@@ -527,7 +536,7 @@ export default function VivaCoachPage() {
                     }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xl">⌨️</span>
+                    <Keyboard size={18} className="text-slate-700" />
                     <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-800">Standard</span>
                   </div>
                   <div>
@@ -544,7 +553,7 @@ export default function VivaCoachPage() {
                     }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xl">🎙️</span>
+                    <Mic size={18} className="text-amber-600" />
                     <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">Live Mic</span>
                   </div>
                   <div>
@@ -645,8 +654,8 @@ export default function VivaCoachPage() {
                   {/* Examiner Question */}
                   {item.role === 'examiner' && item.question && (
                     <div className="flex gap-3 items-start">
-                      <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-sm font-black shrink-0 mt-0.5 shadow-2xs">
-                        🎓
+                      <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <GraduationCap size={16} className="text-amber-900" />
                       </div>
                       <div className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
                         <div className="text-[10px] font-black text-amber-800 uppercase tracking-wider flex items-center justify-between">
@@ -664,8 +673,8 @@ export default function VivaCoachPage() {
                         </div>
                         <p className="text-sm sm:text-base font-bold text-slate-950 leading-relaxed">{item.question}</p>
                         {answerFormatHint && idx === chatHistory.length - 1 && (
-                          <p className="text-[11px] text-amber-800 font-medium italic border-t border-slate-200 pt-2">
-                            💡 Format Hint: {answerFormatHint}
+                          <p className="text-[11px] text-amber-800 font-medium italic border-t border-slate-200 pt-2 flex items-center gap-1">
+                            <HelpCircle size={12} className="text-amber-700 shrink-0" /> Format Hint: {answerFormatHint}
                           </p>
                         )}
                       </div>
@@ -679,8 +688,8 @@ export default function VivaCoachPage() {
                         <div className="text-[10px] font-black uppercase tracking-wider text-amber-400 mb-1">Your Defense Answer</div>
                         <p className="leading-relaxed font-semibold">{item.text}</p>
                       </div>
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
-                        👤
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                        <User size={15} className="text-slate-700" />
                       </div>
                     </div>
                   )}
@@ -779,8 +788,8 @@ export default function VivaCoachPage() {
               )}
 
               {currentTip && (
-                <p className="text-[10px] text-slate-500 font-medium text-center truncate">
-                  💡 Examiner Tip: {currentTip}
+                <p className="text-[10px] text-slate-500 font-medium text-center truncate flex items-center justify-center gap-1">
+                  <HelpCircle size={11} className="text-slate-400 shrink-0" /> Examiner Tip: {currentTip}
                 </p>
               )}
             </div>
@@ -791,8 +800,8 @@ export default function VivaCoachPage() {
         {/* RESULTS PHASE */}
         {phase === 'results' && (
           <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2 text-slate-900">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-3xl mx-auto shadow-sm">
-              🏆
+            <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center mx-auto shadow-sm">
+              <Award size={28} className="text-amber-800" />
             </div>
 
             <div>
@@ -874,23 +883,23 @@ export default function VivaCoachPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
                 <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-md space-y-2">
                   <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0"><Check size={11} /></span>
                     <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Strengths</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
-                    <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Accurate domain concepts and technical terminology</span></li>
-                    <li className="flex items-start gap-1.5"><span className="text-emerald-400 font-bold shrink-0">✅</span><span>Responsive answering directly addressing committee questions</span></li>
+                    <li className="flex items-start gap-1.5"><Check size={13} className="text-emerald-400 font-bold shrink-0 mt-0.5" /><span>Accurate domain concepts and technical terminology</span></li>
+                    <li className="flex items-start gap-1.5"><Check size={13} className="text-emerald-400 font-bold shrink-0 mt-0.5" /><span>Responsive answering directly addressing committee questions</span></li>
                   </ul>
                 </div>
 
                 <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-md space-y-2">
                   <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
+                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0"><AlertCircle size={11} /></span>
                     <h4 className="text-xs font-black text-white uppercase tracking-wider">Defense Areas to Improve</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-slate-200 font-medium">
-                    <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Elaborate deeper on slide data points & architectural choices</span></li>
-                    <li className="flex items-start gap-1.5"><span className="text-amber-400 font-bold shrink-0">⚠️</span><span>Cite concrete trade-offs when answering technical challenges</span></li>
+                    <li className="flex items-start gap-1.5"><AlertCircle size={13} className="text-amber-400 font-bold shrink-0 mt-0.5" /><span>Elaborate deeper on slide data points & architectural choices</span></li>
+                    <li className="flex items-start gap-1.5"><AlertCircle size={13} className="text-amber-400 font-bold shrink-0 mt-0.5" /><span>Cite concrete trade-offs when answering technical challenges</span></li>
                   </ul>
                 </div>
               </div>
@@ -898,7 +907,7 @@ export default function VivaCoachPage() {
               {/* Actionable Coaching Container */}
               <div className="bg-[#151930] border border-slate-800 border-t-4 border-t-indigo-500 rounded-2xl p-4 text-left shadow-md space-y-2">
                 <div className="flex items-center gap-2 pb-1.5 border-b border-slate-800">
-                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0">🎯</span>
+                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0"><Target size={11} /></span>
                   <h4 className="text-xs font-black text-white uppercase tracking-wider">Examiner Actionable Coaching Plan</h4>
                 </div>
                 <p className="text-xs text-slate-200 leading-relaxed font-medium bg-[#0B0E27] p-3 rounded-xl border border-slate-800">

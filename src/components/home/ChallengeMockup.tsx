@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles, Flame, Check } from 'lucide-react';
 
 export default function ChallengeMockup() {
   const [completedDays, setCompletedDays] = useState<number>(7);
@@ -31,12 +31,12 @@ export default function ChallengeMockup() {
 
         <div className="flex items-center gap-2">
           {justCompleted && (
-            <span className="text-[9px] font-black text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full animate-bounce">
-              +50 XP Earned! 🎉
+            <span className="text-[9px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full animate-bounce flex items-center gap-1">
+              <Sparkles size={10} className="text-amber-500" /> +50 XP Earned!
             </span>
           )}
           <span className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-widest flex items-center gap-1">
-            🔥 Day {completedDays}/20 Streak
+            <Flame size={12} className="text-amber-500" /> Day {completedDays}/20 Streak
           </span>
         </div>
       </div>
@@ -46,8 +46,9 @@ export default function ChallengeMockup() {
         <div className="flex items-center justify-between bg-white/80 backdrop-blur-md p-3 rounded-xl border border-white shadow-xs">
           <div>
             <div className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Active Habit Streak</div>
-            <div className="text-xl sm:text-2xl font-black text-slate-900">
-              {completedDays} Days <span className="text-amber-500 font-extrabold">🔥</span>
+            <div className="text-xl sm:text-2xl font-black text-slate-950 flex items-center gap-1.5">
+              <span>{completedDays} Days</span>
+              <Flame size={18} className="text-amber-500" />
             </div>
           </div>
           <div className="text-right">
@@ -76,7 +77,7 @@ export default function ChallengeMockup() {
                       : 'bg-slate-100 text-slate-400 hover:bg-slate-200 border border-slate-200/60'
                   }`}
                 >
-                  {isDone ? '✓' : dayNum}
+                  {isDone ? <Check size={11} className="stroke-[3]" /> : dayNum}
                 </button>
               );
             })}

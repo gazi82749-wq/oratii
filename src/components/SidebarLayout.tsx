@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
@@ -183,7 +183,7 @@ export default function SidebarLayout({ children }) {
                   <Link href="/pricing" title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
                     {userCredits !== null && userCredits >= 99999 ? (
                       <span className="flex items-center gap-1">
-                        <span>👑</span>
+                        <Crown size={13} className="text-amber-600" />
                         <span>Admin</span>
                       </span>
                     ) : (

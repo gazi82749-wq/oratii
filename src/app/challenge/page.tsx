@@ -18,6 +18,25 @@ import {
   Calendar,
   X,
   ChevronRight,
+  Check,
+  Rocket,
+  Laptop,
+  Star,
+  Lightbulb,
+  Handshake,
+  Shield,
+  Volume2,
+  Users,
+  BarChart3,
+  Target,
+  Scale,
+  Mic,
+  Database,
+  Trophy,
+  Zap,
+  Globe,
+  Landmark,
+  Medal
 } from 'lucide-react';
 import {
   getChallengeState,
@@ -33,28 +52,54 @@ import InsufficientCreditsModal from '@/components/InsufficientCreditsModal';
 import { checkAndDeductCredits } from '@/lib/credits';
 import { supabase } from '@/lib/supabaseClient';
 
+const renderChallengeBadgeIcon = (day: number) => {
+  switch (day) {
+    case 1: return <Rocket size={22} className="text-amber-600" />;
+    case 2: return <Laptop size={22} className="text-amber-600" />;
+    case 3: return <Star size={22} className="text-amber-600" />;
+    case 4: return <Lightbulb size={22} className="text-amber-600" />;
+    case 5: return <Handshake size={22} className="text-amber-600" />;
+    case 6: return <Shield size={22} className="text-amber-600" />;
+    case 7: return <Volume2 size={22} className="text-amber-600" />;
+    case 8: return <Users size={22} className="text-amber-600" />;
+    case 9: return <BarChart3 size={22} className="text-amber-600" />;
+    case 10: return <Target size={22} className="text-amber-600" />;
+    case 11: return <Scale size={22} className="text-amber-600" />;
+    case 12: return <Mic size={22} className="text-amber-600" />;
+    case 13: return <Database size={22} className="text-amber-600" />;
+    case 14: return <Medal size={22} className="text-amber-600" />;
+    case 15: return <Zap size={22} className="text-amber-600" />;
+    case 16: return <Globe size={22} className="text-amber-600" />;
+    case 17: return <Landmark size={22} className="text-amber-600" />;
+    case 18: return <Trophy size={22} className="text-amber-600" />;
+    case 19: return <Flame size={22} className="text-amber-600" />;
+    case 20: return <Award size={22} className="text-amber-600" />;
+    default: return <Award size={22} className="text-amber-600" />;
+  }
+};
+
 // 20 Custom Badge Definitions for the 20-Day Campus Placement & Viva Defense Bootcamp
 const CHALLENGE_BADGES = [
-  { day: 1, name: 'Campus Initiator', icon: '🚀', desc: 'Delivered crisp 90s professional introduction' },
-  { day: 2, name: 'Architecture Defender', icon: '💻', desc: 'Defended major engineering project stack & flow' },
-  { day: 3, name: 'STAR Problem Solver', icon: '⭐', desc: 'Resolved behavioral crisis with STAR methodology' },
-  { day: 4, name: 'Concept Simplifier', icon: '💡', desc: 'Explained complex engineering logic simply' },
-  { day: 5, name: 'Campus Negotiator', icon: '🤝', desc: 'Mastered placement offer & role dialogue' },
-  { day: 6, name: 'Hostile Cross-Examiner', icon: '🛡️', desc: 'Maintained composure against skeptical examiners' },
-  { day: 7, name: 'IELTS Band 8 Speaker', icon: '🗣️', desc: 'Delivered 2-minute technology cue card speech' },
-  { day: 8, name: 'Teamwork Diplomat', icon: '👥', desc: 'De-escalated team friction with active listening' },
-  { day: 9, name: 'Executive Pitcher', icon: '📊', desc: 'Presented 2-minute project progress & metrics' },
-  { day: 10, name: 'Verbal Enunciator', icon: '🎯', desc: 'Cleared TCS/Infosys accent & filler audit' },
-  { day: 11, name: 'Trade-off Strategist', icon: '⚖️', desc: 'Justified architectural limits with maturity' },
-  { day: 12, name: 'GD Moderator', icon: '🎙️', desc: 'Delivered structured group discussion interjections' },
-  { day: 13, name: 'Database Architect', icon: '🗄️', desc: 'Defended indexing, scaling, and ACID principles' },
-  { day: 14, name: 'Resilient Engineer', icon: '🏅', desc: 'Framed past technical failures into learnings' },
-  { day: 15, name: 'Rapid Fire Defender', icon: '⚡', desc: 'Passed rapid-fire university viva panel' },
-  { day: 16, name: 'Technical Translator', icon: '🌐', desc: 'Translated complex code for HR recruiters' },
-  { day: 17, name: 'Global Debate Master', icon: '🏛️', desc: 'Mastered abstract IELTS Part 3 discussion' },
-  { day: 18, name: 'Placement Finalist', icon: '🏆', desc: 'Delivered compelling "Why Hire Me" pitch' },
-  { day: 19, name: 'Stress Test Survivor', icon: '🔥', desc: 'Withstood high-intensity hostile cross-exam' },
-  { day: 20, name: 'Placement & Viva Champion', icon: '🎖️', desc: 'Completed full 20-Day Capstone Simulation' },
+  { day: 1, name: 'Campus Initiator', iconName: 'rocket', desc: 'Delivered crisp 90s professional introduction' },
+  { day: 2, name: 'Architecture Defender', iconName: 'laptop', desc: 'Defended major engineering project stack & flow' },
+  { day: 3, name: 'STAR Problem Solver', iconName: 'star', desc: 'Resolved behavioral crisis with STAR methodology' },
+  { day: 4, name: 'Concept Simplifier', iconName: 'lightbulb', desc: 'Explained complex engineering logic simply' },
+  { day: 5, name: 'Campus Negotiator', iconName: 'handshake', desc: 'Mastered placement offer & role dialogue' },
+  { day: 6, name: 'Hostile Cross-Examiner', iconName: 'shield', desc: 'Maintained composure against skeptical examiners' },
+  { day: 7, name: 'IELTS Band 8 Speaker', iconName: 'volume2', desc: 'Delivered 2-minute technology cue card speech' },
+  { day: 8, name: 'Teamwork Diplomat', iconName: 'users', desc: 'De-escalated team friction with active listening' },
+  { day: 9, name: 'Executive Pitcher', iconName: 'barchart3', desc: 'Presented 2-minute project progress & metrics' },
+  { day: 10, name: 'Verbal Enunciator', iconName: 'target', desc: 'Cleared TCS/Infosys accent & filler audit' },
+  { day: 11, name: 'Trade-off Strategist', iconName: 'scale', desc: 'Justified architectural limits with maturity' },
+  { day: 12, name: 'GD Moderator', iconName: 'mic', desc: 'Delivered structured group discussion interjections' },
+  { day: 13, name: 'Database Architect', iconName: 'database', desc: 'Defended indexing, scaling, and ACID principles' },
+  { day: 14, name: 'Resilient Engineer', iconName: 'medal', desc: 'Framed past technical failures into learnings' },
+  { day: 15, name: 'Rapid Fire Defender', iconName: 'zap', desc: 'Passed rapid-fire university viva panel' },
+  { day: 16, name: 'Technical Translator', iconName: 'globe', desc: 'Translated complex code for HR recruiters' },
+  { day: 17, name: 'Global Debate Master', iconName: 'landmark', desc: 'Mastered abstract IELTS Part 3 discussion' },
+  { day: 18, name: 'Placement Finalist', iconName: 'trophy', desc: 'Delivered compelling "Why Hire Me" pitch' },
+  { day: 19, name: 'Stress Test Survivor', iconName: 'flame', desc: 'Withstood high-intensity hostile cross-exam' },
+  { day: 20, name: 'Placement & Viva Champion', iconName: 'award', desc: 'Completed full 20-Day Capstone Simulation' },
 ];
 
 export default function ChallengePage() {
@@ -283,8 +328,8 @@ export default function ChallengePage() {
             </div>
             <span className="text-[11px] font-medium text-slate-400">Protects streak from breaking</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 text-xl">
-            ❄️
+          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <ShieldAlert size={20} />
           </div>
         </div>
       </div>
@@ -318,7 +363,8 @@ export default function ChallengePage() {
               {todayTask.dos && todayTask.dos.length > 0 && (
                 <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-2">
                   <div className="flex items-center gap-1.5 text-xs font-black text-emerald-800 uppercase tracking-wider">
-                    <span>✅</span> What to Include (Recruiter Rubric):
+                    <Check size={14} className="text-emerald-700 shrink-0" />
+                    <span>What to Include (Recruiter Rubric):</span>
                   </div>
                   <ul className="space-y-1.5 text-xs text-emerald-950 font-medium">
                     {todayTask.dos.map((item, idx) => (
@@ -334,7 +380,8 @@ export default function ChallengePage() {
               {todayTask.donts && todayTask.donts.length > 0 && (
                 <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200/80 space-y-2">
                   <div className="flex items-center gap-1.5 text-xs font-black text-rose-800 uppercase tracking-wider">
-                    <span>❌</span> What NOT to Say (Cut Unwanted Fluff):
+                    <X size={14} className="text-rose-700 shrink-0" />
+                    <span>What NOT to Say (Cut Unwanted Fluff):</span>
                   </div>
                   <ul className="space-y-1.5 text-xs text-rose-950 font-medium">
                     {todayTask.donts.map((item, idx) => (
@@ -370,8 +417,8 @@ export default function ChallengePage() {
         /* DAY 20 BEFORE VS AFTER SUMMARY CARD */
         <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-8 shadow-xl flex flex-col gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-2xl shadow-md">
-              🏆
+            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold shadow-md">
+              <Award size={26} className="text-slate-950" />
             </div>
             <div>
               <h2 className="text-2xl sm:text-3xl font-black">Challenge Completed!</h2>
@@ -442,13 +489,13 @@ export default function ChallengePage() {
 
                 {/* Badge Icon */}
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform group-hover:scale-105 ${
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                     isUnlocked
                       ? 'bg-gradient-to-br from-amber-100 to-amber-200 border border-amber-300 shadow-xs'
-                      : 'bg-indigo-200 text-slate-400 grayscale'
+                      : 'bg-indigo-100/60 text-slate-400 border border-indigo-200'
                   }`}
                 >
-                  {b.icon}
+                  {renderChallengeBadgeIcon(b.day)}
                 </div>
 
                 {/* Badge Name & Desc */}
@@ -467,7 +514,7 @@ export default function ChallengePage() {
                     onClick={() =>
                       setSelectedBadgeCert({
                         badgeName: b.name,
-                        badgeIcon: b.icon,
+                        badgeIcon: `Day ${b.day}`,
                         badgeDescription: b.desc,
                         dayNumber: b.day,
                         completedDate: dayStatusObj.completedAt,

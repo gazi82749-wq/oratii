@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Play, Square, ChevronLeft, ChevronRight, Video, VideoOff, Mic, Camera, AlertCircle, Grid, GripVertical, Pause, Tv, X, XCircle, ZoomIn, ZoomOut, Maximize2, Minimize2, ShieldCheck, Activity } from 'lucide-react';
+import { Play, Square, ChevronLeft, ChevronRight, Video, VideoOff, Mic, Camera, AlertCircle, Grid, GripVertical, Pause, Tv, X, XCircle, ZoomIn, ZoomOut, Maximize2, Minimize2, ShieldCheck, Activity, RotateCcw, Check, FileText } from 'lucide-react';
 import { logEvent, startRecording, stopRecording, EVENT_TYPES } from '@/lib/sessionRecorder';
 import { supabase } from '@/lib/supabaseClient';
 import ScribbleLoader from '@/components/ScribbleLoader';
@@ -463,8 +463,8 @@ export default function PresentationPractice({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-extrabold uppercase tracking-wider mb-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 100% On-Device Edge Processing • Zero API Cost
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-              <span>🎥</span> Live Practice Performance Results
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+              <Video size={24} className="text-amber-400" /> Live Practice Performance Results
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">
               Local video preview & AI delivery telemetry for <strong>{fileName}</strong>
@@ -484,7 +484,7 @@ export default function PresentationPractice({
           <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-2">
             <div className="flex items-center justify-between text-xs font-bold text-slate-400 px-1">
               <span className="flex items-center gap-2 text-indigo-400 uppercase tracking-wider text-[11px] font-black">
-                <span>📹</span> Recorded Video Preview (Processed Locally)
+                <Camera size={14} /> Recorded Video Preview (Processed Locally)
               </span>
               <span>Duration: {formatTimer(elapsedSeconds)}</span>
             </div>
@@ -602,7 +602,7 @@ export default function PresentationPractice({
             }}
             className="flex-1 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            🔄 Re-Record Presentation
+            <RotateCcw size={14} /> Re-Record Presentation
           </button>
           <button
             onClick={() => {
@@ -617,7 +617,7 @@ export default function PresentationPractice({
             }}
             className="flex-1 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 text-[#151930] font-black text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            ✓ Finish & Return
+            <Check size={14} className="stroke-[3]" /> Finish & Return
           </button>
         </div>
       </div>
@@ -640,7 +640,8 @@ export default function PresentationPractice({
               ← Back
             </button>
             <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></div>
-            <span className="text-xs font-bold text-slate-200 truncate tracking-wide">📄 {fileName}</span>
+            <FileText size={14} className="text-slate-400 shrink-0" />
+            <span className="text-xs font-bold text-slate-200 truncate tracking-wide">{fileName}</span>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Mic, FileText, Video, GraduationCap, Zap, Brain, TrendingUp, BarChart3, Sparkles, Briefcase, Flame } from 'lucide-react';
+import { Mic, FileText, Video, GraduationCap, Zap, Brain, TrendingUp, BarChart3, Sparkles, Briefcase, Flame, Check } from 'lucide-react';
 
 // ─── Module Definitions (3 Core AI Showcase Modules) ───
 const modules = [
@@ -207,7 +207,7 @@ function PresentationFrame() {
               : 'bg-emerald-500/15 text-emerald-700 border border-emerald-200/60'
           }`}>
             <span className={`w-2 h-2 rounded-full ${phase === 'scan' ? 'bg-indigo-600 animate-pulse' : 'bg-emerald-500 animate-ping'}`} />
-            <span>{phase === 'scan' ? '1. AI Slide Audit Scanning...' : '🎥 2. Live PPT Presenter Studio'}</span>
+            <span>{phase === 'scan' ? '1. AI Slide Audit Scanning...' : '2. Live PPT Presenter Studio'}</span>
           </div>
         </div>
         <span className="text-[10px] font-mono font-extrabold text-slate-500 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full">
@@ -241,13 +241,13 @@ function PresentationFrame() {
                 <div className="h-0.5 bg-indigo-100 rounded w-full"></div>
                 <div className="flex justify-between items-center mt-auto">
                   <span className="text-[6px] font-bold text-slate-400">S{i}</span>
-                  <span className="text-[5px] text-white font-black bg-indigo-600 rounded-full px-1">✓</span>
+                  <span className="text-[5px] text-emerald-700 font-bold bg-emerald-100 rounded-full px-1">OK</span>
                 </div>
               </div>
             ))}
           </div>
           <div className="text-[8px] font-bold text-indigo-700 bg-white/90 p-1 rounded border border-indigo-100 flex items-center justify-between">
-            <span>✨ Slide 3 passed audit. Launching live presenter...</span>
+            <span>Slide 3 passed audit. Launching live presenter...</span>
             <span className="text-emerald-600 font-extrabold">Ready ➔</span>
           </div>
         </div>
@@ -290,9 +290,9 @@ function PresentationFrame() {
           </div>
 
           <div className="pt-1 border-t border-white/10 flex items-center justify-between text-[8.5px] font-bold text-indigo-200">
-            <span className="text-emerald-400">⚡ 142 WPM</span>
-            <span className="text-amber-300">🎯 0 Fillers</span>
-            <span className="text-indigo-300">📊 94% Clarity</span>
+            <span className="text-emerald-400">142 WPM</span>
+            <span className="text-amber-300">0 Fillers</span>
+            <span className="text-indigo-300">94% Clarity</span>
           </div>
         </div>
       </div>
@@ -364,7 +364,7 @@ function InterviewFrame() {
         </div>
 
         <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
-          ✓ Resume PDF Loaded
+          <Check size={10} className="stroke-[3]" /> Resume PDF Loaded
         </span>
       </div>
 
@@ -372,7 +372,11 @@ function InterviewFrame() {
       <div className="bg-gradient-to-br from-amber-50 to-orange-50/40 rounded-2xl border border-amber-200/50 p-4 shadow-sm relative">
         <div className="text-[9px] font-extrabold text-amber-800 uppercase tracking-widest mb-1 flex items-center justify-between">
           <span>Round 3: Technical Deep Dive</span>
-          {phase === 'rec' && <span className="text-rose-500 animate-pulse font-bold">🔴 LISTENING...</span>}
+          {phase === 'rec' && (
+            <span className="text-rose-500 font-bold flex items-center gap-1 text-[9px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> LISTENING...
+            </span>
+          )}
         </div>
         <p className="text-xs font-medium text-slate-800 leading-relaxed min-h-[38px]">
           &quot;{typed}

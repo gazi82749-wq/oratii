@@ -13,6 +13,11 @@ import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
 import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } from '../../lib/scoringRubric';
+import {
+  Mic, FileText, Upload, Sparkles, X, CheckCircle2, RotateCcw, Award, Zap, Globe,
+  Target, AlertCircle, Check, HelpCircle, Volume2, Square, Play, Pause, BookOpen,
+  Edit3, Copy, Shield, GraduationCap, Scale, BarChart3, ArrowRight
+} from 'lucide-react';
 
 const MAX_FREE_RECORDING_SECONDS = 180; // 3-Minute Free Drill Cap
 
@@ -647,7 +652,7 @@ export default function SpeechCoach() {
   };
 
   // Feedback item renderer with clickable timestamp and standardized styling
-  const FeedbackItem = ({ text, colorClass, icon = '•' }) => {
+  const FeedbackItem = ({ text, colorClass, icon = '•' }: { text: string; colorClass?: string; icon?: React.ReactNode }) => {
     const parsed = parseTimestampFromText(text);
     return (
       <li className="flex items-start gap-2.5 leading-relaxed text-slate-700 font-medium text-sm">
@@ -766,8 +771,8 @@ export default function SpeechCoach() {
 
   // Shared sections for top-level
   const sections = [
-    { key: 'record', label: '🎙️ Record / Upload', desc: 'Record or upload your speech' },
-    { key: 'topic', label: '📝 Topic Speech', desc: 'Pick a topic & practice' },
+    { key: 'record', label: 'Record / Upload', desc: 'Record or upload your speech' },
+    { key: 'topic', label: 'Topic Speech', desc: 'Pick a topic & practice' },
   ];
 
   return (
@@ -784,7 +789,7 @@ export default function SpeechCoach() {
               <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Speech Coach AI Module
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-1 flex items-center gap-2">
-              <span>🎙️</span> Speech Coach
+              <Mic size={24} className="text-amber-500" /> Speech Coach
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-xl">Record live speech, upload audio, or pick a topic to receive real-time pacing, WPM, and filler word AI analysis.</p>
           </div>
@@ -811,7 +816,7 @@ export default function SpeechCoach() {
             <div className="bg-[#151930] text-white rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl border border-indigo-500/30 mb-4">
               <div className="flex items-center gap-3 font-semibold text-sm">
                 <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-black uppercase tracking-wider shrink-0 text-amber-400 border border-white/10">
-                  🎯 Day {challengeDay} Challenge
+                  Day {challengeDay} Challenge
                 </span>
                 <span className="truncate text-slate-200 font-bold">{situation || `Task Day ${challengeDay}`}</span>
               </div>
@@ -834,7 +839,7 @@ export default function SpeechCoach() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div>
                   <h2 className="text-lg font-black text-slate-950 flex items-center gap-2">
-                    <span>🎙️</span> Practice & Record Speech
+                    <Mic size={18} className="text-amber-500" /> Practice & Record Speech
                   </h2>
                   <p className="text-xs text-slate-500 font-medium mt-0.5">
                     Select input mode and spoken language to get detailed pacing & clarity analysis.
@@ -863,7 +868,7 @@ export default function SpeechCoach() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
                 <div className="md:col-span-1 flex flex-col gap-1.5">
                   <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
-                    <span>🌍</span> Spoken Language
+                    <Globe size={13} className="text-slate-600" /> Spoken Language
                   </label>
                   <select 
                     value={language} 
@@ -884,7 +889,7 @@ export default function SpeechCoach() {
                   ) : (
                     <>
                       <label className="text-xs font-extrabold text-slate-800 flex items-center justify-between gap-1.5 uppercase tracking-wider">
-                        <span className="flex items-center gap-1.5"><span>🎯</span> Context / Speech Topic</span>
+                        <span className="flex items-center gap-1.5"><Target size={13} className="text-slate-600" /> Context / Speech Topic</span>
                         <button onClick={() => { setShowContext(false); setSituation(''); }} className="text-slate-400 hover:text-slate-700">✕</button>
                       </label>
                       <input 
@@ -914,7 +919,7 @@ export default function SpeechCoach() {
                       <div className="w-full max-w-lg bg-indigo-50/90 border-2 border-indigo-300 rounded-2xl p-6 flex flex-col items-center gap-4 animate-fade-in shadow-lg">
                         <div className="flex items-center justify-between w-full pb-3 border-b border-indigo-200/80">
                           <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">🎵</span>
+                            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs"><FileText size={12} /></span>
                             <span>Audio File Ready</span>
                           </span>
                           <span className="text-xs font-extrabold text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-lg truncate max-w-[200px]">
@@ -930,14 +935,14 @@ export default function SpeechCoach() {
                             className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
                             title="Remove audio and select or record a new file"
                           >
-                            🔄 Change File
+                            Change File
                           </button>
                           
                           <button
                             onClick={() => handleAnalyze(mediaFile)}
                             className="flex-1 py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
                           >
-                            🚀 Analyze Audio
+                            Analyze Audio
                           </button>
                         </div>
                       </div>
@@ -952,7 +957,7 @@ export default function SpeechCoach() {
                             onDrop={handleDrop}
                           >
                             <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
-                              📁
+                              <Upload size={20} className="text-slate-600" />
                             </div>
                             <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag & Drop Audio File</p>
                             <p className="text-[11px] text-slate-500 font-medium mt-0.5">Supports MP3, WAV, M4A, AAC, FLAC (Max 50MB)</p>
@@ -971,7 +976,7 @@ export default function SpeechCoach() {
                                   : 'bg-gradient-to-br from-[#151930] via-indigo-950 to-[#1B2140] text-white hover:scale-105 shadow-[0_15px_30px_-8px_rgba(21,25,48,0.4)] border-4 border-white/20'
                               }`}
                             >
-                              {isRecording ? '⏹️' : '🎙️'}
+                              {isRecording ? <Square size={28} className="text-white fill-white" /> : <Mic size={34} className="text-white" />}
                             </button>
                           </div>
                           <p className={`mt-4 text-sm sm:text-base font-extrabold ${isRecording ? (isPaused ? 'text-amber-600' : 'text-rose-600 animate-pulse') : 'text-slate-950'}`}>
@@ -983,7 +988,7 @@ export default function SpeechCoach() {
                             <div className="w-full max-w-xs flex flex-col items-center mt-2.5">
                               <div className="flex items-center justify-between w-full text-xs font-bold px-1 mb-1">
                                 <span className={recordingSeconds > 150 ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
-                                  ⏱️ {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+                                  {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
                                 </span>
                                 <span className="text-[11px] font-semibold text-slate-400">
                                   03:00 Max (Free Drill)
@@ -999,7 +1004,7 @@ export default function SpeechCoach() {
                               </div>
                               {recordingSeconds >= 165 && (
                                 <p className="text-[10px] font-bold text-rose-500 mt-1 animate-pulse">
-                                  ⚠️ Approaching 3-min practice cap
+                                  Approaching 3-min practice cap
                                 </p>
                               )}
                             </div>
@@ -1007,7 +1012,7 @@ export default function SpeechCoach() {
 
                           {showTimeLimitNotice && (
                             <div className="mt-3.5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-semibold flex items-center gap-2 max-w-md text-center">
-                              <span>⏱️</span>
+                              <Zap size={14} className="text-amber-600 shrink-0" />
                               <span>3-Minute Free Practice Drill Limit reached! Your audio was saved and is ready for AI analysis.</span>
                             </div>
                           )}
@@ -1018,13 +1023,13 @@ export default function SpeechCoach() {
                                 onClick={isPaused ? resumeRecording : pauseRecording}
                                 className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                               >
-                                {isPaused ? '▶ Resume Recording' : '⏸ Pause Recording'}
+                                {isPaused ? 'Resume Recording' : 'Pause Recording'}
                               </button>
                               <button
                                 onClick={stopRecording}
                                 className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                               >
-                                ⏹ Finish Recording
+                                Finish Recording
                               </button>
                             </div>
                           )}
@@ -1037,7 +1042,7 @@ export default function SpeechCoach() {
                           
                           {/* Security & Privacy Guarantee Badge */}
                           <div className="flex items-center justify-center gap-1.5 mt-3 text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3.5 py-1 rounded-full shadow-2xs">
-                            <span className="text-emerald-500">🔒</span>
+                            <Shield size={13} className="text-emerald-500" />
                             <span>100% Encrypted & Private • Voice analyzed live</span>
                           </div>
                         </div>
@@ -1059,9 +1064,9 @@ export default function SpeechCoach() {
                     <div className="absolute top-4 right-8 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl pointer-events-none"></div>
                     <div className="relative z-10">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-3 border border-white/10">
-                        🎯 Campus Placement & Viva Drills
+                        Campus Placement & Viva Drills
                       </div>
-                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">Placement & Viva Speech Prompts 🎙️</h2>
+                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">Placement & Viva Speech Prompts</h2>
                       <p className="text-slate-300 text-sm md:text-base font-medium">Generate structured answer scripts for high-frequency HR rounds, engineering viva defenses, and IELTS cue cards. Then practice speaking live!</p>
                     </div>
                   </div>
@@ -1092,13 +1097,13 @@ export default function SpeechCoach() {
                             Writing...
                           </>
                         ) : (
-                          <>✨ Generate Speech</>
+                          <>Generate Speech</>
                         )}
                       </button>
                     </div>
 
                     {topicError && (
-                      <p className="mt-3 text-sm text-red-500 font-medium">⚠️ {topicError}</p>
+                      <p className="mt-3 text-sm text-red-500 font-medium flex items-center gap-1.5"><AlertCircle size={14} className="shrink-0" /> {topicError}</p>
                     )}
 
                     <div className="mt-6">
@@ -1127,7 +1132,7 @@ export default function SpeechCoach() {
                     <div className="mt-8 flex flex-col items-center justify-center py-8">
                       <div className="relative mb-4">
                         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
-                          <span className="text-2xl animate-pulse">✍️</span>
+                          <Edit3 size={24} className="text-orange-600 animate-pulse" />
                         </div>
                       </div>
                       <h3 className="text-base font-bold text-slate-900 mb-1">Writing your speech...</h3>
@@ -1147,7 +1152,7 @@ export default function SpeechCoach() {
                 <div ref={speechRef} className="border border-indigo-200 rounded-xl bg-white shadow-sm overflow-hidden">
                   <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <span className="text-lg">📖</span>
+                      <BookOpen size={18} className="text-white shrink-0" />
                       {isEditingSpeech ? (
                         <input
                           type="text"
@@ -1171,7 +1176,7 @@ export default function SpeechCoach() {
                             : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/20'
                         }`}
                       >
-                        {isEditingSpeech ? '✓ Done Editing' : '✍️ Edit Speech'}
+                        {isEditingSpeech ? 'Done Editing' : 'Edit Speech'}
                       </button>
                       {originalSpeech && (generatedSpeech.speech !== originalSpeech.speech || generatedSpeech.title !== originalSpeech.title) && (
                         <button
@@ -1186,7 +1191,7 @@ export default function SpeechCoach() {
                         onClick={handleCopySpeech}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-white text-xs font-semibold hover:bg-white/30 transition-all border border-white/20"
                       >
-                        {copied ? '✅ Copied!' : '📋 Copy'}
+                        {copied ? 'Copied!' : 'Copy'}
                       </button>
                     </div>
                   </div>
@@ -1195,7 +1200,7 @@ export default function SpeechCoach() {
                     {isEditingSpeech ? (
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-between text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
-                          <span>✍️ Editing Mode: Customize your script below</span>
+                          <span>Editing Mode: Customize your script below</span>
                           <span>Click “Done Editing” when finished</span>
                         </div>
                         <textarea
@@ -1212,7 +1217,7 @@ export default function SpeechCoach() {
                         title="Click to edit speech text"
                       >
                         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-indigo-200 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-                          <span>✍️ Click to Edit</span>
+                          <span>Click to Edit</span>
                         </div>
                         <div className="absolute top-0 left-8 w-px h-full bg-rose-200/30 pointer-events-none"></div>
                         <div className="text-slate-800 text-sm md:text-base leading-[1.8] font-medium whitespace-pre-line pl-5">
@@ -1223,15 +1228,15 @@ export default function SpeechCoach() {
 
                     <div className="mt-3 flex items-center justify-between text-xs text-slate-400 font-medium">
                       <div className="flex items-center gap-4">
-                        <span>📝 {generatedSpeech.speech.split(/\s+/).filter(Boolean).length} words</span>
-                        <span>📖 ~{Math.ceil(generatedSpeech.speech.split(/\s+/).filter(Boolean).length / 130)} min read</span>
+                        <span>{generatedSpeech.speech.split(/\s+/).filter(Boolean).length} words</span>
+                        <span>~{Math.ceil(generatedSpeech.speech.split(/\s+/).filter(Boolean).length / 130)} min read</span>
                       </div>
                       {!isEditingSpeech && (
                         <button 
                           onClick={() => setIsEditingSpeech(true)} 
                           className="text-orange-600 font-bold hover:underline flex items-center gap-1"
                         >
-                          ✍️ Edit script
+                          Edit script
                         </button>
                       )}
                     </div>
@@ -1257,13 +1262,13 @@ export default function SpeechCoach() {
                       onClick={handlePracticeSpeech}
                       className="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2"
                     >
-                      🎙️ Practice Speaking This
+                      <Mic size={16} className="text-amber-400" /> Practice Speaking This
                     </button>
                     <button
                       onClick={handleTopicReset}
                       className="w-full sm:w-auto px-5 py-3 bg-indigo-100 border border-indigo-200 text-slate-700 font-semibold rounded-xl hover:bg-indigo-200 transition-all flex items-center justify-center gap-2"
                     >
-                      🔄 Try Another Topic
+                      Try Another Topic
                     </button>
                   </div>
                 </div>
@@ -1274,7 +1279,7 @@ export default function SpeechCoach() {
                 <div className="border border-indigo-200 rounded-xl bg-white shadow-sm overflow-hidden">
                   <div className="bg-slate-900 px-5 py-3 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      📖 Read & Speak
+                      <BookOpen size={16} className="text-amber-400" /> Read & Speak
                     </h3>
                     <div className="flex items-center gap-3">
                       <button
@@ -1285,7 +1290,7 @@ export default function SpeechCoach() {
                             : 'bg-slate-800 text-indigo-200 hover:bg-slate-700 border border-slate-700'
                         }`}
                       >
-                        {isEditingInPractice ? '✓ Done Editing' : '✍️ Edit Script'}
+                        {isEditingInPractice ? 'Done Editing' : 'Edit Script'}
                       </button>
                       <select 
                         value={language} 
@@ -1310,7 +1315,7 @@ export default function SpeechCoach() {
                       {isEditingInPractice ? (
                         <div className="flex flex-col gap-2">
                           <div className="text-xs font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded border border-orange-200">
-                            ✍️ Editing script live for practice:
+                            Editing script live for practice:
                           </div>
                           <textarea
                             value={generatedSpeech.speech}
@@ -1326,7 +1331,7 @@ export default function SpeechCoach() {
                           title="Click to edit speech"
                         >
                           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-indigo-200 text-slate-700 text-xs font-bold px-2 py-0.5 rounded shadow-sm">
-                            ✍️ Click to Edit
+                            Click to Edit
                           </div>
                           <div className="text-slate-800 text-sm leading-[1.7] font-medium whitespace-pre-line">
                             {generatedSpeech.speech}
@@ -1334,10 +1339,10 @@ export default function SpeechCoach() {
                         </div>
                       )}
                       <div className="flex items-center justify-between text-xs text-slate-400 font-medium mt-2">
-                        <span>📝 {generatedSpeech.speech.split(/\s+/).filter(Boolean).length} words · Read the speech and record yourself</span>
+                        <span>{generatedSpeech.speech.split(/\s+/).filter(Boolean).length} words · Read the speech and record yourself</span>
                         {!isEditingInPractice && (
                           <button onClick={() => setIsEditingInPractice(true)} className="text-orange-600 font-bold hover:underline">
-                            ✍️ Edit text
+                            Edit text
                           </button>
                         )}
                       </div>
@@ -1361,7 +1366,7 @@ export default function SpeechCoach() {
                                   : 'bg-white border-4 border-indigo-200 hover:scale-105'
                               }`}
                             >
-                              {isRecording ? '⏹️' : '🎙️'}
+                              {isRecording ? <Square size={24} className="text-rose-600 fill-rose-600" /> : <Mic size={30} className="text-slate-800" />}
                             </button>
                           </div>
                           <p className={`mt-4 text-sm font-bold text-center ${isRecording ? 'text-rose-600 animate-pulse' : 'text-slate-900'}`}>
@@ -1387,7 +1392,7 @@ export default function SpeechCoach() {
       ) : results.error ? (
         <div className="w-full flex flex-col items-center justify-center py-20 text-center animate-fade-in">
           <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm">
-            ⚠️
+            <AlertCircle size={36} />
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-3">{results.title}</h2>
           <p className="text-slate-500 font-medium mb-8 max-w-md">{results.message}</p>
@@ -1505,7 +1510,7 @@ export default function SpeechCoach() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2.5">
                 <span className="w-9 h-9 rounded-xl bg-[#151930] text-white flex items-center justify-center text-sm font-bold shadow-xs">
-                  📝 
+                  <FileText size={18} className="text-white" />
                 </span>
                 <div>
                   <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest">Speech Transcript</h3>
@@ -1523,7 +1528,7 @@ export default function SpeechCoach() {
                   }}
                   className="px-3.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 text-xs font-extrabold rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
                 >
-                  📋 Copy Text
+                  <Copy size={13} /> Copy Text
                 </button>
               </div>
             </div>
@@ -1536,7 +1541,7 @@ export default function SpeechCoach() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-5">
               <div>
                 <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest flex items-center gap-2">
-                  <span>📊 Executive Speech Analysis & Pacing</span>
+                  <BarChart3 size={16} className="text-indigo-600" /> Executive Speech Analysis & Pacing
                 </h3>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
                   Academic evaluation aligned with international CEFR & IELTS Spoken Fluency benchmarks
@@ -1552,14 +1557,14 @@ export default function SpeechCoach() {
                 )}
                 {results.ieltsBand && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-teal-50 border border-teal-200 text-teal-700 shadow-2xs">
-                    🎓 IELTS: Band {results.ieltsBand}
+                    IELTS: Band {results.ieltsBand}
                   </span>
                 )}
                 <button
                   onClick={() => setShowScoreAudit(prev => !prev)}
                   className="px-3 py-1 rounded-full text-xs font-extrabold bg-slate-900 hover:bg-slate-800 text-white shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
                 >
-                  ⚖️ {showScoreAudit ? 'Close Audit' : 'Verify Score Audit'}
+                  {showScoreAudit ? 'Close Audit' : 'Verify Score Audit'}
                 </button>
               </div>
             </div>
@@ -1600,13 +1605,13 @@ export default function SpeechCoach() {
                     </div>
                     <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.pacing.summary}</p>
                     {results.rubric.pacing.deductions.length > 0 && (
-                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
-                        ⚠️ {results.rubric.pacing.deductions[0]}
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <AlertCircle size={11} className="text-rose-400 shrink-0" /> {results.rubric.pacing.deductions[0]}
                       </p>
                     )}
                     {results.rubric.pacing.bonuses.length > 0 && (
-                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
-                        ✓ {results.rubric.pacing.bonuses[0]}
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <Check size={11} className="text-emerald-400 shrink-0" /> {results.rubric.pacing.bonuses[0]}
                       </p>
                     )}
                   </div>
@@ -1622,13 +1627,13 @@ export default function SpeechCoach() {
                     </div>
                     <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.fluency.summary}</p>
                     {results.rubric.fluency.deductions.length > 0 && (
-                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
-                        ⚠️ {results.rubric.fluency.deductions[0]}
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <AlertCircle size={11} className="text-rose-400 shrink-0" /> {results.rubric.fluency.deductions[0]}
                       </p>
                     )}
                     {results.rubric.fluency.bonuses.length > 0 && (
-                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
-                        ✓ {results.rubric.fluency.bonuses[0]}
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <Check size={11} className="text-emerald-400 shrink-0" /> {results.rubric.fluency.bonuses[0]}
                       </p>
                     )}
                   </div>
@@ -1644,13 +1649,13 @@ export default function SpeechCoach() {
                     </div>
                     <p className="text-xs text-slate-300 font-medium mt-2">{results.rubric.vocabularyAndStructure.summary}</p>
                     {results.rubric.vocabularyAndStructure.deductions.length > 0 && (
-                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug">
-                        ⚠️ {results.rubric.vocabularyAndStructure.deductions[0]}
+                      <p className="text-[11px] text-rose-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <AlertCircle size={11} className="text-rose-400 shrink-0" /> {results.rubric.vocabularyAndStructure.deductions[0]}
                       </p>
                     )}
                     {results.rubric.vocabularyAndStructure.bonuses.length > 0 && (
-                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug">
-                        ✓ {results.rubric.vocabularyAndStructure.bonuses[0]}
+                      <p className="text-[11px] text-emerald-300 mt-1.5 leading-snug flex items-center gap-1">
+                        <Check size={11} className="text-emerald-400 shrink-0" /> {results.rubric.vocabularyAndStructure.bonuses[0]}
                       </p>
                     )}
                   </div>
@@ -1658,7 +1663,7 @@ export default function SpeechCoach() {
 
                 {/* Trust Guarantee note */}
                 <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-800 flex items-start gap-2.5">
-                  <span className="text-base">🛡️</span>
+                  <Shield size={16} className="text-slate-400 shrink-0 mt-0.5" />
                   <p className="text-[11px] text-slate-400 leading-relaxed">
                     <strong className="text-slate-200">Institutional Transparency Guarantee:</strong> {results.rubric.trustGuarantee}
                   </p>
@@ -1813,7 +1818,7 @@ export default function SpeechCoach() {
               ) : (
                 <ul className="space-y-3 font-medium text-sm text-slate-700 flex-1">
                   {results.strengths?.length > 0 ? results.strengths.map((s, i) => (
-                    <FeedbackItem key={i} text={s} colorClass="text-slate-800" icon="✅" />
+                    <FeedbackItem key={i} text={s} colorClass="text-slate-800" icon={<Check size={13} className="text-emerald-600 shrink-0 mt-0.5" />} />
                   )) : <li className="text-slate-500 italic">No specific strengths detected.</li>}
                 </ul>
               )}
@@ -1837,7 +1842,7 @@ export default function SpeechCoach() {
               ) : (
                 <ul className="space-y-3 font-medium text-sm text-slate-700 flex-1">
                   {results.weaknesses?.length > 0 ? results.weaknesses.map((w, i) => (
-                    <FeedbackItem key={i} text={w} colorClass="text-slate-800" icon="⚠️" />
+                    <FeedbackItem key={i} text={w} colorClass="text-slate-800" icon={<AlertCircle size={13} className="text-rose-600 shrink-0 mt-0.5" />} />
                   )) : <li className="text-slate-500 italic">No specific areas to improve identified.</li>}
                 </ul>
               )}
@@ -1848,7 +1853,7 @@ export default function SpeechCoach() {
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-indigo-100 text-[#151930] flex items-center justify-center text-xs font-bold">
-                  ★
+                  <Target size={13} className="text-indigo-600" />
                 </span>
                 <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest">
                   Recommendations & Actionable Coaching Plan
@@ -1860,7 +1865,7 @@ export default function SpeechCoach() {
                   className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
                   title="Listen to AI Coach feedback aloud"
                 >
-                  {isSpeaking ? '⏹️ Stop Voice' : '🔊 Listen to AI Coach'}
+                  {isSpeaking ? 'Stop Voice' : 'Listen to AI Coach'}
                 </button>
               )}
             </div>
@@ -1877,11 +1882,11 @@ export default function SpeechCoach() {
             {!isDeepLoading && results.suggestions?.length > 0 && (
               <div className="bg-white rounded-xl">
                 <p className="text-xs font-bold text-[#1B2140] uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                  <span>🎯 Targeted Next Steps</span>
+                  <span>Targeted Next Steps</span>
                 </p>
                 <ul className="space-y-3 text-sm font-medium">
                   {results.suggestions.map((s, i) => (
-                    <FeedbackItem key={i} text={s} colorClass="text-slate-700" icon="🎯" />
+                    <FeedbackItem key={i} text={s} colorClass="text-slate-700" icon={<ArrowRight size={13} className="text-indigo-600 shrink-0 mt-0.5" />} />
                   ))}
                 </ul>
               </div>

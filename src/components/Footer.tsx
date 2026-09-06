@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
+import { GraduationCap } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -35,7 +36,7 @@ export default function Footer() {
             <h4 className="text-xs font-black text-white uppercase tracking-widest mb-4">Company</h4>
             <ul className="space-y-3 text-sm font-medium text-slate-400">
               <li><Link href="/about" className="hover:text-[#F2A93B] transition-colors">About Us</Link></li>
-              <li><Link href="/trainer" className="text-amber-400 font-bold hover:text-amber-300 transition-colors flex items-center gap-1.5">🎓 For Institutes & Trainers</Link></li>
+              <li><Link href="/trainer" className="text-amber-400 font-bold hover:text-amber-300 transition-colors flex items-center gap-1.5"><GraduationCap size={15} /> For Institutes & Trainers</Link></li>
               <li><Link href="/feedback" className="hover:text-[#F2A93B] transition-colors">Feedback & Support</Link></li>
               <li><Link href="/dashboard" className="hover:text-[#F2A93B] transition-colors">Dashboard</Link></li>
             </ul>

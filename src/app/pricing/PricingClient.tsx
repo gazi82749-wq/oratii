@@ -132,7 +132,7 @@ export default function PricingClient() {
       {showSuccessBanner && (
         <div className="bg-emerald-600 text-white text-center py-3 px-4 text-sm font-bold shadow-md flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
           <Sparkles size={18} className="animate-spin" />
-          <span>🎉 Payment Successful! Your credits have been updated.</span>
+          <span>Payment Successful! Your credits have been updated.</span>
         </div>
       )}
 

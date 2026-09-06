@@ -22,7 +22,8 @@ import {
   ExternalLink,
   ChevronRight,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  BarChart3
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -274,35 +275,35 @@ export default function BatchDetailPage() {
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab('gradebook')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
             activeTab === 'gradebook'
               ? 'bg-indigo-600 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          📊 Student Gradebook ({gradebook.length})
+          <BarChart3 size={14} /> Student Gradebook ({gradebook.length})
         </button>
 
         <button
           onClick={() => setActiveTab('assignments')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
             activeTab === 'assignments'
               ? 'bg-indigo-600 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          📚 Active Assignments ({assignments.length})
+          <BookOpen size={14} /> Active Assignments ({assignments.length})
         </button>
 
         <button
           onClick={() => setActiveTab('submissions')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
             activeTab === 'submissions'
               ? 'bg-indigo-600 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          📝 Submissions Stream ({submissions.length})
+          <FileText size={14} /> Submissions Stream ({submissions.length})
         </button>
       </div>
 
@@ -445,7 +446,7 @@ export default function BatchDetailPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-wider">
-                        {a.track === 'speech' ? '🎙️ Speech Drill' : a.track === 'interview' ? '💼 Mock Interview' : '📊 Slide & Viva'}
+                        {a.track === 'speech' ? 'Speech Drill' : a.track === 'interview' ? 'Mock Interview' : 'Slide & Viva'}
                       </span>
                       <h3 className="text-sm font-black text-slate-900 mt-1">{a.title}</h3>
                     </div>
@@ -552,9 +553,9 @@ export default function BatchDetailPage() {
                   onChange={(e) => setAssignTrack(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-slate-900 bg-white"
                 >
-                  <option value="speech">🎙️ Speech Coach (Fluency & Pacing)</option>
-                  <option value="interview">💼 Mock Interview (STAR Method)</option>
-                  <option value="presentation_viva">📊 Slide Deck & Viva Defense</option>
+                  <option value="speech">Speech Coach (Fluency & Pacing)</option>
+                  <option value="interview">Mock Interview (STAR Method)</option>
+                  <option value="presentation_viva">Slide Deck & Viva Defense</option>
                 </select>
               </div>
 

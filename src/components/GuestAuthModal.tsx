@@ -62,7 +62,7 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
               <Lock size={28} />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-slate-900 font-black text-[10px]">
-              5★
+              +5
             </div>
           </div>
         </div>

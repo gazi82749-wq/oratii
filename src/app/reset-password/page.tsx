@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { Check, Loader2, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -111,7 +112,7 @@ export default function ResetPassword() {
             /* Success State */
             <div className="text-center py-6">
               <div className="w-20 h-20 bg-green-100 border-4 border-slate-900 mx-auto mb-6 flex items-center justify-center shadow-[4px_4px_0px_#151930] rotate-3">
-                <span className="text-4xl">✅</span>
+                <Check size={36} className="text-emerald-700 stroke-[3]" />
               </div>
               <h2 className="text-2xl font-black text-slate-900 mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Password Updated!</h2>
               <p className="text-slate-500 font-bold text-sm mb-8">
@@ -128,7 +129,7 @@ export default function ResetPassword() {
             /* Waiting for session / invalid link */
             <div className="text-center py-6">
               <div className="w-20 h-20 bg-[#FFF9D2] border-4 border-slate-900 mx-auto mb-6 flex items-center justify-center shadow-[4px_4px_0px_#151930] -rotate-3">
-                <span className="text-4xl">⏳</span>
+                <Loader2 size={36} className="text-amber-700 animate-spin" />
               </div>
               <h2 className="text-2xl font-black text-slate-900 mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Verifying Link...</h2>
               <p className="text-slate-500 font-bold text-sm mb-6">
@@ -147,16 +148,16 @@ export default function ResetPassword() {
               {/* Header */}
               <div className="text-center mb-8 mt-2">
                 <div className="w-16 h-16 bg-green-100 border-4 border-slate-900 mx-auto mb-5 flex items-center justify-center shadow-[4px_4px_0px_#151930] -rotate-3">
-                  <span className="text-3xl">🔒</span>
+                  <Lock size={28} className="text-slate-900" />
                 </div>
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Set New Password</h1>
-                <p className="text-slate-500 font-bold font-handwriting text-lg">Make it strong and unique 💪</p>
+                <p className="text-slate-500 font-bold text-sm">Create a strong, unique password</p>
               </div>
 
               {/* Error Display */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-3 border-red-400 text-red-600 text-xs font-bold text-center shadow-[3px_3px_0px_#f87171]">
-                  ⚠️ {error}
+                <div className="mb-6 p-4 bg-red-50 border-3 border-red-400 text-red-600 text-xs font-bold text-center shadow-[3px_3px_0px_#f87171] flex items-center justify-center gap-1.5">
+                  <AlertCircle size={14} /> {error}
                 </div>
               )}
 
@@ -179,7 +180,7 @@ export default function ResetPassword() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 text-sm font-black transition-colors"
                     >
-                      {showPassword ? '🙈' : '👁️'}
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                   {/* Password Strength Bar */}
@@ -217,7 +218,9 @@ export default function ResetPassword() {
                     <p className="text-xs font-black uppercase tracking-widest mt-1 text-red-500">Passwords don’t match</p>
                   )}
                   {confirmPassword && confirmPassword === newPassword && (
-                    <p className="text-xs font-black uppercase tracking-widest mt-1 text-green-600">✓ Passwords match</p>
+                    <p className="text-xs font-black uppercase tracking-widest mt-1 text-green-600 flex items-center gap-1">
+                      <Check size={12} className="stroke-[3]" /> Passwords match
+                    </p>
                   )}
                 </div>
 

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   ShieldAlert, Award, Sparkles, Send, Mic, HelpCircle, CheckCircle,
-  ArrowRight, RotateCcw, MessageSquare, X, Volume2, VolumeX, Flame, Smile, Play, Pause
+  ArrowRight, RotateCcw, MessageSquare, X, Volume2, VolumeX, Flame, Smile, Play, Pause,
+  GraduationCap, Briefcase, Keyboard, User, Check, AlertCircle, Target
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { saveSession } from '@/lib/storage';
@@ -310,7 +311,7 @@ export default function VivaDefenseModal({
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-slate-50 border-b border-slate-200 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center font-black text-lg shadow-2xs">
-              🎓
+              <GraduationCap size={18} className="text-amber-900" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-slate-950 tracking-tight flex items-center gap-2">
@@ -372,13 +373,13 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">💼</span>
+                    <span className="w-8 h-8 rounded-lg bg-slate-200/70 flex items-center justify-center text-slate-800"><Briefcase size={16} /></span>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-xs">Real Job Interview</h4>
                       <p className="text-[10px] text-slate-500 font-medium">Unscripted & Technical Discussion</p>
                     </div>
                   </div>
-                  {interviewType === 'job_interview' && <span className="text-[#151930] font-black text-xs">✓</span>}
+                  {interviewType === 'job_interview' && <Check size={14} className="text-[#151930] stroke-[3]" />}
                 </button>
 
                 <button
@@ -390,13 +391,13 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">🎓</span>
+                    <span className="w-8 h-8 rounded-lg bg-slate-200/70 flex items-center justify-center text-slate-800"><GraduationCap size={16} /></span>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-xs">Academic Viva</h4>
                       <p className="text-[10px] text-slate-500 font-medium">Progressive Committee Defense</p>
                     </div>
                   </div>
-                  {interviewType === 'academic_viva' && <span className="text-[#151930] font-black text-xs">✓</span>}
+                  {interviewType === 'academic_viva' && <Check size={14} className="text-[#151930] stroke-[3]" />}
                 </button>
               </div>
             </div>
@@ -416,13 +417,13 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">🇮🇳</span>
+                    <span className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-800 font-black text-[10px]">HI</span>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-xs">Hinglish</h4>
                       <p className="text-[10px] text-slate-500 font-medium">Hindi + English mix</p>
                     </div>
                   </div>
-                  {language === 'hinglish' && <span className="text-[#151930] font-black text-xs">✓</span>}
+                  {language === 'hinglish' && <Check size={14} className="text-[#151930] stroke-[3]" />}
                 </button>
 
                 <button
@@ -434,13 +435,13 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">🇬🇧</span>
+                    <span className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-800 font-black text-[10px]">EN</span>
                     <div>
                       <h4 className="font-extrabold text-slate-950 text-xs">English</h4>
                       <p className="text-[10px] text-slate-500 font-medium">Standard Formal</p>
                     </div>
                   </div>
-                  {language === 'en' && <span className="text-[#151930] font-black text-xs">✓</span>}
+                  {language === 'en' && <Check size={14} className="text-[#151930] stroke-[3]" />}
                 </button>
               </div>
             </div>
@@ -458,7 +459,7 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-lg">⌨️</span>
+                    <Keyboard size={18} className="text-slate-700" />
                     <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-800">Text</span>
                   </div>
                   <div>
@@ -475,7 +476,7 @@ export default function VivaDefenseModal({
                     }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-lg">🎙️</span>
+                    <Mic size={18} className="text-amber-600" />
                     <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">Live Mic</span>
                   </div>
                   <div>
@@ -549,7 +550,7 @@ export default function VivaDefenseModal({
                   {item.role === 'examiner' && item.question && (
                     <div className="flex gap-3 items-start">
                       <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-sm font-black shrink-0 mt-0.5 shadow-2xs">
-                        🎓
+                        <GraduationCap size={16} className="text-amber-900" />
                       </div>
                       <div className="flex-1 bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
                         <div className="text-[10px] font-black text-amber-800 uppercase tracking-wider flex items-center justify-between">
@@ -567,8 +568,9 @@ export default function VivaDefenseModal({
                         </div>
                         <p className="text-sm sm:text-base font-bold text-slate-950 leading-relaxed">{item.question}</p>
                         {answerFormatHint && idx === chatHistory.length - 1 && (
-                          <p className="text-[11px] text-amber-800 font-medium italic border-t border-slate-200 pt-2">
-                            💡 Format Hint: {answerFormatHint}
+                          <p className="text-[11px] text-amber-800 font-medium italic border-t border-slate-200 pt-2 flex items-center gap-1">
+                            <Sparkles size={12} className="text-amber-600 shrink-0" />
+                            <span>Format Hint: {answerFormatHint}</span>
                           </p>
                         )}
                       </div>
@@ -583,7 +585,7 @@ export default function VivaDefenseModal({
                         <p className="leading-relaxed font-semibold">{item.text}</p>
                       </div>
                       <div className="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
-                        👤
+                        <User size={14} className="text-slate-700" />
                       </div>
                     </div>
                   )}
@@ -682,8 +684,9 @@ export default function VivaDefenseModal({
               )}
 
                 {currentTip && (
-                  <p className="text-[10px] text-slate-500 font-medium text-center truncate">
-                    💡 Examiner Tip: {currentTip}
+                  <p className="text-[10px] text-slate-500 font-medium text-center truncate flex items-center justify-center gap-1">
+                    <Sparkles size={11} className="text-amber-600 shrink-0" />
+                    <span>Examiner Tip: {currentTip}</span>
                   </p>
                 )}
               </div>
@@ -694,8 +697,8 @@ export default function VivaDefenseModal({
           {/* RESULTS PHASE */}
           {phase === 'results' && (
             <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2 text-slate-900">
-              <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center text-3xl mx-auto shadow-sm">
-                🏆
+              <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center mx-auto shadow-sm">
+                <Award size={28} className="text-amber-700" />
               </div>
 
               <div>
@@ -708,14 +711,14 @@ export default function VivaDefenseModal({
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-extrabold text-amber-800 uppercase tracking-widest">Final Defense Grade</div>
                   <span className="text-[11px] font-extrabold px-3 py-1 rounded-full bg-slate-200 text-slate-800 border border-slate-300">
-                    {mode === 'text' ? '⌨️ Text Defense Mode' : '🎙️ Voice Defense Mode'}
+                    {mode === 'text' ? 'Text Defense Mode' : 'Voice Defense Mode'}
                   </span>
                 </div>
                 <div className="text-4xl sm:text-5xl font-black text-slate-950">{avgOverallScore}<span className="text-xl sm:text-2xl text-slate-400">/100</span></div>
                 <p className="text-xs text-slate-700 font-semibold">
                   {avgOverallScore >= 85
-                    ? '🎉 Outstanding Defense! You answered probing technical questions with strong reasoning and clarity.'
-                    : '👍 Good Defense. Review your slide data points and practice concise explanations.'}
+                    ? 'Outstanding Defense! You answered probing technical questions with strong reasoning and clarity.'
+                    : 'Good Defense. Review your slide data points and practice concise explanations.'}
                 </p>
 
                 {/* Mode-Specific Sub-Scores Breakdown */}
@@ -758,23 +761,27 @@ export default function VivaDefenseModal({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
                   <div className="bg-white border border-slate-200/80 border-t-4 border-t-emerald-500 rounded-2xl p-4 shadow-xs space-y-2">
                     <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
-                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold shrink-0">✓</span>
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                        <Check size={11} className="stroke-[3]" />
+                      </span>
                       <h4 className="text-xs font-black text-emerald-800 uppercase tracking-wider">Defense Strengths</h4>
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-800 font-medium">
-                      <li className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold shrink-0">✅</span><span>Accurate domain concepts and technical terminology</span></li>
-                      <li className="flex items-start gap-1.5"><span className="text-emerald-600 font-bold shrink-0">✅</span><span>Responsive answering directly addressing committee questions</span></li>
+                      <li className="flex items-start gap-1.5"><Check size={13} className="text-emerald-600 font-bold shrink-0 mt-0.5" /><span>Accurate domain concepts and technical terminology</span></li>
+                      <li className="flex items-start gap-1.5"><Check size={13} className="text-emerald-600 font-bold shrink-0 mt-0.5" /><span>Responsive answering directly addressing committee questions</span></li>
                     </ul>
                   </div>
 
                   <div className="bg-amber-50/40 border border-amber-200/60 border-t-4 border-t-amber-500 rounded-2xl p-4 shadow-xs space-y-2">
                     <div className="flex items-center gap-2 pb-1.5 border-b border-amber-200/50">
-                      <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-[10px] font-bold shrink-0">!</span>
+                      <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-[10px] font-bold shrink-0">
+                        <AlertCircle size={11} className="stroke-[3]" />
+                      </span>
                       <h4 className="text-xs font-black text-amber-900 uppercase tracking-wider">Defense Areas to Improve</h4>
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-800 font-medium">
-                      <li className="flex items-start gap-1.5"><span className="text-amber-700 font-bold shrink-0">⚠️</span><span>Elaborate deeper on slide data points & architectural choices</span></li>
-                      <li className="flex items-start gap-1.5"><span className="text-amber-700 font-bold shrink-0">⚠️</span><span>Cite concrete trade-offs when answering technical challenges</span></li>
+                      <li className="flex items-start gap-1.5"><AlertCircle size={13} className="text-amber-700 font-bold shrink-0 mt-0.5" /><span>Elaborate deeper on slide data points & architectural choices</span></li>
+                      <li className="flex items-start gap-1.5"><AlertCircle size={13} className="text-amber-700 font-bold shrink-0 mt-0.5" /><span>Cite concrete trade-offs when answering technical challenges</span></li>
                     </ul>
                   </div>
                 </div>
@@ -782,7 +789,9 @@ export default function VivaDefenseModal({
                 {/* Actionable Coaching Container */}
                 <div className="bg-white border border-slate-200/80 border-t-4 border-t-indigo-600 rounded-2xl p-4 text-left shadow-xs space-y-2">
                   <div className="flex items-center gap-2 pb-1.5 border-b border-slate-100">
-                    <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold shrink-0">🎯</span>
+                    <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                      <Target size={11} className="stroke-[2.5]" />
+                    </span>
                     <h4 className="text-xs font-black text-indigo-900 uppercase tracking-wider">Examiner Actionable Coaching Plan</h4>
                   </div>
                   <p className="text-xs text-slate-800 leading-relaxed font-medium bg-slate-50 p-3 rounded-xl border border-slate-200">

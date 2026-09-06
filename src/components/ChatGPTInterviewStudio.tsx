@@ -4,7 +4,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Mic, MicOff, Upload, FileText, Send, Sparkles, X, CheckCircle2,
-  Volume2, VolumeX, ArrowRight, RotateCcw, Award, ChevronRight, MessageSquare, Briefcase, Zap
+  Volume2, VolumeX, ArrowRight, RotateCcw, Award, ChevronRight, MessageSquare, Briefcase, Zap,
+  GraduationCap, Code2, BarChart3, Globe, LineChart, Headphones, Check, AlertCircle, Scissors, Target
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
@@ -17,42 +18,36 @@ export const HIGH_STAKES_ROLE_PRESETS = [
   {
     id: 'tcs_infosys',
     title: 'TCS / Infosys Campus Interview (HR + Tech)',
-    icon: '🎓',
     tag: 'Campus Placement',
-    desc: 'Core OOPs, project logic, situational adaptability & no-freeze communication'
+    desc: 'Core OOPs, project logic, situational adaptability & structured communication'
   },
   {
     id: 'sde1',
     title: 'Software Development Engineer (SDE-1)',
-    icon: '💻',
     tag: 'Tech Best-Seller',
     desc: 'DSA rationale, clean API design, edge cases & time/space trade-offs'
   },
   {
     id: 'data_analyst',
     title: 'Data Analyst & BI Associate',
-    icon: '📊',
     tag: 'High Demand',
     desc: 'SQL query design, KPI anomaly diagnosis (Churn/CAC) & data storytelling'
   },
   {
     id: 'ielts_speaking',
     title: 'IELTS Speaking Examination (Band 7-9 Mock)',
-    icon: '🗣️',
     tag: 'Global Mobility',
     desc: 'Part 1 Personal, Part 2 2-min Cue Card & Part 3 Abstract reasoning rubric'
   },
   {
     id: 'mba_consulting',
     title: 'MBA / Consulting Case Study Defense',
-    icon: '📈',
     tag: 'Strategy & Mgmt',
     desc: 'MECE frameworks, market sizing, profit trees & top-down communication'
   },
   {
     id: 'bpo_customer',
     title: 'BPO & Customer Success Professional',
-    icon: '🏢',
     tag: 'Corporate Comms',
     desc: 'De-escalation under SLA, customer empathy & active vocal modulation'
   }
@@ -434,7 +429,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div>
           <h2 className="text-base sm:text-lg font-black text-slate-950 flex items-center gap-2">
-            <span>🎙️</span> Practice & Rehearse Mock Interview
+            <Mic size={18} className="text-indigo-600 shrink-0" />
+            <span>Practice &amp; Rehearse Mock Interview</span>
           </h2>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
             Select interviewer panel, enter target role, and optionally ground questions in your resume.
@@ -450,7 +446,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               examinerTone === 'friendly' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            🟢 Standard Mock
+            Standard Mock
           </button>
           <button
             type="button"
@@ -459,7 +455,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               examinerTone === 'strict' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            🔥 Technical Panel
+            Technical Panel
           </button>
           <button
             type="button"
@@ -468,7 +464,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               examinerTone === 'star' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            ⭐ STAR Method
+            STAR Method
           </button>
         </div>
       </div>
@@ -480,11 +476,11 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           {/* 1-Click High Stakes Placement & Exam Presets */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <span>🎯</span> High-Stakes Placement & Exam Presets (1-Click)
+              <label className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                Placement &amp; Role Presets (1-Click)
               </label>
               <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
-                Industry & Exam Calibrated
+                Industry &amp; Exam Calibrated
               </span>
             </div>
 
@@ -499,14 +495,21 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                       setSelectedPresetId(p.id);
                       setRoleTitle(p.title);
                     }}
-                    className={`p-3 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-1.5 cursor-pointer active-touch-scale ${
+                    className={`p-3 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-2 cursor-pointer active-touch-scale ${
                       isSelected
                         ? 'border-indigo-600 bg-indigo-50/80 shadow-md ring-2 ring-indigo-600/10'
                         : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100/80 hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-lg shrink-0">{p.icon}</span>
+                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs">
+                        {p.id === 'tcs_infosys' && <GraduationCap size={16} className="text-indigo-600" />}
+                        {p.id === 'sde1' && <Code2 size={16} className="text-blue-600" />}
+                        {p.id === 'data_analyst' && <BarChart3 size={16} className="text-emerald-600" />}
+                        {p.id === 'ielts_speaking' && <Globe size={16} className="text-purple-600" />}
+                        {p.id === 'mba_consulting' && <LineChart size={16} className="text-amber-600" />}
+                        {p.id === 'bpo_customer' && <Headphones size={16} className="text-rose-600" />}
+                      </div>
                       <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
                         isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'
                       }`}>
@@ -526,8 +529,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           {/* Compact Settings Panel Grid (Matching Speech Coach) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
             <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
-                <span>💼</span> Target Job Position / Role Specialty
+              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                Target Job Position / Specialty
               </label>
               <input 
                 type="text"
@@ -539,8 +542,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             </div>
 
             <div className="md:col-span-1 flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5 uppercase tracking-wider">
-                <span>🔊</span> AI Voice Read-Aloud
+              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                AI Voice Read-Aloud
               </label>
               <button
                 type="button"
@@ -558,8 +561,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           {/* Difficulty & Examination Rigor Bar */}
           <div className="bg-white p-3.5 rounded-2xl border border-slate-200/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
             <div>
-              <div className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-                <span>⚖️</span> Candidate Difficulty Calibration
+              <div className="text-xs font-extrabold text-slate-900">
+                Difficulty Calibration
               </div>
               <p className="text-[11px] text-slate-500 font-medium mt-0.5">
                 Starts at your level, then dynamically adapts follow-up depth based on your answers.
@@ -569,29 +572,31 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <button
                 type="button"
                 onClick={() => setDifficultyLevel('fresher')}
-                className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
+                className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   difficultyLevel === 'fresher' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                🟢 Campus Fresher
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Campus Fresher</span>
               </button>
               <button
                 type="button"
                 onClick={() => setDifficultyLevel('pro')}
-                className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
+                className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   difficultyLevel === 'pro' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                🔥 Placement Pro
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                <span>Placement Pro</span>
               </button>
             </div>
           </div>
 
           {/* Practice Micro-Drill Notice */}
           <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl flex items-center gap-3 text-xs text-amber-900 font-medium">
-            <span className="text-lg shrink-0">⚡</span>
+            <Zap size={15} className="text-amber-600 shrink-0" />
             <span>
-              <strong>3-Round Micro-Drill Cap:</strong> Warmup Intro ➔ Technical Depth ➔ STAR Cross-Exam. Designed to build instant interview reflexes without freezing.
+              <strong>3-Round Micro-Drill:</strong> Warmup Intro ➔ Technical Depth ➔ STAR Cross-Exam. Designed to build instant interview reflexes without freezing.
             </span>
           </div>
 
@@ -602,8 +607,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <div className="w-full max-w-lg bg-indigo-50/90 border-2 border-indigo-300 rounded-2xl p-6 flex flex-col items-center gap-4 animate-fade-in shadow-lg">
                 <div className="flex items-center justify-between w-full pb-3 border-b border-indigo-200/80">
                   <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">📄</span>
-                    <span>Resume Ready & Grounded</span>
+                    <FileText size={14} className="text-indigo-600" />
+                    <span>Resume Grounded</span>
                   </span>
                   <span className="text-xs font-extrabold text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-lg truncate max-w-[200px]">
                     {resumeFileName}
@@ -611,7 +616,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 </div>
 
                 <p className="text-xs text-indigo-900/80 font-medium text-center">
-                  AI interviewer will ground technical questions directly in your resume experience & projects.
+                  AI interviewer will ground technical questions directly in your resume experience &amp; projects.
                 </p>
 
                 <div className="flex items-center gap-3 w-full pt-1">
@@ -624,7 +629,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                     className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
                     title="Remove resume and select a new file"
                   >
-                    🔄 Change Resume
+                    Change Resume
                   </button>
                   
                   <button
@@ -632,7 +637,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                     disabled={isLoading}
                     className="flex-1 py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
                   >
-                    🚀 Launch AI Mock Interview
+                    Launch Mock Interview
                   </button>
                 </div>
               </div>
@@ -657,10 +662,10 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                     }
                   }}
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform shadow-sm">
-                    📁
+                  <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-sm">
+                    <Upload size={20} className="text-slate-600" />
                   </div>
-                  <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag & Drop Resume PDF here</p>
+                  <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag &amp; Drop Resume PDF here</p>
                   <p className="text-[11px] text-slate-500 font-medium mt-0.5">Optional: AI grounds technical questions in your resume (PDF, TXT, DOCX)</p>
                   <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.txt,.doc,.docx" onChange={handleFileUpload} />
                 </div>
@@ -671,7 +676,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   className="mt-5 w-full max-w-lg py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
                 >
                   <Sparkles className="w-4 h-4 text-[#151930]" />
-                  <span>{isLoading ? 'Starting Interview Session...' : '🚀 Launch AI Mock Interview'}</span>
+                  <span>{isLoading ? 'Starting Interview Session...' : 'Launch Mock Interview'}</span>
                 </button>
               </div>
             )}
@@ -873,7 +878,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
                 {strengths.map((str, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-emerald-600 font-bold shrink-0">✅</span>
+                    <Check size={13} className="text-emerald-600 shrink-0 mt-0.5" />
                     <span className="leading-relaxed">{str}</span>
                   </li>
                 ))}
@@ -883,7 +888,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="bg-amber-50/40 border border-amber-200/60 border-t-4 border-t-amber-500 rounded-2xl p-5 shadow-xs flex flex-col space-y-3">
               <div className="flex items-center gap-2 pb-2 border-b border-amber-200/50">
                 <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold shrink-0">
-                  !
+                  <AlertCircle size={13} className="text-amber-700" />
                 </span>
                 <h4 className="text-xs font-black text-amber-900 uppercase tracking-widest">
                   Areas to Improve
@@ -892,7 +897,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
                 {weaknesses.length > 0 ? weaknesses.map((wk, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-amber-700 font-bold shrink-0">⚠️</span>
+                    <AlertCircle size={13} className="text-amber-600 shrink-0 mt-0.5" />
                     <span className="leading-relaxed">{wk}</span>
                   </li>
                 )) : <li className="text-slate-400 italic">No specific weak areas flagged.</li>}
@@ -900,12 +905,12 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             </div>
           </div>
 
-          {/* ✂️ What to Cut (Off-Topic & Filler Fluff) & ✨ Model Answer Cards */}
+          {/* What to Cut (Off-Topic & Filler Fluff) & Model Answer Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-rose-50/50 border border-rose-200 border-t-4 border-t-rose-500 rounded-2xl p-5 shadow-xs space-y-3">
               <div className="flex items-center gap-2 pb-2 border-b border-rose-200/60">
                 <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold shrink-0">
-                  ✂️
+                  <Scissors size={12} className="text-rose-700" />
                 </span>
                 <h4 className="text-xs font-black text-rose-900 uppercase tracking-widest">
                   What to Cut (Off-Topic &amp; Fluff)
@@ -924,7 +929,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="bg-indigo-50/50 border border-indigo-200 border-t-4 border-t-indigo-600 rounded-2xl p-5 shadow-xs space-y-3">
               <div className="flex items-center gap-2 pb-2 border-b border-indigo-200/60">
                 <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold shrink-0">
-                  ✨
+                  <Sparkles size={12} className="text-indigo-700" />
                 </span>
                 <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest">
                   Top 5% Candidate Model Answer
@@ -941,7 +946,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="bg-white border border-slate-200/80 border-t-4 border-t-indigo-600 rounded-2xl p-5 sm:p-6 shadow-xs space-y-3">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
                 <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold shrink-0">
-                  🎯
+                  <Target size={12} className="text-indigo-700" />
                 </span>
                 <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest">
                   Actionable Coaching & Next Steps
@@ -950,7 +955,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <div className="space-y-2 text-xs font-medium">
                 {aiSuggestions.map((sug, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <span className="text-indigo-600 font-bold shrink-0">🎯</span>
+                    <ArrowRight size={13} className="text-indigo-600 shrink-0 mt-0.5" />
                     <span className="leading-relaxed">{sug}</span>
                   </div>
                 ))}

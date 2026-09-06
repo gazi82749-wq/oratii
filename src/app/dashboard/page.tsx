@@ -76,11 +76,11 @@ function generateInsight(scoreTrend: number[], streak: number) {
   const latest = scoreTrend[scoreTrend.length - 1];
   const previous = scoreTrend[scoreTrend.length - 2];
   const average = scoreTrend.reduce((a, b) => a + b, 0) / scoreTrend.length;
-  if (latest > previous + 5) return `🚀 Outstanding growth! Your presentation delivery score jumped by +${latest - previous}%!`;
-  if (streak >= 3) return `🔥 You're on fire! Keep your ${streak}-day presentation practice streak alive!`;
-  if (latest >= 90) return `🌟 Master tier delivery! You scored ${latest}%, placing you in the top 5% of presenters.`;
-  if (latest > average) return `📈 Consistent growth! Your latest score of ${latest}% is above your recent average.`;
-  return `💪 Keep pushing! Every live presentation practice session brings you closer to mastery.`;
+  if (latest > previous + 5) return `Outstanding growth! Your presentation delivery score jumped by +${latest - previous}%!`;
+  if (streak >= 3) return `Keep your ${streak}-day presentation practice streak alive!`;
+  if (latest >= 90) return `Master tier delivery! You scored ${latest}%, placing you in the top 5% of presenters.`;
+  if (latest > average) return `Consistent growth! Your latest score of ${latest}% is above your recent average.`;
+  return `Every live presentation practice session brings you closer to mastery.`;
 }
 
 export default function ProfessionalDashboard() {
@@ -242,7 +242,7 @@ export default function ProfessionalDashboard() {
       badge: 'Vocal Pacing & Filler Analysis',
       gradient: 'from-rose-500 to-pink-600',
       badgeBg: 'bg-rose-50 text-rose-800 border-rose-200',
-      features: ['🎙️ Live WPM & Pause Meter', '🎯 Filler Word Detection & Rewrites']
+      features: ['Live WPM & Pause Meter', 'Filler Word Detection & Rewrites']
     },
     {
       num: '02',
@@ -253,7 +253,7 @@ export default function ProfessionalDashboard() {
       badge: 'Resume PDF & Voice AI Mode',
       gradient: 'from-amber-500 to-orange-600',
       badgeBg: 'bg-amber-50 text-amber-800 border-amber-200',
-      features: ['📄 Resume PDF & Role Upload', '⭐ STAR Method & Tech Scoring']
+      features: ['Resume PDF & Role Upload', 'STAR Method & Tech Scoring']
     },
     {
       num: '03',
@@ -264,7 +264,7 @@ export default function ProfessionalDashboard() {
       badge: 'Deck Audit, HUD & Viva',
       gradient: 'from-indigo-600 to-purple-600',
       badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      features: ['📊 Real-time WPM & Gaze Vector', '🎓 In-built Committee Defense']
+      features: ['Real-time WPM & Gaze Vector', 'In-built Committee Defense']
     },
     {
       num: '04',
@@ -275,7 +275,7 @@ export default function ProfessionalDashboard() {
       badge: 'Daily Micro-Drills & XP',
       gradient: 'from-emerald-500 to-teal-600',
       badgeBg: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-      features: ['🔥 Streak & XP Level-Up', '📜 PDF Completion Certificate']
+      features: ['Streak & XP Level-Up', 'PDF Completion Certificate']
     },
   ];
 
@@ -407,7 +407,7 @@ export default function ProfessionalDashboard() {
               </p>
             </div>
             <span className="text-xs font-extrabold text-amber-900 bg-amber-100/90 border border-amber-300 px-2.5 py-1 rounded-full w-fit">
-              🔥 Keep your daily habit active
+              Keep your daily habit active
             </span>
           </div>
 
@@ -547,7 +547,7 @@ export default function ProfessionalDashboard() {
                   onClick={() => router.push('/presentation?mode=practice')}
                   className="px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-[#1E1B4B] font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5 border border-amber-300"
                 >
-                  <Tv size={14} /> 🎥 Launch Live Practice
+                  <Tv size={14} /> Launch Live Practice
                 </button>
               </div>
             </div>

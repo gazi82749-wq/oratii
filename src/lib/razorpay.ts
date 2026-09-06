@@ -84,7 +84,7 @@ export const initializePayment = async (
               if (onSuccessCallback) {
                 onSuccessCallback(verifyData.newCredits);
               } else {
-                alert(`🎉 Success! Added ${verifyData.addedCredits} credits to your account!`);
+                alert(`Success! Added ${verifyData.addedCredits} credits to your account!`);
                 window.location.href = '/pricing?success=true';
               }
             } else {

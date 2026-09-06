@@ -1,5 +1,6 @@
 'use client';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { Clock, Play, AlertCircle } from 'lucide-react';
 
 // Time-series confidence/metrics chart (Module 3, 8)
 // Circular Gauge Score Ring (Module 3, 8)
@@ -91,16 +92,17 @@ export default function ConfidenceGraph({
           onClick={() => onSeekAudio && typeof tooltipLabel === 'number' && onSeekAudio(tooltipLabel)}
         >
           <div className="flex items-center justify-between gap-3 text-slate-400 text-[10px] font-mono border-b border-slate-800 pb-1">
-            <span>⏱ {formatTime(tooltipLabel)}</span>
-            {onSeekAudio && <span className="text-amber-400 font-bold">▶ Jump Audio</span>}
+            <span className="flex items-center gap-1"><Clock size={11} className="text-slate-400" /> {formatTime(tooltipLabel)}</span>
+            {onSeekAudio && <span className="text-amber-400 font-bold flex items-center gap-0.5"><Play size={9} className="fill-amber-400" /> Jump Audio</span>}
           </div>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></span>
             <span className="font-extrabold text-white">{label}: {payload[0].value} {label.includes('Pace') ? 'WPM' : '%'}</span>
           </div>
           {matchingEvent && (
-            <p className="text-[11px] font-semibold text-amber-300 mt-1 pt-1 border-t border-slate-800/80">
-              📌 {matchingEvent.message || matchingEvent.type}
+            <p className="text-[11px] font-semibold text-amber-300 mt-1 pt-1 border-t border-slate-800/80 flex items-center gap-1.5">
+              <AlertCircle size={12} className="text-amber-400 shrink-0" />
+              <span>{matchingEvent.message || matchingEvent.type}</span>
             </p>
           )}
         </div>

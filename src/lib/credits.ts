@@ -28,7 +28,7 @@ export const CREDIT_PACKAGES = [
   {
     id: 'sachet_10',
     name: 'Chai Pack',
-    badge: '⚡ Quick Top-Up',
+    badge: 'Quick Top-Up',
     price: 49,
     credits: 10,
     subtitle: 'Cost of a cold drink! Perfect for daily homework & speech drills',
@@ -46,7 +46,7 @@ export const CREDIT_PACKAGES = [
   {
     id: 'sachet_25',
     name: 'Interview Sprint',
-    badge: '🔥 Student Best-Seller',
+    badge: 'Student Best-Seller',
     price: 99,
     credits: 25,
     subtitle: 'Ideal for campus placement preparation & viva defense practice',
@@ -58,13 +58,13 @@ export const CREDIT_PACKAGES = [
       'Never Expires (Lifetime validity)',
       'Full line-by-line speech & slide critique',
       'STAR Method Mock Interview rounds',
-      '⚡ Priority Processing Queue',
+      'Priority Processing Queue',
     ],
   },
   {
     id: 'value_50',
     name: 'Semester Value Pack',
-    badge: '💡 Max Value',
+    badge: 'Max Value',
     price: 199,
     credits: 60,
     subtitle: 'For active speakers, MBA presenters & competitive exam prep',
@@ -82,7 +82,7 @@ export const CREDIT_PACKAGES = [
   {
     id: 'academy_500',
     name: 'Academy Bulk Pool',
-    badge: '🏫 For Institutes & Batches',
+    badge: 'For Institutes & Batches',
     price: 1499,
     credits: 500,
     subtitle: 'Shared pooled balance for coaching centers, professors & trainers',
@@ -94,7 +94,7 @@ export const CREDIT_PACKAGES = [
       'Shared across all students in your batch',
       'Co-branded institute PDF reports',
       'Trainer Gradebook & Leaderboard sync',
-      '🚀 Dedicated Ultra-Fast Queue',
+      'Dedicated Ultra-Fast Queue',
     ],
   },
 ];

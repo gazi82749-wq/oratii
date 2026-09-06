@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Zap, Sparkles, Video } from 'lucide-react';
 
 export default function SlideAnalyzerMockup() {
   const [activeStep, setActiveStep] = useState<1 | 2>(1);
@@ -79,7 +80,9 @@ export default function SlideAnalyzerMockup() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
               </span>
-              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider">⚡ Step 1: AI Slide Audit Active</span>
+              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1">
+                <Zap size={12} className="text-indigo-600" /> Step 1: AI Slide Audit Active
+              </span>
             </div>
             <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full animate-pulse">
               Deck Score: 94/100
@@ -111,7 +114,7 @@ export default function SlideAnalyzerMockup() {
                   <div className="h-0.5 bg-slate-200 rounded w-full"></div>
                   <div className="flex justify-between items-center mt-auto">
                     <span className="text-[7px] font-bold text-slate-400">S{num}</span>
-                    <span className="text-[6px] font-bold text-emerald-600 bg-emerald-100 px-1 rounded">✓ OPTIMAL</span>
+                    <span className="text-[6px] font-bold text-emerald-600 bg-emerald-100 px-1 rounded">OPTIMAL</span>
                   </div>
                 </div>
               ))}
@@ -119,8 +122,9 @@ export default function SlideAnalyzerMockup() {
 
             {/* AI Feedback Banner */}
             <div className="bg-indigo-950 text-white p-2 rounded-lg text-[9px] flex items-center justify-between mt-1 border border-indigo-800">
-              <span className="font-medium text-indigo-200 truncate">
-                ✨ Slide density optimal. Advancing to live rehearsal...
+              <span className="font-medium text-indigo-200 truncate flex items-center gap-1">
+                <Sparkles size={11} className="text-amber-400 shrink-0" />
+                <span>Slide density optimal. Advancing to live rehearsal...</span>
               </span>
               <span className="text-[8px] font-black text-amber-400 bg-amber-400/20 px-1.5 py-0.5 rounded">
                 94% Clarity
@@ -142,11 +146,9 @@ export default function SlideAnalyzerMockup() {
           </div>
         </div>
 
-        {/* STEP 2: LIVE PRACTICE STUDIO VIEW */}
-        <div className={`absolute inset-0 flex flex-col justify-between gap-2.5 transition-all duration-700 ease-out ${
-          activeStep === 2 
-            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto blur-0' 
-            : 'opacity-0 translate-y-3 scale-95 pointer-events-none blur-xs'
+        {/* STEP 2: LIVE PRESENTER STUDIO ACTIVE */}
+        <div className={`absolute inset-0 p-3 sm:p-4 flex flex-col justify-between transition-all duration-700 ${
+          activeStep === 2 ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
         }`}>
           <div className="flex items-center justify-between bg-white/90 backdrop-blur-md p-2 rounded-xl border border-white shadow-xs text-xs">
             <div className="flex items-center gap-2">
@@ -154,7 +156,9 @@ export default function SlideAnalyzerMockup() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider">🎥 Step 2: Live Practice Studio Active</span>
+              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1">
+                <Video size={12} className="text-emerald-600" /> Step 2: Live Practice Studio Active
+              </span>
             </div>
             <span className="text-[9px] font-extrabold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
               Slide 3 / 12 • 04:15
@@ -194,9 +198,9 @@ export default function SlideAnalyzerMockup() {
 
             {/* Controls Bar */}
             <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-[9px] font-bold text-indigo-200">
-              <span className="text-emerald-400">⚡ 142 WPM (Optimal Pace)</span>
-              <span className="text-amber-300">🎯 0 Fillers</span>
-              <span className="text-indigo-300">📊 95% Clarity</span>
+              <span className="text-emerald-400">142 WPM (Optimal Pace)</span>
+              <span className="text-amber-300">0 Fillers</span>
+              <span className="text-indigo-300">95% Clarity</span>
             </div>
           </div>
 
