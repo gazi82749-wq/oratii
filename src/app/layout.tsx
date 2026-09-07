@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk, Caveat } from "next/font/google";
 import "./globals.css";
 import SidebarLayout from "../components/SidebarLayout";
 import ServiceWorkerRegister from "../components/ServiceWorkerRegister";
+import PwaInstallPrompt from "../components/PwaInstallPrompt";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -153,6 +154,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </SidebarLayout>
         <ServiceWorkerRegister />
+        <PwaInstallPrompt />
       </body>
     </html>
   );
