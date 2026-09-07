@@ -1,4 +1,4 @@
-// src/lib/supabaseClient.ts
+import { createBrowserClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '@supabase/supabase-js';
 
 const DEFAULT_URL = 'https://vzbxhxlrmshmtgiocqkh.supabase.co';
@@ -8,8 +8,10 @@ const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_ANON_KEY;
 
-// Initialize client Supabase instance
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize client Supabase instance with cookie synchronization for server middleware
+export const supabase = typeof window !== 'undefined'
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  : createClient(supabaseUrl, supabaseAnonKey);
 
 // Server-side service client for administrative / backend operations
 // Note: For high-concurrency production deployments (10,000+ RPM), configure NEXT_PUBLIC_SUPABASE_URL

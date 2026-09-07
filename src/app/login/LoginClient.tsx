@@ -1,16 +1,19 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function LoginClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const targetRedirect = searchParams.get('redirectedFrom') || searchParams.get('redirect') || '/dashboard';
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +49,11 @@ export default function LoginClient() {
         });
       }
 
-      router.push('/dashboard');
+      if (typeof document !== 'undefined') {
+        document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
+      }
+
+      window.location.href = targetRedirect;
     } catch (err) {
       setError('Network error. Please try again.');
       setLoading(false);
@@ -57,10 +64,12 @@ export default function LoginClient() {
     setLoading(true);
     setError(null);
     
+    const targetUrl = `${window.location.origin}${targetRedirect.startsWith('/') ? targetRedirect : '/' + targetRedirect}`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: targetUrl,
         queryParams: {
           prompt: 'select_account',
         },

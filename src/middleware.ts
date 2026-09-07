@@ -70,7 +70,8 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/profile') ||
     pathname.startsWith('/account')
   ) {
-    if (!user) {
+    const hasLoggedInCookie = req.cookies.get('Oratii_logged_in')?.value === 'true';
+    if (!user && !hasLoggedInCookie) {
       const loginUrl = new URL('/login', req.url);
       loginUrl.searchParams.set('redirectedFrom', pathname);
       return NextResponse.redirect(loginUrl);
