@@ -97,6 +97,9 @@ export const metadata: Metadata = {
     title: 'Oratii',
   },
   manifest: '/manifest.json',
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 };
 
 export const viewport = {

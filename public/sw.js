@@ -1,16 +1,35 @@
 // Oratii Push Notification & PWA Service Worker
 // Handles installation, offline caching fallback, and push notifications
 
-const CACHE_NAME = 'oratii-pwa-v1';
+const CACHE_NAME = 'oratii-pwa-v2';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico'
+];
 
-// Install event
+// Install event — precache core shell assets
 self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE).catch((err) => console.warn('[SW] Cache pre-fill skipped:', err));
+    })
+  );
   self.skipWaiting();
 });
 
-// Activate event — claim clients immediately
+// Activate event — claim clients & clear old caches immediately
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
 // Fetch event — required for Google Chrome PWA installation compliance
@@ -18,9 +37,20 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          return caches.match('/');
+        });
+      })
   );
 });
 
@@ -72,7 +102,6 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // If Oratii is already open, focus it and navigate
       for (const client of windowClients) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.focus();
@@ -80,7 +109,6 @@ self.addEventListener('notificationclick', (event) => {
           return;
         }
       }
-      // Otherwise, open a new window
       return clients.openWindow(targetUrl);
     })
   );
