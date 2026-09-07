@@ -97,8 +97,8 @@ export default function HomeClient() {
     {
       title: 'Partner Academy & Coaching Hub',
       headline: 'Automate student speaking drills & viva homework.',
-      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, auto-grade student homework, and earn 20% affiliate kickbacks.',
-      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', '20% Student Top-Up Kickback'],
+      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, and auto-grade student homework.',
+      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', 'Automated Student Homework Grading'],
       icon: <GraduationCap size={28} className="text-indigo-600" />,
       iconBg: 'bg-indigo-50 border-indigo-100',
       href: '/trainer',
@@ -406,8 +406,8 @@ export default function HomeClient() {
                        <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
                          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700"><GraduationCap size={18} /></div>
                          <div className="flex flex-col">
-                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Affiliate Kickback</span>
-                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 20% Top-Up Bonus</span>
+                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Partner Academy</span>
+                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Auto-Graded Cohorts</span>
                          </div>
                        </div>
                      )}

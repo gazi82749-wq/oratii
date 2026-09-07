@@ -25,7 +25,7 @@ export default function PartnerAcademyMockup() {
             <h4 className="text-xs sm:text-sm font-extrabold text-white tracking-tight flex items-center gap-1.5">
               Placement Batch 2026 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </h4>
-            <span className="text-[10px] text-slate-400 font-medium">45 Students Enrolled • 20% Kickback Active</span>
+            <span className="text-[10px] text-slate-400 font-medium">45 Students Enrolled • Verified Partner Hub</span>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ export default function PartnerAcademyMockup() {
       {/* Bottom Footer Ribbon */}
       <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 z-10">
         <span className="flex items-center gap-1 font-semibold text-slate-300">
-          <Sparkles size={13} className="text-amber-400" /> 20% Kickback Earnings: <strong className="text-amber-300">$240.00</strong>
+          <Sparkles size={13} className="text-amber-400" /> Batch Assessment: <strong className="text-amber-300">45 Active Submissions</strong>
         </span>
         <span className="text-emerald-400 font-bold flex items-center gap-1">
           <CheckCircle2 size={12} /> Auto WhatsApp Sync

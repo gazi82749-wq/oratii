@@ -230,7 +230,7 @@ export default function TrainerDashboardPage() {
               <li>Automatic grading for all speech, interview & viva homework</li>
               <li>Your Institute’s name co-branded on student PDF scorecards</li>
               <li>1-Click WhatsApp Class Leaderboards</li>
-              <li>20% affiliate kickback when students buy top-up packs</li>
+              <li>Partner revenue share program when students buy top-up packs</li>
             </ul>
           </div>
 
