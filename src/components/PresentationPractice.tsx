@@ -27,37 +27,34 @@ export default function PresentationPractice({
   onComplete,
   onCancel
 }: PresentationPracticeProps) {
-  const [hasVideo, setHasVideo] = useState<boolean>(true);
-  const [currentSlide, setCurrentSlide] = useState<number>(1);
-  const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
-  const [showThumbnails, setShowThumbnails] = useState<boolean>(true);
+  const [hasVideo, setHasVideo] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [showThumbnails, setShowThumbnails] = useState(true);
   const [cameraLayout, setCameraLayout] = useState<'docked' | 'pip'>('docked');
   const [cameraSize, setCameraSize] = useState<'sm' | 'md' | 'lg'>('md');
-  const [cameraZoom, setCameraZoom] = useState<number>(1);
+  const [cameraZoom, setCameraZoom] = useState(1);
   const [cameraFit, setCameraFit] = useState<'cover' | 'contain'>('cover');
-  const [isSlideShowMode, setIsSlideShowMode] = useState<boolean>(false);
+  const [isSlideShowMode, setIsSlideShowMode] = useState(false);
   const [slideEventLog, setSlideEventLog] = useState<Array<{ slideNumber: number; timestamp: number; time: string }>>([]);
 
-  // Privacy & Environmental Calibration Modal States
-  const [showPrivacyModal, setShowPrivacyModal] = useState<boolean>(false);
-  const [showCalibrationModal, setShowCalibrationModal] = useState<boolean>(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showCalibrationModal, setShowCalibrationModal] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState<PrivacyConsentState | null>(null);
 
-  // Live HUD Metrics (0ms Network Latency Edge Engine)
-  const [liveEyeContact, setLiveEyeContact] = useState<number>(85);
-  const [livePostureScore, setLivePostureScore] = useState<number>(90);
-  const [liveVolume, setLiveVolume] = useState<number>(0);
-  const [liveMonotone, setLiveMonotone] = useState<boolean>(false);
-  const [livePaceWpm, setLivePaceWpm] = useState<number>(135);
+  const [liveEyeContact, setLiveEyeContact] = useState(85);
+  const [livePostureScore, setLivePostureScore] = useState(90);
+  const [liveVolume, setLiveVolume] = useState(0);
+  const [liveMonotone, setLiveMonotone] = useState(false);
+  const [livePaceWpm, setLivePaceWpm] = useState(135);
   const [practiceMediaUrl, setPracticeMediaUrl] = useState<string | null>(null);
-  const [showLocalResults, setShowLocalResults] = useState<boolean>(false);
+  const [showLocalResults, setShowLocalResults] = useState(false);
 
-  // Verbatim Slide Reading Detection (Coach Extempore Metric)
   const [liveVerbatimAlert, setLiveVerbatimAlert] = useState<string | null>(null);
-  const [extemporeScore, setExtemporeScore] = useState<number>(90);
+  const [extemporeScore, setExtemporeScore] = useState(90);
   const [verbatimSlideFlags, setVerbatimSlideFlags] = useState<Array<{ slide: number; overlapPercent: number }>>([]);
   const presentationSpeechRecRef = useRef<any>(null);
 

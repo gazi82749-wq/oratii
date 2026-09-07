@@ -30,27 +30,26 @@ export default function VivaDefenseModal({
   const [phase, setPhase] = useState<'setup' | 'viva' | 'results'>('setup');
   const [mode, setMode] = useState<'text' | 'voice'>('text');
   const [examinerTone, setExaminerTone] = useState<'friendly' | 'hostile'>('friendly');
-  const [enableVoiceAudio, setEnableVoiceAudio] = useState<boolean>(true);
+  const [enableVoiceAudio, setEnableVoiceAudio] = useState(true);
   const [language, setLanguage] = useState<'en' | 'hinglish'>('hinglish');
   const [interviewType, setInterviewType] = useState<'job_interview' | 'academic_viva'>('job_interview');
 
   const [chatHistory, setChatHistory] = useState<any[]>([]);
-  const [currentQuestion, setCurrentQuestion] = useState<string>('');
-  const [answer, setAnswer] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentQuestion, setCurrentQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [scores, setScores] = useState<Record<string, number>>({ confidence: 0, accuracy: 0, communication: 0, overall: 0 });
-  const [questionsAnswered, setQuestionsAnswered] = useState<number>(0);
+  const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [allScores, setAllScores] = useState<any[]>([]);
-  const [isCreditModalOpen, setIsCreditModalOpen] = useState<boolean>(false);
-  const [creditBalance, setCreditBalance] = useState<number>(0);
+  const [isCreditModalOpen, setIsCreditModalOpen] = useState(false);
+  const [creditBalance, setCreditBalance] = useState(0);
 
-  // Progressive Viva Stage Tracking
-  const [stageLabel, setStageLabel] = useState<string>('Level 1: Basic Warmup');
-  const [answerFormatHint, setAnswerFormatHint] = useState<string>('Answer in 1 word or 1 single sentence.');
-  const [currentTip, setCurrentTip] = useState<string>('');
+  const [stageLabel, setStageLabel] = useState('Level 1: Basic Warmup');
+  const [answerFormatHint, setAnswerFormatHint] = useState('Answer in 1 word or 1 single sentence.');
+  const [currentTip, setCurrentTip] = useState('');
 
-  const [isListening, setIsListening] = useState<boolean>(false);
+  const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 

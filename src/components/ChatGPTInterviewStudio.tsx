@@ -57,59 +57,51 @@ export const HIGH_STAKES_ROLE_PRESETS = [
 ];
 
 export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStudioProps) {
-  const [mounted, setMounted] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState<'setup' | 'interview' | 'results'>('setup');
-  const [roleTitle, setRoleTitle] = useState<string>('Top Tech MNC Campus Placement (HR + Tech)');
-  const [selectedPresetId, setSelectedPresetId] = useState<string>('campus_tech');
+  const [roleTitle, setRoleTitle] = useState('Top Tech MNC Campus Placement (HR + Tech)');
+  const [selectedPresetId, setSelectedPresetId] = useState('campus_tech');
   const [difficultyLevel, setDifficultyLevel] = useState<'fresher' | 'pro'>('fresher');
-  const [resumeText, setResumeText] = useState<string>('');
+  const [resumeText, setResumeText] = useState('');
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
   const [examinerTone, setExaminerTone] = useState<'friendly' | 'strict' | 'star'>('friendly');
-  const [isDragActive, setIsDragActive] = useState<boolean>(false);
+  const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Sync role selection from URL query (e.g. ?role=bpo or ?role=sde)
   const searchParams = useSearchParams();
   const roleQuery = searchParams?.get('role');
 
+  // Map URL aliases (e.g. ?role=sde) to preset IDs
+  const ROLE_ALIASES: Record<string, string> = {
+    sde: 'sde1', sde1: 'sde1', tech: 'sde1',
+    bpo: 'bpo_customer', bpo_customer: 'bpo_customer', voice: 'bpo_customer',
+    campus: 'campus_tech', campus_tech: 'campus_tech',
+    data_analyst: 'data_analyst', analytics: 'data_analyst',
+    mba: 'mba_consulting', mba_consulting: 'mba_consulting',
+    ielts: 'ielts_speaking', ielts_speaking: 'ielts_speaking',
+  };
+
   useEffect(() => {
     if (!roleQuery) return;
-    const cleanRole = roleQuery.toLowerCase();
-    if (cleanRole === 'sde' || cleanRole === 'sde1' || cleanRole === 'tech') {
-      setSelectedPresetId('sde1');
-      setRoleTitle('Software Development Engineer (SDE-1)');
-    } else if (cleanRole === 'bpo' || cleanRole === 'bpo_customer' || cleanRole === 'voice') {
-      setSelectedPresetId('bpo_customer');
-      setRoleTitle('BPO & Customer Success Professional');
-    } else if (cleanRole === 'campus' || cleanRole === 'campus_tech') {
-      setSelectedPresetId('campus_tech');
-      setRoleTitle('Top Tech MNC Campus Placement (HR + Tech)');
-    } else if (cleanRole === 'data_analyst' || cleanRole === 'analytics') {
-      setSelectedPresetId('data_analyst');
-      setRoleTitle('Data Analyst & BI Associate');
-    } else if (cleanRole === 'mba' || cleanRole === 'mba_consulting') {
-      setSelectedPresetId('mba_consulting');
-      setRoleTitle('MBA / Consulting Case Study Defense');
-    } else if (cleanRole === 'ielts' || cleanRole === 'ielts_speaking') {
-      setSelectedPresetId('ielts_speaking');
-      setRoleTitle('IELTS Speaking Examination (Band 7-9 Mock)');
+    const presetId = ROLE_ALIASES[roleQuery.toLowerCase()];
+    if (presetId) {
+      const preset = HIGH_STAKES_ROLE_PRESETS.find(p => p.id === presetId);
+      if (preset) { setSelectedPresetId(preset.id); setRoleTitle(preset.title); }
     }
   }, [roleQuery]);
 
-  // Voice Interface State
-  const [isListening, setIsListening] = useState<boolean>(false);
-  const [isAiSpeaking, setIsAiSpeaking] = useState<boolean>(false);
-  const [currentRound, setCurrentRound] = useState<number>(1);
-  const [stageLabel, setStageLabel] = useState<string>('Round 1: Candidate Introduction');
-  const [answerFormatHint, setAnswerFormatHint] = useState<string>('Give a 1-2 minute overview of your background & key skills.');
+  const [isListening, setIsListening] = useState(false);
+  const [isAiSpeaking, setIsAiSpeaking] = useState(false);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [stageLabel, setStageLabel] = useState('Round 1: Candidate Introduction');
+  const [answerFormatHint, setAnswerFormatHint] = useState('Give a 1-2 minute overview of your background & key skills.');
   
-  const [currentQuestion, setCurrentQuestion] = useState<string>('');
-  const [userAnswerText, setUserAnswerText] = useState<string>('');
+  const [currentQuestion, setCurrentQuestion] = useState('');
+  const [userAnswerText, setUserAnswerText] = useState('');
   const [chatHistory, setChatHistory] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
 
-  // Results State with Relevance & What To Cut
   const [scores, setScores] = useState({
     technical: 88,
     communication: 92,
@@ -121,43 +113,34 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const [weaknesses, setWeaknesses] = useState<string[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [whatToCut, setWhatToCut] = useState<string[]>([]);
-  const [modelAnswer, setModelAnswer] = useState<string>('');
+  const [modelAnswer, setModelAnswer] = useState('');
 
-  // Live Real-Time Coach Speaking Time & Guidance Cues
-  const [speakingSeconds, setSpeakingSeconds] = useState<number>(0);
+  const [speakingSeconds, setSpeakingSeconds] = useState(0);
   const speakingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 45-Second Rapid Re-Do Drill State ("Human Coach Gym")
-  const [showDrillModal, setShowDrillModal] = useState<boolean>(false);
-  const [drillTargetQuestion, setDrillTargetQuestion] = useState<string>('');
-  const [drillWeakness, setDrillWeakness] = useState<string>('');
-  const [drillModelSnippet, setDrillModelSnippet] = useState<string>('');
-  const [drillCountdown, setDrillCountdown] = useState<number>(45);
-  const [isDrillRecording, setIsDrillRecording] = useState<boolean>(false);
-  const [drillTranscript, setDrillTranscript] = useState<string>('');
-  const [drillCompleted, setDrillCompleted] = useState<boolean>(false);
+  const [showDrillModal, setShowDrillModal] = useState(false);
+  const [drillTargetQuestion, setDrillTargetQuestion] = useState('');
+  const [drillWeakness, setDrillWeakness] = useState('');
+  const [drillModelSnippet, setDrillModelSnippet] = useState('');
+  const [drillCountdown, setDrillCountdown] = useState(45);
+  const [isDrillRecording, setIsDrillRecording] = useState(false);
+  const [drillTranscript, setDrillTranscript] = useState('');
+  const [drillCompleted, setDrillCompleted] = useState(false);
   const [drillFillersFound, setDrillFillersFound] = useState<string[]>([]);
-  const [drillBonusXp, setDrillBonusXp] = useState<number>(0);
+  const [drillBonusXp, setDrillBonusXp] = useState(0);
   const drillCountdownTimerRef = useRef<NodeJS.Timeout | null>(null);
   const drillRecognitionRef = useRef<any>(null);
 
   const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Common filler patterns for drill detection
   const COMMON_FILLERS = ['um', 'uh', 'like', 'matlab', 'basically', 'actually', 'you know', 'literally', 'so yeah', 'sort of'];
 
-  // Mounted check for client-side portal rendering
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Escape key listener to dismiss drill modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showDrillModal) {
-        closeDrillModal();
-      }
+      if (e.key === 'Escape' && showDrillModal) closeDrillModal();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -226,7 +209,6 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     }
   }, []);
 
-  // Speaking timer handlers
   const startListeningTimer = () => {
     setIsListening(true);
     setSpeakingSeconds(0);
@@ -307,7 +289,6 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     setShowDrillModal(false);
   };
 
-  // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory, isLoading]);
@@ -333,14 +314,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     const file = e.target.files?.[0];
     if (!file) return;
     setResumeFileName(file.name);
-
-    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-      const text = await file.text();
-      setResumeText(text.slice(0, 3000));
-    } else {
-      const text = await file.text();
-      setResumeText(text.slice(0, 3000));
-    }
+    const text = await file.text();
+    setResumeText(text.slice(0, 3000));
   };
 
   const startInterviewSession = async () => {

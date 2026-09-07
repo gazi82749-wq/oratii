@@ -218,7 +218,21 @@ export default function SpeechCoach() {
 
   const [isPaused, setIsPaused] = useState(false);
 
-  // --- Recording logic (shared with 3-minute cap) ---
+  const startRecordingTimer = () => {
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    recordingTimerRef.current = setInterval(() => {
+      setRecordingSeconds((prev) => {
+        if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
+          if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+          stopRecording();
+          setShowTimeLimitNotice(true);
+          return MAX_FREE_RECORDING_SECONDS;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+  };
+
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -246,19 +260,7 @@ export default function SpeechCoach() {
       setIsPaused(false);
       setRecordingSeconds(0);
       setShowTimeLimitNotice(false);
-
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-      recordingTimerRef.current = setInterval(() => {
-        setRecordingSeconds((prev) => {
-          if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
-            if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-            stopRecording();
-            setShowTimeLimitNotice(true);
-            return MAX_FREE_RECORDING_SECONDS;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+      startRecordingTimer();
     } catch (err) {
       console.error("Microphone access error:", err);
       alert("Could not access the microphone. Please check permissions.");
@@ -280,18 +282,7 @@ export default function SpeechCoach() {
     if (mediaRecorderRef.current && isRecording && isPaused) {
       mediaRecorderRef.current.resume();
       setIsPaused(false);
-      if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-      recordingTimerRef.current = setInterval(() => {
-        setRecordingSeconds((prev) => {
-          if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
-            if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-            stopRecording();
-            setShowTimeLimitNotice(true);
-            return MAX_FREE_RECORDING_SECONDS;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+      startRecordingTimer();
     }
   };
 
