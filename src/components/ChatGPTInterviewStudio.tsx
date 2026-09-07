@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import {
   Mic, MicOff, Upload, FileText, Send, Sparkles, X, CheckCircle2,
@@ -66,6 +67,34 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const [examinerTone, setExaminerTone] = useState<'friendly' | 'strict' | 'star'>('friendly');
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Sync role selection from URL query (e.g. ?role=bpo or ?role=sde)
+  const searchParams = useSearchParams();
+  const roleQuery = searchParams?.get('role');
+
+  useEffect(() => {
+    if (!roleQuery) return;
+    const cleanRole = roleQuery.toLowerCase();
+    if (cleanRole === 'sde' || cleanRole === 'sde1' || cleanRole === 'tech') {
+      setSelectedPresetId('sde1');
+      setRoleTitle('Software Development Engineer (SDE-1)');
+    } else if (cleanRole === 'bpo' || cleanRole === 'bpo_customer' || cleanRole === 'voice') {
+      setSelectedPresetId('bpo_customer');
+      setRoleTitle('BPO & Customer Success Professional');
+    } else if (cleanRole === 'campus' || cleanRole === 'campus_tech') {
+      setSelectedPresetId('campus_tech');
+      setRoleTitle('Top Tech MNC Campus Placement (HR + Tech)');
+    } else if (cleanRole === 'data_analyst' || cleanRole === 'analytics') {
+      setSelectedPresetId('data_analyst');
+      setRoleTitle('Data Analyst & BI Associate');
+    } else if (cleanRole === 'mba' || cleanRole === 'mba_consulting') {
+      setSelectedPresetId('mba_consulting');
+      setRoleTitle('MBA / Consulting Case Study Defense');
+    } else if (cleanRole === 'ielts' || cleanRole === 'ielts_speaking') {
+      setSelectedPresetId('ielts_speaking');
+      setRoleTitle('IELTS Speaking Examination (Band 7-9 Mock)');
+    }
+  }, [roleQuery]);
 
   // Voice Interface State
   const [isListening, setIsListening] = useState<boolean>(false);
@@ -636,6 +665,40 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'setup' && (
         <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
           
+          {/* Quick Role Selection Menu Bar (BPO, SDE, Campus, Analyst, etc.) */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none pt-0.5 border-b border-slate-100">
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider shrink-0 mr-1 flex items-center gap-1">
+              <Briefcase size={13} className="text-amber-500" />
+              Role Menu:
+            </span>
+            {HIGH_STAKES_ROLE_PRESETS.map((p) => {
+              const isSelected = selectedPresetId === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedPresetId(p.id);
+                    setRoleTitle(p.title);
+                  }}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 ${
+                    isSelected
+                      ? 'bg-[#0F1426] text-white shadow-xs border border-[#0F1426]'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 border border-slate-200/80 hover:text-slate-900'
+                  }`}
+                >
+                  {p.id === 'sde1' && <Code2 size={13} className={isSelected ? 'text-amber-400' : 'text-blue-600'} />}
+                  {p.id === 'bpo_customer' && <Headphones size={13} className={isSelected ? 'text-amber-400' : 'text-rose-600'} />}
+                  {p.id === 'campus_tech' && <GraduationCap size={13} className={isSelected ? 'text-amber-400' : 'text-indigo-600'} />}
+                  {p.id === 'data_analyst' && <BarChart3 size={13} className={isSelected ? 'text-amber-400' : 'text-emerald-600'} />}
+                  {p.id === 'mba_consulting' && <LineChart size={13} className={isSelected ? 'text-amber-400' : 'text-amber-600'} />}
+                  {p.id === 'ielts_speaking' && <Globe size={13} className={isSelected ? 'text-amber-400' : 'text-purple-600'} />}
+                  <span>{p.id === 'sde1' ? 'SDE / Tech' : p.id === 'bpo_customer' ? 'BPO / Customer Voice' : p.id === 'campus_tech' ? 'Campus Placement' : p.id === 'data_analyst' ? 'Data Analyst' : p.id === 'mba_consulting' ? 'MBA Case' : 'IELTS Speaking'}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* 1-Click High Stakes Placement & Exam Presets */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
