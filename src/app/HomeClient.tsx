@@ -138,21 +138,21 @@ export default function HomeClient() {
           <div className="w-full text-center md:text-left flex flex-col items-center md:items-start min-w-0 max-w-full">
           <FadeUp delay={50}>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-4 shimmer-badge shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> Campus Placements, Viva Defense & Academy Lab
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> AI-Powered Speech &amp; Public Practice Platform
             </div>
           </FadeUp>
 
           <FadeUp delay={150}>
-            <h1 className="text-[clamp(2.2rem,4vw,3.5rem)] lg:text-6xl leading-[1.15] font-black tracking-tight text-slate-900 mb-4 pb-1 break-words break-normal max-w-full">
-              Crack campus placements, <br className="hidden sm:block" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600">vivas & job interviews</span><br className="hidden sm:block" />
-              without freezing.
+            <h1 className="text-[clamp(2.2rem,4vw,3.5rem)] lg:text-6xl leading-[1.12] font-black tracking-tight text-slate-900 mb-4 pb-1 break-words break-normal max-w-full">
+              Practice speaking live. <br className="hidden sm:block" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500">Master every word you say</span><br className="hidden sm:block" />
+              with real-time AI coaching.
             </h1>
           </FadeUp>
 
           <FadeUp delay={200}>
             <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-6 leading-relaxed font-normal">
-              The AI speaking &amp; interview simulator for students and coaching institutes. Eliminate filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;), defend your slides in front of unscripted AI examiners, and track 3-minute placement drills.
+              The interactive spoken practice sandbox for speeches, slide decks, and high-stakes Q&amp;A. Eliminate filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;), master your vocal pacing (WPM), and rehearse out loud until you speak with effortless authority.
             </p>
           </FadeUp>
 
@@ -161,7 +161,7 @@ export default function HomeClient() {
             <div className="hidden sm:flex items-center justify-center md:justify-start gap-2 mb-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-xs font-bold tracking-wide uppercase shadow-2xs">
                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Free 3-Min Placement Drills • IELTS/CEFR Rubric • Regional Filler Audit</span>
+                <span>Real-Time Vocal Sandbox • Instant WPM &amp; Pause Tracking • Live Filler Detection</span>
               </div>
             </div>
 
@@ -169,16 +169,16 @@ export default function HomeClient() {
               {user ? (
                 <Link 
                   href="/speech-coach"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 hover:from-indigo-500 hover:to-purple-500 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 hover:from-indigo-500 hover:to-purple-500 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Launch Speech Coach <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  Launch Practice Studio <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </Link>
               ) : (
                 <Link 
                   href="/signup"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 hover:from-indigo-500 hover:to-purple-500 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 hover:from-indigo-500 hover:to-purple-500 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Start Free Speech Analysis <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  Start Free Speaking Practice <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </Link>
               )}
               
@@ -193,13 +193,13 @@ export default function HomeClient() {
               No credit card required • Free plan includes 5 speech analyses per month
             </p>
 
-            {/* Mobile-Only Sleek Value Banner (Clean alternative to heavy animations on mobile) */}
+            {/* Mobile-Only Sleek Value Banner */}
             <div className="flex lg:hidden flex-wrap items-center justify-center md:justify-start gap-2 mt-5 px-3.5 py-2.5 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-2xs text-[11px] font-bold text-slate-700">
-              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Sub-Second AI Latency</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Live Vocal Pacing</span>
               <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% On-Device Privacy</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% Private Practice</span>
               <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> STAR Method Scoring</span>
+              <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Instant Filler Audit</span>
             </div>
           </FadeUp>
 
