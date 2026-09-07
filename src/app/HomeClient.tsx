@@ -467,59 +467,67 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* How It Works Section — Aligned with Oratii Brand Theme */}
+      {/* How It Works Section — Aligned with Exact Website Features */}
       <section id="how-it-works" className="py-20 sm:py-28 bg-[#F8FAFC] border-t border-slate-200/80 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center relative z-10">
           <FadeUp>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-800 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest mb-4 shadow-sm">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Simple 3-Step Process
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Simple 4-Step Practice Workflow
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 mb-4 tracking-tight">How Oratii Works</h2>
-            <p className="text-slate-500 text-base sm:text-lg max-w-xl mx-auto mb-12 font-medium">From initial audio & slide upload to live AI feedback and Viva Q&A simulation.</p>
+            <p className="text-slate-500 text-base sm:text-lg max-w-2xl mx-auto mb-12 font-medium">From live speech recording and resume upload to AI voice Q&amp;A and instant scorecards.</p>
           </FadeUp>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 text-left relative">
             {[
               { 
                 step: '01', 
-                title: 'Input Audio & Slides', 
-                desc: 'Upload your presentation slides and record your live speech to initialize the AI analysis engine.',
+                title: 'Select Your Practice Mode', 
+                desc: 'Pick 3-minute speech drills, upload your Resume PDF for voice mock interviews, or drop PPTX slides for viva presentation studio.',
                 gradient: 'from-indigo-600 to-blue-600',
                 icon: <Mic size={24} className="text-indigo-600" />,
                 iconBg: 'bg-indigo-50 border-indigo-100'
               },
               { 
                 step: '02', 
-                title: 'Speech Coach Analysis', 
-                desc: 'Our AI instantly processes your speech to detect pacing issues, track WPM, and eliminate filler words.',
+                title: 'Rehearse Live Out Loud', 
+                desc: 'Speak into your mic with real-time vocal pacing (WPM) meters, pause detection, filler word alerts, and live webcam HUD.',
                 gradient: 'from-indigo-700 to-purple-600',
                 icon: <Zap size={24} className="text-purple-600" />,
                 iconBg: 'bg-purple-50 border-purple-100'
               },
               { 
                 step: '03', 
-                title: 'Viva Defense Simulator', 
-                desc: 'The engine reads your slides and fires challenging, context-aware questions to test your knowledge under pressure.',
-                gradient: 'from-indigo-600 via-purple-600 to-[#F2A93B]',
-                icon: <MessageSquare size={24} className="text-[#D98200]" />,
+                title: 'Face Unscripted AI Q&A', 
+                desc: 'Answer realistic technical questions, STAR method interview probes, and slide-based academic viva questions under pressure.',
+                gradient: 'from-amber-500 to-orange-500',
+                icon: <MessageSquare size={24} className="text-amber-600" />,
                 iconBg: 'bg-amber-50 border-amber-100'
+              },
+              { 
+                step: '04', 
+                title: 'Instant AI Scorecards & Streaks', 
+                desc: 'Receive instant WPM pacing charts, filler word breakdowns, STAR scores, streak XP badges, and shareable PDF certificates.',
+                gradient: 'from-emerald-500 to-teal-600',
+                icon: <Trophy size={24} className="text-emerald-600" />,
+                iconBg: 'bg-emerald-50 border-emerald-100'
               }
             ].map((s, i) => (
               <FadeUp key={s.step} delay={i * 100} className="relative z-10 h-full">
-                <div className="h-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6 sm:p-8 relative overflow-hidden group">
+                <div className="h-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6 relative overflow-hidden group">
                   {/* Top Gradient Stripe */}
                   <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${s.gradient}`}></div>
 
-                  <div className="flex items-center justify-between mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-xs ${s.iconBg}`}>
+                  <div className="flex items-center justify-between mb-5">
+                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-xs ${s.iconBg}`}>
                       {s.icon}
                     </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-black text-slate-800 bg-slate-100 border border-slate-200">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-black text-slate-800 bg-slate-100 border border-slate-200">
                       Step {s.step}
                     </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-950 mb-3 tracking-tight">{s.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed font-medium">{s.desc}</p>
+                  <h3 className="text-lg font-extrabold text-slate-950 mb-2.5 tracking-tight">{s.title}</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-medium">{s.desc}</p>
                 </div>
               </FadeUp>
             ))}
