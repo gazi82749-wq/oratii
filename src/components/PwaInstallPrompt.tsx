@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Download, Share, PlusSquare, X, ShieldCheck, Sparkles, CheckCircle2, Smartphone, MoreVertical } from 'lucide-react';
+import { Download, Share, PlusSquare, X, ShieldCheck, CheckCircle2, Smartphone } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -11,15 +11,15 @@ interface BeforeInstallPromptEvent extends Event {
 export default function PwaInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIos, setIsIos] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isStandalone, setIsStandalone] = useState<boolean>(false);
   const [showPrompt, setShowPrompt] = useState<boolean>(false);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
+  const [installing, setInstalling] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Check standalone mode (if app is already installed & running as PWA)
+    // Check if app is already running in installed standalone app mode
     const isStandaloneMode =
       window.matchMedia('(display-mode: standalone)').matches ||
       (window.navigator as any).standalone === true ||
@@ -28,21 +28,17 @@ export default function PwaInstallPrompt() {
     setIsStandalone(isStandaloneMode);
     if (isStandaloneMode) return;
 
-    // Detect mobile device
+    // Detect iOS
     const ua = window.navigator.userAgent;
     const isIosDevice = /iphone|ipad|ipod/i.test(ua);
-    const isMobileDevice = isIosDevice || /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua) || window.innerWidth < 768;
-    
     setIsIos(isIosDevice);
-    setIsMobile(isMobileDevice);
 
-    // Clear legacy localStorage lock if present so mobile users aren't locked out from previous tests
+    // Clear legacy localStorage lock so prompt is never permanently blocked
     localStorage.removeItem('oratii_pwa_prompt_dismissed');
 
-    // Use sessionStorage so dismissal only lasts for current browser tab session
     const isSessionDismissed = sessionStorage.getItem('oratii_pwa_prompt_dismissed_session') === 'true';
 
-    // 1. Capture Chromium install event if available
+    // 1. Capture Chromium beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
@@ -51,45 +47,65 @@ export default function PwaInstallPrompt() {
       }
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    // 2. Listen for appinstalled event (fired when user completes installation to home screen)
+    const handleAppInstalled = () => {
+      setIsStandalone(true);
+      setShowPrompt(false);
+      setShowGuideModal(false);
+      setDeferredPrompt(null);
+    };
 
-    // 2. Custom event listener so any button click (e.g. from navbar/menu) opens the prompt/guide immediately
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    // 3. Custom event listener triggered from navbar / mobile drawer
     const handleOpenCustomInstall = () => {
       setShowPrompt(true);
-      setShowGuideModal(true);
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+      } else if (isIosDevice) {
+        setShowGuideModal(true);
+      } else {
+        setShowGuideModal(true);
+      }
     };
     window.addEventListener('open-pwa-install', handleOpenCustomInstall);
 
-    // 3. Automatically show prompt on mobile/desktop after 800ms if not standalone & not session dismissed
+    // 4. Auto-show floating install prompt after 600ms if not in standalone & not session dismissed
     let timer: NodeJS.Timeout;
     if (!isSessionDismissed) {
       timer = setTimeout(() => {
         setShowPrompt(true);
-      }, 800);
+      }, 600);
     }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('open-pwa-install', handleOpenCustomInstall);
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [deferredPrompt]);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
+      setInstalling(true);
       try {
         await deferredPrompt.prompt();
         const choiceResult = await deferredPrompt.userChoice;
         if (choiceResult.outcome === 'accepted') {
           setShowPrompt(false);
           setShowGuideModal(false);
-        } else {
-          setShowGuideModal(true);
+          setIsStandalone(true);
         }
         setDeferredPrompt(null);
       } catch (err) {
-        setShowGuideModal(true);
+        console.error('PWA prompt error:', err);
+      } finally {
+        setInstalling(false);
       }
+    } else if (isIos) {
+      setShowGuideModal(true);
     } else {
       setShowGuideModal(true);
     }
@@ -106,7 +122,7 @@ export default function PwaInstallPrompt() {
 
   return (
     <>
-      {/* ─── FLOATING PWA INSTALL BANNER (POSITIONED SAFELY ABOVE MOBILE BOTTOM NAV) ─── */}
+      {/* ─── DIRECT 1-TAP MOBILE INSTALL BANNER ─── */}
       {showPrompt && !showGuideModal && (
         <div className="fixed bottom-20 left-3 right-3 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-sm z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300 print:hidden">
           <div className="bg-[#151930] text-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-2xl border border-indigo-500/40 backdrop-blur-xl relative overflow-hidden">
@@ -115,8 +131,8 @@ export default function PwaInstallPrompt() {
 
             <button
               onClick={handleDismiss}
-              className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-              title="Dismiss"
+              className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+              title="Close"
             >
               <X size={16} />
             </button>
@@ -127,35 +143,36 @@ export default function PwaInstallPrompt() {
               </div>
               <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <h4 className="font-extrabold text-sm text-white">Add Oratii to Phone</h4>
+                  <h4 className="font-extrabold text-sm text-white">Add Oratii to Home Screen</h4>
                   <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
-                    0 MB • Web App
+                    Mobile App
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 font-medium leading-tight">
-                  Instant 1-tap app access. No Play Store or APK download needed.
+                  1-Tap install to phone home screen. Zero storage (0 MB).
                 </p>
               </div>
             </div>
 
-            {/* Bottom Row Actions */}
+            {/* Bottom Action Bar */}
             <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
               <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
                 <ShieldCheck size={12} className="text-emerald-400 shrink-0" />
-                Verified PWA Standard
+                Verified App
               </span>
               <button
                 onClick={handleInstallClick}
-                className="px-4 py-2 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-[#151930] font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 active:scale-95 cursor-pointer"
+                disabled={installing}
+                className="px-4 py-2 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-[#151930] font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 active:scale-95 cursor-pointer disabled:opacity-50"
               >
-                <Download size={14} /> Install Web App
+                <Download size={14} /> {installing ? 'Installing...' : 'Install App Directly'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── STEP-BY-STEP INSTALLATION GUIDE MODAL ─── */}
+      {/* ─── INSTALLATION MODAL ─── */}
       {showGuideModal && (
         <div
           className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-4 print:hidden"
@@ -171,8 +188,8 @@ export default function PwaInstallPrompt() {
                   <Smartphone size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">Install Oratii Web App</h3>
-                  <p className="text-[11px] text-slate-500 font-medium">100% Safe • Zero phone storage (0 MB)</p>
+                  <h3 className="text-base font-extrabold text-slate-900">Add to Phone Home Screen</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">100% Free • Safe Web App (0 MB)</p>
                 </div>
               </div>
               <button
@@ -183,13 +200,27 @@ export default function PwaInstallPrompt() {
               </button>
             </div>
 
-            {isIos ? (
+            {deferredPrompt ? (
+              /* Direct 1-Tap Native Install for Android/Chrome */
+              <div className="space-y-4 text-center py-2">
+                <p className="text-xs text-slate-600 font-medium">
+                  Tap below to instantly add the Oratii app icon to your phone&apos;s home screen.
+                </p>
+                <button
+                  onClick={handleInstallClick}
+                  disabled={installing}
+                  className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-[#151930] font-black rounded-2xl text-sm shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                >
+                  <Download size={18} /> {installing ? 'Installing...' : '1-Tap Install Now'}
+                </button>
+              </div>
+            ) : isIos ? (
               /* iPhone / iPad Safari Step-by-Step */
               <div className="space-y-3 text-xs">
                 <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
                   <p className="font-semibold text-slate-800">
-                    Tap the <strong className="text-indigo-600">Share</strong> button <Share size={15} className="inline mx-1 text-indigo-600" /> in Safari’s bottom toolbar.
+                    Tap the <strong className="text-indigo-600">Share</strong> button <Share size={15} className="inline mx-1 text-indigo-600" /> in Safari&apos;s bottom toolbar.
                   </p>
                 </div>
 
@@ -208,34 +239,18 @@ export default function PwaInstallPrompt() {
                 </div>
               </div>
             ) : (
-              /* Android Chrome / Edge / Mobile Step-by-Step */
+              /* Android Chrome Direct Action */
               <div className="space-y-3 text-xs">
-                {deferredPrompt && (
-                  <button
-                    onClick={handleInstallClick}
-                    className="w-full py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-[#151930] font-black rounded-2xl text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mb-2"
-                  >
-                    <Download size={16} /> Tap Here for 1-Click Auto Install
-                  </button>
-                )}
-
                 <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
+                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</div>
                   <p className="font-semibold text-slate-800">
-                    Tap the <strong>3 dots menu (⋮)</strong> <MoreVertical size={14} className="inline text-slate-600 mx-0.5" /> in Chrome&apos;s top right corner.
-                  </p>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">2</div>
-                  <p className="font-semibold text-slate-800">
-                    Select <strong className="text-indigo-600">&quot;Install app&quot;</strong> or <strong>&quot;Add to Home screen&quot;</strong>.
+                    Chrome will prompt <strong className="text-indigo-600">&quot;Add Oratii to Home screen&quot;</strong> automatically.
                   </p>
                 </div>
 
                 <div className="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-2xl flex items-center gap-2.5 text-emerald-900 font-medium">
                   <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                  <span>Oratii will launch instantly like a native mobile app from your home screen!</span>
+                  <span>The app icon will appear directly on your phone home screen!</span>
                 </div>
               </div>
             )}
@@ -246,9 +261,9 @@ export default function PwaInstallPrompt() {
               </span>
               <button
                 onClick={() => setShowGuideModal(false)}
-                className="px-4 py-2 bg-slate-900 text-white font-bold rounded-xl text-xs hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 bg-slate-900 text-white font-bold rounded-xl text-xs hover:bg-slate-800 transition-colors cursor-pointer"
               >
-                Got it
+                Close
               </button>
             </div>
           </div>
