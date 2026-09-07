@@ -111,42 +111,42 @@ export default function HomeClient() {
       value: 'Speech Pacing & WPM', 
       label: 'Tracks live Words Per Minute (WPM), pause cadence, and eliminates regional filler words ("matlab", "basically", "ums").', 
       tags: ['WPM Tracking', 'Filler Detection', 'AI Rewrites'],
-      bg: 'bg-[#E3F4F4]', 
-      tagBg: 'bg-[#CBE4E4]',
+      badgeColor: 'bg-rose-50 text-rose-700 border-rose-200/80',
+      iconColor: 'text-rose-500',
       href: '/speech-coach'
     },
     { 
       value: 'Voice Mock Interviewer', 
       label: 'Interactive tech & HR voice rounds. Upload your resume PDF and receive instant STAR method scoring & answer feedback.', 
       tags: ['Resume PDF Audit', 'STAR Method', 'Voice Q&A'],
-      bg: 'bg-[#FFE6D5]', 
-      tagBg: 'bg-[#FFD4B8]',
+      badgeColor: 'bg-amber-50 text-amber-800 border-amber-200/80',
+      iconColor: 'text-amber-600',
       href: '/interview'
     },
     { 
       value: 'Slide Deck & Viva Studio', 
       label: 'Audits visual slide density, offers live webcam HUD rehearsal, and tests you with unscripted AI viva defense questions.', 
       tags: ['Slide Readability', 'Webcam WASM HUD', 'Viva Defense'],
-      bg: 'bg-[#EAE0F5]', 
-      tagBg: 'bg-[#D6C4E8]',
+      badgeColor: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',
+      iconColor: 'text-indigo-600',
       href: '/presentation'
     },
     { 
       value: '20-Day Speech Challenge', 
       label: 'Build daily speaking habits with 3-minute prompts, streak tracking, XP rewards, and downloadable completion certificates.', 
       tags: ['Daily Prompts', 'Streak Engine', 'PDF Certificate'],
-      bg: 'bg-[#D6F0E0]', 
-      tagBg: 'bg-[#BCE6CB]',
+      badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+      iconColor: 'text-emerald-600',
       href: '/challenge'
     }
   ];
 
   const cardStyles = [
-    { num: '01', gradient: 'from-rose-500 via-pink-600 to-rose-700', glow: 'rgba(244,63,94,0.14)', hoverGlow: 'rgba(244,63,94,0.25)', ctaClasses: 'bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white shadow-[0_12px_28px_-6px_rgba(244,63,94,0.4)]' },
-    { num: '02', gradient: 'from-amber-500 via-orange-600 to-amber-700', glow: 'rgba(245,158,11,0.14)', hoverGlow: 'rgba(245,158,11,0.25)', ctaClasses: 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white shadow-[0_12px_28px_-6px_rgba(245,158,11,0.4)]' },
-    { num: '03', gradient: 'from-sky-500 via-blue-600 to-sky-700', glow: 'rgba(14,165,233,0.14)', hoverGlow: 'rgba(14,165,233,0.25)', ctaClasses: 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-[0_12px_28px_-6px_rgba(14,165,233,0.4)]' },
-    { num: '04', gradient: 'from-indigo-600 via-purple-600 to-indigo-800', glow: 'rgba(99,102,241,0.14)', hoverGlow: 'rgba(99,102,241,0.25)', ctaClasses: 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-[0_12px_28px_-6px_rgba(99,102,241,0.4)]' },
-    { num: '05', gradient: 'from-emerald-500 via-teal-600 to-emerald-700', glow: 'rgba(16,185,129,0.18)', hoverGlow: 'rgba(16,185,129,0.3)', ctaClasses: 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_12px_28px_-6px_rgba(16,185,129,0.5)]' },
+    { num: '01', gradient: 'from-rose-500 via-pink-600 to-rose-700', glow: 'rgba(244,63,94,0.08)', hoverGlow: 'rgba(244,63,94,0.16)', accentColor: 'text-rose-500', badgeBg: 'bg-rose-50 text-rose-800 border-rose-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
+    { num: '02', gradient: 'from-amber-500 via-orange-600 to-amber-700', glow: 'rgba(245,158,11,0.08)', hoverGlow: 'rgba(245,158,11,0.16)', accentColor: 'text-amber-500', badgeBg: 'bg-amber-50 text-amber-800 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
+    { num: '03', gradient: 'from-indigo-500 via-purple-600 to-indigo-700', glow: 'rgba(99,102,241,0.08)', hoverGlow: 'rgba(99,102,241,0.16)', accentColor: 'text-indigo-500', badgeBg: 'bg-indigo-50 text-indigo-800 border-indigo-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
+    { num: '04', gradient: 'from-emerald-500 via-teal-600 to-emerald-700', glow: 'rgba(16,185,129,0.08)', hoverGlow: 'rgba(16,185,129,0.16)', accentColor: 'text-emerald-500', badgeBg: 'bg-emerald-50 text-emerald-800 border-emerald-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
+    { num: '05', gradient: 'from-purple-500 via-indigo-600 to-purple-700', glow: 'rgba(168,85,247,0.08)', hoverGlow: 'rgba(168,85,247,0.16)', accentColor: 'text-purple-500', badgeBg: 'bg-purple-50 text-purple-800 border-purple-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
   ];
 
   return (
@@ -191,22 +191,22 @@ export default function HomeClient() {
               {user ? (
                 <Link 
                   href="/speech-coach"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Launch Practice Studio <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  Launch Practice Studio <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
                 </Link>
               ) : (
                 <Link 
                   href="/signup"
-                  className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500 text-white text-base font-bold rounded-full shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_15px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Start Free Speaking Practice <ArrowRight size={18} className="text-white/90 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  Start Free Speaking Practice <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
                 </Link>
               )}
               
               <a 
                 href="#how-it-works"
-                className="w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-md text-slate-700 text-base font-bold border border-slate-200/80 rounded-full hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
+                className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-md text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-white hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 transition-all shadow-2xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
               >
                 See How It Works
               </a>
@@ -245,21 +245,23 @@ export default function HomeClient() {
                 <FadeUp key={i} delay={i * 100} className="h-full">
                   <Link 
                     href={m.href}
-                    className="group h-full bg-white/40 backdrop-blur-3xl rounded-[32px] border border-white/60 shadow-[0_20px_40px_-10px_rgba(99,102,241,0.05)] hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col p-2 ring-1 ring-inset ring-white/50 cursor-pointer block"
+                    className="group h-full bg-white rounded-3xl border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(15,20,38,0.05)] hover:shadow-[0_12px_36px_-6px_rgba(15,20,38,0.1)] hover:border-indigo-300/80 hover:-translate-y-1 transition-all duration-300 flex flex-col p-6 sm:p-7 cursor-pointer block"
                   >
-                    {/* Colored Inner Block */}
-                    <div className={`rounded-[24px] p-6 sm:p-8 flex-1 flex flex-col shadow-inner ${m.bg}`}>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-indigo-950 transition-colors">{m.value}</h3>
-                      <p className="text-slate-800 text-sm leading-relaxed mb-8 font-medium">{m.label}</p>
-                      
-                      {/* Tags Area */}
-                      <div className="flex flex-wrap gap-2 mt-auto">
-                        {m.tags.map((tag, idx) => (
-                          <span key={idx} className={`px-3 py-1.5 text-[11px] font-bold text-slate-900 rounded-full ${m.tagBg}`}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full border ${m.badgeColor}`}>
+                        AI Module
+                      </span>
+                      <ArrowRight size={16} className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+                    </div>
+                    <h3 className="text-xl font-extrabold text-slate-950 mb-2.5 tracking-tight group-hover:text-indigo-900 transition-colors">{m.value}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6 font-normal">{m.label}</p>
+                    
+                    <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100">
+                      {m.tags.map((tag, idx) => (
+                        <span key={idx} className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 bg-slate-50 rounded-lg border border-slate-200/60">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
                   </Link>
                 </FadeUp>
@@ -452,9 +454,9 @@ export default function HomeClient() {
                     ))}
                   </div>
 
-                  <Link href={f.href} className={`inline-flex items-center justify-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 text-white font-bold text-sm sm:text-base rounded-full hover:-translate-y-1 transition-all duration-300 group ${cs.ctaClasses}`}>
+                  <Link href={f.href} className={`inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group ${cs.ctaClasses}`}>
                     {f.cta}
-                    <ArrowRight size={18} className="text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                    <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
 

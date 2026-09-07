@@ -218,6 +218,92 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(0.97);
 }
 
+/* ─── Harmonized 2026 Button System ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 1rem;
+  background: #0F1426;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 24px -6px rgba(15, 20, 38, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary:hover {
+  background: #1A2035;
+  box-shadow: 0 4px 20px rgba(15, 20, 38, 0.25), 0 12px 32px -8px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0F1426;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-secondary:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 0.9375rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #0F1426;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-accent:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
+  transform: translateY(-1px);
+}
+.btn-accent:active {
+  transform: scale(0.98);
+}
+
+/* Unified App Card */
+.app-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 20, 38, 0.02), 0 10px 30px -10px rgba(15, 20, 38, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.app-card:hover {
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 4px 12px rgba(15, 20, 38, 0.03), 0 16px 40px -12px rgba(15, 20, 38, 0.09);
+  transform: translateY(-2px);
+}
+
 /* Accent stripe (left border) for cards */
 .accent-stripe {
   position: relative;
