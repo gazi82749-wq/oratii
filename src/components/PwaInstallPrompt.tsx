@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Download, Share, PlusSquare, X, ShieldCheck, Zap, Sparkles } from 'lucide-react';
+import { Download, Share, PlusSquare, X, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -16,42 +16,54 @@ export default function PwaInstallPrompt() {
   const [showIosGuide, setShowIosGuide] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if already installed as PWA (standalone mode)
-    if (typeof window !== 'undefined') {
-      const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
-        (window.navigator as any).standalone === true;
-      setIsStandalone(isStandaloneMode);
+    if (typeof window === 'undefined') return;
 
-      // Check if iOS
-      const ua = window.navigator.userAgent;
-      const isIosDevice = /iphone|ipad|ipod/i.test(ua);
-      setIsIos(isIosDevice);
+    // Check standalone mode (if app is already installed)
+    const isStandaloneMode =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true ||
+      document.referrer.includes('android-app://');
+    
+    setIsStandalone(isStandaloneMode);
 
-      // Check if previously dismissed recently
-      const dismissedTime = localStorage.getItem('oratii_pwa_prompt_dismissed');
-      const isRecentlyDismissed = dismissedTime && (Date.now() - parseInt(dismissedTime, 10)) < 7 * 86400 * 1000;
+    // Detect iOS
+    const ua = window.navigator.userAgent;
+    const isIosDevice = /iphone|ipad|ipod/i.test(ua);
+    setIsIos(isIosDevice);
 
-      // Handle beforeinstallprompt event (Android / Chrome / Edge)
-      const handleBeforeInstallPrompt = (e: Event) => {
-        e.preventDefault();
-        setDeferredPrompt(e as BeforeInstallPromptEvent);
-        if (!isRecentlyDismissed && !isStandaloneMode) {
-          // Show after 3 seconds on page load
-          setTimeout(() => setShowPrompt(true), 3000);
-        }
-      };
+    // Check if dismissed recently (7 days)
+    const dismissedTime = localStorage.getItem('oratii_pwa_prompt_dismissed');
+    const isRecentlyDismissed = dismissedTime && (Date.now() - parseInt(dismissedTime, 10)) < 7 * 86400 * 1000;
 
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    // 1. Capture Chromium install event if available
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowPrompt(true);
+    };
 
-      // Show iOS prompt if iOS and not standalone and not dismissed
-      if (isIosDevice && !isStandaloneMode && !isRecentlyDismissed) {
-        setTimeout(() => setShowPrompt(true), 4000);
-      }
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-      return () => {
-        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      };
+    // 2. Custom event listener so any button click (e.g. from navbar/menu) opens the prompt/guide immediately
+    const handleOpenCustomInstall = () => {
+      setShowPrompt(true);
+      setShowIosGuide(true);
+    };
+    window.addEventListener('open-pwa-install', handleOpenCustomInstall);
+
+    // 3. Automatically show bottom prompt on mobile/desktop after 1.5s if not standalone & not dismissed
+    let timer: NodeJS.Timeout;
+    if (!isStandaloneMode && !isRecentlyDismissed) {
+      timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 1500);
     }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('open-pwa-install', handleOpenCustomInstall);
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   const handleInstallClick = async () => {
@@ -59,14 +71,11 @@ export default function PwaInstallPrompt() {
       deferredPrompt.prompt();
       const choiceResult = await deferredPrompt.userChoice;
       if (choiceResult.outcome === 'accepted') {
-        console.log('[PWA] User accepted installation prompt');
         setShowPrompt(false);
       }
       setDeferredPrompt(null);
-    } else if (isIos) {
-      setShowIosGuide(true);
     } else {
-      // Fallback instruction popup for desktop/other browsers
+      // Open step-by-step installation guide modal
       setShowIosGuide(true);
     }
   };
@@ -82,12 +91,12 @@ export default function PwaInstallPrompt() {
 
   return (
     <>
-      {/* ─── FLOATING PWA INSTALL BANNER (BOTTOM FIXED) ─── */}
+      {/* ─── FLOATING PWA INSTALL BANNER (MOBILE & DESKTOP) ─── */}
       {showPrompt && !showIosGuide && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <div className="bg-[#151930] text-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-2xl border border-indigo-500/30 backdrop-blur-xl relative overflow-hidden">
-            {/* Glow Sphere */}
-            <div className="absolute top-0 right-0 w-36 h-36 bg-indigo-500/20 blur-2xl rounded-full pointer-events-none"></div>
+        <div className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-sm z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300 print:hidden">
+          <div className="bg-[#151930] text-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-2xl border border-indigo-500/40 backdrop-blur-xl relative overflow-hidden">
+            {/* Ambient Glow */}
+            <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/15 blur-2xl rounded-full pointer-events-none"></div>
 
             <button
               onClick={handleDismiss}
@@ -97,28 +106,28 @@ export default function PwaInstallPrompt() {
               <X size={16} />
             </button>
 
-            <div className="flex items-start gap-3.5 pr-6">
+            <div className="flex items-start gap-3 pr-5">
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 text-[#151930] font-black text-lg flex items-center justify-center shrink-0 shadow-lg border border-amber-300">
                 O
               </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <h4 className="font-extrabold text-sm text-white">Add Oratii to Home Screen</h4>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h4 className="font-extrabold text-sm text-white">Add Oratii to Mobile</h4>
                   <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
-                    0 MB • Safe
+                    0 MB • Verified
                   </span>
                 </div>
-                <p className="text-xs text-slate-300 font-medium leading-snug">
-                  Fast 1-tap access. Runs smoothly like a native app with zero phone storage space.
+                <p className="text-[11px] text-slate-300 font-medium leading-tight">
+                  Instant 1-tap app access. No Play Store or APK download needed.
                 </p>
               </div>
             </div>
 
-            {/* Trust badge */}
+            {/* Bottom Row Actions */}
             <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
               <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
                 <ShieldCheck size={12} className="text-emerald-400 shrink-0" />
-                Verified Web App • HTTPS Encrypted
+                Google &amp; Apple Web Standard
               </span>
               <button
                 onClick={handleInstallClick}
@@ -131,10 +140,10 @@ export default function PwaInstallPrompt() {
         </div>
       )}
 
-      {/* ─── IOS / MANUAL SAFARI INSTRUCTIONS MODAL ─── */}
+      {/* ─── STEP-BY-STEP INSTALLATION GUIDE MODAL ─── */}
       {showIosGuide && (
         <div
-          className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-4"
+          className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-4 print:hidden"
           onClick={() => setShowIosGuide(false)}
         >
           <div
@@ -147,8 +156,8 @@ export default function PwaInstallPrompt() {
                   <Sparkles size={18} />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900">How to Install Oratii</h3>
-                  <p className="text-[11px] text-slate-500 font-medium">100% Safe • No App Store or APK download</p>
+                  <h3 className="text-base font-extrabold text-slate-900">Install Oratii Web App</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">100% Safe • Zero phone storage (0 MB)</p>
                 </div>
               </div>
               <button
@@ -160,12 +169,12 @@ export default function PwaInstallPrompt() {
             </div>
 
             {isIos ? (
-              /* iOS Safari Instructions */
+              /* iPhone / iPad Safari Step-by-Step */
               <div className="space-y-3 text-xs">
                 <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
                   <p className="font-semibold text-slate-800">
-                    Tap the <strong className="text-indigo-600">Share</strong> icon <Share size={14} className="inline mx-1 text-indigo-600" /> in Safari’s bottom toolbar.
+                    Tap the <strong className="text-indigo-600">Share</strong> button <Share size={14} className="inline mx-1 text-indigo-600" /> in Safari’s bottom toolbar.
                   </p>
                 </div>
 
@@ -184,7 +193,7 @@ export default function PwaInstallPrompt() {
                 </div>
               </div>
             ) : (
-              /* Chrome / Android / Desktop fallback */
+              /* Android Chrome / Edge / Mobile Step-by-Step */
               <div className="space-y-3 text-xs">
                 <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
@@ -198,6 +207,11 @@ export default function PwaInstallPrompt() {
                   <p className="font-semibold text-slate-800">
                     Select <strong className="text-indigo-600">&quot;Install app&quot;</strong> or <strong>&quot;Add to Home screen&quot;</strong>.
                   </p>
+                </div>
+
+                <div className="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-2xl flex items-center gap-2.5 text-emerald-900 font-medium">
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <span>Oratii will appear on your phone home screen like a native mobile app!</span>
                 </div>
               </div>
             )}

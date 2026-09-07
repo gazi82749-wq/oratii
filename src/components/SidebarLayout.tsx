@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown, Download } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
@@ -249,6 +249,23 @@ export default function SidebarLayout({ children }) {
             </div>
 
             <Link href="/" className="text-left text-base font-bold text-slate-900 px-4 py-3 min-h-[48px] flex items-center rounded-xl bg-indigo-50/80 hover:bg-indigo-100/80 active:scale-[0.99] transition-all">Home</Link>
+            
+            {/* Dedicated Mobile PWA Install Trigger */}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.dispatchEvent(new CustomEvent('open-pwa-install'));
+              }}
+              className="w-full px-4 py-3.5 rounded-2xl bg-[#151930] hover:bg-[#0B0E27] text-[#F2A93B] font-extrabold text-xs shadow-md flex items-center justify-between gap-2 transition-all cursor-pointer border border-indigo-500/30 active:scale-[0.98]"
+            >
+              <span className="flex items-center gap-2.5">
+                <Download size={16} className="text-[#F2A93B]" />
+                <span>Install Mobile Web App</span>
+              </span>
+              <span className="text-[10px] font-black uppercase bg-[#F2A93B] text-[#151930] px-2.5 py-0.5 rounded-full">
+                0 MB App
+              </span>
+            </button>
             
             {/* Auth-aware: show Dashboard & Profile in mobile if logged in */}
             {!authLoading && user && (
