@@ -12,6 +12,30 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#1B2140',
     scope: '/',
     id: '/',
+    categories: ['education', 'productivity', 'utilities'],
+    shortcuts: [
+      {
+        name: '3-Min Speech Coach',
+        short_name: 'Speech Coach',
+        description: 'Live Vocal Pacing & Filler Word Analyzer',
+        url: '/speech-coach',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Campus Mock Interview',
+        short_name: 'Interview',
+        description: 'Resume PDF & Voice AI Placement Round',
+        url: '/interview',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Slide Deck & Viva Studio',
+        short_name: 'Viva Studio',
+        description: 'Webcam Rehearsal & Academic Viva Defense',
+        url: '/presentation',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+    ],
     icons: [
       {
         src: '/icon-192.png',

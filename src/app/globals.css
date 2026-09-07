@@ -59,6 +59,15 @@ body {
   line-height: 1.6;
 }
 
+/* ─── Standalone Native Mobile App Enhancements ─── */
+@media (display-mode: standalone) {
+  body {
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: contain;
+  }
+}
+
 /* ─── Smooth Global Transitions ─── */
 /* Apply a universal smooth transition to all properties that commonly animate */
 *, *::before, *::after {
