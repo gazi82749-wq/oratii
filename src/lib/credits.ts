@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 export const CREDIT_COSTS = {
   SPEECH_ANALYSIS: 1,
   PPT_ANALYSIS: 1,
-  VIVA_SESSION: 1,
+  VIVA_SESSION: 2,
 };
 
 export const CREDIT_PACKAGES = [
@@ -20,8 +20,8 @@ export const CREDIT_PACKAGES = [
     features: [
       '5 Free Credits on signup',
       'Try Speech Coach (1 credit)',
-      'Try Slide & Viva Studio (1 credit)',
-      'Try AI Voice Mock Interview (1 credit)',
+      'Try Slide Deck Audit (1 credit)',
+      'Try AI Viva Defense (2 credits)',
       'Standard AI Analysis Queue',
     ],
   },

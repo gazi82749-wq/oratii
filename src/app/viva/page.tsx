@@ -8,7 +8,7 @@ import XPToast from '../../components/XPToast';
 import TrialSignupPrompt from '../../components/TrialSignupPrompt';
 import GuestAuthModal from '../../components/GuestAuthModal';
 import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
-import { checkAndDeductCredits } from '../../lib/credits';
+import { checkAndDeductCredits, CREDIT_COSTS } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
 import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import {
@@ -167,11 +167,11 @@ export default function VivaCoachPage() {
   };
 
   const startVivaSession = async () => {
-    // 1. Check Auth & Credits (1 credit per Viva session)
+    // 1. Check Auth & Credits (2 credits per Viva session)
     const { data: { session } } = await supabase.auth.getSession();
     const userId = session?.user?.id || 'guest-viva-user';
 
-    const creditCheck = await checkAndDeductCredits(userId, 1);
+    const creditCheck = await checkAndDeductCredits(userId, CREDIT_COSTS.VIVA_SESSION);
     if (!creditCheck.allowed) {
       setCreditBalance(creditCheck.remainingCredits);
       setIsCreditModalOpen(true);
@@ -977,7 +977,7 @@ export default function VivaCoachPage() {
         <XPToast events={xpEvents} onComplete={() => setXpEvents([])} />
         <TrialSignupPrompt isOpen={showTrialPrompt} onClose={() => setShowTrialPrompt(false)} />
         <GuestAuthModal isOpen={isGuestAuthModalOpen} onClose={() => setIsGuestAuthModalOpen(false)} featureName="AI Viva Defense" />
-        <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={1} currentBalance={creditBalance} featureName="AI Viva Defense" />
+        <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={CREDIT_COSTS.VIVA_SESSION} currentBalance={creditBalance} featureName="AI Viva Defense" />
       </div>
     </div>
   );

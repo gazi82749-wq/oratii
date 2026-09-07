@@ -9,6 +9,8 @@ import {
 import { supabase } from '@/lib/supabaseClient';
 import { saveSession } from '@/lib/storage';
 import { processSessionCompletion } from '@/lib/gamification';
+import { checkAndDeductCredits, CREDIT_COSTS } from '@/lib/credits';
+import InsufficientCreditsModal from './InsufficientCreditsModal';
 
 interface VivaDefenseModalProps {
   isOpen: boolean;
@@ -40,6 +42,8 @@ export default function VivaDefenseModal({
   const [scores, setScores] = useState<Record<string, number>>({ confidence: 0, accuracy: 0, communication: 0, overall: 0 });
   const [questionsAnswered, setQuestionsAnswered] = useState<number>(0);
   const [allScores, setAllScores] = useState<any[]>([]);
+  const [isCreditModalOpen, setIsCreditModalOpen] = useState<boolean>(false);
+  const [creditBalance, setCreditBalance] = useState<number>(0);
 
   // Progressive Viva Stage Tracking
   const [stageLabel, setStageLabel] = useState<string>('Level 1: Basic Warmup');
@@ -98,14 +102,22 @@ export default function VivaDefenseModal({
   };
 
   const startVivaSession = async () => {
-    setPhase('viva');
-    setIsLoading(true);
-    setChatHistory([]);
-    setQuestionsAnswered(0);
-    setAllScores([]);
-
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id || 'guest-viva-user';
+      const creditCheck = await checkAndDeductCredits(userId, CREDIT_COSTS.VIVA_SESSION);
+      if (!creditCheck.allowed) {
+        setCreditBalance(creditCheck.remainingCredits);
+        setIsCreditModalOpen(true);
+        return;
+      }
+
+      setPhase('viva');
+      setIsLoading(true);
+      setChatHistory([]);
+      setQuestionsAnswered(0);
+      setAllScores([]);
+
       const authHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
       if (session?.access_token) {
         authHeaders['Authorization'] = `Bearer ${session.access_token}`;
@@ -859,6 +871,7 @@ export default function VivaDefenseModal({
           )}
 
       </div>
+      <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={CREDIT_COSTS.VIVA_SESSION} currentBalance={creditBalance} featureName="AI Viva Defense" />
     </div>
   );
 }
