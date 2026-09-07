@@ -536,48 +536,73 @@ export default function HomeClient() {
 
               <div className="w-full md:w-1/2 relative z-10">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-6 border border-white/10">
-                  <Flame size={14} className="text-amber-400" /> Consistency Engine
+                  <Flame size={14} className="text-amber-400" /> Consistency &amp; Progress Engine
                 </div>
                 <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-4 sm:mb-6 tracking-tight leading-tight">
-                  Build unbreakable communication habits.
+                  Track your speech, interview &amp; viva progress.
                 </h3>
                 <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 font-medium">
-                  Public speaking is a muscle. Our professional Gamification Engine tracks your daily practice, awarding XP and protecting your streak with redeemable freezes.
+                  Public speaking is a muscle. Oratii tracks every session, measuring your vocal pacing, filler word elimination, and Q&amp;A readiness over time.
                 </p>
                 <ul className="flex flex-col gap-3.5 text-slate-200 font-semibold text-sm sm:text-base">
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Track consistent speaking streaks</li>
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Earn XP & Unlock Professional Badges</li>
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Purchase Streak Freezes to protect progress</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Track live WPM vocal pacing &amp; pause durations</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Audit filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;)</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Rehearse mock interviews, viva Q&amp;A &amp; 3-min drills</li>
                 </ul>
               </div>
 
               <div className="w-full md:w-1/2 relative z-10 flex justify-center">
-                <div className="bg-white p-5 sm:p-6 rounded-2xl w-full max-w-sm border border-slate-200 shadow-xl">
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-slate-500 font-bold text-sm">{user ? "Your Progress" : "Track Progress"}</span>
-                    {user ? <StreakBadge /> : <div className="flex items-center gap-1.5 text-amber-600 font-black bg-amber-50 px-3 py-1 rounded-full border border-amber-200"><Flame size={16} fill="currentColor" /> 0</div>}
+                <div className="bg-white p-5 sm:p-6 rounded-2xl w-full max-w-md border border-slate-200 shadow-xl">
+                  <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                    <span className="text-slate-900 font-black text-sm sm:text-base flex items-center gap-2">
+                      <BarChart3 size={18} className="text-indigo-600" /> Real-Time Analytics &amp; Progress
+                    </span>
+                    {user ? <StreakBadge /> : <div className="flex items-center gap-1.5 text-amber-600 font-black bg-amber-50 px-3 py-1 rounded-full border border-amber-200"><Flame size={15} fill="currentColor" /> 1-Day Streak</div>}
                   </div>
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 mb-5 shadow-xs">
-                    <div className="flex justify-between items-end mb-2">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-extrabold text-slate-900">Experience</span>
-                        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 self-start">
-                          {user ? "Top 20% this week" : "Level up by practicing"}
-                        </span>
+
+                  {/* Live Feature Progress Metrics */}
+                  <div className="space-y-3 mb-5">
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-orange-100 text-orange-600"><Mic size={16} /></div>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-slate-800">Speech Pacing (WPM)</span>
+                          <span className="text-[10px] text-slate-500 font-medium">Target: 130–150 WPM</span>
+                        </div>
                       </div>
-                      <span className="text-sm font-black text-slate-900">{user ? "850 XP" : "0 XP"}</span>
+                      <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">142 WPM (Optimal)</span>
                     </div>
-                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mt-1">
-                      <div className={`h-full bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full ${user ? 'w-[85%]' : 'w-[8%]'}`}></div>
+
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-amber-100 text-amber-700"><Briefcase size={16} /></div>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-slate-800">AI Mock Interview</span>
+                          <span className="text-[10px] text-slate-500 font-medium">STAR Method Audit</span>
+                        </div>
+                      </div>
+                      <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-200">92/100 Score</span>
+                    </div>
+
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-100 text-purple-700"><Video size={16} /></div>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-slate-800">Slide &amp; Viva Studio</span>
+                          <span className="text-[10px] text-slate-500 font-medium">Slide Density &amp; Viva Q&amp;A</span>
+                        </div>
+                      </div>
+                      <span className="text-xs font-black text-purple-600 bg-purple-50 px-2 py-1 rounded-md border border-purple-200">0 Fillers (&ldquo;um/matlab&rdquo;)</span>
                     </div>
                   </div>
+
                   {user ? (
                     <Link href="/dashboard" className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-bold text-sm shadow-md block text-center transition-all">
-                      View Dashboard
+                      View Live Dashboard Analytics
                     </Link>
                   ) : (
                     <Link href="/signup" className="w-full py-3 bg-slate-950 text-white rounded-xl font-bold text-sm shadow-md block text-center hover:bg-indigo-900 transition-all">
-                      Join to Start Earning
+                      Track Your Progress Free
                     </Link>
                   )}
                 </div>
