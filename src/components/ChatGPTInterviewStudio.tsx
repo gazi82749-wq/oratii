@@ -995,7 +995,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   <Flame size={12} className="text-amber-600" /> Placement Practice Gym
                 </div>
                 <h4 className="text-sm sm:text-base font-black text-slate-950">
-                  Don't just read the scorecard — Re-Deliver in a 45-Second Rapid Drill
+                  Don&apos;t just read the scorecard — Re-Deliver in a 45-Second Rapid Drill
                 </h4>
                 <p className="text-xs text-slate-600 font-medium max-w-xl">
                   Repeated spoken rehearsal builds interview confidence. Click to re-record with live filler detection and zero fluff.
