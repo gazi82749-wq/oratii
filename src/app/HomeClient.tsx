@@ -155,7 +155,7 @@ export default function HomeClient() {
       <div className="flex-1">
 
       {/* Hero Section — Screen view viewport centered */}
-      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center pt-20 sm:pt-24 lg:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
+      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center pt-28 sm:pt-32 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
         {/* Modern Animated Soft Mesh Background */}
         <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-indigo-300/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '12s' }}></div>
         <div className="absolute top-[10%] right-[-10%] w-[60vw] h-[60vw] bg-amber-200/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
