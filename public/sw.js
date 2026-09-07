@@ -1,7 +1,28 @@
-// Oratii Push Notification Service Worker
-// Handles push events and notification clicks for the PWA
+// Oratii Push Notification & PWA Service Worker
+// Handles installation, offline caching fallback, and push notifications
 
-const CACHE_NAME = 'oratii-notifications-v1';
+const CACHE_NAME = 'oratii-pwa-v1';
+
+// Install event
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+// Activate event — claim clients immediately
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+// Fetch event — required for Google Chrome PWA installation compliance
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
+  );
+});
 
 // Handle incoming push notifications
 self.addEventListener('push', (event) => {
@@ -20,8 +41,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body || 'You have a new notification from Oratii.',
-    icon: '/favicon.ico',
-    badge: '/favicon.ico',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
     tag: data.tag || 'oratii-notification',
     renotify: true,
     requireInteraction: false,
@@ -31,7 +52,7 @@ self.addEventListener('push', (event) => {
       timestamp: Date.now(),
     },
     actions: data.actions || [
-      { action: 'open', title: 'Open Oratii' },
+      { action: 'open', title: 'Open Oratii App' },
       { action: 'dismiss', title: 'Dismiss' },
     ],
   };
@@ -63,9 +84,4 @@ self.addEventListener('notificationclick', (event) => {
       return clients.openWindow(targetUrl);
     })
   );
-});
-
-// Activate immediately — claim all open clients
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
 });

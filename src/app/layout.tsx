@@ -96,6 +96,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Oratii',
   },
+  manifest: '/manifest.json',
 };
 
 export const viewport = {

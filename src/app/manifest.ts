@@ -10,6 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait',
     background_color: '#F8FAFC',
     theme_color: '#1B2140',
+    scope: '/',
+    id: '/',
     icons: [
       {
         src: '/icon-192.png',
@@ -34,14 +36,6 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '180x180',
         type: 'image/png',
       },
-      {
-        src: '/favicon.ico',
-        sizes: 'any',
-        type: 'image/x-icon',
-      },
     ],
-    // Required for Chrome Web Push compatibility (standard FCM compat value)
-    gcm_sender_id: '103953800507',
-  } as MetadataRoute.Manifest & { gcm_sender_id: string };
+  };
 }
-
