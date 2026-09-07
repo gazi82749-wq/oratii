@@ -598,6 +598,7 @@ export default function HomeClient() {
                   <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Track live WPM vocal pacing &amp; pause durations</li>
                   <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Audit filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;)</li>
                   <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Rehearse mock interviews, viva Q&amp;A &amp; 3-min drills</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-amber-400" /> Grammarly-style weekly progress email reports</li>
                 </ul>
               </div>
 
