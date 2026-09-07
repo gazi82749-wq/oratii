@@ -202,7 +202,7 @@ export default function StudentJoinBatchPage() {
                   href={`/signup?redirect=/join/${code}`}
                   className="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2 text-center"
                 >
-                  Create Account & Join (Get 10 Free Credits)
+                  Create Account & Join (Get 5 Free Credits)
                   <ArrowRight size={15} />
                 </Link>
                 <Link

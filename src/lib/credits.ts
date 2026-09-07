@@ -10,15 +10,15 @@ export const CREDIT_PACKAGES = [
   {
     id: 'free_starter',
     name: 'Free Trial',
-    badge: '10 Free Credits',
+    badge: '5 Free Credits',
     price: 0,
-    credits: 10,
+    credits: 5,
     subtitle: 'Everything you need to try out Oratii AI speech & viva analysis',
     popular: false,
     cta: 'Get Started Free',
     validity: 'Lifetime',
     features: [
-      '10 Free Credits on signup',
+      '5 Free Credits on signup',
       'Try Speech Coach (1 credit)',
       'Try Slide & Viva Studio (1 credit)',
       'Try AI Voice Mock Interview (1 credit)',
@@ -128,11 +128,11 @@ export async function getUserCredits(userId: string): Promise<number> {
     }
 
     if (error || !data || typeof data.credits !== 'number') {
-      return 10;
+      return 5;
     }
     return data.credits;
   } catch {
-    return 10;
+    return 5;
   }
 }
 
@@ -169,7 +169,7 @@ export async function checkAndDeductCredits(
       return { allowed: true, remainingCredits: 999999 };
     }
 
-    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 10;
+    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 5;
     if (currentCredits < cost) {
       return {
         allowed: false,
@@ -191,7 +191,7 @@ export async function checkAndDeductCredits(
     return { allowed: true, remainingCredits: newCredits };
   } catch (e) {
     console.error('Failed to deduct credits:', e);
-    return { allowed: true, remainingCredits: 10 };
+    return { allowed: true, remainingCredits: 5 };
   }
 }
 
