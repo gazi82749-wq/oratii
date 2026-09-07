@@ -106,10 +106,38 @@ export default function HomeClient() {
   ];
 
   const metrics = [
-    { value: 'Pacing Analysis', label: 'We track your Words Per Minute (WPM) to ensure you speak steadily under pressure.', icon: <Timer size={24} /> },
-    { value: 'Filler Word Detection', label: 'Identifies "ums", "ahs", and conversational crutches so you can speak with authority.', icon: <Target size={24} /> },
-    { value: 'Content Density', label: 'Analyzes slide text-to-space ratios to prevent cognitive overload for your audience.', icon: <BarChartIcon size={24} /> },
-    { value: 'Delivery Confidence', label: 'Measures vocal variance and energy to ensure your message is delivered with impact.', icon: <Zap size={24} /> }
+    { 
+      value: 'Speech Pacing & WPM', 
+      label: 'Tracks live Words Per Minute (WPM), pause cadence, and eliminates regional filler words ("matlab", "basically", "ums").', 
+      tags: ['WPM Tracking', 'Filler Detection', 'AI Rewrites'],
+      bg: 'bg-[#E3F4F4]', 
+      tagBg: 'bg-[#CBE4E4]',
+      href: '/speech-coach'
+    },
+    { 
+      value: 'Voice Mock Interviewer', 
+      label: 'Interactive tech & HR voice rounds. Upload your resume PDF and receive instant STAR method scoring & answer feedback.', 
+      tags: ['Resume PDF Audit', 'STAR Method', 'Voice Q&A'],
+      bg: 'bg-[#FFE6D5]', 
+      tagBg: 'bg-[#FFD4B8]',
+      href: '/interview'
+    },
+    { 
+      value: 'Slide Deck & Viva Studio', 
+      label: 'Audits visual slide density, offers live webcam HUD rehearsal, and tests you with unscripted AI viva defense questions.', 
+      tags: ['Slide Readability', 'Webcam WASM HUD', 'Viva Defense'],
+      bg: 'bg-[#EAE0F5]', 
+      tagBg: 'bg-[#D6C4E8]',
+      href: '/presentation'
+    },
+    { 
+      value: '20-Day Speech Challenge', 
+      label: 'Build daily speaking habits with 3-minute prompts, streak tracking, XP rewards, and downloadable completion certificates.', 
+      tags: ['Daily Prompts', 'Streak Engine', 'PDF Certificate'],
+      bg: 'bg-[#D6F0E0]', 
+      tagBg: 'bg-[#BCE6CB]',
+      href: '/challenge'
+    }
   ];
 
   const cardStyles = [
@@ -199,43 +227,40 @@ export default function HomeClient() {
       </section>
 
 
-      {/* Metrics / How We Analyze */}
+      {/* Metrics / How We Analyze — Feature Matched */}
       <section className="py-14 sm:py-20 relative z-20 -mt-8 sm:-mt-12 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-20">
           <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4 tracking-tight">Track your progress easily.</h2>
-            <p className="text-slate-500 text-lg">Get simple, actionable feedback on how you speak and present.</p>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 text-slate-800 text-[10px] sm:text-xs font-extrabold uppercase tracking-widest mb-3 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> Actionable AI Analytics
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">Track your progress easily.</h2>
+            <p className="text-slate-600 text-base sm:text-lg font-medium">Get real-time, actionable feedback on how you speak, present, and interview.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 sm:gap-8">
             {metrics.map((m, i) => {
-              const styles = [
-                { bg: 'bg-[#E3F4F4]', tagBg: 'bg-[#CBE4E4]', tags: ['WPM Tracking', 'Cadence', 'Live Speed'] },
-                { bg: 'bg-[#FFE6D5]', tagBg: 'bg-[#FFD4B8]', tags: ['Ums & Ahs', 'Clarity', 'Crutch Words'] },
-                { bg: 'bg-[#EAE0F5]', tagBg: 'bg-[#D6C4E8]', tags: ['Readability', 'Text Ratio', 'Cognitive Load'] },
-                { bg: 'bg-[#D6F0E0]', tagBg: 'bg-[#BCE6CB]', tags: ['Vocal Energy', 'Impact', 'Variance'] }
-              ][i];
-
               return (
                 <FadeUp key={i} delay={i * 100} className="h-full">
-                  <div className="group h-full bg-white/40 backdrop-blur-3xl rounded-[32px] border border-white/60 shadow-[0_20px_40px_-10px_rgba(99,102,241,0.05)] hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col p-2 ring-1 ring-inset ring-white/50 cursor-pointer">
-                    
+                  <Link 
+                    href={m.href}
+                    className="group h-full bg-white/40 backdrop-blur-3xl rounded-[32px] border border-white/60 shadow-[0_20px_40px_-10px_rgba(99,102,241,0.05)] hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col p-2 ring-1 ring-inset ring-white/50 cursor-pointer block"
+                  >
                     {/* Colored Inner Block */}
-                    <div className={`rounded-[24px] p-6 sm:p-8 flex-1 flex flex-col shadow-inner ${styles.bg}`}>
-                      <h3 className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">{m.value}</h3>
-                      <p className="text-slate-800 text-sm leading-relaxed mb-8">{m.label}</p>
+                    <div className={`rounded-[24px] p-6 sm:p-8 flex-1 flex flex-col shadow-inner ${m.bg}`}>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-3 tracking-tight group-hover:text-indigo-950 transition-colors">{m.value}</h3>
+                      <p className="text-slate-800 text-sm leading-relaxed mb-8 font-medium">{m.label}</p>
                       
                       {/* Tags Area */}
                       <div className="flex flex-wrap gap-2 mt-auto">
-                        {styles.tags.map((tag, idx) => (
-                          <span key={idx} className={`px-3 py-1.5 text-[11px] font-bold text-slate-900 rounded-full ${styles.tagBg}`}>
+                        {m.tags.map((tag, idx) => (
+                          <span key={idx} className={`px-3 py-1.5 text-[11px] font-bold text-slate-900 rounded-full ${m.tagBg}`}>
                             {tag}
                           </span>
                         ))}
                       </div>
                     </div>
-
-                  </div>
+                  </Link>
                 </FadeUp>
               );
             })}
