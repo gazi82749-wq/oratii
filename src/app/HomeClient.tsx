@@ -15,6 +15,7 @@ import SpeechCoachMockup from '@/components/home/SpeechCoachMockup';
 import SlideAnalyzerMockup from '@/components/home/SlideAnalyzerMockup';
 import VivaDefenseMockup from '@/components/home/VivaDefenseMockup';
 import ChallengeMockup from '@/components/home/ChallengeMockup';
+import PartnerAcademyMockup from '@/components/home/PartnerAcademyMockup';
 
 
 export default function HomeClient() {
@@ -335,6 +336,7 @@ export default function HomeClient() {
                       {(f.title.includes('Slide') || f.title.includes('Presenter')) && <SlideAnalyzerMockup />}
                       {(f.title.includes('Interview') || f.title.includes('Viva')) && <VivaDefenseMockup />}
                       {f.title.includes('Challenge') && <ChallengeMockup />}
+                      {(f.title.includes('Partner') || f.title.includes('Academy') || f.title.includes('Coaching')) && <PartnerAcademyMockup />}
                     </div>
                   </div>
 
@@ -355,13 +357,19 @@ export default function HomeClient() {
                      {(f.title.includes('Interview') || f.title.includes('Viva')) && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">Unscripted Discussion</span>
-                         <span className="text-xl font-bold">Tech & STAR Scoring</span>
+                         <span className="text-xl font-bold">Tech &amp; STAR Scoring</span>
                        </div>
                      )}
                      {f.title.includes('Challenge') && (
                        <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
                          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Streak Active</span>
                          <span className="text-xl font-bold">7-Day Streak</span>
+                       </div>
+                     )}
+                     {(f.title.includes('Partner') || f.title.includes('Academy')) && (
+                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
+                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">WhatsApp Auto-Sync</span>
+                         <span className="text-xl font-bold">45/45 Graded</span>
                        </div>
                      )}
                   </div>
@@ -391,6 +399,15 @@ export default function HomeClient() {
                          <div className="flex flex-col">
                            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">AI Status</span>
                            <span className="text-sm font-bold text-slate-900">Listening...</span>
+                         </div>
+                       </div>
+                     )}
+                     {(f.title.includes('Partner') || f.title.includes('Academy')) && (
+                       <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
+                         <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700"><GraduationCap size={18} /></div>
+                         <div className="flex flex-col">
+                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Affiliate Kickback</span>
+                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 20% Top-Up Bonus</span>
                          </div>
                        </div>
                      )}
