@@ -155,12 +155,12 @@ export default function SidebarLayout({ children }) {
               >
                 Support <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'support' ? 'rotate-180' : ''}`} />
               </button>
-              <div className={`absolute top-full left-0 mt-4 w-48 bg-white border border-indigo-200 shadow-xl rounded-xl transition-all duration-300 ease-out flex flex-col p-2 z-50 ${activeDropdown === 'support' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
-                <Link href="/feedback" onClick={() => setActiveDropdown(null)} className={`px-3 py-2 hover:bg-indigo-50 text-sm font-medium text-slate-700 transition-all rounded-lg ${pathname === '/feedback' ? 'bg-indigo-50 text-slate-900' : ''}`}>
-                  Submit Feedback
+              <div className={`absolute top-full left-0 mt-3 w-52 bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-xl rounded-2xl transition-all duration-300 ease-out flex flex-col p-2 z-50 ${activeDropdown === 'support' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+                <Link href="/feedback" onClick={() => setActiveDropdown(null)} className={`px-3 py-2.5 hover:bg-slate-50 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center gap-2 ${pathname === '/feedback' ? 'bg-amber-50/80 text-slate-950 font-bold' : ''}`}>
+                  <span className="text-amber-500">★</span> Submit Feedback
                 </Link>
-                <Link href="/support" onClick={() => setActiveDropdown(null)} className={`px-3 py-2 hover:bg-indigo-50 text-sm font-medium text-slate-700 transition-all rounded-lg ${pathname === '/support' ? 'bg-indigo-50 text-slate-900' : ''}`}>
-                  My Tickets
+                <Link href="/support" onClick={() => setActiveDropdown(null)} className={`px-3 py-2.5 hover:bg-slate-50 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center gap-2 ${pathname === '/support' ? 'bg-amber-50/80 text-slate-950 font-bold' : ''}`}>
+                  <span className="text-indigo-600">🎫</span> Support Tickets
                 </Link>
               </div>
             </div>
@@ -311,7 +311,7 @@ export default function SidebarLayout({ children }) {
       </nav>
 
       {/* Main Content Area */}
-      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-24 md:pb-6 ${isHomePage ? '' : ['/pricing', '/about', '/support', '/privacy', '/terms', '/security'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
+      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-24 md:pb-6 ${isHomePage ? '' : ['/pricing', '/about', '/support', '/feedback', '/refund-policy', '/privacy', '/terms', '/security'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
         {children}
       </main>
 
