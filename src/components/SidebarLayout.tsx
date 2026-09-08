@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown, Download, Code2, Headphones } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown, Download } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
@@ -92,9 +92,7 @@ export default function SidebarLayout({ children }) {
   // Product dropdown items with Oratii brand theme icons
   const productItems = [
     { href: '/speech-coach', label: 'Speech Coach (3-Min Drills)', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
-    { href: '/interview', label: 'AI Mock Interviewer (All Roles)', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
-    { href: '/interview?role=sde1', label: 'SDE & Tech Interview', icon: <Code2 size={16} className="text-blue-600 ml-1" />, fontWeight: 'font-normal text-xs text-slate-600' },
-    { href: '/interview?role=bpo_customer', label: 'BPO & Customer Voice', icon: <Headphones size={16} className="text-rose-600 ml-1" />, fontWeight: 'font-normal text-xs text-slate-600' },
+    { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/presentation', label: 'Slide Deck & Viva Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
     { href: '/trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold' },
