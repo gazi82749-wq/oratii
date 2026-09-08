@@ -103,7 +103,7 @@ export default function SidebarLayout({ children }) {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased relative overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased relative">
       {/* Modern Animated Soft Mesh Background (Identical to Landing Page Hero) */}
       {!isHomePage && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">

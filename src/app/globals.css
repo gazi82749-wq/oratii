@@ -44,6 +44,8 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
   overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
   -webkit-overflow-scrolling: touch;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -54,6 +56,9 @@ body {
   background: var(--color-bg);
   color: var(--color-primary);
   overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  min-height: 100%;
   -webkit-text-size-adjust: 100%;
   padding-env: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   line-height: 1.6;
@@ -61,10 +66,21 @@ body {
 
 /* ─── Standalone Native Mobile App Enhancements ─── */
 @media (display-mode: standalone) {
+  html, body {
+    /* Allow natural vertical scrolling in installed PWA */
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    min-height: 100%;
+    /* Prevent pull-to-refresh only at the top (not blocking scroll) */
+    overscroll-behavior-y: none;
+    /* Ensure touch scrolling works reliably */
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
   body {
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior-y: contain;
   }
 }
 
