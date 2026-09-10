@@ -153,7 +153,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`font-sans bg-[#fafafa] text-slate-900 antialiased`}>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-slate-900 focus:font-bold focus:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-slate-900 focus:font-bold focus:shadow-xl focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:w-auto focus:h-auto focus:overflow-visible focus:clip-auto"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            borderWidth: 0,
+          }}
+        >
           Skip to content
         </a>
         <SidebarLayout>
