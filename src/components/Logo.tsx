@@ -36,7 +36,7 @@ export const Logo = ({ className = "text-2xl text-slate-900" }: { className?: st
         <span className="font-black tracking-tighter leading-none" style={{ fontSize: '1.25em' }}>
           Orat<span className="text-[#F2A93B]">ii</span>
         </span>
-        <span className="font-bold tracking-[0.2em] text-slate-500 mt-[0.1em]" style={{ fontSize: '0.35em' }}>
+        <span className="font-bold tracking-[0.2em] text-slate-500 mt-[0.1em] whitespace-nowrap" style={{ fontSize: '0.35em' }}>
           SAY IT WELL. SHOW IT WELL.
         </span>
       </div>

@@ -13,6 +13,7 @@ import {
   CartesianGrid
 } from 'recharts';
 import { Cloud, CloudOff, TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 const VideoPlayer = ({ sessionId }: { sessionId: string }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -173,7 +174,8 @@ export default function Reports() {
     });
 
   return (
-    <div className={`w-full flex flex-col gap-8 text-slate-900 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+    <div className="w-full min-h-screen flex flex-col bg-transparent text-slate-900">
+      <div className={`w-full max-w-5xl mx-auto flex-1 flex flex-col gap-8 text-slate-900 transition-opacity duration-500 pt-6 pb-16 px-4 sm:px-6 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
       
       {/* Hidden Detailed PDF Template */}
       {activeSession && (
@@ -494,6 +496,8 @@ export default function Reports() {
           ))}
         </div>
       )}
+      </div>
+      <Footer />
     </div>
   );
 }

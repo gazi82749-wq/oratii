@@ -36,6 +36,7 @@ import { getChallengeState } from '@/lib/challenge';
 import EmptyState from '@/components/EmptyState';
 import ReferralCard from '@/components/ReferralCard';
 import NotificationPrompt from '@/components/NotificationPrompt';
+import Footer from '@/components/Footer';
 
 function AnimatedNumber({ value, duration = 800 }: { value: number; duration?: number }) {
   const [display, setDisplay] = useState(0);
@@ -293,7 +294,8 @@ export default function ProfessionalDashboard() {
   }
 
   return (
-    <div className="w-full flex flex-col gap-8 bg-[#F8FAFC] text-slate-900 pb-16 font-sans relative min-h-[90vh]">
+    <div className="w-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans relative min-h-screen">
+      <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-8 space-y-8 flex-1">
       
       {/* Background Soft Glow Gradients (Matching Landing Page Theme) */}
       <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-indigo-200/40 blur-[130px] rounded-full pointer-events-none -z-10"></div>
@@ -715,7 +717,8 @@ export default function ProfessionalDashboard() {
         </div>,
         document.body
       )}
-
+      </div>
+      <Footer />
     </div>
   );
 }

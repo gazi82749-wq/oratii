@@ -311,7 +311,15 @@ export default function SidebarLayout({ children }) {
       </nav>
 
       {/* Main Content Area */}
-      <main id="main-content" key={pathname} className={`flex-1 w-full relative z-10 page-enter pb-24 md:pb-6 ${isHomePage ? '' : ['/pricing', '/about', '/support', '/feedback', '/refund-policy', '/privacy', '/terms', '/security'].includes(pathname) ? '' : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5'}`}>
+      <main
+        id="main-content"
+        key={pathname}
+        className={`flex-1 w-full relative z-10 page-enter flex flex-col ${
+          isHomePage || ['/pricing', '/about', '/support', '/feedback', '/refund-policy', '/privacy', '/terms', '/security', '/challenge', '/trainer', '/reports', '/dashboard', '/dashboard/billing'].includes(pathname)
+            ? 'pb-0'
+            : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 pb-24 md:pb-6'
+        }`}
+      >
         {children}
       </main>
 

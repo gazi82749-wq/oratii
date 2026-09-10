@@ -51,6 +51,7 @@ import GuestAuthModal from '@/components/GuestAuthModal';
 import InsufficientCreditsModal from '@/components/InsufficientCreditsModal';
 import { checkAndDeductCredits } from '@/lib/credits';
 import { supabase } from '@/lib/supabaseClient';
+import Footer from '@/components/Footer';
 
 const renderChallengeBadgeIcon = (day: number) => {
   switch (day) {
@@ -206,7 +207,8 @@ export default function ChallengePage() {
     state.days_status[19]?.score || (state.days_status[19]?.status === 'done' ? 92 : 0);
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in text-slate-900 pb-16">
+    <div className="w-full min-h-screen flex flex-col bg-transparent text-slate-900">
+      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col gap-8 animate-fade-in text-slate-900 pt-6 pb-16 px-4 sm:px-6">
       
       {/* 1. HEADER CARD WITH STREAK BADGE */}
       <div className="w-full bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden" style={{ isolation: 'isolate' }}>
@@ -660,6 +662,8 @@ export default function ChallengePage() {
 
       <GuestAuthModal isOpen={isGuestAuthModalOpen} onClose={() => setIsGuestAuthModalOpen(false)} featureName="20-Day Challenge" />
       <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={1} currentBalance={creditBalance} featureName="20-Day Challenge" />
+      </div>
+      <Footer />
     </div>
   );
 }

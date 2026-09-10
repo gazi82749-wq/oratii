@@ -28,6 +28,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
+import Footer from '@/components/Footer';
 
 interface BatchItem {
   id: string;
@@ -299,7 +300,8 @@ export default function TrainerDashboardPage() {
 
   // ─── Case 2: Registered Trainer Dashboard ───
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full">
+      <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1">
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-900/50 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
@@ -572,6 +574,8 @@ export default function TrainerDashboardPage() {
           </div>
         </div>
       )}
+      </div>
+      <Footer />
     </div>
   );
 }
