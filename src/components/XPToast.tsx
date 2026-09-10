@@ -1,9 +1,24 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
+import { Zap, Trophy, Award, Flame, Sparkles } from 'lucide-react';
 
-// XP gain notification toast (Module 9)
-export default function XPToast({ events, onComplete }) {
-  const [visible, setVisible] = useState([]);
+interface ToastEvent {
+  type: 'xp' | 'level_up' | 'badge' | 'streak' | 'bonus';
+  amount?: number;
+  totalXP?: number;
+  icon?: string;
+  name?: string;
+  badge?: { icon?: string; name: string };
+  message?: string;
+}
+
+interface XPToastProps {
+  events?: ToastEvent[];
+  onComplete?: () => void;
+}
+
+export default function XPToast({ events, onComplete }: XPToastProps) {
+  const [visible, setVisible] = useState<ToastEvent[]>([]);
 
   useEffect(() => {
     if (events && events.length > 0) {
@@ -19,52 +34,64 @@ export default function XPToast({ events, onComplete }) {
   if (visible.length === 0) return null;
 
   return (
-    <div className="xp-toast-container">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 pointer-events-none">
       {visible.map((event, idx) => (
-        <div key={idx} className="xp-toast">
+        <div 
+          key={idx} 
+          className="pointer-events-auto transform transition-all duration-300 animate-slide-up"
+        >
           {event.type === 'xp' && (
-            <div className="bg-[#FFF9D2] text-slate-900 px-6 py-4 border-4 border-slate-900 shadow-[4px_4px_0px_#151930] flex items-center gap-4 rotate-1 relative">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-white/50 border border-indigo-300 -rotate-2"></div>
-              <span className="text-2xl">âš¡</span>
+            <div className="bg-white/95 backdrop-blur-md text-slate-900 px-5 py-3.5 rounded-2xl border border-amber-200/80 shadow-lg shadow-amber-500/10 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200/60 flex items-center justify-center text-[#F2A93B] shrink-0">
+                <Zap size={20} className="fill-amber-400 text-amber-500" />
+              </div>
               <div>
-                <p className="text-sm font-black uppercase tracking-widest">+{event.amount} XP</p>
-                <p className="text-xs font-bold text-slate-500 font-handwriting">Total: {event.totalXP} XP</p>
+                <p className="text-sm font-bold text-slate-900">+{event.amount} XP Earned</p>
+                <p className="text-xs text-slate-500 font-medium">Total Balance: {event.totalXP} XP</p>
               </div>
             </div>
           )}
+
           {event.type === 'level_up' && (
-            <div className="bg-[#E0F2FE] text-slate-900 px-8 py-5 border-4 border-slate-900 shadow-[6px_6px_0px_#151930] flex items-center gap-4 -rotate-1 relative">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 bg-white/50 border border-indigo-300 rotate-2"></div>
-              <span className="text-3xl">{event.icon}</span>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">Level Up!</p>
-                <p className="text-lg font-black text-slate-900">{event.name}</p>
+            <div className="bg-[#151930] text-white px-6 py-4 rounded-2xl border border-indigo-900/40 shadow-xl shadow-indigo-950/20 flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-[#F2A93B] shrink-0">
+                <Trophy size={22} className="text-[#F2A93B]" />
               </div>
-              <span className="text-3xl">ðŸŽ‰</span>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#F2A93B]">Level Up!</p>
+                <p className="text-base font-black text-white">{event.name}</p>
+              </div>
+              <Sparkles size={18} className="text-amber-400 ml-auto animate-pulse" />
             </div>
           )}
+
           {event.type === 'badge' && (
-            <div className="bg-white text-slate-900 px-6 py-4 border-4 border-slate-900 shadow-[4px_4px_0px_#151930] flex items-center gap-4 rotate-2 relative">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-indigo-100 border border-indigo-300 -rotate-3"></div>
-              <span className="text-2xl">{event.badge.icon}</span>
+            <div className="bg-white/95 backdrop-blur-md text-slate-900 px-5 py-3.5 rounded-2xl border border-indigo-200/80 shadow-lg shadow-indigo-500/10 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center text-indigo-600 shrink-0">
+                <Award size={20} />
+              </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest font-handwriting">Badge Unlocked!</p>
-                <p className="text-sm font-black">{event.badge.name}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-indigo-600">Badge Unlocked</p>
+                <p className="text-sm font-bold text-slate-900">{event.badge?.name}</p>
               </div>
             </div>
           )}
+
           {event.type === 'streak' && (
-            <div className="bg-[#FEF9C3] text-slate-900 px-6 py-4 border-4 border-slate-900 shadow-[4px_4px_0px_#151930] flex items-center gap-4 -rotate-2 relative">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-white/50 border border-indigo-300 rotate-3"></div>
-              <span className="text-2xl">ðŸ”¥</span>
-              <p className="text-sm font-black">{event.message}</p>
+            <div className="bg-white/95 backdrop-blur-md text-slate-900 px-5 py-3.5 rounded-2xl border border-orange-200/80 shadow-lg shadow-orange-500/10 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-500 shrink-0">
+                <Flame size={20} className="fill-orange-400 text-orange-500" />
+              </div>
+              <p className="text-sm font-bold text-slate-900">{event.message}</p>
             </div>
           )}
+
           {event.type === 'bonus' && (
-            <div className="bg-[#DCFCE7] text-slate-900 px-6 py-4 border-4 border-slate-900 shadow-[4px_4px_0px_#151930] flex items-center gap-4 rotate-1 relative">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-3 bg-white/50 border border-indigo-300 -rotate-1"></div>
-              <span className="text-2xl">ðŸŒŸ</span>
-              <p className="text-sm font-black">{event.message}</p>
+            <div className="bg-white/95 backdrop-blur-md text-slate-900 px-5 py-3.5 rounded-2xl border border-emerald-200/80 shadow-lg shadow-emerald-500/10 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 shrink-0">
+                <Sparkles size={20} />
+              </div>
+              <p className="text-sm font-bold text-slate-900">{event.message}</p>
             </div>
           )}
         </div>

@@ -16,48 +16,102 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
-      <body>
+    <html lang="en">
+      <body style={{ margin: 0, padding: 0, background: '#F8FAFC' }}>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '100vh',
-          fontFamily: 'system-ui, sans-serif',
-          background: '#fafafa',
-          color: '#151930',
-          padding: '2rem',
-          textAlign: 'center',
+          fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          background: '#F8FAFC',
+          color: '#0F172A',
+          padding: '1.5rem',
+          boxSizing: 'border-box',
         }}>
           <div style={{
-            border: '4px solid #151930',
-            padding: '3rem',
-            maxWidth: '500px',
-            background: '#fff',
-            boxShadow: '8px 8px 0px #151930',
+            maxWidth: '460px',
+            width: '100%',
+            background: '#ffffff',
+            borderRadius: '20px',
+            border: '1px solid #E2E8F0',
+            padding: '2.5rem 2rem',
+            boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)',
+            textAlign: 'center',
+            boxSizing: 'border-box',
           }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1rem' }}>
-              Something went wrong!
-            </h2>
-            <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '2rem' }}>
-              An unexpected error occurred. Our team has been notified and is working on a fix.
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              background: '#FEE2E2',
+              color: '#DC2626',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem',
+              fontSize: '24px',
+              fontWeight: 700,
+            }}>
+              !
+            </div>
+
+            <h1 style={{
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              color: '#0F172A',
+              letterSpacing: '-0.025em',
+              margin: '0 0 0.75rem 0',
+            }}>
+              Application Error
+            </h1>
+
+            <p style={{
+              fontSize: '0.925rem',
+              lineHeight: '1.6',
+              color: '#64748B',
+              margin: '0 0 2rem 0',
+            }}>
+              An unexpected issue occurred while rendering the page. Our engineering team has been notified.
             </p>
-            <button
-              onClick={() => reset()}
-              style={{
-                padding: '0.75rem 2rem',
-                background: '#151930',
-                color: '#fff',
-                border: '3px solid #151930',
-                fontWeight: 900,
-                fontSize: '1rem',
-                cursor: 'pointer',
-                boxShadow: '4px 4px 0px #151930',
-              }}
-            >
-              Try again
-            </button>
+
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              <button
+                onClick={() => reset()}
+                style={{
+                  padding: '0.75rem 1.75rem',
+                  background: '#151930',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                  transition: 'background 0.2s',
+                }}
+              >
+                Try Again
+              </button>
+
+              <a
+                href="/"
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#F1F5F9',
+                  color: '#334155',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                Return Home
+              </a>
+            </div>
           </div>
         </div>
       </body>

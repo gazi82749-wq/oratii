@@ -1,16 +1,18 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { Mail, ArrowLeft, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function ForgotPassword() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
-  const handleResetRequest = async (e) => {
+  const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -29,98 +31,92 @@ export default function ForgotPassword() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] text-slate-900 flex flex-col font-sans antialiased relative overflow-hidden">
-      
-      {/* Dot Grid Background */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }}></div>
-
-      {/* Decorative Shapes */}
-      <div className="absolute top-16 left-20 w-14 h-14 bg-amber-300 border-4 border-slate-900 rotate-6 opacity-20 hidden md:block"></div>
-      <div className="absolute bottom-24 right-16 w-18 h-18 bg-[#FFF9D2] border-4 border-slate-900 -rotate-12 opacity-20 hidden md:block"></div>
-
-      {/* Navbar */}
-      <nav className="w-full px-6 md:px-10 py-6 relative z-10 flex justify-between items-center">
-        <div 
-          onClick={() => router.push('/')}
-          className="flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-10 h-10 bg-amber-400 text-slate-900 flex items-center justify-center font-black text-xl border-3 border-slate-900 group-hover:-rotate-6 transition-transform shadow-[3px_3px_0px_#151930]">V</div>
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans antialiased">
+      {/* Top Navigation */}
+      <nav className="w-full px-6 md:px-10 py-6 flex justify-between items-center max-w-6xl mx-auto">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl bg-[#151930] text-[#F2A93B] flex items-center justify-center font-black text-lg shadow-sm">
+            O
+          </div>
           <span className="text-xl font-black text-slate-900 tracking-tight">Oratii</span>
-        </div>
-        <button 
-          onClick={() => router.push('/login')}
-          className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900 border-2 border-indigo-300 hover:border-slate-900 px-4 py-2 hover:shadow-[3px_3px_0px_#151930] hover:-translate-y-0.5 transition-all"
+        </Link>
+        <Link 
+          href="/login"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 px-4 py-2 rounded-xl transition-all bg-white shadow-2xs"
         >
+          <ArrowLeft size={14} />
           Back to Login
-        </button>
+        </Link>
       </nav>
 
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-4 md:p-6 w-full relative z-10">
-        <div className="w-full max-w-md bg-white border-4 border-slate-900 p-8 md:p-10 shadow-[8px_8px_0px_#151930] relative">
-          
-          {/* Decorative tape */}
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#FFF9D2]/80 border-2 border-slate-900 rotate-1"></div>
-
+      {/* Main Container */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-6 w-full">
+        <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xl shadow-slate-200/50">
           {sent ? (
             /* Success State */
-            <div className="text-center py-6">
-              <div className="w-20 h-20 bg-amber-100 border-4 border-slate-900 mx-auto mb-6 flex items-center justify-center shadow-[4px_4px_0px_#151930] -rotate-3">
-                <span className="text-4xl">📬</span>
+            <div className="text-center py-4">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-sm">
+                <CheckCircle2 size={32} />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Check Your Inbox!</h2>
-              <p className="text-slate-500 font-bold text-sm mb-2">
-                We’ve sent a password reset link to:
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">Check Your Inbox</h2>
+              <p className="text-slate-500 text-sm mb-4 leading-relaxed">
+                We’ve sent a secure password reset link to:
               </p>
-              <p className="text-slate-900 font-black text-sm mb-6 underline decoration-amber-400 decoration-2 underline-offset-4">{email}</p>
-              <p className="text-slate-400 text-xs font-bold mb-8">
-                Didn’t receive the email? Check your spam folder or try again.
+              <div className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold text-sm mb-6 inline-block max-w-full truncate">
+                {email}
+              </div>
+              <p className="text-slate-400 text-xs mb-8">
+                Didn’t receive the email? Check your spam folder or try submitting again.
               </p>
               <div className="flex flex-col gap-3">
                 <button 
                   onClick={() => { setSent(false); setEmail(''); }}
-                  className="w-full py-3 bg-white border-3 border-slate-900 text-slate-900 text-xs font-black uppercase tracking-widest hover:bg-[#FFF9D2] hover:shadow-[4px_4px_0px_#151930] hover:-translate-y-0.5 transition-all shadow-[3px_3px_0px_#151930]"
+                  className="w-full py-3 bg-white border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-50 transition-all shadow-sm"
                 >
-                  Try Again
+                  Try Another Email
                 </button>
-                <button 
-                  onClick={() => router.push('/login')}
-                  className="w-full py-3 bg-slate-900 text-white text-xs font-black uppercase tracking-widest border-3 border-slate-900 hover:bg-amber-400 hover:text-slate-900 hover:shadow-[4px_4px_0px_#151930] hover:-translate-y-0.5 transition-all shadow-[3px_3px_0px_#151930]"
+                <Link 
+                  href="/login"
+                  className="w-full py-3 bg-[#151930] hover:bg-[#1f2547] text-white text-sm font-bold rounded-xl transition-all text-center shadow-sm"
                 >
-                  Back to Login →
-                </button>
+                  Return to Sign In
+                </Link>
               </div>
             </div>
           ) : (
             /* Form State */
             <>
-              {/* Header */}
-              <div className="text-center mb-8 mt-2">
-                <div className="w-16 h-16 bg-[#FFF9D2] border-4 border-slate-900 mx-auto mb-5 flex items-center justify-center shadow-[4px_4px_0px_#151930] rotate-3">
-                  <span className="text-3xl">🔑</span>
+              <div className="text-center mb-8">
+                <div className="w-14 h-14 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-xs">
+                  <Mail size={26} />
                 </div>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Forgot Password?</h1>
-                <p className="text-slate-500 font-bold font-handwriting text-lg">No worries, we’ll send you a reset link ✨</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-2">
+                  Forgot Password?
+                </h1>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  Enter your registered email address and we’ll send you a password recovery link.
+                </p>
               </div>
 
-              {/* Error Display */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-3 border-red-400 text-red-600 text-xs font-bold text-center shadow-[3px_3px_0px_#f87171]">
-                  ⚠️ {error}
+                <div className="mb-6 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-medium flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0 text-rose-600" />
+                  <span>{error}</span>
                 </div>
               )}
 
-              {/* Form */}
-              <form onSubmit={handleResetRequest} className="space-y-6">
+              <form onSubmit={handleResetRequest} className="space-y-5">
                 <div>
-                  <label className="block text-xs font-black text-slate-900 uppercase tracking-widest mb-2">Email Address</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Account Email
+                  </label>
                   <input 
                     id="forgot-email"
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your account email" 
-                    className="w-full bg-[#FDFBF7] border-3 border-slate-900 px-4 py-3.5 text-sm focus:outline-none focus:shadow-[4px_4px_0px_#151930] focus:-translate-y-0.5 transition-all font-bold text-slate-900 placeholder-slate-400"
+                    placeholder="you@company.com" 
+                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all font-medium text-slate-900 placeholder-slate-400"
                     required
                   />
                 </div>
@@ -129,27 +125,28 @@ export default function ForgotPassword() {
                   id="forgot-submit"
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-slate-900 text-white text-xs font-black uppercase tracking-widest border-3 border-slate-900 hover:bg-amber-400 hover:text-slate-900 hover:shadow-[6px_6px_0px_#151930] hover:-translate-y-1 transition-all shadow-[4px_4px_0px_#151930] disabled:opacity-50 disabled:pointer-events-none flex justify-center items-center gap-2"
+                  className="w-full py-3.5 bg-[#151930] hover:bg-[#1f2547] text-white text-sm font-bold rounded-xl transition-all shadow-sm disabled:opacity-50 flex justify-center items-center gap-2 cursor-pointer"
                 >
                   {loading ? (
                     <>
-                      <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                      Sending...
+                      <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending link...
                     </>
-                  ) : 'Send Reset Link →'}
+                  ) : 'Send Reset Link'}
                 </button>
               </form>
 
-              {/* Bottom Link */}
-              <p className="mt-8 text-center text-sm text-slate-500 font-bold">
-                Remember your password?{' '}
-                <button 
-                  onClick={() => router.push('/login')}
-                  className="text-slate-900 underline underline-offset-4 decoration-2 decoration-amber-400 hover:decoration-amber-600 font-black transition-colors"
-                >
-                  Sign In
-                </button>
-              </p>
+              <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+                <p className="text-xs text-slate-500">
+                  Remembered your password?{' '}
+                  <Link 
+                    href="/login"
+                    className="text-[#151930] hover:underline font-bold transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                </p>
+              </div>
             </>
           )}
         </div>
