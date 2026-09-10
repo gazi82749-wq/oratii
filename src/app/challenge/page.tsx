@@ -211,32 +211,29 @@ export default function ChallengePage() {
       <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col gap-8 animate-fade-in text-slate-900 pt-6 pb-16 px-4 sm:px-6">
       
       {/* 1. HEADER CARD WITH STREAK BADGE */}
-      <div className="w-full bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden" style={{ isolation: 'isolate' }}>
-        {/* Top gradient stripe */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
-        
+      <div className="w-full bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> 20-Day Placement &amp; Viva Bootcamp
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-3 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> 20-Day Placement &amp; Viva Bootcamp
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950 leading-tight mb-1">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight mb-1">
             20-Day Campus Placement &amp; Viva Bootcamp
           </h1>
-          <p className="text-xs sm:text-sm font-medium text-slate-500 max-w-xl">
+          <p className="text-xs sm:text-sm font-normal text-slate-600 max-w-xl">
             Eliminate &ldquo;matlab&rdquo; &amp; &ldquo;basically&rdquo; filler habits, master STAR method interviews for campus placement drives, and pass university project vivas without freezing.
           </p>
         </div>
 
         {/* Streak Pill */}
-        <div className="flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/80 px-5 py-3 rounded-2xl shadow-2xs shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] flex items-center justify-center shadow-2xs font-bold">
-            <Flame size={22} className="fill-[#151930]" />
+        <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 px-5 py-3 rounded-2xl shadow-2xs shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#F2A93B] text-[#0F1426] flex items-center justify-center shadow-2xs font-bold">
+            <Flame size={22} className="fill-[#0F1426]" />
           </div>
           <div>
-            <div className="text-xl font-black text-slate-900 leading-none">
+            <div className="text-xl font-extrabold text-slate-900 leading-none">
               {state.streak_count} <span className="text-xs font-bold text-slate-500">Days</span>
             </div>
-            <span className="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider">Active Streak</span>
+            <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Active Streak</span>
           </div>
         </div>
       </div>

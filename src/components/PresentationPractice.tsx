@@ -510,8 +510,7 @@ export default function PresentationPractice({
 
   if (isProcessing) {
     return (
-      <div className="min-h-[500px] flex flex-col items-center justify-center bg-[#0B0E27] text-white rounded-3xl p-10 border border-slate-800 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-purple-500 to-indigo-500"></div>
+      <div className="min-h-[500px] flex flex-col items-center justify-center bg-[#0F1426] text-white rounded-3xl p-10 border border-slate-800 shadow-2xl relative overflow-hidden">
         <ScribbleLoader text="Evaluating slide coverage, vocal pacing & presentation delivery locally..." />
       </div>
     );
@@ -521,7 +520,7 @@ export default function PresentationPractice({
   if (showLocalResults) {
     const overallDelivery = Math.round((liveEyeContact + livePostureScore + Math.min(100, (livePaceWpm / 140) * 100)) / 3);
     return (
-      <div className="w-full max-w-5xl mx-auto p-5 sm:p-8 bg-[#0B0E27] text-white rounded-3xl border border-slate-800 shadow-2xl space-y-6 font-sans my-4 animate-fade-in">
+      <div className="w-full max-w-5xl mx-auto p-5 sm:p-8 bg-[#0F1426] text-white rounded-3xl border border-slate-800 shadow-2xl space-y-6 font-sans my-4 animate-fade-in">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-extrabold uppercase tracking-wider mb-2">

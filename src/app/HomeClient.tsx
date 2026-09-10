@@ -142,11 +142,11 @@ export default function HomeClient() {
   ];
 
   const cardStyles = [
-    { num: '01', gradient: 'from-rose-500 via-pink-600 to-rose-700', glow: 'rgba(244,63,94,0.08)', hoverGlow: 'rgba(244,63,94,0.16)', accentColor: 'text-rose-500', badgeBg: 'bg-rose-50 text-rose-800 border-rose-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
-    { num: '02', gradient: 'from-amber-500 via-orange-600 to-amber-700', glow: 'rgba(245,158,11,0.08)', hoverGlow: 'rgba(245,158,11,0.16)', accentColor: 'text-amber-500', badgeBg: 'bg-amber-50 text-amber-800 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
-    { num: '03', gradient: 'from-indigo-500 via-purple-600 to-indigo-700', glow: 'rgba(99,102,241,0.08)', hoverGlow: 'rgba(99,102,241,0.16)', accentColor: 'text-indigo-500', badgeBg: 'bg-indigo-50 text-indigo-800 border-indigo-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
-    { num: '04', gradient: 'from-emerald-500 via-teal-600 to-emerald-700', glow: 'rgba(16,185,129,0.08)', hoverGlow: 'rgba(16,185,129,0.16)', accentColor: 'text-emerald-500', badgeBg: 'bg-emerald-50 text-emerald-800 border-emerald-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
-    { num: '05', gradient: 'from-purple-500 via-indigo-600 to-purple-700', glow: 'rgba(168,85,247,0.08)', hoverGlow: 'rgba(168,85,247,0.16)', accentColor: 'text-purple-500', badgeBg: 'bg-purple-50 text-purple-800 border-purple-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.35)] border border-white/10 rounded-2xl' },
+    { num: '01', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
+    { num: '02', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
+    { num: '03', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
+    { num: '04', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
+    { num: '05', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
   ];
 
   return (
@@ -156,27 +156,24 @@ export default function HomeClient() {
 
       {/* Hero Section — Screen view viewport centered */}
       <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center pt-28 sm:pt-32 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
-        {/* Modern Animated Soft Mesh Background */}
-        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-indigo-300/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '12s' }}></div>
-        <div className="absolute top-[10%] right-[-10%] w-[60vw] h-[60vw] bg-amber-200/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
-        <div className="absolute bottom-[-20%] left-[20%] w-[50vw] h-[50vw] bg-purple-200/15 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }}></div>
+        {/* Subtle Ambient Depth */}
+        <div className="absolute top-[-10%] right-[-5%] w-[45vw] h-[45vw] bg-amber-100/30 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/40 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="w-full max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-10 min-w-0 max-w-full my-auto">
           
           {/* Left Column: Text & CTAs */}
           <div className="w-full text-center md:text-left flex flex-col items-center md:items-start min-w-0 max-w-full">
           <FadeUp delay={50}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill text-[#151930] text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-5 shimmer-badge shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span> AI Speech, Presentation &amp; Interview Coach
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-[#0F1426] text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-5 shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> AI Speech, Presentation &amp; Interview Coach
             </div>
           </FadeUp>
 
           <FadeUp delay={150}>
-            <h1 className="text-[clamp(2.3rem,4.5vw,3.75rem)] lg:text-6xl leading-[1.12] font-black tracking-tight text-slate-900 mb-5 break-words max-w-2xl">
+            <h1 className="text-[clamp(2.3rem,4.5vw,3.75rem)] lg:text-6xl leading-[1.12] font-extrabold tracking-tight text-slate-900 mb-5 break-words max-w-2xl">
               Practice speaking live for <br className="hidden sm:block" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-amber-500">
-                speeches, slides &amp; interviews.
-              </span>
+              speeches, slides &amp; <span className="text-[#F2A93B]">interviews.</span>
             </h1>
           </FadeUp>
 
@@ -191,22 +188,22 @@ export default function HomeClient() {
               {user ? (
                 <Link 
                   href="/speech-coach"
-                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Launch Practice Studio <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
+                  Launch Practice Studio <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
                 </Link>
               ) : (
                 <Link 
                   href="/signup"
-                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
                 >
-                  Start Free Speaking Practice <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
+                  Start Free Speaking Practice <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
                 </Link>
               )}
               
               <a 
                 href="#how-it-works"
-                className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-md text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-white hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 transition-all shadow-2xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
+                className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all shadow-xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
               >
                 See How It Works
               </a>
@@ -273,30 +270,28 @@ export default function HomeClient() {
 
       {/* Unified Features Section */}
       <section className="py-16 sm:py-20 relative overflow-hidden bg-[#F8FAFC]">
-        {/* Modern Animated Soft Mesh Background */}
-        <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-300/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '10s' }}></div>
-        <div className="absolute bottom-[10%] right-[-10%] w-[50vw] h-[50vw] bg-rose-300/20 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '12s', animationDelay: '1s' }}></div>
-        <div className="absolute top-[40%] left-[20%] w-[70vw] h-[40vw] bg-purple-300/15 blur-[140px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
+        {/* Subtle Ambient Depth */}
+        <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col relative z-10">
           
           {/* Premium Section Header */}
           <FadeUp>
             <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest mb-5 shadow-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse"></span> Complete 4-Module Suite
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-5 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#F2A93B]"></span> Complete 4-Module Suite
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight mb-4 leading-tight">
-                Everything you need to <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">master</span> public speaking.
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight">
+                Everything you need to <span className="text-[#F2A93B]">master</span> public speaking.
               </h2>
-              <p className="text-slate-500 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-medium">
+              <p className="text-slate-600 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-normal">
                 Four specialized AI engines designed to transform raw speeches into executive-level delivery.
               </p>
 
               {/* Module Quick Nav Tab Bar */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-200/80 shadow-sm max-w-2xl mx-auto">
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 bg-white rounded-2xl border border-slate-200/90 shadow-xs max-w-2xl mx-auto">
                 {features.map((item, idx) => {
-                  const style = cardStyles[idx % cardStyles.length];
                   return (
                     <button
                       key={idx}
@@ -304,9 +299,9 @@ export default function HomeClient() {
                         const el = document.getElementById(`module-card-${idx}`);
                         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-white border border-slate-100 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2"
+                      className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-950 bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2"
                     >
-                      <span className={`w-2.5 h-2.5 rounded-full bg-gradient-to-r ${style?.gradient || 'from-indigo-500 to-purple-500'}`}></span>
+                      <span className="w-2 h-2 rounded-full bg-[#0F1426]"></span>
                       <span>{item.title}</span>
                     </button>
                   );
@@ -322,13 +317,10 @@ export default function HomeClient() {
             return (
               <FadeUp key={i} delay={i * 80}>
               <div id={`module-card-${i}`} className="relative group">
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-100/80 transition-all duration-500 overflow-hidden relative"
-                  style={{ isolation: 'isolate', boxShadow: `0 25px 60px -15px ${cs.glow}, 0 0 0 1px rgba(0,0,0,0.03)` }}
-                  onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0 35px 80px -15px ${cs.hoverGlow}, 0 0 0 1px rgba(0,0,0,0.04)`}
-                  onMouseLeave={(e) => e.currentTarget.style.boxShadow = `0 25px 60px -15px ${cs.glow}, 0 0 0 1px rgba(0,0,0,0.03)`}
+                <div className={`grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden relative ${cs.borderAccent}`}
                 >
-                  {/* Accent gradient stripe at top */}
-                  <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${cs.gradient}`} />
+                  {/* Subtle top divider line */}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-slate-100" />
                 
                 {/* Result Card View (Hidden on mobile to keep mobile layout clean, lightweight & lag-free) */}
                 <div className={`hidden lg:block w-full relative order-2 ${isReversed ? 'lg:order-2' : 'lg:order-1'}`}>
@@ -516,20 +508,20 @@ export default function HomeClient() {
               }
             ].map((s, i) => (
               <FadeUp key={s.step} delay={i * 100} className="relative z-10 h-full">
-                <div className="h-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6 relative overflow-hidden group">
-                  {/* Top Gradient Stripe */}
-                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${s.gradient}`}></div>
+                <div className="h-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col p-6 relative overflow-hidden group">
+                  {/* Refined Brand Indicator */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200 group-hover:bg-[#F2A93B] transition-colors"></div>
 
                   <div className="flex items-center justify-between mb-5">
                     <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-xs ${s.iconBg}`}>
                       {s.icon}
                     </div>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-black text-slate-800 bg-slate-100 border border-slate-200">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200">
                       Step {s.step}
                     </span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-950 mb-2.5 tracking-tight">{s.title}</h3>
-                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-medium">{s.desc}</p>
+                  <h3 className="text-lg font-extrabold text-slate-900 mb-2.5 tracking-tight">{s.title}</h3>
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal">{s.desc}</p>
                 </div>
               </FadeUp>
             ))}
@@ -538,19 +530,19 @@ export default function HomeClient() {
       </section>
 
       {/* Core Use Cases & Benefits Grid — Dark Brand Navy Theme */}
-      <section className="py-20 sm:py-28 relative overflow-hidden bg-[#151930] text-white">
-        {/* Deep ambient glows */}
-        <div className="absolute top-0 right-[-10%] w-[600px] h-[600px] bg-indigo-600/15 blur-[140px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-[#F2A93B]/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <section className="py-20 sm:py-28 relative overflow-hidden bg-[#0F1426] text-white">
+        {/* Deep subtle ambient warmth */}
+        <div className="absolute top-0 right-[-10%] w-[500px] h-[500px] bg-slate-800/20 blur-[140px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 left-[-10%] w-[400px] h-[400px] bg-[#F2A93B]/10 blur-[120px] rounded-full pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <FadeUp>
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-4 border border-white/10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-[#F2A93B] text-xs font-bold uppercase tracking-widest mb-4 border border-white/10">
                 Proven Results
               </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
-                Master Pacing, Eliminate Fillers & Ace Q&A
+              <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                Master Pacing, Eliminate Fillers &amp; Ace Q&amp;A
               </h2>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
                 Oratii delivers instant, objective AI feedback so you speak with total clarity and executive confidence.
@@ -565,7 +557,7 @@ export default function HomeClient() {
               { icon: <BarChart3 size={32} className="text-[#F2A93B]" />, title: "Slide Deck Density", desc: "Audit your slides for text density and readability before presenting to any audience or panel." }
             ].map((item, i) => (
               <FadeUp key={i} delay={i * 100}>
-                <div className="bg-white/5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 flex flex-col justify-between hover:border-indigo-400/40 hover:bg-white/10 transition-all backdrop-blur-md h-full">
+                <div className="bg-white/5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 flex flex-col justify-between hover:border-[#F2A93B]/40 hover:bg-white/10 transition-all backdrop-blur-md h-full">
                   <div>
                     <div className="mb-5 p-3 rounded-2xl bg-white/10 w-max border border-white/10">{item.icon}</div>
                     <h3 className="font-extrabold text-white text-xl mb-3 tracking-tight">{item.title}</h3>
@@ -582,9 +574,9 @@ export default function HomeClient() {
       <section className="py-16 sm:py-24 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeUp>
-            <div className="bg-gradient-to-br from-[#151930] via-indigo-950 to-[#1B2140] rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 flex flex-col md:flex-row items-center gap-8 sm:gap-12 relative overflow-hidden border border-indigo-500/30 shadow-2xl">
-              {/* Ambient Glow */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/20 blur-[100px] pointer-events-none"></div>
+            <div className="bg-[#0F1426] rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 flex flex-col md:flex-row items-center gap-8 sm:gap-12 relative overflow-hidden border border-slate-800 shadow-2xl">
+              {/* Ambient Warmth */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-[100px] pointer-events-none"></div>
 
               <div className="w-full md:w-1/2 relative z-10">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-6 border border-white/10">
@@ -671,11 +663,11 @@ export default function HomeClient() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <FadeUp>
             <div className="text-center mb-12 sm:mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-extrabold uppercase tracking-widest mb-3 border border-indigo-100">
-                Help & Support
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold uppercase tracking-widest mb-3 border border-slate-200">
+                Help &amp; Support
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight mb-3">Frequently Asked Questions</h2>
-              <p className="text-slate-500 text-base">Everything you need to know about Oratii AI coaching.</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Frequently Asked Questions</h2>
+              <p className="text-slate-600 text-base">Everything you need to know about Oratii AI coaching.</p>
             </div>
           </FadeUp>
 
@@ -687,12 +679,12 @@ export default function HomeClient() {
               { q: "What presentation formats are supported?", a: "Slide Analyzer supports PPTX files, PDF decks, and Keynote files exported to PDF." }
             ].map((faq, idx) => (
               <FadeUp key={idx} delay={idx * 50}>
-                <details className="group bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-200 transition-all [&_summary::-webkit-details-marker]:hidden cursor-pointer">
-                  <summary className="flex items-center justify-between font-extrabold text-slate-900 text-base sm:text-lg">
+                <details className="group bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+                  <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg">
                     <span>{faq.q}</span>
-                    <span className="ml-4 shrink-0 transition-transform group-open:-rotate-180 text-indigo-600">↓</span>
+                    <span className="ml-4 shrink-0 transition-transform group-open:-rotate-180 text-slate-500">↓</span>
                   </summary>
-                  <p className="mt-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 font-medium">
+                  <p className="mt-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 font-normal">
                     {faq.a}
                   </p>
                 </details>
@@ -703,32 +695,32 @@ export default function HomeClient() {
       </section>
 
       {/* CTA Section — Oratii Official Hero CTA Banner */}
-      <section className="py-20 sm:py-28 bg-gradient-to-br from-[#151930] via-indigo-950 to-[#1B2140] text-center px-4 sm:px-6 relative overflow-hidden text-white">
+      <section className="py-20 sm:py-28 bg-[#0F1426] text-center px-4 sm:px-6 relative overflow-hidden text-white border-t border-slate-800">
         {/* Glow Spheres */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/20 blur-[130px] pointer-events-none"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#F2A93B]/10 blur-[130px] pointer-events-none"></div>
 
         <div className="max-w-4xl mx-auto relative z-10">
           <FadeUp>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-6 border border-white/10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-[#F2A93B] text-xs font-bold uppercase tracking-widest mb-6 border border-white/10">
               Start Improving Today
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">
               Ready to lead the room?
             </h2>
-            <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-medium">
+            <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-normal">
               Join ambitious professionals who use Oratii to perfect their pitches, presentations, and public speaking.
             </p>
             {user ? (
               <Link 
                 href="/dashboard"
-                className="inline-block px-10 py-4 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-lg font-black rounded-full hover:from-amber-300 hover:to-[#e0992b] transition-all shadow-xl shadow-[#F2A93B]/25 hover:shadow-[#F2A93B]/40 hover:-translate-y-1 cursor-pointer"
+                className="inline-block px-10 py-4 bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] text-base font-bold rounded-2xl transition-all shadow-xl shadow-[#F2A93B]/20 hover:-translate-y-0.5 cursor-pointer"
               >
                 Go to Dashboard
               </Link>
             ) : (
               <Link 
                 href="/signup"
-                className="inline-block px-10 py-4 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-lg font-black rounded-full hover:from-amber-300 hover:to-[#e0992b] transition-all shadow-xl shadow-[#F2A93B]/25 hover:shadow-[#F2A93B]/40 hover:-translate-y-1 cursor-pointer"
+                className="inline-block px-10 py-4 bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] text-base font-bold rounded-2xl transition-all shadow-xl shadow-[#F2A93B]/20 hover:-translate-y-0.5 cursor-pointer"
               >
                 Start Free Analysis
               </Link>

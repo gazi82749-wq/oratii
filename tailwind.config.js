@@ -14,6 +14,16 @@ module.exports = {
         handwriting: ['var(--font-handwriting)', 'cursive'],
       },
       colors: {
+        brand: {
+          navy: '#0F1426',
+          'navy-deep': '#090D1A',
+          'navy-light': '#1A2035',
+          gold: '#F2A93B',
+          'gold-hover': '#D98200',
+          'gold-subtle': '#FEF7ED',
+          slate: '#F8FAFC',
+          border: '#E2E8F0',
+        },
         indigo: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -21,11 +31,11 @@ module.exports = {
           300: '#cbd5e1',
           400: '#F2A93B',
           500: '#F2A93B',
-          600: '#1B2140',
-          700: '#151930',
+          600: '#0F1426',
+          700: '#0F1426',
           800: '#0f172a',
-          900: '#020617',
-          950: '#020617',
+          900: '#090D1A',
+          950: '#090D1A',
         },
         violet: {
           50: '#f8fafc',
@@ -34,11 +44,11 @@ module.exports = {
           300: '#cbd5e1',
           400: '#F2A93B',
           500: '#F2A93B',
-          600: '#151930',
+          600: '#0F1426',
           700: '#0f172a',
-          800: '#020617',
-          900: '#020617',
-          950: '#020617',
+          800: '#090D1A',
+          900: '#090D1A',
+          950: '#090D1A',
         }
       },
       backgroundImage: {

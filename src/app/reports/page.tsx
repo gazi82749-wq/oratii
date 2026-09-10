@@ -180,51 +180,57 @@ export default function Reports() {
       {/* Hidden Detailed PDF Template */}
       {activeSession && (
         <div className="absolute top-[-9999px] left-[-9999px] z-[-1]">
-          <div id="pdf-template-active" className="w-[800px] bg-white p-12 text-slate-900 border-8 border-slate-900 font-sans flex flex-col gap-8">
-            <h1 className="text-5xl font-black uppercase border-b-8 border-slate-900 pb-4">Detailed Analysis</h1>
-            
-            <div className="flex justify-between items-end bg-indigo-50 p-6 border-4 border-slate-900">
+          <div id="pdf-template-active" className="w-[800px] bg-white p-12 text-slate-900 border border-slate-300 font-sans flex flex-col gap-8">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-5">
               <div>
-                <p className="text-xl font-black uppercase text-slate-500">{getModuleName(activeSession.type)}</p>
-                <p className="text-sm font-bold text-slate-400">{new Date(activeSession.timestamp).toLocaleString()}</p>
-                <p className="text-lg font-black mt-2">Topic: {activeSession.topic || 'Practice Session'}</p>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Oratii AI Executive Report</span>
+                <h1 className="text-3xl font-extrabold text-slate-900 mt-1">Detailed Analysis</h1>
+              </div>
+              <span className="text-xs font-bold text-slate-500">{new Date(activeSession.timestamp).toLocaleDateString()}</span>
+            </div>
+            
+            <div className="flex justify-between items-end bg-[#0F1426] text-white p-6 rounded-2xl">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{getModuleName(activeSession.type)}</p>
+                <p className="text-lg font-bold mt-1 text-white">Topic: {activeSession.topic || 'Practice Session'}</p>
+                <p className="text-xs text-slate-400 mt-1">{new Date(activeSession.timestamp).toLocaleString()}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-black uppercase text-slate-500">Overall Score</p>
-                <p className="text-6xl font-black text-emerald-600">{activeSession.scores?.overall || 0}%</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-[#F2A93B]">Overall Score</p>
+                <p className="text-5xl font-extrabold text-white">{activeSession.scores?.overall || 0}%</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-4">
               {Object.entries(activeSession.scores || {})
                 .filter(([k, v]) => k !== 'overall' && v !== 'N/A' && v !== undefined && v !== null)
                 .map(([key, val]) => (
-                  <div key={key} className="bg-white border-4 border-slate-900 p-4 text-center">
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">{key}</p>
-                    <p className="text-3xl font-black">{String(val)}</p>
+                  <div key={key} className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{key}</p>
+                    <p className="text-2xl font-extrabold text-slate-900 mt-1">{String(val)}</p>
                   </div>
                 ))}
             </div>
 
             {/* AI Insights Section */}
             {(activeSession.strengths?.length > 0 || activeSession.weaknesses?.length > 0 || activeSession.feedback) && (
-              <div className="border-t-4 border-slate-900 pt-6">
-                <h2 className="text-2xl font-black uppercase mb-6">AI Qualitative Insights</h2>
+              <div className="border-t border-slate-200 pt-6">
+                <h2 className="text-xl font-extrabold text-slate-900 mb-5">AI Qualitative Insights</h2>
                 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-5">
                   {activeSession.strengths && activeSession.strengths.length > 0 && (
-                    <div className="bg-emerald-50 p-6 border-4 border-emerald-200">
-                      <h3 className="text-sm font-black text-emerald-800 uppercase tracking-widest mb-4">Strengths</h3>
-                      <ul className="list-disc pl-4 text-emerald-900 font-bold space-y-2">
+                    <div className="bg-emerald-50/60 p-5 border border-emerald-200 rounded-xl">
+                      <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3">Strengths</h3>
+                      <ul className="list-disc pl-4 text-emerald-950 font-medium text-sm space-y-1.5">
                         {activeSession.strengths.map((s: string, idx: number) => <li key={idx}>{s}</li>)}
                       </ul>
                     </div>
                   )}
 
                   {activeSession.weaknesses && activeSession.weaknesses.length > 0 && (
-                    <div className="bg-rose-50 p-6 border-4 border-rose-200">
-                      <h3 className="text-sm font-black text-rose-800 uppercase tracking-widest mb-4">Areas for Improvement</h3>
-                      <ul className="list-disc pl-4 text-rose-900 font-bold space-y-2">
+                    <div className="bg-rose-50/60 p-5 border border-rose-200 rounded-xl">
+                      <h3 className="text-xs font-bold text-rose-800 uppercase tracking-wider mb-3">Areas for Improvement</h3>
+                      <ul className="list-disc pl-4 text-rose-950 font-medium text-sm space-y-1.5">
                         {activeSession.weaknesses.map((w: string, idx: number) => <li key={idx}>{w}</li>)}
                       </ul>
                     </div>
@@ -232,18 +238,18 @@ export default function Reports() {
                 </div>
 
                 {activeSession.suggestions && activeSession.suggestions.length > 0 && (
-                  <div className="mt-6 bg-amber-50 p-6 border-4 border-amber-200">
-                    <h3 className="text-sm font-black text-amber-800 uppercase tracking-widest mb-4">Actionable Suggestions</h3>
-                    <ul className="list-disc pl-4 text-amber-900 font-bold space-y-2">
+                  <div className="mt-5 bg-amber-50/60 p-5 border border-amber-200 rounded-xl">
+                    <h3 className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3">Actionable Suggestions</h3>
+                    <ul className="list-disc pl-4 text-amber-950 font-medium text-sm space-y-1.5">
                       {activeSession.suggestions.map((s: string, idx: number) => <li key={idx}>{s}</li>)}
                     </ul>
                   </div>
                 )}
 
                 {activeSession.feedback && (
-                  <div className="mt-6 bg-indigo-100 p-6 border-4 border-indigo-200">
-                    <h3 className="text-sm font-black text-indigo-900 uppercase tracking-widest mb-4">Detailed Coach Feedback</h3>
-                    <p className="text-[#1B2140] font-bold leading-relaxed text-lg">{activeSession.feedback}</p>
+                  <div className="mt-5 bg-slate-50 p-5 border border-slate-200 rounded-xl">
+                    <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Coach Feedback</h3>
+                    <p className="text-slate-800 font-medium leading-relaxed text-sm">{activeSession.feedback}</p>
                   </div>
                 )}
               </div>
@@ -251,10 +257,10 @@ export default function Reports() {
             
             {/* Transcript Section */}
             {activeSession.transcript && (
-              <div className="border-t-4 border-slate-900 pt-6">
-                <h2 className="text-2xl font-black uppercase mb-6">Full Transcription</h2>
-                <div className="bg-indigo-50 p-8 border-4 border-indigo-300">
-                  <p className="text-slate-700 font-medium leading-relaxed">{activeSession.transcript}</p>
+              <div className="border-t border-slate-200 pt-6">
+                <h2 className="text-xl font-extrabold text-slate-900 mb-4">Full Transcription</h2>
+                <div className="bg-slate-50 p-6 border border-slate-200 rounded-xl">
+                  <p className="text-slate-700 font-normal leading-relaxed text-sm">{activeSession.transcript}</p>
                 </div>
               </div>
             )}
@@ -265,16 +271,16 @@ export default function Reports() {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 mb-2">
-            Reports & Analytics
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-2">
+            Reports &amp; Analytics
           </h1>
-          <p className="text-slate-500 font-medium max-w-xl">Review your past session performance, track AI feedback trends, and generate executive PDF summaries.</p>
+          <p className="text-slate-600 font-normal max-w-xl">Review your past session performance, track AI feedback trends, and generate executive PDF summaries.</p>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             {isCloudSynced ? (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-xs font-black border border-emerald-200 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200 shadow-2xs">
                 <Cloud className="w-3.5 h-3.5" /> Cloud Synced
               </span>
             ) : (
@@ -287,7 +293,7 @@ export default function Reports() {
           <select 
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-white border border-slate-200 rounded-xl px-4 py-2 font-bold text-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#151930] cursor-pointer transition-all text-xs uppercase"
+            className="bg-white border border-slate-200 rounded-xl px-4 py-2 font-bold text-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0F1426] cursor-pointer transition-all text-xs uppercase"
           >
             <option value="all">ALL MODULES</option>
             <option value="speech">SPEECH COACH</option>
@@ -299,11 +305,11 @@ export default function Reports() {
 
       {/* Performance Trajectory Line Chart */}
       {chartData.length > 0 && (
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-4">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="text-lg font-black text-slate-950 flex items-center gap-2 tracking-tight">
-                <TrendingUp className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 tracking-tight">
+                <TrendingUp className="w-5 h-5 text-[#0F1426]" />
                 Performance Trajectory
               </h3>
               <p className="text-xs text-slate-500 font-medium">Overall score progression over time</p>
@@ -315,8 +321,8 @@ export default function Reports() {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0.0}/>
+                    <stop offset="5%" stopColor="#0F1426" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="#0F1426" stopOpacity={0.0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -337,10 +343,10 @@ export default function Reports() {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-slate-900 border border-slate-800 text-white text-xs p-3 rounded-xl shadow-xl">
+                        <div className="bg-[#0F1426] border border-slate-800 text-white text-xs p-3 rounded-xl shadow-xl">
                           <p className="font-medium text-slate-400">{data.fullDate}</p>
                           <p className="font-bold text-slate-400 mt-0.5">{data.type}</p>
-                          <p className="text-base font-black mt-1 text-emerald-400">Score: {data.score}%</p>
+                          <p className="text-base font-bold mt-1 text-[#F2A93B]">Score: {data.score}%</p>
                         </div>
                       );
                     }
@@ -350,12 +356,12 @@ export default function Reports() {
                 <Area 
                   type="monotone" 
                   dataKey="score" 
-                  stroke="#4f46e5" 
-                  strokeWidth={3} 
+                  stroke="#0F1426" 
+                  strokeWidth={2.5} 
                   fillOpacity={1} 
                   fill="url(#scoreGradient)" 
-                  dot={{ r: 4, fill: '#4f46e5', strokeWidth: 2, stroke: '#ffffff' }}
-                  activeDot={{ r: 6, fill: '#fa7c42' }}
+                  dot={{ r: 4, fill: '#0F1426', strokeWidth: 2, stroke: '#ffffff' }}
+                  activeDot={{ r: 6, fill: '#F2A93B' }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -365,15 +371,15 @@ export default function Reports() {
 
       {totalSessions > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-white border border-indigo-200 rounded-xl p-6 shadow-sm">
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs">
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Practice</h4>
-            <span className="text-4xl font-bold text-slate-900">{totalSessions}</span>
+            <span className="text-4xl font-extrabold text-slate-900">{totalSessions}</span>
             <span className="text-xs font-medium text-slate-500 ml-2 uppercase">Sessions</span>
           </div>
           {Object.entries(moduleCounts).map(([type, count]) => (
-            <div key={type} className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 shadow-sm">
+            <div key={type} className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs">
               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{getModuleName(type)}</h4>
-              <span className="text-3xl font-bold text-slate-900">{String(count)}</span>
+              <span className="text-3xl font-extrabold text-slate-900">{String(count)}</span>
               <span className="text-xs font-medium text-slate-500 ml-2 uppercase">Sessions</span>
             </div>
           ))}
@@ -381,33 +387,33 @@ export default function Reports() {
       )}
 
       {filteredHistory.length === 0 ? (
-        <div className="w-full bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-xl p-16 text-center">
-          <Inbox size={48} className="mx-auto mb-4 text-indigo-400" />
+        <div className="w-full bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-16 text-center">
+          <Inbox size={48} className="mx-auto mb-4 text-slate-400" />
           <h2 className="text-xl font-bold text-slate-900 mb-2 uppercase">No History Found</h2>
           <p className="text-slate-500 font-medium">You haven’t completed any {filter !== 'all' ? filter : ''} sessions yet. Keep practicing!</p>
         </div>
       ) : (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-widest">Session Breakdown</h3>
-            {/* Video Storage Cap Notice (Step 3.2) */}
-            <div className="text-xs text-slate-500 font-medium bg-indigo-100/90 border border-indigo-200 px-3.5 py-2 rounded-xl flex items-center gap-2">
-              <HardDrive size={14} className="text-indigo-600 shrink-0" />
+            <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">Session Breakdown</h3>
+            {/* Video Storage Cap Notice */}
+            <div className="text-xs text-slate-600 font-medium bg-slate-100 border border-slate-200 px-3.5 py-2 rounded-xl flex items-center gap-2">
+              <HardDrive size={14} className="text-slate-700 shrink-0" />
               <span>Recorded videos are saved locally via IndexedDB. Export to MP4 or clear browser data anytime to free space.</span>
             </div>
           </div>
           {filteredHistory.map((session, i) => (
-            <div key={i} className={`bg-white border border-indigo-200 rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center shadow-sm hover:shadow-elevated transition-all break-inside-avoid accent-stripe`} style={{'--color-brand-from': {'speech':'#10b981','presentation':'#3b82f6','viva':'#e11d48','interview':'#f59e0b','jury':'#fa7c42'}[session.type] || '#94a3b8', '--color-brand-to': {'speech':'#34d399','presentation':'#60a5fa','viva':'#fb7185','interview':'#fbbf24','jury':'#818cf8'}[session.type] || '#cbd5e1'} as React.CSSProperties}>
+            <div key={i} className={`bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center shadow-xs hover:shadow-md transition-all break-inside-avoid accent-stripe`} style={{'--color-brand-from': {'speech':'#10b981','presentation':'#3b82f6','viva':'#e11d48','interview':'#f59e0b','jury':'#fa7c42'}[session.type] || '#94a3b8', '--color-brand-to': {'speech':'#34d399','presentation':'#60a5fa','viva':'#fb7185','interview':'#fbbf24','jury':'#818cf8'}[session.type] || '#cbd5e1'} as React.CSSProperties}>
               
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-indigo-50 border border-indigo-100 flex-shrink-0 shadow-xs">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-200/70 flex-shrink-0 shadow-xs">
                 {renderModuleIcon(session.type)}
               </div>
               
               <div className="flex-1 w-full">
                 <div className="flex flex-col md:flex-row justify-between md:items-center mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 capitalize">{getModuleName(session.type)}</h3>
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    <h3 className="text-xl font-extrabold text-slate-900 capitalize">{getModuleName(session.type)}</h3>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-widest">
                       {new Date(session.timestamp).toLocaleString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -415,31 +421,31 @@ export default function Reports() {
                   <button 
                     onClick={() => setExportingSessionId(session.id)}
                     disabled={exportingSessionId === session.id}
-                    className={`mt-4 md:mt-0 px-6 py-2 border border-indigo-200 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-all ${exportingSessionId === session.id ? 'bg-indigo-100 cursor-wait text-slate-400' : 'bg-[#1B2140] text-white hover:shadow-glow border-transparent'}`}
+                    className={`mt-4 md:mt-0 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer ${exportingSessionId === session.id ? 'bg-slate-100 cursor-wait text-slate-400' : 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-sm'}`}
                   >
-                    <FileText className="w-4 h-4" />
+                    <FileText className="w-4 h-4 text-[#F2A93B]" />
                     {exportingSessionId === session.id ? 'Generating...' : 'Export Detailed PDF'}
                   </button>
                 </div>
 
                 <div className="flex flex-wrap gap-4">
                   {session.scores?.overall !== undefined && (
-                    <div className="bg-white px-4 py-2 border border-indigo-200 rounded-lg shadow-sm">
+                    <div className="bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl shadow-2xs">
                       <span className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Overall Score</span>
-                      <span className="text-2xl font-bold text-slate-900">{session.scores.overall}%</span>
+                      <span className="text-2xl font-extrabold text-slate-900">{session.scores.overall}%</span>
                     </div>
                   )}
                   {Object.entries(session.scores || {}).map(([key, val]) => {
                     if (key === 'overall' || val === 'N/A' || val === undefined || val === null) return null;
                     return (
-                      <div key={key} className="bg-indigo-50 px-4 py-2 border border-indigo-200 rounded-lg shadow-sm">
+                      <div key={key} className="bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl shadow-2xs">
                         <span className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{key}</span>
                         <span className="text-xl font-bold text-slate-900">{String(val)}</span>
                       </div>
                     );
                   })}
                   {session.metrics?.wpm && (
-                    <div className="bg-indigo-50 px-4 py-2 border border-indigo-200 rounded-lg shadow-sm">
+                    <div className="bg-slate-50 px-4 py-2 border border-slate-200 rounded-xl shadow-2xs">
                       <span className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Pace</span>
                       <span className="text-xl font-bold text-slate-900">{session.metrics.wpm} WPM</span>
                     </div>
@@ -448,23 +454,23 @@ export default function Reports() {
 
                 {/* Qualitative AI Feedback Analysis */}
                 {(session.strengths?.length > 0 || session.weaknesses?.length > 0 || session.feedback) && (
-                  <div className="mt-6 border-t border-indigo-200 pt-5 w-full">
-                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">AI Analysis & Insights</h4>
+                  <div className="mt-6 border-t border-slate-100 pt-5 w-full">
+                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">AI Analysis &amp; Insights</h4>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {session.strengths && session.strengths.length > 0 && (
-                        <div className="bg-white p-4 border border-indigo-200 rounded-xl shadow-sm">
-                          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">What you did well</span>
-                          <ul className="list-disc pl-4 text-sm font-medium text-slate-700 space-y-1.5 marker:text-emerald-500">
+                        <div className="bg-white p-5 border border-slate-200 rounded-xl shadow-2xs">
+                          <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-2">What you did well</span>
+                          <ul className="list-disc pl-4 text-sm font-normal text-slate-700 space-y-1.5 marker:text-emerald-500">
                             {session.strengths.map((s: string, idx: number) => <li key={idx}>{s}</li>)}
                           </ul>
                         </div>
                       )}
 
                       {session.weaknesses && session.weaknesses.length > 0 && (
-                        <div className="bg-white p-4 border border-indigo-200 rounded-xl shadow-sm">
-                          <span className="text-xs font-bold text-rose-600 uppercase tracking-widest block mb-2">Areas for Improvement</span>
-                          <ul className="list-disc pl-4 text-sm font-medium text-slate-700 space-y-1.5 marker:text-rose-500">
+                        <div className="bg-white p-5 border border-slate-200 rounded-xl shadow-2xs">
+                          <span className="text-xs font-bold text-rose-700 uppercase tracking-wider block mb-2">Areas for Improvement</span>
+                          <ul className="list-disc pl-4 text-sm font-normal text-slate-700 space-y-1.5 marker:text-rose-500">
                             {session.weaknesses.map((w: string, idx: number) => <li key={idx}>{w}</li>)}
                           </ul>
                         </div>
@@ -472,18 +478,18 @@ export default function Reports() {
                     </div>
 
                     {session.suggestions && session.suggestions.length > 0 && (
-                      <div className="mt-4 bg-white p-4 border border-indigo-200 rounded-xl shadow-sm">
-                        <span className="text-xs font-bold text-amber-600 uppercase tracking-widest block mb-2">Actionable Suggestions</span>
-                        <ul className="list-disc pl-4 text-sm font-medium text-slate-700 space-y-1.5 marker:text-amber-500">
+                      <div className="mt-4 bg-white p-5 border border-slate-200 rounded-xl shadow-2xs">
+                        <span className="text-xs font-bold text-amber-800 uppercase tracking-wider block mb-2">Actionable Suggestions</span>
+                        <ul className="list-disc pl-4 text-sm font-normal text-slate-700 space-y-1.5 marker:text-amber-500">
                           {session.suggestions.map((s: string, idx: number) => <li key={idx}>{s}</li>)}
                         </ul>
                       </div>
                     )}
 
                     {session.feedback && (
-                      <div className="mt-4 bg-indigo-50 p-4 border border-indigo-200 rounded-xl shadow-sm">
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Detailed Feedback</span>
-                        <p className="text-sm font-medium text-slate-700 leading-relaxed">{session.feedback}</p>
+                      <div className="mt-4 bg-slate-50 p-5 border border-slate-200 rounded-xl shadow-2xs">
+                        <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-2">Detailed Feedback</span>
+                        <p className="text-sm font-normal text-slate-700 leading-relaxed">{session.feedback}</p>
                       </div>
                     )}
                   </div>

@@ -297,18 +297,14 @@ export default function ProfessionalDashboard() {
     <div className="w-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans relative min-h-screen">
       <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-8 space-y-8 flex-1">
       
-      {/* Background Soft Glow Gradients (Matching Landing Page Theme) */}
-      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-indigo-200/40 blur-[130px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute top-80 -left-20 w-[450px] h-[450px] bg-purple-200/30 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-
       {/* Push Notification Opt-In (non-intrusive, shows on 2nd+ visit) */}
       <NotificationPrompt />
 
-      {/* 1. HERO HEROIC PROFILE CARD (Landing Page Palette) */}
-      <div className="relative bg-gradient-to-br from-[#1E1B4B] via-[#312E81] to-[#4338CA] text-white rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden border border-indigo-500/30 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* 1. HERO PROFILE CARD (Executive Brand Palette) */}
+      <div className="relative bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
         
-        {/* Glow backdrop accent */}
-        <div className="absolute -top-12 -right-12 w-80 h-80 bg-purple-400/20 blur-3xl rounded-full pointer-events-none"></div>
+        {/* Subtle Warm Backdrop Accent */}
+        <div className="absolute -top-12 -right-12 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none"></div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 z-10">
           {profile.avatar ? (
@@ -316,26 +312,26 @@ export default function ProfessionalDashboard() {
             <img
               src={profile.avatar}
               alt={profile.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-amber-400 shadow-xl shrink-0"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#F2A93B] shadow-lg shrink-0"
             />
           ) : (
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-[#1E1B4B] font-black text-2xl sm:text-3xl flex items-center justify-center shadow-xl shrink-0 border-2 border-amber-300">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#F2A93B] text-[#0F1426] font-extrabold text-2xl sm:text-3xl flex items-center justify-center shadow-md shrink-0 border border-amber-300">
               {getInitials(profile.name)}
             </div>
           )}
 
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 Welcome back, {profile.name}!
               </h1>
-              <span className="px-3 py-1 bg-gradient-to-r from-amber-400 to-amber-500 text-[#1E1B4B] text-[11px] font-black uppercase rounded-full shadow-md flex items-center gap-1">
-                <Sparkles size={12} fill="currentColor" /> Pro Presenter
+              <span className="px-3 py-1 bg-[#F2A93B] text-[#0F1426] text-[11px] font-bold uppercase rounded-full shadow-sm flex items-center gap-1">
+                <Sparkles size={12} /> Pro Presenter
               </span>
             </div>
-            <p className="text-xs sm:text-sm font-medium text-indigo-200 flex flex-wrap items-center gap-3">
+            <p className="text-xs sm:text-sm font-normal text-slate-300 flex flex-wrap items-center gap-3">
               <span>{profile.email}</span>
-              <span className="text-indigo-400">•</span>
+              <span className="text-slate-500">•</span>
               <span>Member since {stats.memberSince}</span>
             </p>
           </div>
@@ -345,9 +341,9 @@ export default function ProfessionalDashboard() {
         <div className="flex items-center gap-3 shrink-0 z-10">
           <button
             onClick={handleOpenEditModal}
-            className="px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-extrabold rounded-2xl transition-all cursor-pointer shadow-md backdrop-blur-md flex items-center gap-2"
+            className="px-4 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-bold rounded-2xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
           >
-            <Edit3 size={15} className="text-amber-400" />
+            <Edit3 size={15} className="text-[#F2A93B]" />
             <span>Edit Profile</span>
           </button>
 
@@ -356,7 +352,7 @@ export default function ProfessionalDashboard() {
               await supabase.auth.signOut();
               router.push('/login');
             }}
-            className="px-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400/30 text-rose-200 text-xs font-extrabold rounded-2xl transition-all cursor-pointer shadow-md flex items-center gap-2"
+            className="px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-400/20 text-rose-300 text-xs font-bold rounded-2xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
             title="Sign Out"
           >
             <LogOut size={15} />

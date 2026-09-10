@@ -19,14 +19,14 @@ export default function RefundPolicyPage() {
         
         {/* Header */}
         <div className="border-b border-slate-200 pb-8 mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-slate-800 border border-slate-200 text-xs font-extrabold uppercase tracking-wider mb-4 shadow-2xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
             <Receipt size={13} className="text-slate-800" />
-            <span>Fulfillment & Billing Terms</span>
+            <span>Fulfillment &amp; Billing Terms</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-950 mb-3">
-            Cancellation & Refund Policy
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
+            Cancellation &amp; Refund Policy
           </h1>
-          <p className="text-sm text-slate-500 font-medium">
+          <p className="text-sm text-slate-500 font-normal">
             Last Updated: August 2026 • Effective Immediately
           </p>
         </div>
@@ -35,12 +35,11 @@ export default function RefundPolicyPage() {
         <div className="space-y-8 text-sm sm:text-base leading-relaxed mb-16">
 
           {/* Quick Summary Card */}
-          <section className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-md relative overflow-hidden" style={{ isolation: 'isolate' }}>
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
-            <h2 className="text-lg font-black text-slate-950 mb-3 flex items-center gap-2">
+          <section className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-sm relative">
+            <h2 className="text-lg font-extrabold text-slate-900 mb-3 flex items-center gap-2">
               <CheckCircle size={20} className="text-emerald-600" /> Digital Delivery Guarantee
             </h2>
-            <p className="text-slate-700 font-medium leading-relaxed">
+            <p className="text-slate-700 font-normal leading-relaxed">
               All Oratii services, including <strong>Pay-As-You-Go Credit Sachets (₹49, ₹99, ₹199, ₹1499)</strong> and subscriptions, are <strong>100% digital goods</strong>. Upon successful payment verification via our payment gateway (Razorpay), your purchased credits are automatically deposited into your account dashboard immediately with zero shipping delay.
             </p>
           </section>

@@ -848,21 +848,17 @@ export default function SpeechCoach() {
 
   return (
     <div className="w-full flex flex-col gap-4 text-slate-900 animate-fade-in relative pb-6">
-      {/* Deep ambient glows */}
-      <div className="absolute top-10 right-10 w-[600px] h-[500px] bg-indigo-600/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute top-1/3 -left-20 w-[400px] h-[400px] bg-[#F2A93B]/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      
       {!results ? (
         <>
           {/* Header Title */}
           <div className="mb-3 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[#F2A93B] text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-md">
-              <span className="w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span> Speech Coach AI Module
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Speech Coach AI Module
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-1 flex items-center gap-2">
-              <Mic size={24} className="text-amber-500" /> Speech Coach
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-1 flex items-center gap-2">
+              <Mic size={24} className="text-[#F2A93B]" /> Speech Coach
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-xl">Record live speech, upload audio, or pick a topic to receive real-time pacing, WPM, and filler word AI analysis.</p>
+            <p className="text-xs sm:text-sm text-slate-600 font-normal max-w-xl">Record live speech, upload audio, or pick a topic to receive real-time pacing, WPM, and filler word AI analysis.</p>
           </div>
 
           {/* Top-level Section Switcher */}
@@ -871,10 +867,10 @@ export default function SpeechCoach() {
               <button
                 key={s.key}
                 onClick={() => { setSection(s.key); setResults(null); }}
-                className={`flex-1 py-2 text-xs sm:text-sm font-black transition-all rounded-xl cursor-pointer ${
+                className={`flex-1 py-2 text-xs sm:text-sm font-bold transition-all rounded-xl cursor-pointer ${
                   section === s.key 
-                    ? 'bg-[#151930] text-white shadow-md' 
-                    : 'text-slate-600 hover:text-slate-900 font-bold hover:bg-slate-200/50'
+                    ? 'bg-[#0F1426] text-white shadow-sm' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
               >
                 {s.label}
@@ -884,9 +880,9 @@ export default function SpeechCoach() {
 
           {/* Challenge Banner if launched from 20-Day Challenge */}
           {challengeDay && (
-            <div className="bg-[#151930] text-white rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl border border-indigo-500/30 mb-4">
+            <div className="bg-[#0F1426] text-white rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg border border-slate-800 mb-4">
               <div className="flex items-center gap-3 font-semibold text-sm">
-                <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-black uppercase tracking-wider shrink-0 text-amber-400 border border-white/10">
+                <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-bold uppercase tracking-wider shrink-0 text-[#F2A93B] border border-white/10">
                   Day {challengeDay} Challenge
                 </span>
                 <span className="truncate text-slate-200 font-bold">{situation || `Task Day ${challengeDay}`}</span>
@@ -900,11 +896,9 @@ export default function SpeechCoach() {
             </div>
           )}
 
-          {/* ============= SECTION: RECORD / UPLOAD (Fintech SaaS Aesthetic) ============= */}
+          {/* ============= SECTION: RECORD / UPLOAD (Executive SaaS Aesthetic) ============= */}
           {section === 'record' && (
-            <div className="border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden" style={{ isolation: 'isolate' }}>
-              {/* Accent top gradient stripe */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
+            <div className="border border-slate-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-sm p-5 sm:p-6 flex flex-col gap-5 relative">
               
               {/* Header / Mode Switcher */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">

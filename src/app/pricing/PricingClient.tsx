@@ -124,9 +124,9 @@ export default function PricingClient() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 overflow-x-hidden relative">
-      {/* Background Soft Glow Mesh */}
-      <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-300/20 blur-[140px] rounded-full pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '12s' }}></div>
-      <div className="absolute top-[10%] right-[-10%] w-[50vw] h-[50vw] bg-amber-200/20 blur-[140px] rounded-full pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
+      {/* Subtle Ambient Depth */}
+      <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-[15%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       {/* Instant Success Banner */}
       {showSuccessBanner && (
@@ -140,25 +140,25 @@ export default function PricingClient() {
 
         {/* Hero Section */}
         <section className="relative pt-12 pb-12 px-4 sm:px-6 text-center max-w-4xl mx-auto z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-900 text-xs font-bold uppercase tracking-wider mb-6 shadow-xs">
-            <Coins size={16} className="text-amber-500 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-xs font-bold uppercase tracking-wider mb-6 shadow-xs">
+            <Coins size={15} className="text-[#F2A93B]" />
             <span>Pay As You Go • No Monthly Subscription</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-950 mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
             Simple credit packs for <span className="text-[#F2A93B]">unmatched confidence.</span>
           </h1>
 
-          <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed font-medium">
+          <p className="text-base sm:text-xl text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
             Buy credits once, use them whenever you present. No recurring monthly subscriptions or hidden charges.
           </p>
 
           {/* User Credit Balance Display */}
           {userCredits !== null && (
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white border border-indigo-200 shadow-md text-slate-800 text-sm font-bold">
-              <span className="text-slate-500 font-medium">Your Balance:</span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-sm border border-amber-300">
-                <Coins size={16} className="text-amber-600" />
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm text-slate-800 text-sm font-bold">
+              <span className="text-slate-500 font-normal">Your Balance:</span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-extrabold text-sm border border-amber-200">
+                <Coins size={16} className="text-[#F2A93B]" />
                 {userCredits} Credits
               </span>
             </div>
@@ -172,34 +172,34 @@ export default function PricingClient() {
 
         {/* Credit Breakdown Bar */}
         <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-16 relative z-10">
-          <div className="bg-white rounded-3xl p-6 border border-indigo-200/90 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-900 flex items-center justify-center shrink-0">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                 <Mic size={20} />
               </div>
               <div className="text-left">
                 <div className="text-xs font-bold text-slate-900">Speech Audio Audit</div>
-                <div className="text-[11px] text-indigo-700 font-semibold">1 Credit / Audit</div>
+                <div className="text-[11px] text-slate-500 font-medium">1 Credit / Audit</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-blue-50/60 border border-blue-100">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                 <FileText size={20} />
               </div>
               <div className="text-left">
                 <div className="text-xs font-bold text-slate-900">PPT Slide Analyzer</div>
-                <div className="text-[11px] text-blue-700 font-semibold">1 Credit / Deck</div>
+                <div className="text-[11px] text-slate-500 font-medium">1 Credit / Deck</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-purple-50/60 border border-purple-100">
-              <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0">
                 <MessageSquare size={20} />
               </div>
               <div className="text-left">
                 <div className="text-xs font-bold text-slate-900">AI Viva Defense</div>
-                <div className="text-[11px] text-purple-700 font-semibold">2 Credits / Session</div>
+                <div className="text-[11px] text-slate-500 font-medium">2 Credits / Session</div>
               </div>
             </div>
           </div>
@@ -215,54 +215,54 @@ export default function PricingClient() {
               return (
                 <div
                   key={pack.id}
-                  className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 active-touch-scale ${
+                  className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
                     isPopular 
-                      ? 'bg-gradient-to-b from-[#1E1B4B] via-[#151930] to-[#0F172A] text-white border-2 border-[#F2A93B] shadow-2xl lg:-translate-y-2 hover:-translate-y-3 ring-4 ring-[#F2A93B]/20 glow-aura-amber' 
-                      : 'mobile-card-vibrant text-slate-900 border border-indigo-200 shadow-md hover:shadow-xl hover:-translate-y-1'
+                      ? 'bg-[#0F1426] text-white border-2 border-[#F2A93B] shadow-xl lg:-translate-y-2 hover:-translate-y-2.5' 
+                      : 'bg-white text-slate-900 border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5'
                   }`}
                 >
                   {isPopular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-20 border border-amber-200">
-                      <Sparkles size={13} className="animate-spin" />
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#F2A93B] text-[#0F1426] text-xs font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md flex items-center gap-1.5 z-20">
+                      <Sparkles size={13} />
                       <span>{pack.badge}</span>
                     </div>
                   )}
 
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className={`text-xl sm:text-2xl font-black font-heading tracking-tight ${isPopular ? 'text-white' : 'text-slate-950'}`}>
+                      <h3 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${isPopular ? 'text-white' : 'text-slate-900'}`}>
                         {pack.name}
                       </h3>
                       {!isPopular && (
-                        <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-indigo-100/90 text-indigo-950 border border-indigo-200">
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200">
                           {pack.badge}
                         </span>
                       )}
                     </div>
 
-                    <p className={`text-xs mb-6 leading-relaxed font-medium ${isPopular ? 'text-indigo-200' : 'text-slate-600'}`}>
+                    <p className={`text-xs mb-6 leading-relaxed font-normal ${isPopular ? 'text-slate-300' : 'text-slate-600'}`}>
                       {pack.subtitle}
                     </p>
 
-                    <div className={`mb-8 pb-8 border-b ${isPopular ? 'border-indigo-900/60' : 'border-indigo-100'}`}>
+                    <div className={`mb-8 pb-8 border-b ${isPopular ? 'border-slate-800' : 'border-slate-100'}`}>
                       <div className="flex items-baseline gap-1">
-                        <span className={`text-4xl sm:text-5xl font-black tracking-tight font-heading ${isPopular ? 'text-white' : 'text-slate-950'}`}>
+                        <span className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${isPopular ? 'text-white' : 'text-slate-900'}`}>
                           {isFree ? '₹0' : `₹${pack.price}`}
                         </span>
-                        <span className={`text-xs font-extrabold ml-1 ${isPopular ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <span className={`text-xs font-semibold ml-1 ${isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
                           one-time
                         </span>
                       </div>
 
                       <div className="mt-3 flex items-center gap-2">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider ${
-                          isPopular ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40' : 'bg-indigo-100/90 text-indigo-950 border border-indigo-200'
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider ${
+                          isPopular ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40' : 'bg-slate-100 text-slate-800 border border-slate-200'
                         }`}>
-                          <Coins size={14} className={isPopular ? 'text-amber-400' : 'text-indigo-700'} />
+                          <Coins size={14} className={isPopular ? 'text-[#F2A93B]' : 'text-slate-600'} />
                           {pack.credits} Credits Included
                         </span>
 
-                        <span className={`text-[11px] font-extrabold flex items-center gap-1 ${isPopular ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                        <span className={`text-[11px] font-bold flex items-center gap-1 ${isPopular ? 'text-emerald-400' : 'text-emerald-700'}`}>
                           <Clock size={12} />
                           {pack.validity}
                         </span>
@@ -270,7 +270,7 @@ export default function PricingClient() {
                     </div>
 
                     <div className="space-y-3 mb-8">
-                      <p className={`text-[11px] font-black uppercase tracking-wider ${isPopular ? 'text-indigo-300' : 'text-slate-600'}`}>
+                      <p className={`text-[11px] font-bold uppercase tracking-wider ${isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
                         What’s Included:
                       </p>
                       
@@ -278,9 +278,9 @@ export default function PricingClient() {
                         <div key={i} className="flex items-start gap-3">
                           <CheckCircle2 
                             size={18} 
-                            className={`shrink-0 mt-0.5 ${isPopular ? 'text-amber-400' : 'text-emerald-600'}`} 
+                            className={`shrink-0 mt-0.5 ${isPopular ? 'text-[#F2A93B]' : 'text-emerald-600'}`} 
                           />
-                          <span className={`text-sm font-semibold leading-tight ${isPopular ? 'text-indigo-100' : 'text-slate-800'}`}>
+                          <span className={`text-sm font-medium leading-tight ${isPopular ? 'text-slate-200' : 'text-slate-700'}`}>
                             {feat}
                           </span>
                         </div>
@@ -291,12 +291,12 @@ export default function PricingClient() {
                   <button
                     onClick={() => handlePurchase(pack)}
                     disabled={isProcessing}
-                    className={`w-full py-4 rounded-2xl text-sm font-extrabold transition-all duration-200 flex items-center justify-center gap-2 group shadow-md active-touch-scale ${
+                    className={`w-full py-4 rounded-2xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 group shadow-sm ${
                       isPopular 
-                        ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-[#F2A93B] text-[#151930] hover:scale-[1.02] font-black shadow-lg shadow-amber-500/20' 
+                        ? 'bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] font-bold shadow-md shadow-[#F2A93B]/20 hover:-translate-y-0.5' 
                         : isFree
-                        ? 'bg-indigo-100 text-indigo-950 hover:bg-indigo-200 border border-indigo-300 hover:scale-[1.02]'
-                        : 'bg-[#1B2140] text-white hover:bg-slate-900 hover:scale-[1.02]'
+                        ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-200 hover:-translate-y-0.5'
+                        : 'bg-[#0F1426] text-white hover:bg-[#1A2035] hover:-translate-y-0.5'
                     }`}
                   >
                     <span>{pack.cta}</span>
@@ -311,10 +311,10 @@ export default function PricingClient() {
         {/* FAQ Section */}
         <section className="max-w-3xl mx-auto px-4 sm:px-6 mb-24 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-heading mb-3">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-3">
               Frequently Asked Questions
             </h2>
-            <p className="text-slate-500 text-sm">Everything you need to know about credits, payments, and instant activation.</p>
+            <p className="text-slate-600 text-sm">Everything you need to know about credits, payments, and instant activation.</p>
           </div>
 
           <div className="space-y-4">
@@ -323,20 +323,20 @@ export default function PricingClient() {
               return (
                 <div 
                   key={index}
-                  className="bg-white border border-indigo-200/90 rounded-2xl overflow-hidden shadow-sm transition-all"
+                  className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs transition-all"
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                    className="w-full p-5 text-left font-bold text-slate-900 flex items-center justify-between gap-4 hover:bg-indigo-50/60 transition-colors"
+                    className="w-full p-5 text-left font-bold text-slate-900 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors"
                   >
                     <span className="text-base leading-snug">{faq.q}</span>
                     <ChevronDown 
                       size={18} 
-                      className={`text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-900' : ''}`}
+                      className={`text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-slate-700' : ''}`}
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-indigo-100 pt-3">
+                    <div className="px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3 font-normal">
                       {faq.a}
                     </div>
                   )}

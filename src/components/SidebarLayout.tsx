@@ -102,12 +102,11 @@ export default function SidebarLayout({ children }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased relative">
-      {/* Modern Animated Soft Mesh Background (Identical to Landing Page Hero) */}
+      {/* Subtle Premium Ambient Lighting */}
       {!isHomePage && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-300/20 blur-[140px] rounded-full animate-pulse" style={{ animationDuration: '12s' }}></div>
-          <div className="absolute top-[10%] right-[-10%] w-[50vw] h-[50vw] bg-amber-200/20 blur-[140px] rounded-full animate-pulse" style={{ animationDuration: '15s', animationDelay: '2s' }}></div>
-          <div className="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-purple-200/15 blur-[140px] rounded-full animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }}></div>
+          <div className="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] bg-slate-200/40 blur-[160px] rounded-full"></div>
+          <div className="absolute top-[15%] right-[-10%] w-[45vw] h-[45vw] bg-amber-100/35 blur-[150px] rounded-full"></div>
         </div>
       )}
 

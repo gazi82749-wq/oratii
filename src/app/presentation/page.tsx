@@ -279,22 +279,18 @@ function PresentationAnalyzerContent() {
       )}
 
     <div className="w-full flex flex-col gap-8 animate-fade-in text-slate-900 relative">
-      {/* Background Theme Glows */}
-      <div className="absolute top-20 right-10 w-[600px] h-[500px] bg-amber-500/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute top-1/3 -left-20 w-[400px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      
       {!analysis ? (
         <>
           <div className="mb-8 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/80 text-slate-800 text-[11px] font-extrabold uppercase tracking-widest mb-2 shadow-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Slide Deck AI Module
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Slide Deck AI Module
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 mb-2 flex items-center gap-2.5">
-              <BarChart3 size={28} className="text-amber-500" /> Slide Analyzer
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2 flex items-center gap-2.5">
+              <BarChart3 size={28} className="text-[#F2A93B]" /> Slide Analyzer
             </h1>
-            <p className="text-sm md:text-base text-slate-500 font-medium max-w-xl">Upload your PowerPoint (PPTX) or PDF presentation deck for instant text density, design clarity, and AI structural feedback.</p>
-            <div className="mt-3 inline-flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 bg-amber-50 border border-amber-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
-              <span className="text-amber-800 font-extrabold flex items-center gap-1.5">
+            <p className="text-sm md:text-base text-slate-600 font-normal max-w-xl">Upload your PowerPoint (PPTX) or PDF presentation deck for instant text density, design clarity, and AI structural feedback.</p>
+            <div className="mt-3 inline-flex flex-wrap items-center gap-2 text-xs font-medium text-slate-700 bg-amber-50 border border-amber-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
+              <span className="text-amber-800 font-bold flex items-center gap-1.5">
                 <Video size={14} /> Practice Mode Included:
               </span>
               <span>Upload your deck below to run an AI audit, or launch <strong>&quot;Practice Live Presentation&quot;</strong> for full-screen webcam rehearsal!</span>
@@ -308,9 +304,7 @@ function PresentationAnalyzerContent() {
             </div>
           )}
 
-          <div className="border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-6 sm:p-10 flex flex-col items-center relative overflow-hidden" style={{ isolation: 'isolate' }}>
-            {/* Top gradient stripe */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
+          <div className="border border-slate-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-sm p-6 sm:p-10 flex flex-col items-center relative">
             
             {isLoading ? (
               <ScribbleLoader text="Evaluating slide design & density..." />

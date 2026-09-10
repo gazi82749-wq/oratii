@@ -20,13 +20,13 @@ export default function SecurityEthicsPage() {
         
         {/* Header */}
         <div className="border-b border-slate-200 pb-8 mb-10 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs font-black uppercase tracking-wider mb-4 shadow-2xs">
-            <ShieldCheck size={16} className="text-indigo-600" /> Enterprise Security & AI Ethics Guarantee
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
+            <ShieldCheck size={16} className="text-[#0F1426]" /> Enterprise Security &amp; AI Ethics Guarantee
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-950 mb-4">
-            Security & Ethics Center
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
+            Security &amp; Ethics Center
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 max-w-3xl font-medium leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 max-w-3xl font-normal leading-relaxed">
             Our commitment to enterprise-grade data protection, zero-retention privacy, on-device WASM processing, and unbiased AI scoring.
           </p>
         </div>

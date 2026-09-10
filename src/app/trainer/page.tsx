@@ -303,23 +303,23 @@ export default function TrainerDashboardPage() {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full">
       <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-900/50 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
+      <div className="bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />
 
         <div className="flex items-center gap-4 z-10">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-2xl font-black shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-[#F2A93B] shadow-sm">
             <Building2 size={30} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black tracking-tight">{academy.name}</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight">{academy.name}</h1>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
                 Partner Academy
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-indigo-200 mt-0.5 flex items-center gap-2">
-              <span className="flex items-center gap-1"><MapPin size={12} className="text-indigo-300" /> {academy.city || 'India'}</span>
-              <span>•</span>
+            <p className="text-xs sm:text-sm text-slate-300 mt-0.5 flex items-center gap-2">
+              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#F2A93B]" /> {academy.city || 'India'}</span>
+              <span className="text-slate-500">•</span>
               <span>20% Student Top-Up Commission Active</span>
             </p>
           </div>
@@ -328,7 +328,7 @@ export default function TrainerDashboardPage() {
         <div className="flex items-center gap-3 z-10">
           <button
             onClick={() => setShowCreateBatch(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-400/20 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
           >
             <Plus size={16} />
             Create New Batch
@@ -338,43 +338,43 @@ export default function TrainerDashboardPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800 shrink-0">
             <BookOpen size={22} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Batches</p>
-            <p className="text-2xl font-black text-slate-900 mt-0.5">{batches.length}</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Batches</p>
+            <p className="text-2xl font-extrabold text-slate-900 mt-0.5">{batches.length}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800 shrink-0">
             <Users size={22} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Enrolled Students</p>
-            <p className="text-2xl font-black text-slate-900 mt-0.5">{totalStudents}</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Enrolled Students</p>
+            <p className="text-2xl font-extrabold text-slate-900 mt-0.5">{totalStudents}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800 shrink-0">
             <TrendingUp size={22} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Drills Completed</p>
-            <p className="text-2xl font-black text-slate-900 mt-0.5">{totalSubmissions}</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Drills Completed</p>
+            <p className="text-2xl font-extrabold text-slate-900 mt-0.5">{totalSubmissions}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-700 shrink-0">
             <Award size={22} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Earnings / Credits</p>
-            <p className="text-2xl font-black text-slate-900 mt-0.5">₹{academy.total_earnings || 0}</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Earnings / Credits</p>
+            <p className="text-2xl font-extrabold text-slate-900 mt-0.5">₹{academy.total_earnings || 0}</p>
           </div>
         </div>
       </div>

@@ -4,16 +4,16 @@
 
 /* ─── Design Tokens ─── */
 :root {
-  /* Brand Gradient */
-  --color-brand-from: #1B2140;  /* navy */
-  --color-brand-via: #151930;   /* dark navy */
-  --color-brand-to: #F2A93B;    /* yellow */
-  --color-brand-light: #f8fafc; /* indigo-50 */
-  --color-brand-glow: rgba(242, 169, 59, 0.2); /* yellow glow */
-  --color-primary: #151930;
-  --color-accent: #4f46e5;
-  --color-accent-hover: #4338ca;
-  --color-accent-light: #e0e7ff;
+  /* Brand Theme */
+  --color-brand-from: #0F1426;  /* executive navy */
+  --color-brand-via: #151930;   /* deep navy */
+  --color-brand-to: #F2A93B;    /* warm gold */
+  --color-brand-light: #f8fafc;
+  --color-brand-glow: rgba(242, 169, 59, 0.15);
+  --color-primary: #0F1426;
+  --color-accent: #F2A93B;
+  --color-accent-hover: #D98200;
+  --color-accent-light: #FEF7ED;
 
   /* Surfaces */
   --color-bg: #fafafa;
