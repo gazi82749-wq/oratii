@@ -417,14 +417,12 @@ export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportF
         <section className="pt-10 sm:pt-14 pb-8 px-4 sm:px-6 max-w-5xl mx-auto text-center">
           
           {/* Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 border border-slate-200/80 shadow-xs text-xs font-black uppercase tracking-wider text-slate-800 mb-5">
-            <span className="relative flex h-2.5 w-2.5">
+          <div className="ui-badge-pill mb-5">
+            <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>Customer Support &amp; Feedback Desk</span>
-            <span className="text-slate-300">|</span>
-            <span className="text-amber-600 font-bold">Avg Response &lt; 2h</span>
+            <span>Support &amp; Feedback Hub</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 mb-4 leading-tight">
