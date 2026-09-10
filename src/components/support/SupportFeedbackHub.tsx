@@ -404,14 +404,14 @@ export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportF
   const openTicketCount = tickets.filter((t) => t.status === 'open' || t.status === 'in_progress').length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 relative overflow-x-hidden">
+    <div className="w-full flex-1 flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 relative overflow-hidden">
       {/* Background Soft Glow Mesh (Identical to Landing Page & Pricing Hero) */}
       <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-300/20 blur-[140px] rounded-full pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '14s' }} />
       <div className="absolute top-[15%] right-[-10%] w-[50vw] h-[50vw] bg-amber-200/25 blur-[140px] rounded-full pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '16s', animationDelay: '2s' }} />
-      <div className="absolute bottom-[-10%] left-[25%] w-[45vw] h-[45vw] bg-purple-200/20 blur-[140px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-0 left-[25%] w-[45vw] h-[45vw] bg-purple-200/20 blur-[140px] rounded-full pointer-events-none -z-10" />
 
       {/* Main Content Area */}
-      <div className="flex-1 pb-24 relative z-10">
+      <div className="flex-1 pb-12 sm:pb-16 relative z-10">
         
         {/* Header Hero Section */}
         <section className="pt-10 sm:pt-14 pb-8 px-4 sm:px-6 max-w-5xl mx-auto text-center">
