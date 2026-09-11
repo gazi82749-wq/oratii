@@ -20,9 +20,10 @@ export default function SidebarLayout({ children }) {
 
   const mobileNavItems = [
     { href: '/', label: 'Home', icon: <Home size={17} /> },
-    { href: '/speech-coach', label: '3m Drills', icon: <Mic size={17} /> },
+    { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
     { href: '/presentation', label: 'Viva', icon: <FileText size={17} /> },
+    { href: '/trainer', label: 'Trainer Hub', icon: <Sparkles size={17} /> },
     { href: '/dashboard', label: 'Account', icon: <User size={17} /> },
   ];
 
