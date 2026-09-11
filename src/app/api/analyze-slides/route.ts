@@ -6,6 +6,7 @@ import { generateAIContent } from '../../../lib/aiFallback';
 import JSZip from 'jszip';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -98,23 +99,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Require authentication for all users
+    // Check authentication or anonymous trial
     if (!userId) {
       const xUserId = request.headers.get('x-user-id');
       if (xUserId) userId = xUserId;
     }
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required. Please sign in to analyze slides.", authRequired: true }, { status: 401 });
-    }
 
-    // Credit check
-    const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-    if (!usageCheck.allowed) {
-      return NextResponse.json({
-        error: "Credits Exhausted",
-        message: "You've used all your credits. Purchase more credits to continue.",
-        creditExhausted: true
-      }, { status: 403 });
+    if (!userId) {
+      const trialExhausted = await hasUsedTrial(request);
+      if (trialExhausted) {
+        return NextResponse.json({ 
+          error: "Free trial limit reached. Please sign in or create an account to get 20 free credits.", 
+          authRequired: true,
+          trialExpired: true 
+        }, { status: 401 });
+      }
+    } else {
+      // Credit check for logged-in users
+      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
+      if (!usageCheck.allowed) {
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
     }
 
 
@@ -276,11 +285,17 @@ export async function POST(request: NextRequest) {
     }
 
 
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       status: "success", 
       data: parsedAnalysis,
       slideTextContent: slideTextContent 
     });
+
+    if (!userId) {
+      await setTrialUsed(request);
+    }
+
+    return response;
 
   } catch (error: any) {
     console.error("Backend Route Error:", error);

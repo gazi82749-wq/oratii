@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, CONVERT_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
+import { hasUsedTrial } from '../../../lib/trialManager';
 import { execFile } from 'child_process';
 import { writeFile, readFile, unlink, mkdtemp } from 'fs/promises';
 import { tmpdir } from 'os';
@@ -107,14 +108,22 @@ export async function POST(request: NextRequest) {
       }, { status: 429 });
     }
 
-    // Mandatory authentication
+    // Authentication & Trial verification
+    let userId: string | null = null;
     const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: "Authentication required. Please sign in to convert presentations.", authRequired: true }, { status: 401 });
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const { data: { user } } = await supabase.auth.getUser(authHeader.substring(7).trim());
+      if (user) userId = user.id;
     }
-    const { data: { user } } = await supabase.auth.getUser(authHeader.substring(7).trim());
-    if (!user) {
-      return NextResponse.json({ error: "Invalid or expired session. Please sign in again.", authRequired: true }, { status: 401 });
+
+    if (!userId) {
+      if (await hasUsedTrial(request)) {
+        return NextResponse.json({ 
+          error: "Free trial limit reached. Please sign in to convert presentations.", 
+          authRequired: true, 
+          trialExpired: true 
+        }, { status: 401 });
+      }
     }
 
     const formData = await request.formData();

@@ -84,6 +84,28 @@ function PresentationAnalyzerContent() {
     }
   }, [file, analysis, slideImages]);
 
+  const handleFileSelect = (selectedFile: File) => {
+    setFile(selectedFile);
+    setPreviewFailed(false);
+    if (!selectedFile.type.startsWith('video/')) {
+      convertPresentation(selectedFile)
+        .then(slides => {
+          const imagesMap: Record<number, string> = {};
+          const texts: string[] = [];
+          slides.forEach(s => { 
+            imagesMap[s.slideNumber] = s.image; 
+            texts.push(s.text);
+          });
+          setSlideImages(prev => ({ ...prev, ...imagesMap }));
+          setExtractedSlideTexts(texts);
+          setPreviewFailed(false);
+        })
+        .catch(err => {
+          console.warn("Client image extraction notice on drop:", err);
+        });
+    }
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'application/pdf': ['.pdf'],
@@ -93,7 +115,7 @@ function PresentationAnalyzerContent() {
     },
     multiple: false,
     onDrop: (acceptedFiles) => {
-      if (acceptedFiles?.[0]) setFile(acceptedFiles[0]);
+      if (acceptedFiles?.[0]) handleFileSelect(acceptedFiles[0]);
     }
   });
 
@@ -123,18 +145,25 @@ function PresentationAnalyzerContent() {
       body: formData
     }).then(r => r.json());
 
-    // 2. Kick off Image Thumbnail Extraction silently in background
-    setPreviewFailed(false);
-    convertPresentation(file)
-      .then(slides => {
-        const imagesMap = {};
-        slides.forEach(s => { imagesMap[s.slideNumber] = s.image; });
-        setSlideImages(prev => ({ ...prev, ...imagesMap }));
-      })
-      .catch(err => {
-        console.warn("Client image extraction notice:", err);
-        setPreviewFailed(true);
-      });
+    // 2. Ensure Image Thumbnail Extraction is running if not already populated
+    if (Object.keys(slideImages).length === 0 && !file.type?.startsWith('video/')) {
+      convertPresentation(file)
+        .then(slides => {
+          const imagesMap: Record<number, string> = {};
+          const texts: string[] = [];
+          slides.forEach(s => { 
+            imagesMap[s.slideNumber] = s.image; 
+            texts.push(s.text);
+          });
+          setSlideImages(prev => ({ ...prev, ...imagesMap }));
+          setExtractedSlideTexts(texts);
+          setPreviewFailed(false);
+        })
+        .catch(err => {
+          console.warn("Client image extraction notice in analyzeFile:", err);
+          setPreviewFailed(true);
+        });
+    }
 
     let bodyLanguagePromise = Promise.resolve(null);
     if (file.type.startsWith('video/')) {
@@ -204,11 +233,18 @@ function PresentationAnalyzerContent() {
              };
              processAnalysis(fallbackData);
           } else {
-             setError('Analysis Failed: ' + data.error);
-          }
+             if (data?.authRequired || data?.trialExpired) {
+               setIsGuestAuthModalOpen(true);
+             } else if (data?.creditExhausted) {
+               setIsCreditModalOpen(true);
+             } else {
+               setError('Analysis Notice: ' + (data?.error || data?.message || 'Unable to analyze slide deck.'));
+             }
+           }
         }
       })
       .catch(err => {
+        console.error('Slide analysis error:', err);
         setError('Error connecting to the server. Please ensure it is a valid PPT or PDF file.');
       })
       .finally(() => {
@@ -523,37 +559,63 @@ function PresentationAnalyzerContent() {
                       </span>
                     </div>
                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                      {analysis.slideBySlideFeedback.map((fb: any, idx: number) => (
-                        <a key={idx} href={`#slide-${fb.slideNumber}`} className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-extrabold hover:bg-[#151930] hover:text-[#F2A93B] transition-all flex-shrink-0 border border-slate-200">
-                          {fb.slideNumber}
-                        </a>
-                      ))}
+                      {analysis.slideBySlideFeedback.map((fb: any, idx: number) => {
+                        const sNum = parseInt(String(fb.slideNumber).replace(/\D/g, ''), 10) || (idx + 1);
+                        return (
+                          <a key={idx} href={`#slide-${sNum}`} className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-extrabold hover:bg-[#151930] hover:text-[#F2A93B] transition-all flex-shrink-0 border border-slate-200">
+                            {sNum}
+                          </a>
+                        );
+                      })}
                     </div>
                   </div>
                   <div className="space-y-8">
-                    {analysis.slideBySlideFeedback.map((fb: any, i: number) => (
-                      <div key={i} id={`slide-${fb.slideNumber}`} className="flex flex-col lg:flex-row gap-6 bg-white border border-slate-200 rounded-2xl shadow-sm p-6 scroll-mt-24">
-                        {/* Widescreen Large Slide Preview */}
-                        <div className="w-full lg:w-[58%] flex-shrink-0 relative group">
-                           <div className="absolute top-3 left-3 px-3 py-1 bg-[#151930] text-[#F2A93B] font-black text-xs rounded-xl flex items-center justify-center z-10 shadow-md border border-amber-500/20">
-                             Slide {fb.slideNumber}
-                           </div>
-                            {slideImages[fb.slideNumber] && typeof slideImages[fb.slideNumber] === 'string' && slideImages[fb.slideNumber].length > 100 ? (
-                              <div className="w-full aspect-video rounded-xl border border-slate-200 bg-[#151930] overflow-hidden flex items-center justify-center p-2 relative">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={slideImages[fb.slideNumber]} alt={`Slide ${fb.slideNumber}`} className="w-full h-full object-contain" />
-                              </div>
-                            ) : previewFailed ? (
-                              <div className="w-full aspect-video rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center">
-                                <p className="text-sm font-medium text-slate-500 px-4 text-center">Preview unavailable</p>
-                              </div>
-                            ) : (
-                              <div className="w-full aspect-video rounded-xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center animate-pulse">
-                                <div className="w-8 h-8 border-4 border-slate-300 border-t-[#151930] rounded-full animate-spin mb-3"></div>
-                                <p className="text-sm font-medium text-slate-400">Loading slide preview...</p>
-                              </div>
-                            )}
-                        </div>
+                    {analysis.slideBySlideFeedback.map((fb: any, i: number) => {
+                      const slideNum = parseInt(String(fb.slideNumber).replace(/\D/g, ''), 10) || (i + 1);
+                      const slideImg = slideImages[slideNum] || slideImages[fb.slideNumber] || slideImages[i + 1];
+                      const slideText = extractedSlideTexts[slideNum - 1] || extractedSlideTexts[i] || '';
+
+                      return (
+                        <div key={i} id={`slide-${slideNum}`} className="flex flex-col lg:flex-row gap-6 bg-white border border-slate-200 rounded-2xl shadow-sm p-6 scroll-mt-24">
+                          {/* Widescreen Large Slide Preview */}
+                          <div className="w-full lg:w-[58%] flex-shrink-0 relative group">
+                             <div className="absolute top-3 left-3 px-3 py-1 bg-[#151930] text-[#F2A93B] font-black text-xs rounded-xl flex items-center justify-center z-10 shadow-md border border-amber-500/20">
+                               Slide {slideNum}
+                             </div>
+                              {slideImg && typeof slideImg === 'string' && slideImg.length > 100 ? (
+                                <div className="w-full aspect-video rounded-xl border border-slate-200 bg-[#151930] overflow-hidden flex items-center justify-center p-2 relative shadow-inner">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={slideImg} alt={`Slide ${slideNum}`} className="w-full h-full object-contain rounded-lg" />
+                                </div>
+                              ) : slideText ? (
+                                <div className="w-full aspect-video rounded-xl border border-slate-800 bg-gradient-to-br from-[#151930] to-[#0A0D1D] p-5 flex flex-col justify-between text-white relative shadow-inner overflow-hidden">
+                                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                                    <span className="flex items-center gap-1.5"><FileText size={14} className="text-[#F2A93B]" /> Slide Content</span>
+                                    <span className="text-[11px] text-slate-400">{file?.name || 'Presentation'}</span>
+                                  </div>
+                                  <div className="my-auto py-2">
+                                    <p className="text-xs sm:text-sm font-medium text-slate-200 line-clamp-5 leading-relaxed bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                                      {slideText}
+                                    </p>
+                                  </div>
+                                  <div className="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-2 font-mono">
+                                    <span>Oratii Slide Audit</span>
+                                    <span>Slide {slideNum}</span>
+                                  </div>
+                                </div>
+                              ) : previewFailed ? (
+                                <div className="w-full aspect-video rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center p-6 text-center">
+                                  <FileText size={32} className="text-slate-500 mb-2" />
+                                  <p className="text-sm font-bold text-slate-200">Slide {slideNum}</p>
+                                  <p className="text-xs text-slate-400 mt-1">Detailed visual & content feedback shown on right</p>
+                                </div>
+                              ) : (
+                                <div className="w-full aspect-video rounded-xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center animate-pulse">
+                                  <div className="w-8 h-8 border-4 border-slate-300 border-t-[#151930] rounded-full animate-spin mb-3"></div>
+                                  <p className="text-sm font-medium text-slate-400">Loading slide preview...</p>
+                                </div>
+                              )}
+                          </div>
                         
                         {/* Feedback specific to this slide */}
                         <div className="flex-1 space-y-4 flex flex-col justify-center">
@@ -583,7 +645,8 @@ function PresentationAnalyzerContent() {
                            )}
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
               )}

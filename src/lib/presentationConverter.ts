@@ -5,6 +5,10 @@
  */
 function loadPdfJs() {
   return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined') {
+      reject(new Error('PDF processing is only supported in browser environment.'));
+      return;
+    }
     if ((window as any).pdfjsLib) {
       resolve((window as any).pdfjsLib);
       return;
@@ -13,12 +17,17 @@ function loadPdfJs() {
     const script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
     script.onload = () => {
-      // Configure the worker CDN URL
-      (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      try {
+        const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const workerBlob = new Blob([`importScripts('${workerUrl}');`], { type: 'application/javascript' });
+        (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
+      } catch {
+        (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
       resolve((window as any).pdfjsLib);
     };
     script.onerror = (err) => {
-      reject(new Error('Failed to load pdf.js from CDN: ' + (err as any).message || String(err)));
+      reject(new Error('Failed to load pdf.js from CDN: ' + ((err as any)?.message || String(err))));
     };
     document.body.appendChild(script);
   });
@@ -38,7 +47,7 @@ export async function convertPresentation(file: File) {
 
   if (extension === 'pdf') {
     const pdfjsLib = await loadPdfJs() as any;
-    const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await (file.slice ? file.slice(0) : file).arrayBuffer();
     
     // Load the document using the typed array
     const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
