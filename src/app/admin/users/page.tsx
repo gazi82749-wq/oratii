@@ -219,15 +219,32 @@ export default function AllUsersPage() {
                             </button>
                           )}
                           {user.plan === 'free' && (
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[#F2A93B] dark:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-[#F2A93B]/10" onClick={() => setActionMenu(null)}>
-                              <Crown size={14} /> Upgrade to Pro
+                            <button 
+                              className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-amber-600 dark:text-amber-400 font-bold hover:bg-amber-50 dark:hover:bg-amber-500/10 cursor-pointer" 
+                              onClick={() => handleUpdatePlan(user.id, 'pro')}
+                            >
+                              <Crown size={14} className="text-amber-500" /> Grant Free Pro Plan
                             </button>
                           )}
                           {user.plan !== 'free' && (
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-slate-800" onClick={() => setActionMenu(null)}>
-                              <ArrowDownCircle size={14} /> Downgrade
+                            <button 
+                              className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-slate-800 cursor-pointer" 
+                              onClick={() => handleUpdatePlan(user.id, 'free')}
+                            >
+                              <ArrowDownCircle size={14} /> Downgrade to Free
                             </button>
                           )}
+                          <button 
+                            className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-50 dark:hover:bg-emerald-500/10 cursor-pointer" 
+                            onClick={async () => {
+                              await supabase.from('profiles').update({ credits: 100 }).eq('id', user.id);
+                              fetchUsers();
+                              setActionMenu(null);
+                              alert(`Granted 100 VIP Credits to ${user.email}!`);
+                            }}
+                          >
+                            <ShieldCheck size={14} className="text-emerald-500" /> Grant +100 Free Credits
+                          </button>
                           <div className="h-px bg-indigo-100 dark:bg-slate-800 my-1" />
                           <button className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10" onClick={() => setActionMenu(null)}>
                             <Trash2 size={14} /> Delete User
