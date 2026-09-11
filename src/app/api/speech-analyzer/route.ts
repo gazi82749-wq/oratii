@@ -3,15 +3,58 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { STANDARD_ENGLISH_FILLERS, HINGLISH_FILLERS, groupFillerWords } from '../../../lib/constants';
 import { generateAuditedSpeechRubric } from '../../../lib/scoringRubric';
-import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
+import { hasUsedTrial, setTrialUsed, isUserLoggedIn } from '../../../lib/trialManager';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { checkAndDecrementUsage } from '../../../lib/billing';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
-    if (await hasUsedTrial(request)) {
-      return NextResponse.json({ error: "Trial Expired", message: "You have used your free trial. Please sign in to continue." }, { status: 401 });
+    // Rate limiting (by IP)
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `You're sending requests too quickly. Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
+
+    // Authentication check — Speech Coach allows 2 anonymous sessions
+    let userId: string | null = null;
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      try {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      } catch (e) {
+        // Token decode failure — treat as anonymous
+      }
+    }
+
+    if (userId) {
+      // Logged-in user — check credit balance
+      const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
+      if (!usageCheck.allowed) {
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue using Speech Coach.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+    } else {
+      // Anonymous user — check trial limit (max 2 sessions)
+      if (await hasUsedTrial(request)) {
+        return NextResponse.json({
+          error: "Free Trial Ended",
+          message: "You've used your 2 free Speech Coach sessions! Sign up for a free account to get 20 more credits.",
+          trialExpired: true
+        }, { status: 401 });
+      }
     }
 
     // Receive raw audio blob from frontend
@@ -24,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     const apiKey = process.env.DEEPGRAM_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "Speech analysis service is temporarily unconfigured. Missing DEEPGRAM_API_KEY." }, { status: 503 });
+      return NextResponse.json({ error: "Speech analysis service is temporarily unavailable. Please try again later." }, { status: 503 });
     }
     const reqLanguage = (formData.get('language') as string) || 'en-US';
     
@@ -152,6 +195,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error("Speech Analyzer Error:", error);
-    return NextResponse.json({ error: "Speech analysis failed", details: error?.message || 'Unknown error' }, { status: 500 });
+    return NextResponse.json({ error: "Speech analysis failed. Please try again.", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }

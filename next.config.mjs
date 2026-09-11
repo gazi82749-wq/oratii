@@ -40,6 +40,20 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://checkout.razorpay.com https://cdn.jsdelivr.net",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https:",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.deepgram.com https://*.convertapi.com https://api.cerebras.ai https://api.groq.com https://generativelanguage.googleapis.com https://openrouter.ai https://cdn.jsdelivr.net",
+              "media-src 'self' blob:",
+              "worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+              "frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com",
+            ].join('; '),
+          },
         ],
       },
     ];

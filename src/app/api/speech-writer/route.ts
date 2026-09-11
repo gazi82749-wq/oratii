@@ -1,13 +1,34 @@
 // src/app/api/speech-writer/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
-import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
+
+    // Mandatory authentication
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: "Authentication required. Please sign in to use Speech Writer.", authRequired: true }, { status: 401 });
+    }
+    const { data: { user } } = await supabase.auth.getUser(authHeader.substring(7).trim());
+    if (!user) {
+      return NextResponse.json({ error: "Invalid or expired session. Please sign in again.", authRequired: true }, { status: 401 });
+    }
+
     const body = await request.json();
     const { topic } = body;
 

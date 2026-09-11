@@ -24,7 +24,7 @@ const caveat = Caveat({
   preload: false,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.app';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -120,14 +120,9 @@ const softwareAppSchema = {
   offers: {
     '@type': 'Offer',
     price: '0',
-    priceCurrency: 'USD',
+    priceCurrency: 'INR',
   },
   description: 'AI-powered speech and presentation coach providing real-time feedback on vocal pacing, filler words, and slide deck delivery.',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.9',
-    ratingCount: '128',
-  },
 };
 
 const organizationSchema = {

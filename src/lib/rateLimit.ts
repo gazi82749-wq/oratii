@@ -105,3 +105,15 @@ export const AUTH_RATE_LIMIT: RateLimitConfig = {
   maxAttempts: 5,
   windowMs: 15 * 60 * 1000, // 15 minutes
 };
+
+// Rate limiter for AI-powered endpoints (speech analysis, slide analysis, viva, etc.)
+export const AI_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 10,
+  windowMs: 60 * 1000, // 10 requests per minute
+};
+
+// Rate limiter for file conversion endpoints (PPTX → PDF)
+export const CONVERT_RATE_LIMIT: RateLimitConfig = {
+  maxAttempts: 3,
+  windowMs: 60 * 1000, // 3 conversions per minute
+};

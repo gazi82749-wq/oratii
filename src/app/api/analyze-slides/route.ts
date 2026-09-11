@@ -1,11 +1,11 @@
 // src/app/api/analyze-slides/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
 import JSZip from 'jszip';
-import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 import { checkAndDecrementUsage } from '../../../lib/billing';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -57,23 +57,30 @@ async function parsePptx(buffer) {
   return slideTexts;
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
-    const contentType = request.headers.get('content-type') || '';
-    const userIdHeader = request.headers.get('x-user-id');
-    let userId = userIdHeader || null;
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
 
-    // Check authorization header if x-user-id is missing
+    // Mandatory authentication
+    let userId: string | null = null;
     const authHeader = request.headers.get('authorization');
-    if (!userId && authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
       try {
         const { data: { user } } = await supabase.auth.getUser(token);
         if (user) userId = user.id;
-      } catch (e) {
-        // ignore token decode failure
-      }
+      } catch (e) { /* ignore */ }
     }
+
+    const contentType = request.headers.get('content-type') || '';
 
     let presentationId;
     let slideTextContent;
@@ -91,7 +98,25 @@ export async function POST(request) {
       }
     }
 
-    // Unlimited testing mode: No guest trial blocks or billing limit restrictions
+    // Require authentication for all users
+    if (!userId) {
+      const xUserId = request.headers.get('x-user-id');
+      if (xUserId) userId = xUserId;
+    }
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required. Please sign in to analyze slides.", authRequired: true }, { status: 401 });
+    }
+
+    // Credit check
+    const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
+    if (!usageCheck.allowed) {
+      return NextResponse.json({
+        error: "Credits Exhausted",
+        message: "You've used all your credits. Purchase more credits to continue.",
+        creditExhausted: true
+      }, { status: 403 });
+    }
+
 
     if (contentType.includes('multipart/form-data')) {
       if (!file) {
@@ -246,7 +271,6 @@ export async function POST(request) {
       }
     }
 
-    await setTrialUsed(request);
 
     return NextResponse.json({ 
       status: "success", 

@@ -1,12 +1,34 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { supabase } from '../../../lib/supabaseClient';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
+
+    // Mandatory authentication
+    let userId: string | null = null;
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        userId = user.id;
+      }
+    }
+
     const body = await request.json();
     const { 
       slideTextContent, 
@@ -17,29 +39,21 @@ export async function POST(request: Request) {
       userId: bodyUserId
     } = body;
 
-    // Securely verify caller identity from Bearer token
-    let userId: string | null = null;
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7).trim();
-      const { data: { user } } = await supabase.auth.getUser(token);
-      if (user) {
-        userId = user.id;
-      }
-    }
     if (!userId && bodyUserId) {
       userId = bodyUserId;
     }
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required. Please sign in to use Presentation Mode.", authRequired: true }, { status: 401 });
+    }
 
     // Enforce server-side billing limits
-    if (userId) {
-      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Limit Exceeded",
-          message: "You have reached your monthly limit for Slide Deck Analyses. Please upgrade your plan."
-        }, { status: 403 });
-      }
+    const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
+    if (!usageCheck.allowed) {
+      return NextResponse.json({
+        error: "Credits Exhausted",
+        message: "You've used all your credits. Purchase more credits to continue.",
+        creditExhausted: true
+      }, { status: 403 });
     }
 
     if (!slideTextContent || !timedTranscript) {

@@ -1,17 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
-import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 import { checkAndDecrementUsage } from '../../../lib/billing';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    if (await hasUsedTrial(request)) {
-      return NextResponse.json(
-        { error: 'Trial Expired', message: 'You have used your free trial. Please sign in to continue.' },
-        { status: 401 }
-      );
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
+
+    // Mandatory authentication
+    let userId: string | null = null;
+    const authHeader = request.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      try {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      } catch (e) { /* ignore */ }
     }
 
     const {
@@ -26,7 +41,11 @@ export async function POST(request: NextRequest) {
       documentContext = '', // Extracted resume/CV or question paper text
       mode = 'text' // 'text' | 'voice'
     } = await request.json();
-    const userId = request.headers.get('x-user-id') || bodyUserId;
+
+    if (!userId) userId = bodyUserId || request.headers.get('x-user-id');
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required. Please sign in to use Viva Defense.", authRequired: true }, { status: 401 });
+    }
 
     // Determine current question turn count (excluding initial context prompt)
     const validTurns = (chatHistory || []).filter(
@@ -35,12 +54,13 @@ export async function POST(request: NextRequest) {
     const currentQuestionIndex = validTurns.length + 1;
 
     // Deduct usage session credit only on the first turn of a viva session
-    if (userId && userId !== 'guest-viva-user' && currentQuestionIndex === 1) {
+    if (currentQuestionIndex === 1) {
       const usageCheck = await checkAndDecrementUsage(userId, 'viva_sessions_count');
       if (!usageCheck.allowed) {
         return NextResponse.json({
-          error: "Limit Exceeded",
-          message: "You have reached your monthly limit for Viva Sessions. Please upgrade your plan."
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
         }, { status: 403 });
       }
     }
@@ -294,8 +314,6 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
         }
       }
     }
-
-    await setTrialUsed(request);
 
     return NextResponse.json({ status: 'success', data: parsedResponse, viva: parsedResponse });
   } catch (error: any) {

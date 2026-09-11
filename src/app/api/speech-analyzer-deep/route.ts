@@ -1,13 +1,38 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { checkAndDecrementUsage } from '../../../lib/billing';
+import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
+    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    if (!rateResult.allowed) {
+      return NextResponse.json({
+        error: "Too Many Requests",
+        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
+      }, { status: 429 });
+    }
+
+    // Mandatory authentication
+    const authHeader = request.headers.get('authorization');
+    let userId: string | null = null;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      try {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      } catch (e) { /* ignore */ }
+    }
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required. Please sign in to use deep speech analysis.", authRequired: true }, { status: 401 });
+    }
+
     const formData = await request.formData();
-    const userId = (request.headers.get('x-user-id') || formData.get('userId')) as string | null;
     const wpm = formData.get('wpm') || '0';
     const totalFillers = formData.get('totalFillers') || '0';
     const timedTranscript = formData.get('timedTranscript');
@@ -19,14 +44,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    if (userId) {
-      const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Limit Exceeded",
-          message: "You have reached your monthly limit for Speech Analyses. Please upgrade your plan."
-        }, { status: 403 });
-      }
+    // Credit check
+    const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
+    if (!usageCheck.allowed) {
+      return NextResponse.json({
+        error: "Credits Exhausted",
+        message: "You've used all your credits. Purchase more credits to continue.",
+        creditExhausted: true
+      }, { status: 403 });
     }
 
     const numWpm = Number(wpm) || 0;
