@@ -304,26 +304,41 @@ function PresentationAnalyzerContent() {
             </div>
           )}
 
-          <div className="border border-slate-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-sm p-6 sm:p-10 flex flex-col items-center relative">
-            
+          <div className="w-full dropzone-holographic p-6 sm:p-10 flex flex-col items-center relative">
+            <div className="glow-ambient-radial top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+
             {isLoading ? (
               <ScribbleLoader text="Evaluating slide design & density..." />
             ) : (
-              <div className="w-full max-w-xl mx-auto">
+              <div className="w-full max-w-xl mx-auto relative z-10">
                 <div
                   {...getRootProps()}
                   className={`border-2 border-dashed rounded-2xl p-8 sm:p-14 cursor-pointer transition-all flex flex-col items-center justify-center group ${
-                    isDragActive ? 'border-[#F2A93B] bg-amber-50/50' : 'border-slate-300 bg-slate-50/80 hover:bg-amber-50/30 hover:border-amber-400'
+                    isDragActive ? 'border-indigo-400 bg-indigo-500/10' : 'border-indigo-500/30 bg-slate-950/60 hover:bg-indigo-950/40 hover:border-indigo-400/60'
                   }`}
                 >
                   <input {...getInputProps()} />
-                  <div className="w-14 h-14 rounded-2xl bg-[#151930] text-[#F2A93B] flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform">
-                    <FileText size={28} />
+
+                  {/* Format Badges */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      .PPTX
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      .PDF
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      .MP4
+                    </span>
                   </div>
-                  <p className="text-lg font-extrabold text-slate-950 text-center mb-2 group-hover:-translate-y-0.5 transition-transform">
-                    {file ? file.name : 'Drag & drop PPTX or PDF here'}
+
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-500 text-white flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                    <FileText size={30} />
+                  </div>
+                  <p className="text-xl font-extrabold text-white text-center mb-2 group-hover:-translate-y-0.5 transition-transform">
+                    {file ? file.name : 'Drag & drop your presentation deck'}
                   </p>
-                  <p className="text-xs sm:text-sm font-medium text-slate-500">or click to browse from device</p>
+                  <p className="text-xs sm:text-sm font-medium text-slate-400">or click to browse PowerPoint, PDF, or Video file</p>
                 </div>
 
                 {file && (
