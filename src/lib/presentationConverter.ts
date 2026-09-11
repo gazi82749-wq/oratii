@@ -48,8 +48,8 @@ export async function convertPresentation(file: File) {
       const i = index + 1;
       const page = await pdf.getPage(i);
       
-      // 1. Render slide page to high-quality image on a hidden canvas
-      const viewport = page.getViewport({ scale: 1.5 }); // scale 1.5 is crisp enough and much faster than 3.0
+      // 1. Render slide page to high-quality image on a hidden canvas (scale 1.0 is fast and crisp for thumbnails)
+      const viewport = page.getViewport({ scale: 1.0 });
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       canvas.width = viewport.width;
@@ -61,7 +61,7 @@ export async function convertPresentation(file: File) {
       };
 
       await page.render(renderContext).promise;
-      const base64Image = canvas.toDataURL('image/jpeg', 0.8); // use jpeg for better performance
+      const base64Image = canvas.toDataURL('image/jpeg', 0.75); // fast optimized jpeg thumbnail
 
       // 2. Extract text content from the page
       const textContent = await page.getTextContent();

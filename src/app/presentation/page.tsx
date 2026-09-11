@@ -214,19 +214,6 @@ function PresentationAnalyzerContent() {
       .finally(() => {
         setIsLoading(false);
       });
-
-    // 2. Kick off Image Extraction (runs silently in the background, updates state when ready)
-    setPreviewFailed(false);
-    convertPresentation(file)
-      .then(slides => {
-        const imagesMap = {};
-        slides.forEach(s => { imagesMap[s.slideNumber] = s.image; });
-        setSlideImages(prev => ({ ...prev, ...imagesMap }));
-      })
-      .catch(err => {
-        console.warn("Image extraction failed:", err);
-        setPreviewFailed(true);
-      });
   };
 
   const processAnalysis = (data: any) => {

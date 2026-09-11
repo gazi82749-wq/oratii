@@ -209,12 +209,16 @@ export async function POST(request: NextRequest) {
 
     const userPrompt = `Here is the presentation slide deck content to analyze:\n${formattedSlideText}`;
 
+    // Fast text-first inference: If text was extracted, skip massive multi-MB base64 upload to cut latency from 45s down to 2s
+    const hasAdequateText = formattedSlideText && formattedSlideText.trim().length > 30;
+    const shouldSendBinaryPdf = isPdf && !hasAdequateText;
+
     // 4-Stage AI Fallback Waterfall (Cerebras -> Groq -> Gemini -> OpenRouter)
     const aiTextResponse = await generateAIContent({
       systemPrompt,
       userPrompt,
-      isPdf,
-      pdfBase64: fileBase64
+      isPdf: shouldSendBinaryPdf,
+      pdfBase64: shouldSendBinaryPdf ? fileBase64 : null
     });
 
     let parsedAnalysis: any = null;
