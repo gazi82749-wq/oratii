@@ -168,3 +168,46 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7).trim();
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const batchId = searchParams.get('batchId');
+
+    if (!batchId) {
+      return NextResponse.json({ error: 'batchId query parameter is required' }, { status: 400 });
+    }
+
+    const supabaseAdmin = getTrainerDbClient(token);
+
+    // Delete batch owned by this trainer
+    const { error: deleteError } = await supabaseAdmin
+      .from('batches')
+      .delete()
+      .eq('id', batchId)
+      .eq('trainer_id', user.id);
+
+    if (deleteError) {
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('[Trainer Batches DELETE] Error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', details: error?.message },
+      { status: 500 }
+    );
+  }
+}

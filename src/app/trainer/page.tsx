@@ -25,7 +25,8 @@ import {
   Clock,
   ChevronRight,
   AlertCircle,
-  MapPin
+  MapPin,
+  Trash2
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import Footer from '@/components/Footer';
@@ -183,6 +184,26 @@ export default function TrainerDashboardPage() {
       console.error('Create batch failed:', err);
     } finally {
       setCreatingBatch(false);
+    }
+  };
+
+  const handleDeleteBatch = async (batchId: string, batchName: string) => {
+    if (!confirm(`Are you sure you want to remove batch "${batchName}"? This action cannot be undone.`)) return;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`/api/trainer/batches?batchId=${batchId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+
+      if (res.ok) {
+        fetchTrainerData();
+      }
+    } catch (err) {
+      console.error('Delete batch failed:', err);
     }
   };
 
@@ -429,14 +450,23 @@ export default function TrainerDashboardPage() {
                         </span>
                         <h3 className="text-base font-black text-slate-900 mt-1">{batch.name}</h3>
                       </div>
-                      <div className="p-2 rounded-xl bg-slate-50 text-slate-500">
-                        {batch.track === 'speech' ? (
-                          <Mic size={18} className="text-rose-500" />
-                        ) : batch.track === 'interview' ? (
-                          <Briefcase size={18} className="text-amber-600" />
-                        ) : (
-                          <Tv size={18} className="text-indigo-600" />
-                        )}
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleDeleteBatch(batch.id, batch.name)}
+                          title="Remove Batch"
+                          className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100 transition-all cursor-pointer"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                        <div className="p-2 rounded-xl bg-slate-50 text-slate-500">
+                          {batch.track === 'speech' ? (
+                            <Mic size={18} className="text-rose-500" />
+                          ) : batch.track === 'interview' ? (
+                            <Briefcase size={18} className="text-amber-600" />
+                          ) : (
+                            <Tv size={18} className="text-indigo-600" />
+                          )}
+                        </div>
                       </div>
                     </div>
 
