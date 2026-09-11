@@ -122,6 +122,17 @@ export default function ChallengePage() {
   } | null>(null);
 
   const [mounted, setMounted] = useState(false);
+  const [drillActive, setDrillActive] = useState(false);
+  const [drillSeconds, setDrillSeconds] = useState(60);
+  const [drillPromptIndex, setDrillPromptIndex] = useState(0);
+  const [drillCompleted, setDrillCompleted] = useState(false);
+
+  const DRILL_PROMPTS = [
+    "Explain your project stack & architecture in 60s without using filler words ('um', 'like', 'basically').",
+    "Deliver a 60-second elevator pitch for an innovative AI tool to a executive investor.",
+    "Defend your choice of database or framework in 60s against a skeptical thesis examiner.",
+    "Describe a complex technical bug you solved using the STAR method in 60 seconds."
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -234,6 +245,41 @@ export default function ChallengePage() {
               {state.streak_count} <span className="text-xs font-bold text-slate-500">Days</span>
             </div>
             <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Active Streak</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 1.5 DAILY 60-SECOND MICRO-DRILL BANNER */}
+      <div className="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white border border-indigo-500/30 rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-lg relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-2">
+              <Zap size={14} className="text-amber-400 fill-amber-400" />
+              Daily 60s Micro-Drill
+            </div>
+            <h3 className="text-xl font-bold text-white mb-1">
+              Impromptu Speech Challenge
+            </h3>
+            <p className="text-xs text-indigo-200/90 leading-relaxed max-w-xl">
+              &ldquo;{DRILL_PROMPTS[drillPromptIndex]}&rdquo;
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => setDrillPromptIndex((prev) => (prev + 1) % DRILL_PROMPTS.length)}
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-xs font-bold text-slate-200 transition-all cursor-pointer"
+            >
+              Shuffle Prompt
+            </button>
+            <button
+              onClick={() => router.push(`/speech-coach?drill=60s&prompt=${encodeURIComponent(DRILL_PROMPTS[drillPromptIndex])}`)}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-400 hover:to-emerald-400 text-white text-xs font-extrabold shadow-md flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <Mic size={15} />
+              Start 60s Micro-Drill
+            </button>
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts';
-import { Cloud, CloudOff, TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive } from 'lucide-react';
+import { Cloud, CloudOff, TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive, Share2, Check } from 'lucide-react';
 import Footer from '@/components/Footer';
 
 const VideoPlayer = ({ sessionId }: { sessionId: string }) => {
@@ -51,7 +51,19 @@ export default function Reports() {
   const [filter, setFilter] = useState('all'); 
   const [loaded, setLoaded] = useState(false);
   const [exportingSessionId, setExportingSessionId] = useState<string | null>(null);
+  const [copiedSessionId, setCopiedSessionId] = useState<string | null>(null);
   const [isCloudSynced, setIsCloudSynced] = useState(false);
+
+  const handleShare = (session: any) => {
+    const score = session.scores?.overall ?? session.score ?? 85;
+    const wpm = session.metrics?.wpm ?? 140;
+    const fillers = session.metrics?.fillers ?? 2;
+    const shareUrl = `${window.location.origin}/share/${session.id || 'demo'}?score=${score}&wpm=${wpm}&fillers=${fillers}&type=${session.type || 'speech'}&title=${encodeURIComponent(getModuleName(session.type) + ' Practice')}`;
+    
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedSessionId(session.id);
+    setTimeout(() => setCopiedSessionId(null), 3000);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -418,14 +430,32 @@ export default function Reports() {
                     </span>
                   </div>
                   
-                  <button 
-                    onClick={() => setExportingSessionId(session.id)}
-                    disabled={exportingSessionId === session.id}
-                    className={`mt-4 md:mt-0 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer ${exportingSessionId === session.id ? 'bg-slate-100 cursor-wait text-slate-400' : 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-sm'}`}
-                  >
-                    <FileText className="w-4 h-4 text-[#F2A93B]" />
-                    {exportingSessionId === session.id ? 'Generating...' : 'Export Detailed PDF'}
-                  </button>
+                  <div className="flex items-center gap-2 mt-4 md:mt-0">
+                    <button 
+                      onClick={() => handleShare(session)}
+                      className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 shadow-2xs"
+                    >
+                      {copiedSessionId === session.id ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-600" />
+                          <span>Link Copied (+5 Bonus)!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-4 h-4 text-indigo-600" />
+                          <span>Share Score</span>
+                        </>
+                      )}
+                    </button>
+                    <button 
+                      onClick={() => setExportingSessionId(session.id)}
+                      disabled={exportingSessionId === session.id}
+                      className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer ${exportingSessionId === session.id ? 'bg-slate-100 cursor-wait text-slate-400' : 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-sm'}`}
+                    >
+                      <FileText className="w-4 h-4 text-[#F2A93B]" />
+                      {exportingSessionId === session.id ? 'Generating...' : 'Export Detailed PDF'}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-4">
