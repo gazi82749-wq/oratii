@@ -19,18 +19,24 @@ export const maxDuration = 60;
  * 2. If ConvertAPI fails (quota exhausted / error), fall back to LibreOffice headless (free, unlimited)
  */
 
-async function convertWithConvertApi(file: Blob): Promise<Buffer | null> {
+async function convertWithConvertApi(file: Blob, fileName: string): Promise<Buffer | null> {
   const secret = process.env.CONVERT_API_SECRET;
   if (!secret) return null;
 
   try {
+    const ext = (fileName || '').split('.').pop()?.toLowerCase() === 'ppt' ? 'ppt' : 'pptx';
     const convertFormData = new FormData();
-    convertFormData.append('File', file);
+    convertFormData.append('File', file, fileName || 'presentation.pptx');
 
-    const convertRes = await fetch(`https://v2.convertapi.com/convert/pptx/to/pdf?Secret=${secret}`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    const convertRes = await fetch(`https://v2.convertapi.com/convert/${ext}/to/pdf?Secret=${secret}`, {
       method: 'POST',
-      body: convertFormData
+      body: convertFormData,
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     if (!convertRes.ok) {
       const errorText = await convertRes.text();
@@ -108,22 +114,12 @@ export async function POST(request: NextRequest) {
       }, { status: 429 });
     }
 
-    // Authentication & Trial verification
+    // Optional authentication check for logging/auditing
     let userId: string | null = null;
     const authHeader = request.headers.get('authorization');
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const { data: { user } } = await supabase.auth.getUser(authHeader.substring(7).trim());
       if (user) userId = user.id;
-    }
-
-    if (!userId) {
-      if (await hasUsedTrial(request)) {
-        return NextResponse.json({ 
-          error: "Free trial limit reached. Please sign in to convert presentations.", 
-          authRequired: true, 
-          trialExpired: true 
-        }, { status: 401 });
-      }
     }
 
     const formData = await request.formData();
@@ -133,6 +129,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File missing!" }, { status: 400 });
     }
 
+    const fileName = (file as any).name || 'presentation.pptx';
+
     // 25MB Max file size limit to prevent memory exhaustion / DoS
     const MAX_FILE_SIZE = 25 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
@@ -140,11 +138,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Strategy: Try ConvertAPI first, fall back to LibreOffice
-    let pdfBuffer = await convertWithConvertApi(file);
+    let pdfBuffer = await convertWithConvertApi(file, fileName);
 
     if (!pdfBuffer) {
       // ConvertAPI failed — try LibreOffice headless
-      pdfBuffer = await convertWithLibreOffice(file, file.name || 'presentation.pptx');
+      pdfBuffer = await convertWithLibreOffice(file, fileName);
     }
 
     if (!pdfBuffer) {
