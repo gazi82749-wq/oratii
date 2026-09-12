@@ -7,6 +7,10 @@ import JSZip from 'jszip';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
+import crypto from 'crypto';
+
+// Cache TTL: cached results are valid for 24 hours
+const CACHE_TTL_HOURS = 24;
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -218,6 +222,35 @@ export async function POST(request: NextRequest) {
 
     const userPrompt = `Here is the presentation slide deck content to analyze:\n${formattedSlideText}`;
 
+    // ── Content-Hash Cache: Skip AI if identical content was analyzed before ──
+    const contentHash = crypto.createHash('sha256').update(formattedSlideText).digest('hex');
+    
+    try {
+      const { data: cached } = await supabase
+        .from('analysis_cache')
+        .select('analysis_result, created_at')
+        .eq('content_hash', contentHash)
+        .single();
+
+      if (cached?.analysis_result) {
+        const cacheAge = (Date.now() - new Date(cached.created_at).getTime()) / (1000 * 60 * 60);
+        if (cacheAge < CACHE_TTL_HOURS) {
+          console.log(`[AnalyzeSlides] ⚡ Cache HIT — returning cached result (age: ${cacheAge.toFixed(1)}h)`);
+          const response = NextResponse.json({
+            status: "success",
+            data: cached.analysis_result,
+            slideTextContent: slideTextContent,
+            cached: true
+          });
+          if (!userId) await setTrialUsed(request);
+          return response;
+        }
+      }
+    } catch (cacheErr) {
+      // Cache miss or table doesn't exist yet — proceed to AI
+      console.log('[AnalyzeSlides] Cache miss, calling AI...');
+    }
+
     // Fast text-first inference: If text was extracted, skip massive multi-MB base64 upload to cut latency from 45s down to 2s
     const hasAdequateText = formattedSlideText && formattedSlideText.trim().length > 30;
     const shouldSendBinaryPdf = isPdf && !hasAdequateText;
@@ -267,6 +300,21 @@ export async function POST(request: NextRequest) {
           }
         ]
       };
+    }
+
+    // Save to content-hash cache for future identical requests
+    try {
+      await supabase
+        .from('analysis_cache')
+        .upsert([{
+          content_hash: contentHash,
+          analysis_result: parsedAnalysis,
+          slide_count: Array.isArray(slideTextContent) ? slideTextContent.length : 1,
+          created_at: new Date().toISOString()
+        }], { onConflict: 'content_hash' });
+      console.log('[AnalyzeSlides] ✅ Cached analysis result for future requests');
+    } catch (cacheWriteErr) {
+      console.warn('[AnalyzeSlides] Could not write to cache:', cacheWriteErr);
     }
 
     // If presentationId was provided, attempt saving to Supabase without blocking user response
