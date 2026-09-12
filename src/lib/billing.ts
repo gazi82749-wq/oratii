@@ -22,6 +22,11 @@ export async function checkAndDecrementUsage(
   type: UsageType
 ): Promise<{ allowed: boolean; limitReached?: boolean; remainingCredits?: number }> {
   try {
+    // Bypass credit check in development/testing mode
+    if (process.env.NODE_ENV === 'development' || process.env.BYPASS_CREDITS === 'true') {
+      return { allowed: true, remainingCredits: 9999 };
+    }
+
     const supabase = getServiceSupabase();
     const cost = CREDIT_COST[type] || 1;
 
