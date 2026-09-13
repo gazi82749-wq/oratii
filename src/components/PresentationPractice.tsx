@@ -72,7 +72,7 @@ export default function PresentationPractice({
         mediaRecorderRef.current.stop();
       }
       if (presentationSpeechRecRef.current) {
-        try { presentationSpeechRecRef.current.stop(); } catch (e) {}
+        try { presentationSpeechRecRef.current.stop(); } catch (e) { }
         presentationSpeechRecRef.current = null;
       }
       setLiveVerbatimAlert(null);
@@ -438,15 +438,15 @@ export default function PresentationPractice({
 
   const togglePauseRecording = useCallback(() => {
     if (!mediaRecorderRef.current || !isRecording) return;
-    
+
     if (isPaused) {
       mediaRecorderRef.current.resume();
       setIsPaused(false);
-      
+
       timerIntervalRef.current = setInterval(() => {
         setElapsedSeconds(prev => prev + 1);
       }, 1000);
-      
+
       if (hasVideo) {
         frameIntervalRef.current = setInterval(() => {
           captureWebcamFrame();
@@ -455,7 +455,7 @@ export default function PresentationPractice({
     } else {
       mediaRecorderRef.current.pause();
       setIsPaused(true);
-      
+
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
     }
@@ -480,7 +480,7 @@ export default function PresentationPractice({
     if (presentationSpeechRecRef.current) {
       try {
         presentationSpeechRecRef.current.stop();
-      } catch (e) {}
+      } catch (e) { }
       presentationSpeechRecRef.current = null;
     }
     setLiveVerbatimAlert(null);
@@ -561,64 +561,62 @@ export default function PresentationPractice({
 
         {/* Circular Score Ring Gauge Bar (Speech Coach Standard) */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-[#151930] p-5 rounded-2xl border border-slate-800/80 shadow-md">
-          <ScoreRing 
-            value={overallDelivery} 
-            max={100} 
-            size={76} 
-            strokeWidth={8} 
-            color="#6c5ce7" 
-            label="Delivery Grade" 
-            unit="%" 
+          <ScoreRing
+            value={overallDelivery}
+            max={100}
+            size={76}
+            strokeWidth={8}
+            color="#6c5ce7"
+            label="Delivery Grade"
+            unit="%"
           />
-          <ScoreRing 
-            value={extemporeScore} 
-            max={100} 
-            size={76} 
-            strokeWidth={8} 
-            color="#10b981" 
-            label="Extempore (Indep.)" 
-            unit="%" 
+          <ScoreRing
+            value={extemporeScore}
+            max={100}
+            size={76}
+            strokeWidth={8}
+            color="#10b981"
+            label="Extempore (Indep.)"
+            unit="%"
           />
-          <ScoreRing 
-            value={Math.round(liveEyeContact)} 
-            max={100} 
-            size={76} 
-            strokeWidth={8} 
-            color="#00cec9" 
-            label="Eye Contact" 
-            unit="%" 
+          <ScoreRing
+            value={Math.round(liveEyeContact)}
+            max={100}
+            size={76}
+            strokeWidth={8}
+            color="#00cec9"
+            label="Eye Contact"
+            unit="%"
           />
-          <ScoreRing 
-            value={Math.round(livePostureScore)} 
-            max={100} 
-            size={76} 
-            strokeWidth={8} 
-            color="#fd79a8" 
-            label="Posture Score" 
-            unit="%" 
+          <ScoreRing
+            value={Math.round(livePostureScore)}
+            max={100}
+            size={76}
+            strokeWidth={8}
+            color="#fd79a8"
+            label="Posture Score"
+            unit="%"
           />
-          <ScoreRing 
-            value={livePaceWpm} 
-            max={200} 
-            size={76} 
-            strokeWidth={8} 
-            color="#f2a93b" 
-            label="Pacing Speed" 
-            unit="WPM" 
+          <ScoreRing
+            value={livePaceWpm}
+            max={200}
+            size={76}
+            strokeWidth={8}
+            color="#f2a93b"
+            label="Pacing Speed"
+            unit="WPM"
           />
         </div>
 
         {/* Human Coach Verbatim Slide Reading Audit */}
-        <div className={`p-5 rounded-2xl border flex flex-col gap-3 text-left shadow-sm animate-fade-in ${
-          verbatimSlideFlags.length === 0
+        <div className={`p-5 rounded-2xl border flex flex-col gap-3 text-left shadow-sm animate-fade-in ${verbatimSlideFlags.length === 0
             ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
             : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
-        }`}>
+          }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black ${
-                verbatimSlideFlags.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
-              }`}>
+              <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black ${verbatimSlideFlags.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                }`}>
                 {verbatimSlideFlags.length === 0 ? '✓' : '⚠️'}
               </span>
               <div>
@@ -626,8 +624,8 @@ export default function PresentationPractice({
                   Verbatim Slide Reading Audit & Debrief
                 </h4>
                 <p className="text-[11px] text-slate-300 font-medium">
-                  {verbatimSlideFlags.length === 0 
-                    ? 'Elite Executive Delivery • Zero verbatim slide reading detected' 
+                  {verbatimSlideFlags.length === 0
+                    ? 'Elite Executive Delivery • Zero verbatim slide reading detected'
                     : `Verbatim reading flagged on ${verbatimSlideFlags.length} slide(s)`}
                 </p>
               </div>
@@ -655,7 +653,7 @@ export default function PresentationPractice({
             </div>
             <span className="text-xs font-bold text-slate-400">{slideEventLog.length} Slide Transitions</span>
           </div>
-          <ConfidenceGraph 
+          <ConfidenceGraph
             data={slideEventLog.length > 0 ? slideEventLog.map((log, i) => ({
               timestamp: log.timestamp,
               wpm: Math.round(livePaceWpm + (Math.sin(i * 1.4) * 15)),
@@ -665,12 +663,12 @@ export default function PresentationPractice({
               { timestamp: 15, wpm: 138 },
               { timestamp: 30, wpm: 142 },
               { timestamp: 45, wpm: 130 }
-            ]} 
-            events={[]} 
-            type="area" 
-            dataKey="wpm" 
-            label="Delivery Speed" 
-            color="#6c5ce7" 
+            ]}
+            events={[]}
+            type="area"
+            dataKey="wpm"
+            label="Delivery Speed"
+            color="#6c5ce7"
             height={170}
           />
         </div>
@@ -736,15 +734,15 @@ export default function PresentationPractice({
 
   return (
     <div className="w-full min-h-[calc(100vh-5.5rem)] max-h-[calc(100vh-4.5rem)] flex flex-col font-sans bg-[#0B0E27] overflow-hidden p-2 sm:p-3 gap-2 rounded-2xl shadow-2xl">
-      
+
       {/* PPT Viewer Main Box — fits inside available viewport height */}
       <div className="relative bg-[#0B0E27] overflow-hidden flex flex-col mx-auto w-full max-w-[1400px] flex-1 rounded-2xl border border-slate-800 shadow-2xl min-h-0">
-        
+
         {/* Top Control Bar */}
         <div className="flex items-center justify-between z-20 bg-[#151930] px-3.5 sm:px-5 py-2 border-b border-slate-800/80 shrink-0">
           <div className="flex items-center gap-2.5 truncate max-w-xs sm:max-w-md">
-            <button 
-              onClick={onCancel} 
+            <button
+              onClick={onCancel}
               className="text-[11px] font-extrabold text-slate-400 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700 transition-all cursor-pointer shrink-0"
             >
               ← Back
@@ -787,9 +785,9 @@ export default function PresentationPractice({
 
         {/* Main Display Body — Stage + Optional Presenter Side Dock */}
         <div ref={pipContainerRef} className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex flex-col md:flex-row">
-          
+
           {/* Left / Center PowerPoint Slide Stage — 100% clean, unobstructed, swipeable on mobile/tablet */}
-          <div 
+          <div
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex items-center justify-center p-2 sm:p-4 touch-pan-y"
@@ -811,8 +809,8 @@ export default function PresentationPractice({
             <div className="w-full h-full flex items-center justify-center overflow-auto">
               {slideImages[currentSlide] ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img 
-                  src={slideImages[currentSlide]} 
+                <img
+                  src={slideImages[currentSlide]}
                   alt={`Slide ${currentSlide}`}
                   className="max-w-full max-h-full object-contain select-none rounded-xl border border-slate-800/80 shadow-2xl transition-all duration-300"
                 />
@@ -838,13 +836,11 @@ export default function PresentationPractice({
                 onPointerDown={handlePipPointerDown}
                 onPointerMove={handlePipPointerMove}
                 onPointerUp={handlePipPointerUp}
-                className={`absolute aspect-[4/3] rounded-xl overflow-hidden border-2 shadow-2xl bg-black z-30 select-none ${
-                  cameraSize === 'sm' ? 'w-24 sm:w-36' : cameraSize === 'lg' ? 'w-44 sm:w-64' : 'w-32 sm:w-48'
-                } ${
-                  isDraggingPip
+                className={`absolute aspect-[4/3] rounded-xl overflow-hidden border-2 shadow-2xl bg-black z-30 select-none ${cameraSize === 'sm' ? 'w-24 sm:w-36' : cameraSize === 'lg' ? 'w-44 sm:w-64' : 'w-32 sm:w-48'
+                  } ${isDraggingPip
                     ? 'border-amber-300 shadow-amber-500/40 scale-105 ring-2 ring-amber-400/50'
                     : 'border-[#F2A93B] hover:shadow-amber-500/30'
-                }`}
+                  }`}
                 style={{
                   cursor: isDraggingPip ? 'grabbing' : 'grab',
                   touchAction: 'none',
@@ -854,11 +850,11 @@ export default function PresentationPractice({
                     : { top: 12, right: 12 }),
                 }}
               >
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  muted 
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
                   className="w-full h-full pointer-events-none transition-transform duration-200"
                   style={{
                     transform: `scale(${cameraZoom}) scaleX(-1)`,
@@ -895,11 +891,11 @@ export default function PresentationPractice({
                 </div>
 
                 <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border-2 border-[#F2A93B]/80 bg-black shadow-xl relative group">
-                  <video 
-                    ref={videoRef} 
-                    autoPlay 
-                    playsInline 
-                    muted 
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
                     className="w-full h-full transition-transform duration-200"
                     style={{
                       transform: `scale(${cameraZoom}) scaleX(-1)`,
@@ -920,11 +916,10 @@ export default function PresentationPractice({
                         <button
                           key={size}
                           onClick={() => setCameraSize(size)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
-                            cameraSize === size 
-                              ? 'bg-[#F2A93B] text-[#151930] shadow-xs' 
+                          className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase transition-all cursor-pointer ${cameraSize === size
+                              ? 'bg-[#F2A93B] text-[#151930] shadow-xs'
                               : 'bg-slate-800 text-slate-300 hover:text-white'
-                          }`}
+                            }`}
                         >
                           {size}
                         </button>
@@ -987,11 +982,10 @@ export default function PresentationPractice({
               <button
                 key={slideNum}
                 onClick={() => handleSlideChange(slideNum)}
-                className={`flex-shrink-0 relative rounded-lg overflow-hidden transition-all duration-200 border-2 cursor-pointer ${
-                  currentSlide === slideNum 
-                    ? 'border-[#F2A93B] scale-105 shadow-lg shadow-amber-500/20 ring-2 ring-[#F2A93B]/40' 
+                className={`flex-shrink-0 relative rounded-lg overflow-hidden transition-all duration-200 border-2 cursor-pointer ${currentSlide === slideNum
+                    ? 'border-[#F2A93B] scale-105 shadow-lg shadow-amber-500/20 ring-2 ring-[#F2A93B]/40'
                     : 'border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-600'
-                }`}
+                  }`}
               >
                 {slideImages[slideNum] ? (
                   <div className="w-12 h-8 sm:w-16 sm:h-10 bg-slate-950 relative overflow-hidden">
@@ -1030,7 +1024,7 @@ export default function PresentationPractice({
                 {isPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} fill="currentColor" />}
                 <span className="hidden sm:inline">{isPaused ? 'Resume' : 'Pause'}</span>
               </button>
-              
+
               <button
                 onClick={cancelPracticeSession}
                 className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
@@ -1052,18 +1046,16 @@ export default function PresentationPractice({
               <div className="hidden sm:flex items-center gap-1 bg-[#0B0E27] p-1 rounded-xl border border-slate-800">
                 <button
                   onClick={() => toggleCamera(true)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    }`}
                   title="Enable Slide + Video Mode (Requests camera permission)"
                 >
                   <Video size={13} /> Slide + Video
                 </button>
                 <button
                   onClick={() => toggleCamera(false)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    !hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${!hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    }`}
                   title="Enable Audio Only Mode (Stops camera hardware stream)"
                 >
                   <Mic size={13} /> Audio Only
@@ -1098,8 +1090,8 @@ export default function PresentationPractice({
           <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
             {slideImages[currentSlide] ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img 
-                src={slideImages[currentSlide]} 
+              <img
+                src={slideImages[currentSlide]}
                 alt={`Slide ${currentSlide} - Slide Show`}
                 className="w-full h-full object-contain drop-shadow-2xl select-none"
               />
@@ -1113,11 +1105,11 @@ export default function PresentationPractice({
             {/* Floating Webcam Overlay in Slide Show Mode */}
             {hasVideo && (
               <div className="absolute bottom-16 right-4 w-40 sm:w-52 aspect-[4/3] rounded-xl overflow-hidden border-2 border-[#F2A93B] shadow-2xl bg-black z-40">
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  muted 
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
                   className="w-full h-full object-cover transform -scale-x-100"
                 />
                 <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-slate-950/80 backdrop-blur-md text-[9px] text-amber-300 font-extrabold rounded-md border border-amber-500/30 flex items-center gap-1 shadow-md">

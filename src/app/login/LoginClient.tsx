@@ -64,12 +64,13 @@ export default function LoginClient() {
     setLoading(true);
     setError(null);
     
-    const targetUrl = `${window.location.origin}${targetRedirect.startsWith('/') ? targetRedirect : '/' + targetRedirect}`;
+    const nextPath = targetRedirect.startsWith('/') ? targetRedirect : '/' + targetRedirect;
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: targetUrl,
+        redirectTo: callbackUrl,
         queryParams: {
           prompt: 'select_account',
         },
