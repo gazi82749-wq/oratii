@@ -64,7 +64,7 @@ export default function SignupClient() {
       if (typeof document !== 'undefined') {
         document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
       }
-      router.push('/dashboard');
+      window.location.href = '/dashboard';
     } catch (err) {
       setError('Network error. Please try again.');
       setLoading(false);
@@ -78,7 +78,7 @@ export default function SignupClient() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         queryParams: {
           prompt: 'select_account',
         },
