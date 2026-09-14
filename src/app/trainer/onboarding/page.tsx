@@ -42,6 +42,18 @@ export default function TrainerOnboardingPage() {
         const defaultName = session.user.email?.split('@')[0] || '';
         setInstituteName(`${defaultName.charAt(0).toUpperCase() + defaultName.slice(1)} Speech Academy`);
 
+        // Check user role: normal students cannot access educator onboarding
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
+          router.push('/dashboard');
+          return;
+        }
+
         // Check if user has already registered an academy
         const { data: academy } = await supabase
           .from('academies')

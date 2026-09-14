@@ -64,15 +64,8 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 2. Guard /trainer routes
+  // 2. Guard /trainer routes (Strict RBAC: Trainers & Admins only)
   if (pathname.startsWith('/trainer')) {
-    if (pathname === '/trainer/onboarding') {
-      if (!user) {
-        return NextResponse.redirect(new URL('/login?redirectedFrom=/trainer/onboarding', req.url));
-      }
-      return res;
-    }
-
     if (!user) {
       return NextResponse.redirect(new URL('/login?redirectedFrom=' + pathname, req.url));
     }
@@ -81,10 +74,24 @@ export async function middleware(req: NextRequest) {
       .from('profiles')
       .select('role')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
+    // Normal student accounts have NO access to trainer portal features
     if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
+      return NextResponse.redirect(new URL('/dashboard?unauthorized=trainer_only', req.url));
+    }
+
+    // For trainers accessing /trainer (not onboarding), check if institute onboarding is complete
+    if (pathname !== '/trainer/onboarding') {
+      const { data: academy } = await supabase
+        .from('academies')
+        .select('id')
+        .eq('owner_id', user.id)
+        .maybeSingle();
+
+      if (!academy) {
+        return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
+      }
     }
   }
 

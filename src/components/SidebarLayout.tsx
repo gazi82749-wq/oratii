@@ -18,14 +18,7 @@ export default function SidebarLayout({ children }) {
   const [authLoading, setAuthLoading] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const mobileNavItems = [
-    { href: '/', label: 'Home', icon: <Home size={17} /> },
-    { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
-    { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
-    { href: '/presentation', label: 'Viva', icon: <FileText size={17} /> },
-    { href: '/trainer', label: 'Trainer Hub', icon: <Sparkles size={17} /> },
-    { href: '/dashboard', label: 'Account', icon: <User size={17} /> },
-  ];
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -37,12 +30,17 @@ export default function SidebarLayout({ children }) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Auth-aware: check user session for conditional nav buttons
+  // Auth-aware: check user session for conditional nav buttons & role
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
       if (session?.user) {
         getUserCredits(session.user.id).then((cr) => setUserCredits(cr));
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
+          if (data?.role) setUserRole(data.role);
+        });
+      } else {
+        setUserRole(null);
       }
       setAuthLoading(false);
     });
@@ -51,14 +49,31 @@ export default function SidebarLayout({ children }) {
       setUser(session?.user || null);
       if (session?.user) {
         getUserCredits(session.user.id).then((cr) => setUserCredits(cr));
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
+          if (data?.role) setUserRole(data.role);
+        });
       } else {
         setUserCredits(null);
+        setUserRole(null);
       }
       setAuthLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const isTrainerOrAdmin = userRole === 'trainer' || userRole === 'admin';
+
+  const mobileNavItems = [
+    { href: '/', label: 'Home', icon: <Home size={17} /> },
+    { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
+    { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
+    { href: '/presentation', label: 'Viva', icon: <FileText size={17} /> },
+    ...(isTrainerOrAdmin
+      ? [{ href: '/trainer', label: 'Trainer Hub', icon: <Sparkles size={17} /> }]
+      : [{ href: '/reports', label: 'Analytics', icon: <BarChart2 size={17} /> }]),
+    { href: '/dashboard', label: 'Account', icon: <User size={17} /> },
+  ];
 
   const noNavRoutes = ['/login', '/signup', '/forgot-password', '/reset-password'];
   const isNoNav = noNavRoutes.includes(pathname) || pathname.startsWith('/admin');
@@ -96,7 +111,7 @@ export default function SidebarLayout({ children }) {
     { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/presentation', label: 'Slide Deck & Viva Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
-    { href: '/trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold' },
+    ...(isTrainerOrAdmin ? [{ href: '/trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold' }] : []),
     { type: 'divider' },
     { href: '/reports', label: 'Reports & Analytics', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
   ];
