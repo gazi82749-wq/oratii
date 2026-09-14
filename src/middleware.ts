@@ -76,9 +76,9 @@ export async function middleware(req: NextRequest) {
       .eq('id', user.id)
       .maybeSingle();
 
-    // Normal student accounts have NO access to trainer portal features
+    // If a student account accesses /trainer, redirect to /trainer/onboarding to activate Educator Studio
     if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard?unauthorized=trainer_only', req.url));
+      return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
     }
 
     // For trainers accessing /trainer (not onboarding), check if institute onboarding is complete

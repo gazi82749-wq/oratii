@@ -452,13 +452,25 @@ export default function HomeClient() {
 
                   <Link 
                     href={f.href === '/trainer' && !user ? '/signup?role=trainer' : f.href} 
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       if (f.href === '/trainer') {
+                        e.preventDefault();
+                        e.stopPropagation();
+
                         if (!user) {
                           router.push('/signup?role=trainer');
-                          e.preventDefault();
-                        } else if (userRole === 'student') {
-                          e.preventDefault();
+                          return;
+                        }
+
+                        let role = userRole;
+                        if (!role && user?.id) {
+                          const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+                          role = data?.role || 'student';
+                        }
+
+                        if (role === 'trainer' || role === 'admin') {
+                          router.push('/trainer');
+                        } else {
                           setShowEducatorModal(true);
                         }
                       }

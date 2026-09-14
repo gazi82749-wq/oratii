@@ -64,18 +64,26 @@ export default function SidebarLayout({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleTrainerLinkClick = (e: React.MouseEvent) => {
+  const handleTrainerLinkClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setActiveDropdown(null);
     setMobileMenuOpen(false);
 
     if (!user) {
-      // Unauthenticated visitor -> navigate to signup with trainer preselected
       router.push('/signup?role=trainer');
       return;
     }
 
-    if (userRole === 'student') {
-      e.preventDefault();
+    let role = userRole;
+    if (!role && user?.id) {
+      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      role = data?.role || 'student';
+    }
+
+    if (role === 'trainer' || role === 'admin') {
+      router.push('/trainer');
+    } else {
       setShowEducatorModal(true);
     }
   };
