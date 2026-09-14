@@ -78,7 +78,41 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4. Return session tokens to the client
+  // 4. Check role and academy onboarding status
+  let userRole = 'student';
+  let hasAcademy = false;
+
+  if (data.user?.id) {
+    try {
+      const { getServiceSupabase } = await import('@/lib/supabaseClient');
+      const adminClient = getServiceSupabase();
+      const { data: profile } = await adminClient
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      if (profile?.role) {
+        userRole = profile.role;
+      }
+
+      if (userRole === 'trainer' || userRole === 'admin') {
+        const { data: academy } = await adminClient
+          .from('academies')
+          .select('id')
+          .eq('owner_id', data.user.id)
+          .maybeSingle();
+
+        if (academy) {
+          hasAcademy = true;
+        }
+      }
+    } catch (checkErr) {
+      console.warn('[Login Route] Profile check notice:', checkErr);
+    }
+  }
+
+  // 5. Return session tokens and user info to the client
   return NextResponse.json(
     {
       session: {
@@ -90,6 +124,8 @@ export async function POST(req: NextRequest) {
       user: {
         id: data.user?.id,
         email: data.user?.email,
+        role: userRole,
+        hasAcademy,
         user_metadata: data.user?.user_metadata,
       },
     },

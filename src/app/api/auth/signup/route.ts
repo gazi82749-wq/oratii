@@ -79,13 +79,16 @@ export async function POST(req: NextRequest) {
   });
 
   const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ppt-analyzer.vercel.app';
+  const emailRedirectTo = role === 'trainer'
+    ? `${origin}/auth/callback?next=/trainer/onboarding&role=trainer`
+    : `${origin}/dashboard`;
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { full_name: fullName, role },
-      emailRedirectTo: `${origin}/dashboard`,
+      emailRedirectTo,
     },
   });
 

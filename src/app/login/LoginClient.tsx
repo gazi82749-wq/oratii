@@ -53,7 +53,15 @@ export default function LoginClient() {
         document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
       }
 
-      window.location.href = targetRedirect;
+      if (data.user?.role === 'trainer') {
+        if (!data.user?.hasAcademy) {
+          window.location.href = '/trainer/onboarding';
+        } else {
+          window.location.href = targetRedirect === '/dashboard' ? '/trainer' : targetRedirect;
+        }
+      } else {
+        window.location.href = targetRedirect;
+      }
     } catch (err) {
       setError('Network error. Please try again.');
       setLoading(false);

@@ -42,16 +42,16 @@ export default function TrainerOnboardingPage() {
         const defaultName = session.user.email?.split('@')[0] || '';
         setInstituteName(`${defaultName.charAt(0).toUpperCase() + defaultName.slice(1)} Speech Academy`);
 
-        // Check if user is already a trainer
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
+        // Check if user has already registered an academy
+        const { data: academy } = await supabase
+          .from('academies')
+          .select('id')
+          .eq('owner_id', session.user.id)
           .maybeSingle();
 
-        if (profile?.role === 'trainer' || profile?.role === 'admin') {
-          // Already verified trainer -> go straight to dashboard
-          router.push('/trainer/batches');
+        if (academy) {
+          // Already registered trainer -> go straight to trainer portal
+          router.push('/trainer');
           return;
         }
       } catch (err: any) {
@@ -110,8 +110,8 @@ export default function TrainerOnboardingPage() {
         console.warn('Academy creation response notice:', data.error);
       }
 
-      // 3. Success -> redirect to batch studio
-      router.push('/trainer/batches');
+      // 3. Success -> redirect to trainer dashboard
+      router.push('/trainer');
     } catch (err: any) {
       setError(err?.message || 'Failed to complete educator setup.');
       setSubmitting(false);

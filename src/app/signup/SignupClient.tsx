@@ -82,10 +82,12 @@ export default function SignupClient() {
     setLoading(true);
     setError(null);
 
+    const nextUrl = selectedRole === 'trainer' ? '/trainer/onboarding' : '/dashboard';
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}&role=${selectedRole}`,
         queryParams: {
           prompt: 'select_account',
         },

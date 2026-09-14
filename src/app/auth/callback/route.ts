@@ -14,8 +14,9 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
+  const roleParam = requestUrl.searchParams.get('role');
   const nextParam = requestUrl.searchParams.get('next') || '/dashboard';
-  const targetPath = nextParam.startsWith('/') ? nextParam : `/${nextParam}`;
+  let targetPath = nextParam.startsWith('/') ? nextParam : `/${nextParam}`;
 
   if (code) {
     const cookieStore = cookies();
@@ -39,9 +40,54 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (!error && session?.user) {
+      // 1. If roleParam is provided, persist to profiles
+      if (roleParam === 'trainer') {
+        try {
+          const { getServiceSupabase } = await import('@/lib/supabaseClient');
+          const adminClient = getServiceSupabase();
+          await adminClient.from('profiles').upsert(
+            {
+              id: session.user.id,
+              email: session.user.email,
+              full_name: session.user.user_metadata?.full_name || '',
+              role: 'trainer',
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'id' }
+          );
+        } catch (profileErr) {
+          console.warn('[OAuth Callback] Profile upsert notice:', profileErr);
+        }
+      }
+
+      // 2. Check if user is trainer and if academy onboarding is required
+      try {
+        const { getServiceSupabase } = await import('@/lib/supabaseClient');
+        const adminClient = getServiceSupabase();
+        const { data: profile } = await adminClient
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (profile?.role === 'trainer') {
+          const { data: academy } = await adminClient
+            .from('academies')
+            .select('id')
+            .eq('owner_id', session.user.id)
+            .maybeSingle();
+
+          if (!academy) {
+            targetPath = '/trainer/onboarding';
+          }
+        }
+      } catch (checkErr) {
+        console.warn('[OAuth Callback] Trainer check notice:', checkErr);
+      }
+
       const response = NextResponse.redirect(new URL(targetPath, request.url));
       response.cookies.set('Oratii_logged_in', 'true', {
         path: '/',

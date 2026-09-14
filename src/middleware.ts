@@ -88,7 +88,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 3. Guard private user routes
+  // 3. Guard private user routes (/dashboard, /profile, /account)
   if (
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/profile') ||
@@ -99,6 +99,27 @@ export async function middleware(req: NextRequest) {
       const loginUrl = new URL('/login', req.url);
       loginUrl.searchParams.set('redirectedFrom', pathname);
       return NextResponse.redirect(loginUrl);
+    }
+
+    // If logged in user is a trainer without an academy, enforce onboarding
+    if (user && pathname.startsWith('/dashboard')) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile?.role === 'trainer') {
+        const { data: academy } = await supabase
+          .from('academies')
+          .select('id')
+          .eq('owner_id', user.id)
+          .maybeSingle();
+
+        if (!academy) {
+          return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
+        }
+      }
     }
   }
 
