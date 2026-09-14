@@ -171,15 +171,15 @@ export default function HomeClient() {
           </FadeUp>
 
           <FadeUp delay={150}>
-            <h1 className="text-[clamp(2.3rem,4.5vw,3.75rem)] lg:text-6xl leading-[1.12] font-extrabold tracking-tight text-slate-900 mb-5 break-words max-w-2xl">
-              Practice speaking live for <br className="hidden sm:block" />
-              speeches, slides &amp; <span className="text-[#F2A93B]">interviews.</span>
+            <h1 className="text-[clamp(2.5rem,4.8vw,4.2rem)] lg:text-6xl leading-[1.1] font-black tracking-tight text-slate-900 mb-5 break-words max-w-2xl">
+              Say it well. <br className="hidden sm:block" />
+              <span className="text-[#F2A93B]">Show it well.</span>
             </h1>
           </FadeUp>
 
           <FadeUp delay={200}>
-            <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal">
-              Get instant AI feedback on your vocal pacing (WPM), filler words, and answer delivery. Rehearse out loud in a live AI sandbox before high-stakes moments.
+            <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-medium">
+              Real-time AI feedback on your vocal pacing (WPM), filler words, slide deck density, and viva interview delivery.
             </p>
           </FadeUp>
 
