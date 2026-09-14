@@ -276,39 +276,7 @@ export default function HomeClient() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col relative z-10">
           
-          {/* Premium Section Header */}
-          <FadeUp>
-            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mb-5 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#F2A93B]"></span> Complete 4-Module Suite
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight">
-                Everything you need to <span className="text-[#F2A93B]">master</span> public speaking.
-              </h2>
-              <p className="text-slate-600 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto font-normal">
-                Four specialized AI engines designed to transform raw speeches into executive-level delivery.
-              </p>
-
-              {/* Module Quick Nav Tab Bar */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 bg-white rounded-2xl border border-slate-200/90 shadow-xs max-w-2xl mx-auto">
-                {features.map((item, idx) => {
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        const el = document.getElementById(`module-card-${idx}`);
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }}
-                      className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-950 bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2"
-                    >
-                      <span className="w-2 h-2 rounded-full bg-[#0F1426]"></span>
-                      <span>{item.title}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </FadeUp>
+          {/* Feature Cards Grid */}
 
           <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
           {features.map((f, i) => {
