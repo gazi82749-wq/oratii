@@ -269,7 +269,7 @@ export default function HomeClient() {
       </section>
 
       {/* Unified Features Section */}
-      <section className="py-16 sm:py-20 relative overflow-hidden bg-[#F8FAFC]">
+      <section id="how-it-works" className="py-16 sm:py-20 relative overflow-hidden bg-[#F8FAFC] scroll-mt-20">
         {/* Subtle Ambient Depth */}
         <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none" />
@@ -284,7 +284,7 @@ export default function HomeClient() {
             const cs = cardStyles[i % cardStyles.length] || cardStyles[0];
             return (
               <FadeUp key={i} delay={i * 80}>
-              <div id={`module-card-${i}`} className="relative group">
+              <div id={`module-card-${i}`} className="relative group scroll-mt-24">
                 <div className={`grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden relative ${cs.borderAccent}`}
                 >
                   {/* Subtle top divider line */}

@@ -42,10 +42,8 @@
 /* ─── Base Reset & Typography ─── */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: 5rem;
   overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
   -webkit-overflow-scrolling: touch;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -56,9 +54,7 @@ body {
   background: var(--color-bg);
   color: var(--color-primary);
   overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
-  min-height: 100%;
+  min-height: 100vh;
   -webkit-text-size-adjust: 100%;
   padding-env: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   line-height: 1.6;
