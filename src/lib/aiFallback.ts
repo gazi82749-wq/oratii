@@ -62,8 +62,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
         errors.push(`Cerebras (${model}): ${err.message}`);
         
-        // Circuit break Cerebras if payment/quota limit is hit
-        if (err.message?.includes('402') || err.message?.includes('payment_required') || err.message?.includes('quota')) {
+        // Circuit break Cerebras if payment/quota/rate limit is hit
+        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('payment_required') || err.message?.includes('quota') || err.message?.includes('rate')) {
           console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated for 5 minutes.");
           cerebrasQuotaExhaustedTime = Date.now();
           break;
@@ -99,7 +99,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
         errors.push(`Groq (${model}): ${err.message}`);
 
-        if (err.message?.includes('402') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
+        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
           console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
           groqQuotaExhaustedTime = Date.now();
         }
