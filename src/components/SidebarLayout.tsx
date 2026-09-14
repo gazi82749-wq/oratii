@@ -9,6 +9,8 @@ import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
 
+import EducatorSwitchModal from './EducatorSwitchModal';
+
 export default function SidebarLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -17,8 +19,8 @@ export default function SidebarLayout({ children }) {
   const [userCredits, setUserCredits] = useState<number | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState(null);
-
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [showEducatorModal, setShowEducatorModal] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -62,16 +64,33 @@ export default function SidebarLayout({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const isTrainerOrAdmin = userRole === 'trainer' || userRole === 'admin';
+  const handleTrainerLinkClick = (e: React.MouseEvent) => {
+    setActiveDropdown(null);
+    setMobileMenuOpen(false);
+
+    if (!user) {
+      // Unauthenticated visitor -> navigate to signup with trainer preselected
+      router.push('/signup?role=trainer');
+      return;
+    }
+
+    if (userRole === 'student') {
+      e.preventDefault();
+      setShowEducatorModal(true);
+    }
+  };
 
   const mobileNavItems = [
     { href: '/', label: 'Home', icon: <Home size={17} /> },
     { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
     { href: '/presentation', label: 'Viva', icon: <FileText size={17} /> },
-    ...(isTrainerOrAdmin
-      ? [{ href: '/trainer', label: 'Trainer Hub', icon: <Sparkles size={17} /> }]
-      : [{ href: '/reports', label: 'Analytics', icon: <BarChart2 size={17} /> }]),
+    { 
+      href: user ? '/trainer' : '/signup?role=trainer', 
+      label: 'Trainer Hub', 
+      icon: <Sparkles size={17} />,
+      isTrainer: true 
+    },
     { href: '/dashboard', label: 'Account', icon: <User size={17} /> },
   ];
 
@@ -111,7 +130,7 @@ export default function SidebarLayout({ children }) {
     { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/presentation', label: 'Slide Deck & Viva Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
-    ...(isTrainerOrAdmin ? [{ href: '/trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold' }] : []),
+    { href: user ? '/trainer' : '/signup?role=trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
     { type: 'divider' },
     { href: '/reports', label: 'Reports & Analytics', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
   ];
@@ -151,7 +170,18 @@ export default function SidebarLayout({ children }) {
                 {productItems.map((item, i) => {
                   if (item.type === 'divider') return <div key={i} className="h-px bg-slate-100 my-1 mx-2"></div>;
                   return (
-                    <Link key={i} href={item.href} onClick={() => setActiveDropdown(null)} className={`px-3 py-2 hover:bg-slate-50 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-lg flex items-center gap-3 ${pathname === item.href ? 'bg-indigo-50 text-indigo-900 font-bold' : ''}`}>
+                    <Link 
+                      key={i} 
+                      href={item.href} 
+                      onClick={(e) => {
+                        if (item.isTrainer) {
+                          handleTrainerLinkClick(e);
+                        } else {
+                          setActiveDropdown(null);
+                        }
+                      }} 
+                      className={`px-3 py-2 hover:bg-slate-50 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-lg flex items-center gap-3 ${pathname === item.href ? 'bg-indigo-50 text-indigo-900 font-bold' : ''}`}
+                    >
                       {item.icon} {item.label}
                     </Link>
                   );
@@ -346,6 +376,11 @@ export default function SidebarLayout({ children }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={(e) => {
+                if (item.isTrainer) {
+                  handleTrainerLinkClick(e);
+                }
+              }}
               className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 px-0.5 rounded-xl transition-all duration-200 active-touch-scale text-center select-none ${
                 isActive 
                   ? 'text-[#1B2140]' 
@@ -367,6 +402,13 @@ export default function SidebarLayout({ children }) {
           );
         })}
       </nav>
+
+      {/* Educator / Institute Role Switch Modal Popup */}
+      <EducatorSwitchModal
+        isOpen={showEducatorModal}
+        onClose={() => setShowEducatorModal(false)}
+        userId={user?.id}
+      />
     </div>
   );
 }

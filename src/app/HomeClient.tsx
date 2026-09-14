@@ -18,20 +18,36 @@ import ChallengeMockup from '@/components/home/ChallengeMockup';
 import PartnerAcademyMockup from '@/components/home/PartnerAcademyMockup';
 
 
+import EducatorSwitchModal from '../components/EducatorSwitchModal';
+
 export default function HomeClient() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [showEducatorModal, setShowEducatorModal] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
+          if (data?.role) setUserRole(data.role);
+        });
+      }
       setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
+          if (data?.role) setUserRole(data.role);
+        });
+      } else {
+        setUserRole(null);
+      }
       setAuthLoading(false);
     });
 
@@ -93,6 +109,16 @@ export default function HomeClient() {
       iconBg: 'bg-emerald-50 border-emerald-100',
       href: '/challenge',
       cta: 'Join 20-Day Challenge'
+    },
+    {
+      title: 'Partner Academy & Coaching Hub',
+      headline: 'Automate student speaking drills & viva homework.',
+      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, and auto-grade student homework.',
+      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', 'Automated Student Homework Grading'],
+      icon: <GraduationCap size={28} className="text-indigo-600" />,
+      iconBg: 'bg-indigo-50 border-indigo-100',
+      href: '/trainer',
+      cta: 'Open Partner Academy Portal'
     }
   ];
 
@@ -424,7 +450,21 @@ export default function HomeClient() {
                     ))}
                   </div>
 
-                  <Link href={f.href} className={`inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group ${cs.ctaClasses}`}>
+                  <Link 
+                    href={f.href === '/trainer' && !user ? '/signup?role=trainer' : f.href} 
+                    onClick={(e) => {
+                      if (f.href === '/trainer') {
+                        if (!user) {
+                          router.push('/signup?role=trainer');
+                          e.preventDefault();
+                        } else if (userRole === 'student') {
+                          e.preventDefault();
+                          setShowEducatorModal(true);
+                        }
+                      }
+                    }}
+                    className={`inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group ${cs.ctaClasses}`}
+                  >
                     {f.cta}
                     <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -708,6 +748,13 @@ export default function HomeClient() {
       </section>
       </div>
       <Footer />
+
+      {/* Educator / Institute Mode Switch Modal Popup */}
+      <EducatorSwitchModal
+        isOpen={showEducatorModal}
+        onClose={() => setShowEducatorModal(false)}
+        userId={user?.id}
+      />
     </div>
   );
 }
