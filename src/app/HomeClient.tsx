@@ -93,16 +93,6 @@ export default function HomeClient() {
       iconBg: 'bg-emerald-50 border-emerald-100',
       href: '/challenge',
       cta: 'Join 20-Day Challenge'
-    },
-    {
-      title: 'Partner Academy & Coaching Hub',
-      headline: 'Automate student speaking drills & viva homework.',
-      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, and auto-grade student homework.',
-      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', 'Automated Student Homework Grading'],
-      icon: <GraduationCap size={28} className="text-indigo-600" />,
-      iconBg: 'bg-indigo-50 border-indigo-100',
-      href: '/trainer',
-      cta: 'Open Partner Academy Portal'
     }
   ];
 
@@ -146,7 +136,6 @@ export default function HomeClient() {
     { num: '02', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
     { num: '03', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
     { num: '04', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
-    { num: '05', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
   ];
 
   return (
