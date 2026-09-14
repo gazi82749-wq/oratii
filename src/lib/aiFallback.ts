@@ -36,8 +36,8 @@ function isGroqQuotaExhausted(): boolean {
 
 /**
  * Executes a 4-Stage AI Fallback Waterfall:
- * 1st: Cerebras (Ultra-fast Llama-3.3-70B ~2000 tokens/sec)
- * 2nd: Groq (Ultra-fast Llama-3.3-70B or Llama-3.2 Vision ~1000 tokens/sec)
+ * 1st: Groq (Ultra-fast Llama-3.3-70B & Vision models ~1000 tokens/sec)
+ * 2nd: Cerebras (Ultra-fast Llama-3.3-70B ~2000 tokens/sec)
  * 3rd: Gemini (Gemini 1.5/2.0 Flash - Multimodal & Reasoning)
  * 4th: OpenRouter (:free models - Ultimate Safety Net)
  */
@@ -45,12 +45,43 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
   const errors: string[] = [];
   const disabled = new Set(options.disableProviders || []);
 
-  // 1️⃣ CEREBRAS (1st Priority for Text-Only requests)
+  // 1️⃣ GROQ (1st Priority for Text & Vision requests)
+  if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
+    const groqModels = (options.images && options.images.length > 0)
+      ? ["groq/compound-mini", "qwen/qwen3.6-27b"]
+      : ["groq/compound-mini", "qwen/qwen3.6-27b", "openai/gpt-oss-120b"];
+
+    for (const model of groqModels) {
+      try {
+        console.log(`[AIFallback] 1st Priority: Attempting Groq API (${model})...`);
+        const res = await callOpenAICompatible({
+          url: "https://api.groq.com/openai/v1/chat/completions",
+          apiKey: process.env.GROQ_API_KEY,
+          model,
+          options,
+        });
+        if (res) return res;
+      } catch (err: any) {
+        console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
+        errors.push(`Groq (${model}): ${err.message}`);
+
+        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
+          console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
+          groqQuotaExhaustedTime = Date.now();
+        }
+      }
+    }
+  } else if (disabled.has('groq') || isGroqQuotaExhausted()) {
+    console.log("[AIFallback Debug] Simulating Groq failure or skipping due to active circuit breaker...");
+    errors.push("Groq: Simulated failure or Quota Exhausted");
+  }
+
+  // 2️⃣ CEREBRAS (2nd Priority for Text-Only requests)
   if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !isCerebrasQuotaExhausted()) {
     const cerebrasModels = ["gpt-oss-120b", "gemma-4-31b"];
     for (const model of cerebrasModels) {
       try {
-        console.log(`[AIFallback] 1st Priority: Attempting Cerebras API (${model})...`);
+        console.log(`[AIFallback] 2nd Priority: Attempting Cerebras API (${model})...`);
         const res = await callOpenAICompatible({
           url: "https://api.cerebras.ai/v1/chat/completions",
           apiKey: process.env.CEREBRAS_API_KEY,
@@ -77,37 +108,6 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
       console.log("[AIFallback Debug] Simulating Cerebras failure...");
     }
     errors.push("Cerebras: Disabled or Quota Exhausted");
-  }
-
-  // 2️⃣ GROQ (2nd Priority for Text or Image frames)
-  if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
-    const groqModels = (options.images && options.images.length > 0)
-      ? ["groq/compound-mini", "qwen/qwen3.6-27b"]
-      : ["groq/compound-mini", "qwen/qwen3.6-27b", "openai/gpt-oss-120b"];
-
-    for (const model of groqModels) {
-      try {
-        console.log(`[AIFallback] 2nd Priority: Attempting Groq API (${model})...`);
-        const res = await callOpenAICompatible({
-          url: "https://api.groq.com/openai/v1/chat/completions",
-          apiKey: process.env.GROQ_API_KEY,
-          model,
-          options,
-        });
-        if (res) return res;
-      } catch (err: any) {
-        console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
-        errors.push(`Groq (${model}): ${err.message}`);
-
-        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
-          console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
-          groqQuotaExhaustedTime = Date.now();
-        }
-      }
-    }
-  } else if (disabled.has('groq') || isGroqQuotaExhausted()) {
-    console.log("[AIFallback Debug] Simulating Groq failure or skipping due to active circuit breaker...");
-    errors.push("Groq: Simulated failure or Quota Exhausted");
   }
 
   // 3️⃣ GEMINI (3rd Priority, or 1st if PDF binary attached)
