@@ -21,7 +21,8 @@ export default function NotificationPrompt() {
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    // Don't show if already subscribed or permission already decided
+    let autoHideTimer: NodeJS.Timeout;
+
     async function check() {
       if (!isPushSupported()) return;
 
@@ -33,9 +34,18 @@ export default function NotificationPrompt() {
 
       if (shouldShowPrompt()) {
         setVisible(true);
+
+        // Auto-hide popup after 12 seconds if user takes no action (without setting permanent dismiss)
+        autoHideTimer = setTimeout(() => {
+          setVisible(false);
+        }, 12000);
       }
     }
     check();
+
+    return () => {
+      if (autoHideTimer) clearTimeout(autoHideTimer);
+    };
   }, []);
 
   const handleAccept = async () => {

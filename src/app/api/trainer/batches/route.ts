@@ -109,6 +109,20 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getTrainerDbClient(token);
 
+    // Verify user is an authorized trainer or admin
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden. Only verified educators or speech coaches can create student batches.' },
+        { status: 403 }
+      );
+    }
+
     // Check trainer's academy
     let { data: academy } = await supabaseAdmin
       .from('academies')

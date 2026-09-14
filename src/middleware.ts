@@ -64,7 +64,31 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 2. Guard private user routes
+  // 2. Guard /trainer routes
+  if (pathname.startsWith('/trainer')) {
+    if (pathname === '/trainer/onboarding') {
+      if (!user) {
+        return NextResponse.redirect(new URL('/login?redirectedFrom=/trainer/onboarding', req.url));
+      }
+      return res;
+    }
+
+    if (!user) {
+      return NextResponse.redirect(new URL('/login?redirectedFrom=' + pathname, req.url));
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
+    }
+  }
+
+  // 3. Guard private user routes
   if (
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/profile') ||
@@ -84,6 +108,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
+    '/trainer/:path*',
     '/dashboard/:path*',
     '/profile/:path*',
     '/account/:path*',

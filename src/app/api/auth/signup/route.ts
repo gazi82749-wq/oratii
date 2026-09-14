@@ -31,12 +31,13 @@ export async function POST(req: NextRequest) {
   }
 
   // 2. Parse request body
-  let email: string, password: string, fullName: string;
+  let email: string, password: string, fullName: string, role: string;
   try {
     const body = await req.json();
     email = body.email;
     password = body.password;
     fullName = body.fullName || '';
+    role = body.role === 'trainer' ? 'trainer' : 'student';
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
@@ -83,10 +84,29 @@ export async function POST(req: NextRequest) {
     email,
     password,
     options: {
-      data: { full_name: fullName },
+      data: { full_name: fullName, role },
       emailRedirectTo: `${origin}/dashboard`,
     },
   });
+
+  if (data?.user?.id) {
+    try {
+      const { getServiceSupabase } = await import('@/lib/supabaseClient');
+      const adminClient = getServiceSupabase();
+      await adminClient.from('profiles').upsert(
+        {
+          id: data.user.id,
+          email: data.user.email,
+          full_name: fullName,
+          role,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'id' }
+      );
+    } catch (profileErr) {
+      console.warn('Non-critical signup profile upsert notice:', profileErr);
+    }
+  }
 
   if (error) {
     return NextResponse.json(

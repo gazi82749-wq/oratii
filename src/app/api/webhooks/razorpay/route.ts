@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getServiceSupabase } from '@/lib/supabaseClient';
+import { sendPaymentSuccessEmail, sendPaymentFailedEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -73,7 +74,7 @@ export async function POST(req: Request) {
         await supabase
           .from('subscriptions')
           .update({
-            plan_name: planName.toLowerCase(),
+            plan_name: (planName || 'standard').toLowerCase(),
             payment_status: 'captured',
             subscription_status: 'active',
             end_date: endDate.toISOString(),
@@ -85,7 +86,7 @@ export async function POST(req: Request) {
           .from('subscriptions')
           .insert({
             user_id: userId,
-            plan_name: planName.toLowerCase(),
+            plan_name: (planName || 'standard').toLowerCase(),
             amount: payment.amount / 100,
             billing_cycle: 'month',
             payment_status: 'captured',
@@ -97,10 +98,16 @@ export async function POST(req: Request) {
       }
 
       // 3. Update the user's profile and reset usage limits
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', userId)
+        .single();
+
       await supabase
         .from('profiles')
         .update({
-          current_plan: planName.toLowerCase(),
+          current_plan: (planName || 'standard').toLowerCase(),
           plan_expiry: endDate.toISOString(),
         })
         .eq('id', userId);
@@ -115,7 +122,16 @@ export async function POST(req: Request) {
         })
         .eq('user_id', userId);
         
-      // TODO: Send Success Email using Resend
+      // Send Payment Success Email using Resend
+      const userEmail = payment.email || userProfile?.email;
+      if (userEmail) {
+        await sendPaymentSuccessEmail(
+          userEmail,
+          userProfile?.full_name || 'Valued Speaker',
+          planName || 'Credit Pack',
+          payment.amount / 100
+        );
+      }
     }
 
     // Handle Payment Failed
@@ -143,7 +159,20 @@ export async function POST(req: Request) {
         payment_method: payment.method,
       });
       
-      // TODO: Send Failure Email using Resend
+      // Send Payment Failure Email using Resend
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', userId)
+        .single();
+
+      const userEmail = payment.email || userProfile?.email;
+      if (userEmail) {
+        await sendPaymentFailedEmail(
+          userEmail,
+          userProfile?.full_name || 'Valued Speaker'
+        );
+      }
     }
 
     return NextResponse.json({ status: 'ok' });

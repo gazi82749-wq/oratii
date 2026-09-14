@@ -1,7 +1,8 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
-const FROM_EMAIL = 'billing@Oratiiai.com';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii AI <onboarding@resend.dev>';
+const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.vercel.app';
 
 // Generic email sender to avoid template duplication
 async function sendEmail(to: string, subject: string, heading: string, body: string, ctaText: string, ctaUrl: string, ctaColor: string) {
@@ -15,13 +16,25 @@ async function sendEmail(to: string, subject: string, heading: string, body: str
       to,
       subject,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>${heading}</h2>
-          ${body}
-          <br/>
-          <a href="${ctaUrl}" style="background-color: ${ctaColor}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">${ctaText}</a>
-          <br/><br/>
-          <p>Best,<br/>The Oratii AI Team</p>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
+          <div style="background-color: #1B2140; padding: 28px 24px; text-align: center;">
+            <h1 style="color: #FFFFFF; font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">
+              Orat<span style="color: #F2A93B;">ii</span> AI
+            </h1>
+          </div>
+          <div style="padding: 28px 24px;">
+            <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin-top: 0;">${heading}</h2>
+            <div style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
+              ${body}
+            </div>
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="${ctaUrl}" style="background-color: ${ctaColor}; color: white; padding: 14px 28px; text-decoration: none; border-radius: 100px; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">${ctaText}</a>
+            </div>
+            <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
+            <p style="font-size: 13px; color: #94A3B8; margin: 0; text-align: center;">
+              If you have any questions, feel free to reply to this email.<br/>Best regards, <strong>The Oratii AI Team</strong>
+            </p>
+          </div>
         </div>
       `,
     });
@@ -31,29 +44,31 @@ async function sendEmail(to: string, subject: string, heading: string, body: str
 }
 
 export async function sendPaymentSuccessEmail(toEmail: string, userName: string, planName: string, amount: number) {
+  const siteUrl = getSiteUrl();
   await sendEmail(
     toEmail,
     'Payment Successful - Welcome to Oratii AI Premium!',
     'Payment Successful!',
-    `<p>Hi ${userName},</p>
-     <p>We successfully received your payment of ₹${amount} for the <strong>${planName}</strong> plan.</p>
-     <p>Your premium features are now unlocked. Head over to your dashboard to start practicing!</p>`,
+    `<p>Hi ${userName || 'there'},</p>
+     <p>We successfully received your payment of <strong>₹${amount}</strong> for the <strong>${planName}</strong> credit pack.</p>
+     <p>Your practice credits have been added to your account instantly. Head over to your dashboard to start practicing!</p>`,
     'Go to Dashboard',
-    'https://Oratiiai.com/dashboard',
+    `${siteUrl}/dashboard`,
     '#4f46e5'
   );
 }
 
 export async function sendPaymentFailedEmail(toEmail: string, userName: string) {
+  const siteUrl = getSiteUrl();
   await sendEmail(
     toEmail,
     'Action Required: Payment Failed',
-    'Payment Failed',
-    `<p>Hi ${userName},</p>
-     <p>We encountered an issue processing your recent payment. Your subscription has not been updated.</p>
-     <p>Please update your payment method or try again to unlock premium features.</p>`,
-    'Update Payment Method',
-    'https://Oratiiai.com/dashboard/billing',
+    'Payment Processing Issue',
+    `<p>Hi ${userName || 'there'},</p>
+     <p>We encountered an issue processing your recent payment for Oratii credits.</p>
+     <p>Please check your payment method or try again from the pricing page.</p>`,
+    'Try Again',
+    `${siteUrl}/pricing`,
     '#ef4444'
   );
 }

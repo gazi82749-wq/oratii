@@ -55,7 +55,7 @@ export function shouldShowPrompt(): boolean {
   const visits = parseInt(localStorage.getItem(VISIT_COUNT_KEY) || '0', 10) + 1;
   localStorage.setItem(VISIT_COUNT_KEY, String(visits));
 
-  return visits >= 2;
+  return true;
 }
 
 /**

@@ -15,6 +15,8 @@ export default function SignupClient() {
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [selectedRole, setSelectedRole] = useState<'student' | 'trainer'>('student');
+
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -24,7 +26,7 @@ export default function SignupClient() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName }),
+        body: JSON.stringify({ email, password, fullName, role: selectedRole }),
       });
 
       const data = await res.json();
@@ -64,7 +66,12 @@ export default function SignupClient() {
       if (typeof document !== 'undefined') {
         document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
       }
-      window.location.href = '/dashboard';
+      
+      if (selectedRole === 'trainer') {
+        window.location.href = '/trainer/onboarding';
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (err) {
       setError('Network error. Please try again.');
       setLoading(false);
@@ -219,6 +226,49 @@ export default function SignupClient() {
 
                 {/* Signup Form */}
                 <form onSubmit={handleEmailSignup} className="space-y-4">
+                  {/* Upwork-style 2-Role Selector */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 tracking-wide uppercase mb-2">I am joining as a:</label>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRole('student')}
+                        className={`p-3 rounded-xl border text-left transition-all relative ${
+                          selectedRole === 'student'
+                            ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-600/20 text-slate-900'
+                            : 'border-slate-200 bg-white hover:border-slate-300 text-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-base">🎓</span>
+                          {selectedRole === 'student' && (
+                            <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                          )}
+                        </div>
+                        <div className="font-extrabold text-xs text-slate-900">Learner / Speaker</div>
+                        <div className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">Practice speech, viva & slides</div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRole('trainer')}
+                        className={`p-3 rounded-xl border text-left transition-all relative ${
+                          selectedRole === 'trainer'
+                            ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-600/20 text-slate-900'
+                            : 'border-slate-200 bg-white hover:border-slate-300 text-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-base">🏫</span>
+                          {selectedRole === 'trainer' && (
+                            <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                          )}
+                        </div>
+                        <div className="font-extrabold text-xs text-slate-900">Educator / Coach</div>
+                        <div className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">Manage batches & students</div>
+                      </button>
+                    </div>
+                  </div>
                   <div>
                     <label htmlFor="signup-name" className="block text-xs font-semibold text-slate-700 tracking-wide uppercase mb-1.5">Full Name</label>
                     <input 
