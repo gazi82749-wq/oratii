@@ -201,12 +201,33 @@ export default function HomeClient() {
                 </Link>
               )}
               
-              <a 
-                href="#how-it-works"
-                className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all shadow-xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px]"
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  const target = document.getElementById('how-it-works');
+                  if (target) {
+                    const targetPos = target.getBoundingClientRect().top + window.pageYOffset - 80;
+                    const startPos = window.pageYOffset;
+                    const dist = targetPos - startPos;
+                    const dur = 850;
+                    let startTime: number | null = null;
+                    const step = (now: number) => {
+                      if (!startTime) startTime = now;
+                      const elapsed = now - startTime;
+                      const progress = Math.min(elapsed / dur, 1);
+                      const ease = progress < 0.5 
+                        ? 4 * progress * progress * progress 
+                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                      window.scrollTo(0, startPos + dist * ease);
+                      if (elapsed < dur) requestAnimationFrame(step);
+                    };
+                    requestAnimationFrame(step);
+                  }
+                }}
+                className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all shadow-xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px] cursor-pointer"
               >
                 See How It Works
-              </a>
+              </button>
             </div>
             <p className="mt-4 text-[11px] sm:text-xs font-semibold text-slate-400 text-center md:text-left">
               No credit card required • Free plan available
