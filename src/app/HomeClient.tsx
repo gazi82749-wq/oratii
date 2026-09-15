@@ -27,6 +27,7 @@ export default function HomeClient() {
   const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [showEducatorModal, setShowEducatorModal] = useState(false);
+  const [activeFeatureScrollIndex, setActiveFeatureScrollIndex] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -52,6 +53,23 @@ export default function HomeClient() {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  // PayPal-inspired scroll detection for features section
+  useEffect(() => {
+    const handleScroll = () => {
+      const cards = [0, 1, 2, 3, 4].map((i) => document.getElementById(`module-card-${i}`));
+      const scrollPos = window.pageYOffset + 220;
+      for (let i = cards.length - 1; i >= 0; i--) {
+        const card = cards[i];
+        if (card && card.offsetTop <= scrollPos) {
+          setActiveFeatureScrollIndex(i);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const features: Array<{
@@ -317,6 +335,37 @@ export default function HomeClient() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col relative z-10">
           
+          {/* PayPal-inspired Sticky Feature Sub-Nav Bar */}
+          <div className="sticky top-20 z-30 mb-8 py-2 px-3 bg-white/85 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-sm flex items-center justify-start md:justify-center gap-2 overflow-x-auto no-scrollbar max-w-4xl mx-auto">
+            {features.map((f, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setActiveFeatureScrollIndex(i);
+                  const target = document.getElementById(`module-card-${i}`);
+                  if (target) {
+                    const y = target.getBoundingClientRect().top + window.pageYOffset - 110;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                  }
+                }}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                  activeFeatureScrollIndex === i
+                    ? 'bg-[#0F1426] text-white shadow-md border border-white/10 scale-105'
+                    : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 border border-slate-200/60'
+                }`}
+              >
+                <span className={activeFeatureScrollIndex === i ? 'text-[#F2A93B]' : 'text-slate-400'}>
+                  {i === 0 && '🎙️'}
+                  {i === 1 && '💼'}
+                  {i === 2 && '📹'}
+                  {i === 3 && '🏆'}
+                  {i === 4 && '🎓'}
+                </span>
+                <span>{f.title}</span>
+              </button>
+            ))}
+          </div>
+
           {/* Feature Cards Grid */}
 
           <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
