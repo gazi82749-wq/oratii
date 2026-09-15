@@ -190,16 +190,16 @@ export default function PricingClient() {
                   key={pack.id}
                   className={`relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 ${
                     isPopular 
-                      ? 'ui-card-dark border-2 border-[#F2A93B] shadow-2xl lg:-translate-y-2 hover:-translate-y-2.5 relative overflow-hidden' 
+                      ? 'ui-card-dark border-2 border-[#F2A93B] shadow-2xl lg:-translate-y-2 hover:-translate-y-2.5 relative overflow-visible mt-4 lg:mt-0' 
                       : 'ui-card hover:-translate-y-1'
                   }`}
                 >
                   {isPopular && (
                     <>
                       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/15 blur-2xl rounded-full pointer-events-none"></div>
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-orange-500 text-[#0F1426] text-[10px] font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-lg flex items-center gap-1.5 z-20">
-                        <Sparkles size={12} />
-                        <span>{pack.badge}</span>
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-orange-500 text-[#0F1426] text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-lg flex items-center gap-1.5 z-20 whitespace-nowrap shrink-0 max-w-max">
+                        <Sparkles size={12} className="shrink-0" />
+                        <span className="whitespace-nowrap shrink-0">{pack.badge}</span>
                       </div>
                     </>
                   )}
@@ -210,7 +210,7 @@ export default function PricingClient() {
                         {pack.name}
                       </h3>
                       {!isPopular && (
-                        <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200">
+                        <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 whitespace-nowrap shrink-0">
                           {pack.badge}
                         </span>
                       )}
