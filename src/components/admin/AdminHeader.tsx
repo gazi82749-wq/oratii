@@ -54,9 +54,13 @@ export default function AdminHeader({ onToggleMobileMenu }: AdminHeaderProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleLogout = async () => {
+  const handleExitAdmin = () => {
+    router.push('/dashboard');
+  };
+
+  const handleExplicitLogout = async () => {
     await supabase.auth.signOut();
-    window.location.href = '/dashboard';
+    router.push('/login');
   };
 
   return (
@@ -148,13 +152,13 @@ export default function AdminHeader({ onToggleMobileMenu }: AdminHeaderProps) {
             )}
           </button>
 
-          {/* Exit Admin */}
+          {/* Return to Main Website Button */}
           <button
-            onClick={handleLogout}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 transition-colors"
-            title="Exit Admin Panel"
+            onClick={handleExitAdmin}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-slate-700 hover:bg-indigo-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+            title="Return to Main Website Dashboard"
           >
-            <LogOut size={16} />
+            <span>Exit Admin</span>
           </button>
         </div>
       </header>
