@@ -3,9 +3,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Filter, ChevronLeft, ChevronRight, MoreHorizontal, Eye, Ban, Trash2, Crown, ArrowDownCircle, ShieldCheck } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, MoreHorizontal, Eye, Ban, Trash2, Crown, ArrowDownCircle, ShieldCheck, Download } from 'lucide-react';
 import { type AdminUser, type UserPlan, type UserStatus } from '@/lib/admin/data';
 import { supabase } from '@/lib/supabaseClient';
+import { exportToCSV } from '@/lib/admin/utils';
 
 function timeAgo(ts: string): string {
   if (!ts) return 'Never';
@@ -105,8 +106,24 @@ export default function AllUsersPage() {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">All Users</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage all registered users on the platform.</p>
         </div>
-        <div className="text-sm text-slate-500 dark:text-slate-400">
-          <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> users
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => exportToCSV('oratii_users', filtered.map(u => ({
+              ID: u.id,
+              Name: u.name,
+              Email: u.email,
+              Plan: u.plan,
+              Status: u.status,
+              Total_Analyses: u.totalAnalyses,
+              Registered_At: u.registeredAt
+            })))}
+            className="px-3 py-2 bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer border border-indigo-200 dark:border-slate-700"
+          >
+            <Download size={14} /> Export CSV
+          </button>
+          <div className="text-sm text-slate-500 dark:text-slate-400">
+            <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> users
+          </div>
         </div>
       </div>
 

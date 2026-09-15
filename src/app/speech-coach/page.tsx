@@ -335,14 +335,14 @@ export default function SpeechCoach() {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user) {
-      // Guest demo check (1 free sample analysis allowed)
-      const guestUsed = typeof window !== 'undefined' ? localStorage.getItem('oratii_guest_speech_demo') : null;
-      if (guestUsed) {
+      // Guest demo check (3 free sample analyses allowed without signup)
+      const currentCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('oratii_guest_trials_count') || '0', 10) : 0;
+      if (currentCount >= 3) {
         setIsGuestAuthModalOpen(true);
         return;
       }
       if (typeof window !== 'undefined') {
-        localStorage.setItem('oratii_guest_speech_demo', 'true');
+        localStorage.setItem('oratii_guest_trials_count', String(currentCount + 1));
       }
     } else {
       // Signed-in user: deduct 1 credit for Speech Coach analysis

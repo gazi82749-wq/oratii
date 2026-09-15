@@ -4,8 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, Download, Eye, Mic, TrendingUp, Target, AudioWaveform } from 'lucide-react';
 import { speechReports as mockSpeechReports, type SpeechReport } from '@/lib/admin/data';
 import { supabase } from '@/lib/supabaseClient';
-import { formatDate, scoreColor, scoreBg } from '@/lib/admin/utils';
-
+import { formatDate, scoreColor, scoreBg, exportToCSV } from '@/lib/admin/utils';
 
 export default function SpeechReportsPage() {
   const [search, setSearch] = useState('');
@@ -55,9 +54,26 @@ export default function SpeechReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Speech Coach — Analysis Reports</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View and manage all speech analysis reports (Pace, Tone, WPM, and Fluency).</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Speech Coach — Analysis Reports</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View and manage all speech analysis reports (Pace, Tone, WPM, and Fluency).</p>
+        </div>
+        <button
+          onClick={() => exportToCSV('oratii_speech_reports', filtered.map(r => ({
+            Report_ID: r.id,
+            User: r.userName,
+            Date: r.date,
+            WPM: r.wpm,
+            Tone_Clarity: r.toneClarity,
+            Fluency_Score: r.fluencyScore,
+            Filler_Words: r.fillerWords,
+            Overall_Rating: r.overallRating
+          })))}
+          className="px-3.5 py-2 bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer border border-indigo-200 dark:border-slate-700 self-start sm:self-auto"
+        >
+          <Download size={14} /> Export CSV
+        </button>
       </div>
 
       {/* Analytics Cards */}

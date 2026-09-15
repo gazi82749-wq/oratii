@@ -4,8 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, Download, FileText, BarChart3, Layers, Sparkles } from 'lucide-react';
 import { pptReports as mockPptReports, type PptReport } from '@/lib/admin/data';
 import { supabase } from '@/lib/supabaseClient';
-import { formatDate, scoreColor, scoreBg } from '@/lib/admin/utils';
-
+import { formatDate, scoreColor, scoreBg, exportToCSV } from '@/lib/admin/utils';
 
 export default function PptReportsPage() {
   const [search, setSearch] = useState('');
@@ -28,7 +27,7 @@ export default function PptReportsPage() {
             id: r.id,
             userId: r.user_id || 'anon',
             userName: r.user_id ? `User (${r.user_id.substring(0, 6)})` : 'Slide Analyzer User',
-            presentationName: sa.title || r.presentation_id || 'VOCALIZE Presentation Deck',
+            presentationName: sa.title || r.presentation_id || 'Oratii Presentation Deck',
             date: r.created_at || new Date().toISOString(),
             contentScore: sa.contentScore || r.overall_score || 75,
             deliveryScore: sa.designScore || r.overall_score || 70,
@@ -65,9 +64,27 @@ export default function PptReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">PPT Coach — Reports</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View all presentation analysis reports.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">PPT Coach — Reports</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View all presentation analysis reports.</p>
+        </div>
+        <button
+          onClick={() => exportToCSV('oratii_ppt_reports', filtered.map(r => ({
+            Report_ID: r.id,
+            User: r.userName,
+            Presentation_Name: r.presentationName,
+            Category: r.category,
+            Date: r.date,
+            Content_Score: r.contentScore,
+            Delivery_Score: r.deliveryScore,
+            Engagement_Score: r.engagementScore,
+            Overall_Rating: r.overallRating
+          })))}
+          className="px-3.5 py-2 bg-indigo-50 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-slate-700 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer border border-indigo-200 dark:border-slate-700 self-start sm:self-auto"
+        >
+          <Download size={14} /> Export CSV
+        </button>
       </div>
 
       {/* Stats */}

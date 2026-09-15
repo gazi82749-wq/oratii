@@ -1,6 +1,6 @@
-# 📖 Oratii (Vocalize) — Complete Technical Documentation
+# 📖 Oratii — Complete Technical Documentation
 
-> **Oratii (Vocalize)** is an AI-powered communication coaching platform built with Next.js 14 (App Router). It empowers users to overcome glossophobia and master public speaking, presentation skills, interview readiness, and academic viva defense through real-time AI evaluation, multimodal slide analysis, interactive Q&A examiners, gamified progress tracks, and a resilient multi-AI fallback architecture.
+> **Oratii** is an AI-powered communication coaching platform built with Next.js 14 (App Router). It empowers users to overcome glossophobia and master public speaking, presentation skills, interview readiness, and academic viva defense through real-time AI evaluation, multimodal slide analysis, interactive Q&A examiners, gamified progress tracks, and a resilient multi-AI fallback architecture.
 
 ---
 
@@ -467,7 +467,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
   - Level 2: Rising Communicator (200 XP)
   - Level 3: Confident Presenter (600 XP)
   - Level 4: Skilled Orator (1200 XP)
-  - Level 5: Vocalize Master (2000 XP)
+  - Level 5: Oratii Master (2000 XP)
 - **XP Rewards**: Speech Session (+30 XP), Presentation (+40 XP), Viva (+25 XP), Jury Round (+50 XP), Challenge Day (+20 XP).
 - **Streak & Freeze Engine**: Daily streak counter tracked in `localStorage` & synced to Supabase. Streak freezes can be redeemed using accumulated XP.
 - **Certificates**: `CertificateModal` generates printable achievement certificates for unlocked milestone badges.

@@ -74,8 +74,8 @@ export default function AdminDashboard() {
       const { count: reportsCount } = await supabase.from('analysis_reports').select('*', { count: 'exact', head: true });
       const { count: vivaCount } = await supabase.from('sessions').select('*', { count: 'exact', head: true });
 
-      const speechCount = Math.max(1, Math.round((reportsCount || 0) * 0.4));
-      const pptCount = Math.max(1, (reportsCount || 0));
+      const speechCount = Math.round((reportsCount || 0) * 0.4);
+      const pptCount = reportsCount || 0;
       const vivaTotal = vivaCount || 0;
 
       const totalModules = speechCount + pptCount + vivaTotal;
@@ -98,6 +98,12 @@ export default function AdminDashboard() {
           { name: 'Slide Analyzer', value: Math.round((pptCount / totalModules) * 100), color: '#fa7c42' },
           { name: 'Viva AI', value: Math.round((vivaTotal / totalModules) * 100), color: '#06b6d4' },
         ]);
+      } else {
+        setModuleUsage([
+          { name: 'Speech Coach', value: 0, color: '#10b981' },
+          { name: 'Slide Analyzer', value: 0, color: '#fa7c42' },
+          { name: 'Viva AI', value: 0, color: '#06b6d4' },
+        ]);
       }
 
       // 3. Fetch Recent Activity Feed from Profiles & Reports
@@ -111,13 +117,13 @@ export default function AdminDashboard() {
         const feed = recentProfiles.map((p: any) => ({
           id: p.id,
           userName: p.full_name || p.email || 'Platform User',
-          message: p.role === 'admin' ? 'signed in as Administrator' : 'registered on VOCALIZE platform',
+          message: p.role === 'admin' ? 'signed in as Administrator' : 'registered on Oratii platform',
           type: 'registration',
           timestamp: p.updated_at || p.created_at || new Date().toISOString(),
         }));
         setLiveActivity(feed);
       } else {
-        setLiveActivity(activityFeed);
+        setLiveActivity([]);
       }
     }
 

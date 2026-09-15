@@ -49,7 +49,7 @@ export default function SystemLogsPage() {
           severity: l.severity || 'info',
           category: l.category || 'System',
           message: l.message || 'System operation executed',
-          source: l.source || 'VOCALIZE Core',
+          source: l.source || 'Oratii Core',
           details: l.details || '',
         }));
         setLogs(mapped);

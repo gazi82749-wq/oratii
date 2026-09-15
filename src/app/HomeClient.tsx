@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { Mic, FileText, Video, MessageSquare, Timer, Target, BarChart as BarChartIcon, Zap, CheckCircle2, Flame, ArrowRight, AlertTriangle, Trophy, GraduationCap, Briefcase, BarChart3 } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Timer, Target, BarChart as BarChartIcon, Zap, CheckCircle2, Flame, ArrowRight, AlertTriangle, Trophy, GraduationCap, Briefcase, BarChart3, Sparkles } from 'lucide-react';
 import StreakBadge from '../components/StreakBadge';
 import HeroShowcase from '../components/HeroShowcase';
 import dynamic from 'next/dynamic';
@@ -208,12 +208,17 @@ export default function HomeClient() {
                   Launch Practice Studio <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
                 </Link>
               ) : (
-                <Link 
-                  href="/signup"
-                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
-                >
-                  Start Free Speaking Practice <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
-                </Link>
+                <div className="flex flex-col items-center sm:items-start gap-1.5 w-full sm:w-auto">
+                  <Link 
+                    href="/speech-coach"
+                    className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  >
+                    Try Free Speech Coach <Sparkles size={18} className="text-[#F2A93B]" /> <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+                    <Zap size={12} className="text-amber-500 fill-amber-500" /> Instant access • No sign-up or credit card needed
+                  </span>
+                </div>
               )}
               
               <button 

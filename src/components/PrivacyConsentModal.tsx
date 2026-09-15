@@ -44,7 +44,7 @@ export const PrivacyConsentModal: React.FC<PrivacyConsentModalProps> = ({
         </div>
 
         <p className="text-sm text-slate-300 mb-4 leading-relaxed">
-          Vocalize processes your camera and microphone data using <strong className="text-indigo-300">100% On-Device Edge AI</strong>.
+          Oratii processes your camera and microphone data using <strong className="text-indigo-300">100% On-Device Edge AI</strong>.
           Your video frames and biometric facial coordinates are processed in local GPU memory and are <strong className="text-emerald-400">never uploaded or stored on any cloud server</strong>.
         </p>
 

@@ -52,3 +52,34 @@ export function formatDuration(seconds: number): string {
   const s = seconds % 60;
   return `${m}m ${s}s`;
 }
+
+/**
+ * Triggers a browser download of JSON array data converted to CSV format.
+ */
+export function exportToCSV(filename: string, rows: Record<string, any>[]) {
+  if (!rows || !rows.length) {
+    alert("No data available to export.");
+    return;
+  }
+  const headers = Object.keys(rows[0]);
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => 
+      headers.map(header => {
+        let val = row[header];
+        if (val === null || val === undefined) val = '';
+        const escaped = ('' + val).replace(/"/g, '""');
+        return `"${escaped}"`;
+      }).join(',')
+    )
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${filename}_${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}

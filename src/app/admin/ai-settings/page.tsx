@@ -32,35 +32,49 @@ export default function AISettingsPage() {
   const [warningThreshold, setWarningThreshold] = useState(80); // Alert when usage >= 80%
 
   const [aiModels, setAiModels] = useState<AIModelUsage[]>([
-    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'Google AI', dailyUsed: 420, dailyLimit: 500, rpmLimit: 15, status: 'warning', tier: 'Primary Multimodal' },
-    { id: 'cerebras-llama3.3', name: 'Cerebras Llama-3.3 (70B)', provider: 'Cerebras Ultra-Fast', dailyUsed: 890, dailyLimit: 1000, rpmLimit: 30, status: 'warning', tier: 'Waterfall 1st Priority' },
-    { id: 'groq-llama3.3', name: 'Groq Llama-3.3 (70B)', provider: 'Groq Cloud', dailyUsed: 210, dailyLimit: 1000, rpmLimit: 30, status: 'healthy', tier: 'Waterfall 2nd Priority' },
-    { id: 'gpt-4o', name: 'GPT-4o / 4o Mini', provider: 'OpenAI', dailyUsed: 48, dailyLimit: 500, rpmLimit: 50, status: 'healthy', tier: 'Backup Reasoning' },
-    { id: 'openrouter-free', name: 'OpenRouter Free Net', provider: 'OpenRouter', dailyUsed: 15, dailyLimit: 200, rpmLimit: 10, status: 'healthy', tier: 'Ultimate Safety Net' },
+    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'Google AI', dailyUsed: 0, dailyLimit: 500, rpmLimit: 15, status: 'healthy', tier: 'Primary Multimodal' },
+    { id: 'cerebras-llama3.3', name: 'Cerebras Llama-3.3 (70B)', provider: 'Cerebras Ultra-Fast', dailyUsed: 0, dailyLimit: 1000, rpmLimit: 30, status: 'healthy', tier: 'Waterfall 1st Priority' },
+    { id: 'groq-llama3.3', name: 'Groq Llama-3.3 (70B)', provider: 'Groq Cloud', dailyUsed: 0, dailyLimit: 1000, rpmLimit: 30, status: 'healthy', tier: 'Waterfall 2nd Priority' },
+    { id: 'gpt-4o', name: 'GPT-4o / 4o Mini', provider: 'OpenAI', dailyUsed: 0, dailyLimit: 500, rpmLimit: 50, status: 'healthy', tier: 'Backup Reasoning' },
+    { id: 'openrouter-free', name: 'OpenRouter Free Net', provider: 'OpenRouter', dailyUsed: 0, dailyLimit: 200, rpmLimit: 10, status: 'healthy', tier: 'Ultimate Safety Net' },
   ]);
 
   useEffect(() => {
     async function loadRealCounts() {
-      const { count: pptCount } = await supabase.from('analysis_reports').select('*', { count: 'exact', head: true });
-      const { count: vivaCount } = await supabase.from('sessions').select('*', { count: 'exact', head: true });
-      const totalRequests = (pptCount || 0) + (vivaCount || 0);
+      // Calculate today's start ISO timestamp
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const isoToday = todayStart.toISOString();
 
-      if (totalRequests > 0) {
-        setAiModels((prev) =>
-          prev.map((m) => {
-            let used = m.dailyUsed;
-            if (m.id === 'gemini-2.5-flash') used = Math.min(m.dailyLimit, (pptCount || 0) * 2 + 350);
-            if (m.id === 'cerebras-llama3.3') used = Math.min(m.dailyLimit, (vivaCount || 0) * 5 + 410);
+      // Query real activity created today from Supabase
+      const { count: pptToday } = await supabase
+        .from('analysis_reports')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', isoToday);
 
-            const percentage = Math.round((used / m.dailyLimit) * 100);
-            let status: 'healthy' | 'warning' | 'exhausted' = 'healthy';
-            if (percentage >= 95) status = 'exhausted';
-            else if (percentage >= warningThreshold) status = 'warning';
+      const { count: vivaToday } = await supabase
+        .from('sessions')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', isoToday);
 
-            return { ...m, dailyUsed: used, status };
-          })
-        );
-      }
+      const realPptCount = pptToday || 0;
+      const realVivaCount = vivaToday || 0;
+
+      setAiModels((prev) =>
+        prev.map((m) => {
+          let used = 0;
+          if (m.id === 'gemini-2.5-flash') used = realPptCount * 2 + realVivaCount;
+          if (m.id === 'cerebras-llama3.3') used = realVivaCount * 2;
+          if (m.id === 'groq-llama3.3') used = realPptCount;
+
+          const percentage = m.dailyLimit > 0 ? Math.round((used / m.dailyLimit) * 100) : 0;
+          let status: 'healthy' | 'warning' | 'exhausted' = 'healthy';
+          if (percentage >= 95) status = 'exhausted';
+          else if (percentage >= warningThreshold) status = 'warning';
+
+          return { ...m, dailyUsed: used, status };
+        })
+      );
     }
     loadRealCounts();
   }, [warningThreshold]);
