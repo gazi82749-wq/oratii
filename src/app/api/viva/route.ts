@@ -103,23 +103,26 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       if (currentQuestionIndex === 1) {
         targetStage = 'icebreaker';
         stageInstructions = `
-          STAGE 1: ICEBREAKER & INTRODUCTION (Turn 1)
+          STAGE 1: ICEBREAKER & TECH STACK DISCOVERY (Turn 1)
           - Role: You are a Hiring Manager interviewing the candidate for "${topicName}".
-          - Task: Greet the candidate warmly and ask them to introduce themselves: "Welcome! To get started, please introduce yourself, your background, and what interested you in this position."
-          - Format: Warm, encouraging opening question.
+          - Task: Greet the candidate warmly and ask them to introduce themselves: "Welcome! To get started, please introduce yourself, your educational background, primary technical skills or tools you are most comfortable with, and key projects you have built."
+          - Format: Warm, encouraging opening question asking for candidate's primary tech stack.
           - Set "currentStage": "icebreaker"
-          - Set "stageLabel": "Round 1: Candidate Introduction"
-          - Set "answerFormatHint": "Give a 1 to 2 minute overview of your background and key skills."
+          - Set "stageLabel": "Round 1: Candidate Intro & Skill Discovery"
+          - Set "answerFormatHint": "Introduce yourself and state your primary technical stack, tools, and key projects."
         `;
       } else if (currentQuestionIndex === 2) {
         targetStage = 'specialization';
         stageInstructions = `
-          STAGE 2: SPECIALIZATION & MOTIVATION (Turn 2)
-          - Reference specific skills, tools, or projects mentioned in the candidate's previous response.
-          - Ask why they chose this specific path/field, and what drives their passion.
+          STAGE 2: DECLARED TECH STACK & SPECIALIZATION (Turn 2)
+          - DYNAMIC TECH STACK DIRECTIVE (MANDATORY):
+            1. Parse the candidate's Turn 1 answer and resume for the exact programming languages, frameworks, databases, or domain tools they explicitly claimed knowledge in (e.g. Python, React, Java, Node.js, SQL, Excel).
+            2. Formulate your follow-up question STRICTLY grounded in the technologies/tools they explicitly mentioned!
+            3. Ask why they chose this specific tech stack and how they applied it in their projects.
+            4. DO NOT ask about unmentioned or random frameworks outside their declared knowledge!
           - Set "currentStage": "specialization"
-          - Set "stageLabel": "Round 2: Specialization & Motivation"
-          - Set "answerFormatHint": "Explain your choice of field, core strengths, and passion."
+          - Set "stageLabel": "Round 2: Declared Tech Stack & Motivation"
+          - Set "answerFormatHint": "Explain your choice of tech stack, core strengths, and passion."
         `;
       } else if (currentQuestionIndex <= 4) {
         targetStage = 'technical_discussion';
@@ -151,19 +154,19 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           `;
         } else if (isFresher) {
           stageInstructions = `
-            STAGE 3: PRACTICAL PROJECT & CONCEPT CHECK (Turn ${currentQuestionIndex})
-            - Candidate is a CAMPUS FRESHER. Keep questions approachable and fair!
-            - Ask about their specific role in a project they mentioned, how they tested/debugged it, or how a fundamental concept works.
-            - DO NOT ask deep distributed systems, complex database internals, or high-load architecture questions!
+            STAGE 3: TAILORED TECH CONCEPT & PROJECT CHECK (Turn ${currentQuestionIndex})
+            - Candidate is a CAMPUS FRESHER. Keep questions fair and grounded strictly in the candidate's declared tech stack!
+            - Pick a specific tool or language they mentioned (e.g. React or Python or SQL) and ask how they used it in their project, or ask a practical fundamental concept check.
+            - DO NOT ask unmentioned technologies, complex database internals, or high-load architecture questions!
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Practical Project Discussion"
-            - Set "answerFormatHint": "Explain your project role, approach, and what you learned."
+            - Set "stageLabel": "Round 3: Declared Tech Project Discussion"
+            - Set "answerFormatHint": "Explain how you used your declared tech stack in your project."
           `;
         } else {
           stageInstructions = `
             STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn ${currentQuestionIndex})
-            - Candidate is a PLACEMENT PRO. Pick a technical claim or architecture choice from their previous answer.
-            - Ask an unscripted technical question probing trade-offs, scalability, or resolving edge-case bugs.
+            - Candidate is a PLACEMENT PRO. Pick a technical claim or architecture choice from their declared tech stack.
+            - Ask an unscripted technical question probing trade-offs, scalability, or resolving edge-case bugs within their domain.
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: Deep Technical Discussion"
             - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
