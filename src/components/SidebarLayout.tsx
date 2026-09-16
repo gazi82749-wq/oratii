@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown, Download } from 'lucide-react';
+import { Mic, FileText, Video, MessageSquare, Trophy, BarChart2, ChevronDown, User, Coins, Briefcase, Home, Sparkles, Crown, Download, GraduationCap } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 import { supabase } from '@/lib/supabaseClient';
 import { getUserCredits } from '@/lib/credits';
