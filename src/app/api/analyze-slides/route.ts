@@ -62,6 +62,14 @@ async function parsePptx(buffer) {
   return slideTexts;
 }
 
+// In-memory cache to guarantee instant 100% deterministic identical results for repeated uploads
+interface SlideCacheEntry {
+  analysisResult: any;
+  slideTextContent: any;
+  timestamp: number;
+}
+const inMemorySlideCache = new Map<string, SlideCacheEntry>();
+
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
@@ -93,6 +101,7 @@ export async function POST(request: NextRequest) {
     let isPdf = false;
     let formData: FormData | null = null;
     let file: any = null;
+    let fileBuffer: Buffer | null = null;
 
     if (contentType.includes('multipart/form-data')) {
       formData = await request.formData();
@@ -109,40 +118,18 @@ export async function POST(request: NextRequest) {
       if (xUserId) userId = xUserId;
     }
 
-    if (!userId) {
-      const trialExhausted = await hasUsedTrial(request);
-      if (trialExhausted) {
-        return NextResponse.json({ 
-          error: "Free trial limit reached. Please sign in or create an account to get 20 free credits.", 
-          authRequired: true,
-          trialExpired: true 
-        }, { status: 401 });
-      }
-    } else {
-      // Credit check for logged-in users
-      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Credits Exhausted",
-          message: "You've used all your credits. Purchase more credits to continue.",
-          creditExhausted: true
-        }, { status: 403 });
-      }
-    }
-
-
     if (contentType.includes('multipart/form-data')) {
       if (!file) {
         return NextResponse.json({ error: "File missing!" }, { status: 400 });
       }
 
       const arrayBuffer = await file.arrayBuffer();
-      
+      fileBuffer = Buffer.from(arrayBuffer);
+
       try {
         if (file.name.toLowerCase().endsWith('.pdf')) {
-          const buffer = Buffer.from(arrayBuffer);
-          slideTextContent = await parsePdf(buffer);
-          fileBase64 = buffer.toString('base64');
+          slideTextContent = await parsePdf(fileBuffer);
+          fileBase64 = fileBuffer.toString('base64');
           isPdf = true;
         } else if (file.name.toLowerCase().endsWith('.pptx') || file.name.toLowerCase().endsWith('.ppt')) {
           slideTextContent = await parsePptx(arrayBuffer);
@@ -163,7 +150,86 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Slide content missing!" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    let formattedSlideText = '';
+    if (Array.isArray(slideTextContent)) {
+      formattedSlideText = slideTextContent
+        .map((s: any, idx: number) => `--- Slide ${s.slideNumber || idx + 1} ---\n${typeof s === 'string' ? s : (s.text || s.content || JSON.stringify(s))}`)
+        .join('\n\n');
+    } else {
+      formattedSlideText = String(slideTextContent);
+    }
+
+    // ── 1. Calculate Exact File & Text SHA-256 Fingerprint ──
+    const fileHash = fileBuffer
+      ? crypto.createHash('sha256').update(fileBuffer).digest('hex')
+      : crypto.createHash('sha256').update(formattedSlideText).digest('hex');
+
+    // ── 2. Check High-Speed In-Memory Cache ──
+    const memoryCached = inMemorySlideCache.get(fileHash);
+    if (memoryCached && (Date.now() - memoryCached.timestamp) < CACHE_TTL_HOURS * 3600 * 1000) {
+      console.log(`[AnalyzeSlides] ⚡ In-Memory Cache HIT for ${fileHash.slice(0, 8)} — 100% Deterministic Result`);
+      return NextResponse.json({
+        status: "success",
+        data: memoryCached.analysisResult,
+        slideTextContent: memoryCached.slideTextContent,
+        cached: true
+      });
+    }
+
+    // ── 3. Check Persistent Database Cache ──
+    try {
+      const { data: cached } = await supabase
+        .from('analysis_cache')
+        .select('analysis_result, created_at')
+        .eq('content_hash', fileHash)
+        .single();
+
+      if (cached?.analysis_result) {
+        const cacheAge = (Date.now() - new Date(cached.created_at).getTime()) / (1000 * 60 * 60);
+        if (cacheAge < CACHE_TTL_HOURS) {
+          console.log(`[AnalyzeSlides] ⚡ Database Cache HIT for ${fileHash.slice(0, 8)} (age: ${cacheAge.toFixed(1)}h)`);
+          
+          // Populate in-memory cache
+          inMemorySlideCache.set(fileHash, {
+            analysisResult: cached.analysis_result,
+            slideTextContent: slideTextContent,
+            timestamp: Date.now()
+          });
+
+          const response = NextResponse.json({
+            status: "success",
+            data: cached.analysis_result,
+            slideTextContent: slideTextContent,
+            cached: true
+          });
+          if (!userId) await setTrialUsed(request);
+          return response;
+        }
+      }
+    } catch (cacheErr) {
+      console.log('[AnalyzeSlides] DB Cache miss, calling deterministic AI evaluation...');
+    }
+
+    // Credit / Trial Check (only executed for uncached new presentations)
+    if (!userId) {
+      const trialExhausted = await hasUsedTrial(request);
+      if (trialExhausted) {
+        return NextResponse.json({ 
+          error: "Free trial limit reached. Please sign in or create an account to get 20 free credits.", 
+          authRequired: true,
+          trialExpired: true 
+        }, { status: 401 });
+      }
+    } else {
+      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
+      if (!usageCheck.allowed) {
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+    }
 
     // System instruction prompt
     const systemPrompt = `
@@ -211,54 +277,17 @@ export async function POST(request: NextRequest) {
       }
     `;
 
-    let formattedSlideText = '';
-    if (Array.isArray(slideTextContent)) {
-      formattedSlideText = slideTextContent
-        .map((s: any, idx: number) => `--- Slide ${s.slideNumber || idx + 1} ---\n${typeof s === 'string' ? s : (s.text || s.content || JSON.stringify(s))}`)
-        .join('\n\n');
-    } else {
-      formattedSlideText = String(slideTextContent);
-    }
-
     const userPrompt = `Here is the presentation slide deck content to analyze:\n${formattedSlideText}`;
-
-    // ── Content-Hash Cache: Skip AI if identical content was analyzed before ──
-    const contentHash = crypto.createHash('sha256').update(formattedSlideText).digest('hex');
-    
-    try {
-      const { data: cached } = await supabase
-        .from('analysis_cache')
-        .select('analysis_result, created_at')
-        .eq('content_hash', contentHash)
-        .single();
-
-      if (cached?.analysis_result) {
-        const cacheAge = (Date.now() - new Date(cached.created_at).getTime()) / (1000 * 60 * 60);
-        if (cacheAge < CACHE_TTL_HOURS) {
-          console.log(`[AnalyzeSlides] ⚡ Cache HIT — returning cached result (age: ${cacheAge.toFixed(1)}h)`);
-          const response = NextResponse.json({
-            status: "success",
-            data: cached.analysis_result,
-            slideTextContent: slideTextContent,
-            cached: true
-          });
-          if (!userId) await setTrialUsed(request);
-          return response;
-        }
-      }
-    } catch (cacheErr) {
-      // Cache miss or table doesn't exist yet — proceed to AI
-      console.log('[AnalyzeSlides] Cache miss, calling AI...');
-    }
 
     // Fast text-first inference: If text was extracted, skip massive multi-MB base64 upload to cut latency from 45s down to 2s
     const hasAdequateText = formattedSlideText && formattedSlideText.trim().length > 30;
     const shouldSendBinaryPdf = isPdf && !hasAdequateText;
 
-    // 4-Stage AI Fallback Waterfall (Cerebras -> Groq -> Gemini -> OpenRouter)
+    // 4-Stage AI Fallback Waterfall with temperature: 0.0 for deterministic evaluation decoding
     const aiTextResponse = await generateAIContent({
       systemPrompt,
       userPrompt,
+      temperature: 0.0,
       isPdf: shouldSendBinaryPdf,
       pdfBase64: shouldSendBinaryPdf ? fileBase64 : null
     });
@@ -273,7 +302,7 @@ export async function POST(request: NextRequest) {
       console.warn("[AnalyzeSlides] JSON parse warning, applying default structure:", parseErr);
     }
 
-    if (!parsedAnalysis || !parsedAnalysis.overallScore) {
+    if (!parsedAnalysis || typeof parsedAnalysis.overallScore !== 'number') {
       parsedAnalysis = {
         overallScore: 80,
         contentScore: 82,
@@ -302,22 +331,45 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    // Save to content-hash cache for future identical requests
+    // ── 4. Mathematical Score Calibration & Normalization ──
+    const content = Math.max(0, Math.min(100, Math.round(parsedAnalysis.contentScore || 75)));
+    const design = Math.max(0, Math.min(100, Math.round(parsedAnalysis.designScore || 70)));
+    const storytelling = Math.max(0, Math.min(100, Math.round(parsedAnalysis.storytellingScore || 72)));
+
+    parsedAnalysis.contentScore = content;
+    parsedAnalysis.designScore = design;
+    parsedAnalysis.storytellingScore = storytelling;
+
+    // Weighted deterministic overall score (40% content, 35% design, 25% storytelling)
+    parsedAnalysis.overallScore = Math.round(content * 0.40 + design * 0.35 + storytelling * 0.25);
+
+    // ── 5. Cache in Memory & Database ──
+    if (inMemorySlideCache.size > 500) {
+      const oldestKey = inMemorySlideCache.keys().next().value;
+      if (oldestKey) inMemorySlideCache.delete(oldestKey);
+    }
+
+    inMemorySlideCache.set(fileHash, {
+      analysisResult: parsedAnalysis,
+      slideTextContent,
+      timestamp: Date.now()
+    });
+
     try {
       await supabase
         .from('analysis_cache')
         .upsert([{
-          content_hash: contentHash,
+          content_hash: fileHash,
           analysis_result: parsedAnalysis,
           slide_count: Array.isArray(slideTextContent) ? slideTextContent.length : 1,
           created_at: new Date().toISOString()
         }], { onConflict: 'content_hash' });
-      console.log('[AnalyzeSlides] ✅ Cached analysis result for future requests');
+      console.log(`[AnalyzeSlides] ✅ Cached deterministic analysis result for hash ${fileHash.slice(0, 8)}`);
     } catch (cacheWriteErr) {
-      console.warn('[AnalyzeSlides] Could not write to cache:', cacheWriteErr);
+      console.warn('[AnalyzeSlides] Notice caching result to DB:', cacheWriteErr);
     }
 
-    // If presentationId was provided, attempt saving to Supabase without blocking user response
+    // Save presentation report entry if presentationId was provided
     if (presentationId) {
       try {
         await supabase
@@ -331,7 +383,6 @@ export async function POST(request: NextRequest) {
         console.warn("[AnalyzeSlides] Notice saving report to database:", dbErr);
       }
     }
-
 
     const response = NextResponse.json({ 
       status: "success", 
