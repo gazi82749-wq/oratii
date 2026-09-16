@@ -587,30 +587,63 @@ function PresentationAnalyzerContent() {
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img src={slideImg} alt={`Slide ${slideNum}`} className="w-full h-full object-contain rounded-lg shadow-sm" />
                                 </div>
-                              ) : previewFailed ? (
-                                slideText ? (
-                                  <div className="w-full aspect-video rounded-xl border border-slate-800 bg-gradient-to-br from-[#151930] to-[#0A0D1D] p-5 flex flex-col justify-between text-white relative shadow-inner overflow-hidden">
-                                    <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                                      <span className="flex items-center gap-1.5"><FileText size={14} className="text-[#F2A93B]" /> Slide Content</span>
-                                      <span className="text-[11px] text-slate-400">{file?.name || 'Presentation'}</span>
+                              ) : previewFailed || slideText ? (
+                                (() => {
+                                  const textClean = (slideText || '').trim();
+                                  const sentences = textClean ? textClean.split(/(?<=[.?!])\s+/).filter(Boolean) : [];
+                                  const slideTitle = sentences[0] || `Slide ${slideNum}`;
+                                  const slideBullets = sentences.slice(1, 5);
+
+                                  return (
+                                    <div className="w-full aspect-video rounded-xl border border-slate-700/80 bg-gradient-to-br from-[#0F1426] via-[#151930] to-[#0A0D1D] p-4 sm:p-5 flex flex-col justify-between text-white relative shadow-xl overflow-hidden select-none">
+                                      {/* Top accent line */}
+                                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-indigo-500 to-emerald-400"></div>
+                                      
+                                      {/* Decorative radial glow */}
+                                      <div className="absolute top-[-30%] right-[-15%] w-48 h-48 bg-amber-500/10 blur-2xl rounded-full pointer-events-none"></div>
+
+                                      {/* Slide Header */}
+                                      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2 relative z-10">
+                                        <div className="flex items-center gap-2">
+                                          <FileText size={13} className="text-[#F2A93B]" />
+                                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 truncate max-w-[180px]">
+                                            {file?.name || 'Presentation Deck'}
+                                          </span>
+                                        </div>
+                                        <span className="text-[9px] font-extrabold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20 uppercase tracking-wider">
+                                          Slide Layout
+                                        </span>
+                                      </div>
+
+                                      {/* Slide Content Body */}
+                                      <div className="my-auto py-1.5 relative z-10">
+                                        <h4 className="text-xs sm:text-sm font-black text-white tracking-tight mb-2 line-clamp-1 border-l-2 border-[#F2A93B] pl-2">
+                                          {slideTitle}
+                                        </h4>
+                                        {slideBullets.length > 0 ? (
+                                          <div className="space-y-1.5 pl-2">
+                                            {slideBullets.map((bullet: string, bIdx: number) => (
+                                              <div key={bIdx} className="flex items-start gap-2 text-[11px] sm:text-xs text-slate-300 font-medium">
+                                                <span className="text-[#F2A93B] font-bold shrink-0 mt-0.5">•</span>
+                                                <span className="line-clamp-1 leading-snug">{bullet}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        ) : (
+                                          <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                                            {textClean || `Slide ${slideNum} visual design & content analysis.`}
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      {/* Footer */}
+                                      <div className="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800/80 pt-2 font-mono relative z-10">
+                                        <span>Oratii Slide Audit</span>
+                                        <span>Slide {slideNum}</span>
+                                      </div>
                                     </div>
-                                    <div className="my-auto py-2">
-                                      <p className="text-xs sm:text-sm font-medium text-slate-200 line-clamp-5 leading-relaxed bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
-                                        {slideText}
-                                      </p>
-                                    </div>
-                                    <div className="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-2 font-mono">
-                                      <span>Oratii Slide Audit</span>
-                                      <span>Slide {slideNum}</span>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="w-full aspect-video rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center p-6 text-center">
-                                    <FileText size={32} className="text-slate-500 mb-2" />
-                                    <p className="text-sm font-bold text-slate-200">Slide {slideNum}</p>
-                                    <p className="text-xs text-slate-400 mt-1">Detailed visual & content feedback shown on right</p>
-                                  </div>
-                                )
+                                  );
+                                })()
                               ) : (
                                 <div className="w-full aspect-video rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col items-center justify-center p-6 text-center">
                                   <div className="w-8 h-8 border-4 border-slate-700 border-t-[#F2A93B] rounded-full animate-spin mb-3"></div>
