@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ShieldAlert, Award, Sparkles, Send, Mic, HelpCircle, CheckCircle,
   ArrowRight, RotateCcw, MessageSquare, X, Volume2, VolumeX, Flame, Smile, Play, Pause,
@@ -48,6 +49,11 @@ export default function VivaDefenseModal({
   const [stageLabel, setStageLabel] = useState('Level 1: Basic Warmup');
   const [answerFormatHint, setAnswerFormatHint] = useState('Answer in 1 word or 1 single sentence.');
   const [currentTip, setCurrentTip] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -286,7 +292,7 @@ export default function VivaDefenseModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const avgOverallScore = allScores.length
     ? Math.round(allScores.reduce((acc, curr) => acc + (curr.overall || 80), 0) / allScores.length)
@@ -312,9 +318,9 @@ export default function VivaDefenseModal({
     ? Math.round(allScores.reduce((acc, curr) => acc + (curr.confidence || 80), 0) / allScores.length)
     : scores.confidence || 82;
 
-  return (
-    <div className="fixed inset-0 z-[99999] bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fade-in font-sans">
-      <div className="relative w-full max-w-4xl h-[88vh] max-h-[820px] min-h-[480px] bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-slate-900">
+  return createPortal(
+    <div className="fixed inset-0 z-[999999] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-fade-in font-sans">
+      <div className="relative w-full max-w-4xl max-h-[92vh] sm:max-h-[85vh] h-full sm:h-auto bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden text-slate-900 my-auto">
         {/* Top Accent Gradient Stripe */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
@@ -326,9 +332,9 @@ export default function VivaDefenseModal({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-slate-950 tracking-tight flex items-center gap-2">
-                AI Viva Defense
+                Oratii AI Viva Defense
                 <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                  Built-in AI Examiner Panel
+                  AI Examiner Panel
                 </span>
               </h2>
               <p className="text-xs text-slate-500 font-medium truncate max-w-xs sm:max-w-md">
@@ -359,7 +365,7 @@ export default function VivaDefenseModal({
 
         {/* SETUP PHASE */}
         {phase === 'setup' && (
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col justify-center max-w-xl mx-auto w-full space-y-6 animate-fade-in text-left">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 max-w-xl mx-auto w-full animate-fade-in text-left">
             <div className="space-y-2">
               <label className="text-xs font-extrabold text-slate-900 uppercase tracking-wider block">
                 Presentation / Defense Context:
@@ -707,7 +713,7 @@ export default function VivaDefenseModal({
 
           {/* RESULTS PHASE */}
           {phase === 'results' && (
-            <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2 text-slate-900">
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-5 max-w-2xl mx-auto w-full text-center animate-fade-in text-slate-900">
               <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center mx-auto shadow-sm">
                 <Award size={28} className="text-amber-700" />
               </div>
@@ -871,6 +877,7 @@ export default function VivaDefenseModal({
 
       </div>
       <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={CREDIT_COSTS.VIVA_SESSION} currentBalance={creditBalance} featureName="AI Viva Defense" />
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -102,8 +102,8 @@ export default function VivaCoachPage() {
   // Auto-restore context from sessionStorage if redirected from Slide/Speech Analyzer
   useEffect(() => {
     try {
-      const presentationStateStr = sessionStorage.getItem('vocalize_presentation_state');
-      const vivaContextStr = sessionStorage.getItem('vocalize_viva_context');
+      const presentationStateStr = sessionStorage.getItem('oratii_presentation_state');
+      const vivaContextStr = sessionStorage.getItem('oratii_viva_context');
 
       if (vivaContextStr) {
         setTopic(vivaContextStr);
@@ -382,10 +382,10 @@ export default function VivaCoachPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-3 shrink-0">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-1 shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Viva Defense AI Module
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Oratii Viva Defense AI
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <GraduationCap size={24} className="text-[#F2A93B]" /> AI Viva Defense
+            <GraduationCap size={24} className="text-[#F2A93B]" /> Oratii AI Viva Defense
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-normal mt-0.5">Defend your slides, thesis, and presentation topic in a deep conversational Q&amp;A with an AI committee panel.</p>
         </div>
@@ -404,11 +404,11 @@ export default function VivaCoachPage() {
       </div>
 
       {/* Main Studio Card */}
-      <div className="border border-slate-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-sm p-5 sm:p-6 text-slate-900 flex flex-col flex-1 min-h-0 max-h-[82vh] overflow-y-auto relative">
+      <div className="border border-slate-200/90 rounded-2xl sm:rounded-3xl bg-white shadow-sm p-4 sm:p-6 text-slate-900 flex flex-col flex-1 min-h-0 relative overflow-hidden">
 
         {/* SETUP PHASE */}
         {phase === 'setup' && (
-          <div className="my-auto max-w-2xl mx-auto w-full space-y-6 animate-fade-in text-left">
+          <div className="py-2 max-w-2xl mx-auto w-full space-y-6 animate-fade-in text-left overflow-y-auto flex-1 min-h-0 pr-1">
 
             {/* 1-Click Popular College Viva Defense Presets */}
             <div className="space-y-2.5">
@@ -797,7 +797,7 @@ export default function VivaCoachPage() {
 
         {/* RESULTS PHASE */}
         {phase === 'results' && (
-          <div className="my-auto max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in py-2 text-slate-900">
+          <div className="py-2 max-w-2xl mx-auto w-full space-y-5 text-center animate-fade-in text-slate-900 overflow-y-auto flex-1 min-h-0 pr-1">
             <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center mx-auto shadow-sm">
               <Award size={28} className="text-amber-800" />
             </div>

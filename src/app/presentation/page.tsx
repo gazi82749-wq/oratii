@@ -48,7 +48,7 @@ function PresentationAnalyzerContent() {
   // Restore state from sessionStorage on mount
   useEffect(() => {
     try {
-      const savedState = sessionStorage.getItem('vocalize_presentation_state');
+      const savedState = sessionStorage.getItem('oratii_presentation_state');
       if (savedState) {
         const parsed = JSON.parse(savedState);
         if (parsed.analysis) setAnalysis(parsed.analysis);
@@ -69,7 +69,7 @@ function PresentationAnalyzerContent() {
         analysis,
         ...(Object.keys(slideImages).length > 0 && { slideImages })
       };
-      sessionStorage.setItem('vocalize_presentation_state', JSON.stringify(stateToSave));
+      sessionStorage.setItem('oratii_presentation_state', JSON.stringify(stateToSave));
     } catch (e) {
       console.warn('Could not save slideImages to sessionStorage (QuotaExceeded): Keeping in memory.');
       try {
@@ -77,7 +77,7 @@ function PresentationAnalyzerContent() {
           fileName: file ? file.name : null,
           analysis
         };
-        sessionStorage.setItem('vocalize_presentation_state', JSON.stringify(stateWithoutImages));
+        sessionStorage.setItem('oratii_presentation_state', JSON.stringify(stateWithoutImages));
       } catch (e2) {
         console.error('Failed to save presentation state to sessionStorage.');
       }
@@ -279,7 +279,7 @@ function PresentationAnalyzerContent() {
     setFile(null);
     setError(null);
     setSlideImages({});
-    sessionStorage.removeItem('vocalize_presentation_state');
+    sessionStorage.removeItem('oratii_presentation_state');
   };
 
   return (

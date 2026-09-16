@@ -8,7 +8,7 @@ export interface PrivacyConsentState {
   optOutCloudArchiving: boolean;
 }
 
-const PRIVACY_CONSENT_KEY = 'vocalize_biometric_privacy_consent_v1';
+const PRIVACY_CONSENT_KEY = 'oratii_biometric_privacy_consent_v1';
 const CURRENT_POLICY_VERSION = '1.2.0-bipa-gdpr';
 
 /**
