@@ -817,7 +817,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <span>Voice-First Practice Mode Active</span>
             </div>
             <span className="text-xs text-slate-500 font-extrabold">
-              Round {currentRound} of 4 • Speaking aloud builds 3x more retention
+              Round {currentRound} of 5 • Speaking aloud builds 3x more retention
             </span>
           </div>
 

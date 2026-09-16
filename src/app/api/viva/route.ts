@@ -172,15 +172,26 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
             - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
           `;
         }
-      } else {
+      } else if (currentQuestionIndex === 4) {
         targetStage = 'behavioral_star';
         stageInstructions = `
-          STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn ${currentQuestionIndex})
+          STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn 4)
           - Ask a situational behavioral question (e.g. working under deadline pressure, resolving team conflict, or learning from a past mistake).
           - Evaluate their answer using the STAR framework (Situation, Task, Action, Result).
           - Set "currentStage": "behavioral_star"
           - Set "stageLabel": "Round 4: Behavioral & STAR Challenge"
           - Set "answerFormatHint": "Structure your answer using Situation, Task, Action, and Result."
+        `;
+      } else {
+        targetStage = 'executive_fit';
+        stageInstructions = `
+          STAGE 5: EXECUTIVE CULTURE FIT & CAREER VISION (Turn ${currentQuestionIndex})
+          - Role: You are a Hiring Director / HR Lead conducting the final round.
+          - Ask a high-level executive or culture-fit question (e.g. "Where do you see yourself evolving professionally in the next 3 years?", "How do you handle critical feedback from a senior lead?", or "What attracts you most to our engineering culture?").
+          - Format: Professional, warm closing interview question.
+          - Set "currentStage": "executive_fit"
+          - Set "stageLabel": "Round 5: Executive Culture Fit & Career Vision"
+          - Set "answerFormatHint": "Share your long-term career vision, adaptability, and cultural alignment."
         `;
       }
     } else {
