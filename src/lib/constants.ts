@@ -178,7 +178,7 @@ export const LEARNING_PATHS = [
       { id: 4, title: 'Delivery Skills', action: 'Complete a live presentation session', link: '/presentation' },
       { id: 5, title: 'Eye Contact', action: 'Complete Challenge Day 4', link: '/challenge' },
       { id: 6, title: 'Content Depth', action: 'Score 85%+ on content quality', link: '/presentation' },
-      { id: 7, title: 'Viva Preparation', action: 'Answer 10 viva questions', link: '/viva' },
+      { id: 7, title: 'Viva Preparation', action: 'Answer 10 viva questions', link: '/presentation' },
       { id: 8, title: 'Full Defense', action: 'Complete a jury panel session', link: '/jury-panel' }
     ]
   },
@@ -188,14 +188,14 @@ export const LEARNING_PATHS = [
     icon: '📋',
     color: '#fd79a8',
     milestones: [
-      { id: 1, title: 'Basic Questions', action: 'Answer 5 basic viva questions', link: '/viva' },
-      { id: 2, title: 'Technical Depth', action: 'Answer 5 technical viva questions', link: '/viva' },
-      { id: 3, title: 'Expert Level', action: 'Answer 5 expert viva questions', link: '/viva' },
-      { id: 4, title: 'Confidence Building', action: 'Score 80%+ confidence in viva', link: '/viva' },
+      { id: 1, title: 'Basic Questions', action: 'Answer 5 basic viva questions', link: '/presentation' },
+      { id: 2, title: 'Technical Depth', action: 'Answer 5 technical viva questions', link: '/presentation' },
+      { id: 3, title: 'Expert Level', action: 'Answer 5 expert viva questions', link: '/presentation' },
+      { id: 4, title: 'Confidence Building', action: 'Score 80%+ confidence in viva', link: '/presentation' },
       { id: 5, title: 'Defense Skills', action: 'Complete Challenge Day 11', link: '/challenge' },
       { id: 6, title: 'Panel Practice', action: 'Face 2 jury members', link: '/jury-panel' },
       { id: 7, title: 'Full Panel', action: 'Face 4 jury members', link: '/jury-panel' },
-      { id: 8, title: 'Viva Master', action: 'Score 90%+ on 3 consecutive viva sessions', link: '/viva' }
+      { id: 8, title: 'Viva Master', action: 'Score 90%+ on 3 consecutive viva sessions', link: '/presentation' }
     ]
   },
   {

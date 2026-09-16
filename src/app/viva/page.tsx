@@ -68,6 +68,11 @@ const POPULAR_COLLEGE_VIVA_PRESETS = [
 
 export default function VivaCoachPage() {
   const router = useRouter();
+
+  // Viva Defense is an in-built feature of Slide Deck Studio (/presentation)
+  useEffect(() => {
+    router.replace('/presentation');
+  }, [router]);
   const [phase, setPhase] = useState<'setup' | 'viva' | 'results'>('setup');
   const [mode, setMode] = useState<'text' | 'voice'>('text');
   const [examinerTone, setExaminerTone] = useState<'friendly' | 'hostile'>('friendly');

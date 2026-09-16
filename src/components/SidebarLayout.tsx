@@ -92,7 +92,7 @@ export default function SidebarLayout({ children }) {
     { href: '/', label: 'Home', icon: <Home size={17} /> },
     { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
-    { href: '/viva', label: 'Viva', icon: <GraduationCap size={17} /> },
+    { href: '/presentation', label: 'Slides', icon: <FileText size={17} /> },
     { 
       href: user ? '/trainer' : '/signup?role=trainer', 
       label: 'Trainer Hub', 
@@ -132,12 +132,11 @@ export default function SidebarLayout({ children }) {
   const navLinkClass = (href) =>
     `text-sm font-medium transition-colors relative ${pathname === href ? 'text-slate-900 after:absolute after:bottom-[-4px] after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-[#F2A93B]' : 'text-slate-500 hover:text-slate-900'}`;
 
-  // Product dropdown items with Oratii brand theme icons
+  // Product dropdown items with clean typography and comfortable spacing
   const productItems = [
     { href: '/speech-coach', label: 'Speech Coach (3-Min Drills)', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
     { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
-    { href: '/presentation', label: 'Slide Deck Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
-    { href: '/viva', label: 'Oratii AI Viva Defense', icon: <GraduationCap size={18} className="text-[#F2A93B]" />, fontWeight: 'font-medium' },
+    { href: '/presentation', label: 'Slide Deck & Viva Studio', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
     { href: user ? '/trainer' : '/signup?role=trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
     { type: 'divider' },
