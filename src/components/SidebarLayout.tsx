@@ -175,9 +175,9 @@ export default function SidebarLayout({ children }) {
               >
                 Products <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'products' ? 'rotate-180' : ''}`} />
               </button>
-              <div className={`absolute top-full left-0 mt-3 w-56 bg-white border border-slate-200 shadow-xl rounded-xl transition-all duration-300 ease-out flex flex-col p-2 z-50 ${activeDropdown === 'products' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+              <div className={`absolute top-full left-0 mt-3 w-64 bg-white border border-slate-200/90 shadow-2xl rounded-2xl transition-all duration-300 ease-out flex flex-col p-3 space-y-1 z-50 ${activeDropdown === 'products' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                 {productItems.map((item, i) => {
-                  if (item.type === 'divider') return <div key={i} className="h-px bg-slate-100 my-1 mx-2"></div>;
+                  if (item.type === 'divider') return <div key={i} className="h-px bg-slate-100 my-1.5 mx-2"></div>;
                   return (
                     <Link 
                       key={i} 
@@ -189,7 +189,7 @@ export default function SidebarLayout({ children }) {
                           setActiveDropdown(null);
                         }
                       }} 
-                      className={`px-3 py-2 hover:bg-slate-50 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-lg flex items-center ${pathname === item.href ? 'bg-indigo-50 text-indigo-900 font-bold' : ''}`}
+                      className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''}`}
                     >
                       {item.label}
                     </Link>
@@ -209,11 +209,11 @@ export default function SidebarLayout({ children }) {
               >
                 Support <ChevronDown size={12} className={`transition-transform duration-300 ${activeDropdown === 'support' ? 'rotate-180' : ''}`} />
               </button>
-              <div className={`absolute top-full left-0 mt-3 w-52 bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-xl rounded-2xl transition-all duration-300 ease-out flex flex-col p-2 z-50 ${activeDropdown === 'support' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
-                <Link href="/feedback" onClick={() => setActiveDropdown(null)} className={`px-3 py-2.5 hover:bg-slate-50 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center ${pathname === '/feedback' ? 'bg-amber-50/80 text-slate-950 font-bold' : ''}`}>
+              <div className={`absolute top-full left-0 mt-3 w-56 bg-white border border-slate-200/90 shadow-2xl rounded-2xl transition-all duration-300 ease-out flex flex-col p-3 space-y-1 z-50 ${activeDropdown === 'support' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
+                <Link href="/feedback" onClick={() => setActiveDropdown(null)} className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center ${pathname === '/feedback' ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''}`}>
                   Submit Feedback
                 </Link>
-                <Link href="/support" onClick={() => setActiveDropdown(null)} className={`px-3 py-2.5 hover:bg-slate-50 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center ${pathname === '/support' ? 'bg-amber-50/80 text-slate-950 font-bold' : ''}`}>
+                <Link href="/support" onClick={() => setActiveDropdown(null)} className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm font-medium text-slate-700 transition-all rounded-xl flex items-center ${pathname === '/support' ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''}`}>
                   Support Tickets
                 </Link>
               </div>
