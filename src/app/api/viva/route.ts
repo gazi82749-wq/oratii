@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       topic: bodyTopic = null,
       language = 'en',
       interviewType = 'academic_viva', // 'academic_viva' | 'presentation_defense' | 'job_interview'
+      difficultyLevel = 'fresher', // 'fresher' | 'pro'
       documentContext = '', // Extracted resume/CV or question paper text
       mode = 'text' // 'text' | 'voice'
     } = await request.json();
@@ -90,6 +91,11 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       documentInstruction = `SLIDE-AWARE MODE: Presentation slide data provided:\n${JSON.stringify(slideAnalysisData, null, 2)}`;
     }
 
+    const isFresher = difficultyLevel === 'fresher' || difficultyLevel === 'junior';
+    const isBpoOrVoice = /bpo|customer|voice/i.test(topicName);
+    const isIelts = /ielts|speaking/i.test(topicName);
+    const isMba = /mba|consulting|strategy/i.test(topicName);
+
     let targetStage = 'icebreaker';
     let stageInstructions = '';
 
@@ -98,9 +104,9 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
         targetStage = 'icebreaker';
         stageInstructions = `
           STAGE 1: ICEBREAKER & INTRODUCTION (Turn 1)
-          - Role: You are a Senior Engineering Hiring Manager / Lead Recruiter interviewing the candidate for a "${topicName}" role.
-          - Task: Greet the candidate professionally and ask them to introduce themselves: "Welcome to the interview! To get started, please tell me about yourself, your background, and key projects you have worked on."
-          - Format: Warm, professional opening question.
+          - Role: You are a Hiring Manager interviewing the candidate for "${topicName}".
+          - Task: Greet the candidate warmly and ask them to introduce themselves: "Welcome! To get started, please introduce yourself, your background, and what interested you in this position."
+          - Format: Warm, encouraging opening question.
           - Set "currentStage": "icebreaker"
           - Set "stageLabel": "Round 1: Candidate Introduction"
           - Set "answerFormatHint": "Give a 1 to 2 minute overview of your background and key skills."
@@ -109,31 +115,66 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
         targetStage = 'specialization';
         stageInstructions = `
           STAGE 2: SPECIALIZATION & MOTIVATION (Turn 2)
-          - Parse the candidate's previous response for specific technical skills, domains, or projects mentioned.
-          - Ask why they chose this specific specialization or tech stack, and what drives their passion for it.
-          - Example: "You mentioned working extensively with React and Node.js. Why did you choose this specialization, and what attracts you to building scalable web platforms?"
+          - Reference specific skills, tools, or projects mentioned in the candidate's previous response.
+          - Ask why they chose this specific path/field, and what drives their passion.
           - Set "currentStage": "specialization"
           - Set "stageLabel": "Round 2: Specialization & Motivation"
           - Set "answerFormatHint": "Explain your choice of field, core strengths, and passion."
         `;
       } else if (currentQuestionIndex <= 4) {
         targetStage = 'technical_discussion';
-        stageInstructions = `
-          STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn ${currentQuestionIndex})
-          - Pick a specific technical claim, architecture choice, or project detail mentioned in the candidate's previous answer or resume document.
-          - Pose an unscripted technical discussion question: challenge them on technical trade-offs, state management, database schema design, API security, or handling edge-case bugs under load.
-          - Do NOT ask canned textbook definitions. Conduct a real engineering discussion.
-          - Set "currentStage": "technical_discussion"
-          - Set "stageLabel": "Round 3: Deep Technical Discussion"
-          - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
-        `;
+        if (isBpoOrVoice) {
+          stageInstructions = `
+            STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn ${currentQuestionIndex})
+            - Pose a practical customer service situation: handling an upset caller, de-escalating an SLA delay, or displaying active listening.
+            - DO NOT ask any software programming questions.
+            - Set "currentStage": "technical_discussion"
+            - Set "stageLabel": "Round 3: Customer De-escalation & Voice Drill"
+            - Set "answerFormatHint": "Demonstrate empathy, clarity, and your problem-solving steps."
+          `;
+        } else if (isIelts) {
+          stageInstructions = `
+            STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn ${currentQuestionIndex})
+            - Ask a Part 2 / Part 3 IELTS prompt tailored to "${topicName}" testing vocabulary range and structured opinion expression.
+            - DO NOT ask technical programming questions.
+            - Set "currentStage": "technical_discussion"
+            - Set "stageLabel": "Round 3: IELTS Cue Card & Abstract Probe"
+            - Set "answerFormatHint": "Express your opinion clearly with varied vocabulary and smooth transitions."
+          `;
+        } else if (isMba) {
+          stageInstructions = `
+            STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn ${currentQuestionIndex})
+            - Pose a practical business scenario or trade-off question testing logical market estimation or strategic decision-making.
+            - Set "currentStage": "technical_discussion"
+            - Set "stageLabel": "Round 3: Business Case & Strategic Reasoning"
+            - Set "answerFormatHint": "Structure your analysis using a clear business framework."
+          `;
+        } else if (isFresher) {
+          stageInstructions = `
+            STAGE 3: PRACTICAL PROJECT & CONCEPT CHECK (Turn ${currentQuestionIndex})
+            - Candidate is a CAMPUS FRESHER. Keep questions approachable and fair!
+            - Ask about their specific role in a project they mentioned, how they tested/debugged it, or how a fundamental concept works.
+            - DO NOT ask deep distributed systems, complex database internals, or high-load architecture questions!
+            - Set "currentStage": "technical_discussion"
+            - Set "stageLabel": "Round 3: Practical Project Discussion"
+            - Set "answerFormatHint": "Explain your project role, approach, and what you learned."
+          `;
+        } else {
+          stageInstructions = `
+            STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn ${currentQuestionIndex})
+            - Candidate is a PLACEMENT PRO. Pick a technical claim or architecture choice from their previous answer.
+            - Ask an unscripted technical question probing trade-offs, scalability, or resolving edge-case bugs.
+            - Set "currentStage": "technical_discussion"
+            - Set "stageLabel": "Round 3: Deep Technical Discussion"
+            - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
+          `;
+        }
       } else {
         targetStage = 'behavioral_star';
         stageInstructions = `
           STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn ${currentQuestionIndex})
-          - Ask a situational behavioral question to test resilience, teamwork, or resolving high-stakes bugs under deadline pressure.
-          - Example: "Tell me about a time when a critical production bug occurred right before a launch deadline. How did you diagnose it and work with your team to fix it?"
-          - Evaluate their response against the STAR method (Situation, Task, Action, Result).
+          - Ask a situational behavioral question (e.g. working under deadline pressure, resolving team conflict, or learning from a past mistake).
+          - Evaluate their answer using the STAR framework (Situation, Task, Action, Result).
           - Set "currentStage": "behavioral_star"
           - Set "stageLabel": "Round 4: Behavioral & STAR Challenge"
           - Set "answerFormatHint": "Structure your answer using Situation, Task, Action, and Result."
