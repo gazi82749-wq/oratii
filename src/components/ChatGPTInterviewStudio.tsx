@@ -597,52 +597,61 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       {step === 'setup' && (
         <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
           
-          {/* Quick Role Selection Menu Bar (BPO, SDE, Campus, Analyst, etc.) */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none pt-0.5 border-b border-slate-100">
-            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider shrink-0 mr-1 flex items-center gap-1">
-              <Briefcase size={13} className="text-amber-500" />
-              Role Menu:
-            </span>
-            {HIGH_STAKES_ROLE_PRESETS.map((p) => {
-              const isSelected = selectedPresetId === p.id;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedPresetId(p.id);
-                    setRoleTitle(p.title);
-                  }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 ${
-                    isSelected
-                      ? 'bg-[#0F1426] text-white shadow-xs border border-[#0F1426]'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 border border-slate-200/80 hover:text-slate-900'
-                  }`}
-                >
-                  {p.id === 'sde1' && <Code2 size={13} className={isSelected ? 'text-amber-400' : 'text-blue-600'} />}
-                  {p.id === 'bpo_customer' && <Headphones size={13} className={isSelected ? 'text-amber-400' : 'text-rose-600'} />}
-                  {p.id === 'campus_tech' && <GraduationCap size={13} className={isSelected ? 'text-amber-400' : 'text-indigo-600'} />}
-                  {p.id === 'data_analyst' && <BarChart3 size={13} className={isSelected ? 'text-amber-400' : 'text-emerald-600'} />}
-                  {p.id === 'mba_consulting' && <LineChart size={13} className={isSelected ? 'text-amber-400' : 'text-amber-600'} />}
-                  {p.id === 'ielts_speaking' && <Globe size={13} className={isSelected ? 'text-amber-400' : 'text-purple-600'} />}
-                  <span>{p.id === 'sde1' ? 'SDE / Tech' : p.id === 'bpo_customer' ? 'BPO / Customer Voice' : p.id === 'campus_tech' ? 'Campus Placement' : p.id === 'data_analyst' ? 'Data Analyst' : p.id === 'mba_consulting' ? 'MBA Case' : 'IELTS Speaking'}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* 1-Click High Stakes Placement & Exam Presets */}
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                Placement &amp; Role Presets (1-Click)
+          {/* Option 1: Clean Single Target Role Card with Smart Chips & Voice Toggle */}
+          <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 space-y-3.5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Briefcase size={14} className="text-[#F2A93B]" />
+                <span>What job position or role are you preparing for?</span>
               </label>
-              <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
-                Industry &amp; Exam Calibrated
+              <span className="text-[11px] font-extrabold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
+                Type custom or select chip
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="md:col-span-2 relative">
+                <input 
+                  type="text"
+                  value={roleTitle}
+                  onChange={(e) => {
+                    setRoleTitle(e.target.value);
+                    setSelectedPresetId('custom');
+                  }}
+                  placeholder="e.g. Software Engineer, BPO Customer Voice, Data Analyst, IELTS..."
+                  className="w-full bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 font-bold shadow-2xs pr-8"
+                />
+                {roleTitle && (
+                  <button
+                    type="button"
+                    onClick={() => { setRoleTitle(''); setSelectedPresetId('custom'); }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                    title="Clear input"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div className="md:col-span-1">
+                <button
+                  type="button"
+                  onClick={() => setVoiceEnabled(!voiceEnabled)}
+                  className={`w-full py-2.5 px-3 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                    voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-white text-slate-600 border-slate-200'
+                  }`}
+                >
+                  {voiceEnabled ? <Volume2 size={15} className="text-amber-400" /> : <VolumeX size={15} />}
+                  <span>{voiceEnabled ? 'Voice Aloud ON' : 'Voice Muted'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Preset Chips Bar */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pt-1 pb-0.5 scrollbar-none">
+              <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider shrink-0 mr-1">
+                Quick Presets:
+              </span>
               {HIGH_STAKES_ROLE_PRESETS.map((p) => {
                 const isSelected = selectedPresetId === p.id;
                 return (
@@ -653,66 +662,22 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                       setSelectedPresetId(p.id);
                       setRoleTitle(p.title);
                     }}
-                    className={`p-3 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-2 cursor-pointer active-touch-scale ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 ${
                       isSelected
-                        ? 'border-indigo-600 bg-indigo-50/80 shadow-md ring-2 ring-indigo-600/10'
-                        : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100/80 hover:border-slate-300'
+                        ? 'bg-[#0F1426] text-white shadow-xs border border-[#0F1426]'
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/90'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs">
-                        {p.id === 'campus_tech' && <GraduationCap size={16} className="text-indigo-600" />}
-                        {p.id === 'sde1' && <Code2 size={16} className="text-blue-600" />}
-                        {p.id === 'data_analyst' && <BarChart3 size={16} className="text-emerald-600" />}
-                        {p.id === 'ielts_speaking' && <Globe size={16} className="text-purple-600" />}
-                        {p.id === 'mba_consulting' && <LineChart size={16} className="text-amber-600" />}
-                        {p.id === 'bpo_customer' && <Headphones size={16} className="text-rose-600" />}
-                      </div>
-                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
-                        isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'
-                      }`}>
-                        {p.tag}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-xs text-slate-900 leading-snug line-clamp-1">{p.title}</h4>
-                      <p className="text-[11px] text-slate-500 font-medium line-clamp-2 mt-0.5 leading-tight">{p.desc}</p>
-                    </div>
+                    {p.id === 'sde1' && <Code2 size={13} className={isSelected ? 'text-amber-400' : 'text-blue-600'} />}
+                    {p.id === 'bpo_customer' && <Headphones size={13} className={isSelected ? 'text-amber-400' : 'text-rose-600'} />}
+                    {p.id === 'campus_tech' && <GraduationCap size={13} className={isSelected ? 'text-amber-400' : 'text-indigo-600'} />}
+                    {p.id === 'data_analyst' && <BarChart3 size={13} className={isSelected ? 'text-amber-400' : 'text-emerald-600'} />}
+                    {p.id === 'mba_consulting' && <LineChart size={13} className={isSelected ? 'text-amber-400' : 'text-amber-600'} />}
+                    {p.id === 'ielts_speaking' && <Globe size={13} className={isSelected ? 'text-amber-400' : 'text-purple-600'} />}
+                    <span>{p.id === 'sde1' ? 'SDE / Tech' : p.id === 'bpo_customer' ? 'BPO / Customer Voice' : p.id === 'campus_tech' ? 'Campus Placement' : p.id === 'data_analyst' ? 'Data Analyst' : p.id === 'mba_consulting' ? 'MBA Case' : 'IELTS Speaking'}</span>
                   </button>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Compact Settings Panel Grid (Matching Speech Coach) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
-            <div className="md:col-span-2 flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                Target Job Position / Specialty
-              </label>
-              <input 
-                type="text"
-                value={roleTitle}
-                onChange={(e) => setRoleTitle(e.target.value)}
-                placeholder="e.g. Full-Stack Software Engineer, Senior Product Manager, Data Analyst..."
-                className="bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 font-bold shadow-2xs"
-              />
-            </div>
-
-            <div className="md:col-span-1 flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                AI Voice Read-Aloud
-              </label>
-              <button
-                type="button"
-                onClick={() => setVoiceEnabled(!voiceEnabled)}
-                className={`w-full py-2.5 px-3 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-white text-slate-600 border-slate-200'
-                }`}
-              >
-                {voiceEnabled ? <Volume2 size={15} className="text-amber-400" /> : <VolumeX size={15} />}
-                <span>{voiceEnabled ? 'Voice Aloud ON' : 'Voice Muted'}</span>
-              </button>
             </div>
           </div>
 
