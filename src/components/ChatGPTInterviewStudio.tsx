@@ -462,95 +462,52 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
         .filter(Boolean)
         .join('\n');
 
-      const res = await fetch('/api/speech-analyzer-deep', {
+      const res = await fetch('/api/interview-eval', {
         method: 'POST',
         headers: authHeaders,
         body: JSON.stringify({
           transcript: transcriptSummary,
-          topic: `Job Interview for ${roleTitle}`
+          roleTitle,
+          resumeText,
+          difficultyLevel
         })
       });
 
       const data = await res.json();
       if (data.status === 'success' && data.data) {
         const evalData = data.data;
-        const techScore = Math.min(98, Math.max(20, evalData.structureScore || evalData.overallScore || 65));
-        const commScore = Math.min(98, Math.max(20, evalData.deliveryScore || evalData.overallScore || 65));
-        const starScore = Math.min(98, Math.max(20, evalData.persuasivenessScore || evalData.overallScore || 60));
-        const relScore = Math.min(98, Math.max(30, evalData.contentScore || evalData.clarityScore || 86));
-        const overallScore = Math.round((techScore + commScore + starScore + relScore) / 4);
 
-        setScores({
-          technical: techScore,
-          communication: commScore,
-          starAlignment: starScore,
-          relevance: relScore,
-          overall: overallScore
-        });
+        if (evalData.scores) {
+          setScores(evalData.scores);
+        }
 
         if (evalData.strengths && evalData.strengths.length > 0) {
           setStrengths(evalData.strengths);
-        } else {
-          setStrengths([
-            `Demonstrated relevant domain knowledge for ${roleTitle} position`,
-            'Maintained logical flow across interview responses'
-          ]);
         }
 
         if (evalData.weaknesses && evalData.weaknesses.length > 0) {
           setWeaknesses(evalData.weaknesses);
-        } else {
-          setWeaknesses([
-            'Could elaborate with specific metrics and quantitative project outcomes.'
-          ]);
         }
 
         if (evalData.suggestions && evalData.suggestions.length > 0) {
           setAiSuggestions(evalData.suggestions);
-        } else {
-          setAiSuggestions([
-            'Use the Situation-Task-Action-Result (STAR) framework when detailing past engineering challenges.'
-          ]);
         }
 
-        setWhatToCut([
-          'Cut unnecessary school-level details from 5+ years ago; recruiters want to hear about engineering & college work.',
-          'Eliminate verbal crutches ("matlab", "basically", "actually") when presenting problem solutions.',
-          'Avoid open-ended phrases like "and so on"; conclude each answer with an impactful summary metric.'
-        ]);
+        if (evalData.whatToCut && evalData.whatToCut.length > 0) {
+          setWhatToCut(evalData.whatToCut);
+        }
 
-        setModelAnswer(
-          evalData.betterWayToSayIt ||
-          `"In my engineering capstone project, I led the backend API architecture using Node.js and PostgreSQL. When we identified connection timeouts under load testing, I introduced Redis caching and connection pool tuning, which reduced latency by 35% and stabilized throughput."`
-        );
+        if (evalData.betterWayToSayIt) {
+          setModelAnswer(evalData.betterWayToSayIt);
+        }
       } else {
-        const avgWordCount = candidateAnswers.reduce((acc, a) => acc + a.split(' ').length, 0) / candidateAnswers.length;
-        const calcOverall = Math.min(94, Math.max(68, Math.round(74 + avgWordCount * 0.35)));
-
-        setScores({
-          technical: calcOverall + 2,
-          communication: calcOverall,
-          starAlignment: calcOverall - 2,
-          relevance: calcOverall + 1,
-          overall: calcOverall
-        });
-        setStrengths([
-          `Clear domain alignment for ${roleTitle} role`,
-          'Structured answers responding directly to interviewer prompts'
-        ]);
-        setWeaknesses([
-          'Incorporate explicit quantitative metrics (e.g., "improved performance by 35%").'
-        ]);
-        setAiSuggestions([
-          'Format technical responses using Situation, Task, Action, and Result (STAR).'
-        ]);
-        setWhatToCut([
-          'Remove family background and school percentages from your 90s intro.',
-          'Cut filler phrases ("basically", "you know") before stating technical logic.'
-        ]);
-        setModelAnswer(
-          `"For my final project, I designed a microservices architecture. To overcome database bottleneck constraints, I optimized index queries and batch processing, cutting server latency by 40%."`
-        );
+        console.warn('AI evaluation API notice:', data.error || data.message);
+        setScores({ technical: 75, communication: 78, starAlignment: 72, relevance: 80, overall: 76 });
+        setStrengths([`Demonstrated baseline technical domain knowledge for ${roleTitle}`]);
+        setWeaknesses(['Detail specific engineering trade-offs and quantitative results']);
+        setAiSuggestions(['Structure your answer using Situation, Task, Action, and Result (STAR)']);
+        setWhatToCut(['Remove verbal hesitation markers ("um", "like", "basically")']);
+        setModelAnswer(`"In my candidate response, I presented the core project requirements. To achieve maximum impact, I focused on structural clarity and key performance metrics."`);
       }
     } catch (err) {
       console.warn("Generating dynamic evaluation report notice:", err);
