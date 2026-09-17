@@ -6,7 +6,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import { saveSession } from '../../lib/storage';
 import XPToast from '../../components/XPToast';
-import ScribbleLoader from '../../components/ScribbleLoader';
 import { playSound } from '../../lib/playSound';
 import { convertPresentation } from '../../lib/presentationConverter';
 import TrialSignupPrompt from '../../components/TrialSignupPrompt';
@@ -215,7 +214,16 @@ function PresentationPracticeContent() {
         <div className="glow-ambient-radial top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
         {isLoading ? (
-          <ScribbleLoader text="Extracting slides and preparing presentation..." />
+          <div className="flex flex-col items-center justify-center py-16 space-y-6 animate-fade-in">
+            <div className="relative">
+              <div className="absolute inset-0 bg-indigo-500/30 blur-xl rounded-full animate-pulse" />
+              <div className="w-16 h-16 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin relative z-10" />
+            </div>
+            <div className="text-center space-y-1.5">
+              <h3 className="text-lg font-extrabold text-slate-900">Processing Presentation</h3>
+              <p className="text-sm font-bold text-slate-500 animate-pulse tracking-wide uppercase">Extracting slides and preparing AI telemetry...</p>
+            </div>
+          </div>
         ) : isPresentationReady ? (
           <div className="w-full max-w-xl mx-auto relative z-10 flex flex-col items-center animate-fade-in">
              <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
