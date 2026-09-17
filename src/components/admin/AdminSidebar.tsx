@@ -46,9 +46,9 @@ const navigation: SidebarEntry[] = [
     ],
   },
   {
-    label: 'Slide Analyzer', icon: <FileText size={18} />,
+    label: 'Presentation Practice', icon: <FileText size={18} />,
     items: [
-      { label: 'PPT Reports', href: '/admin/ppt', icon: <FileText size={16} /> },
+      { label: 'Presentation Practice', href: '/admin/ppt', icon: <FileText size={16} /> },
       { label: 'Analytics', href: '/admin/ppt/analytics', icon: <BarChart3 size={16} /> },
     ],
   },

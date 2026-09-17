@@ -11,6 +11,7 @@ import { getStoredPrivacyConsent, anonymizeSessionTelemetry, PrivacyConsentState
 import { RealtimeAudioProcessor } from '@/lib/audioMetricsProcessor';
 import { initializeFaceLandmarker, initializePoseLandmarker, calculateEyeContactScore, calculatePostureScore } from '@/lib/mediapipeLoader';
 import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
+import VivaDefenseModal from '@/components/VivaDefenseModal';
 
 interface PresentationPracticeProps {
   fileName: string;
@@ -52,6 +53,7 @@ export default function PresentationPractice({
   const [livePaceWpm, setLivePaceWpm] = useState(135);
   const [practiceMediaUrl, setPracticeMediaUrl] = useState<string | null>(null);
   const [showLocalResults, setShowLocalResults] = useState(false);
+  const [isVivaModalOpen, setIsVivaModalOpen] = useState(false);
 
   const [liveVerbatimAlert, setLiveVerbatimAlert] = useState<string | null>(null);
   const [extemporeScore, setExtemporeScore] = useState(90);
@@ -520,6 +522,7 @@ export default function PresentationPractice({
   if (showLocalResults) {
     const overallDelivery = Math.round((liveEyeContact + livePostureScore + Math.min(100, (livePaceWpm / 140) * 100)) / 3);
     return (
+      <>
       <div className="w-full max-w-5xl mx-auto p-5 sm:p-8 bg-[#0F1426] text-white rounded-3xl border border-slate-800 shadow-2xl space-y-6 font-sans my-4 animate-fade-in">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
@@ -715,6 +718,12 @@ export default function PresentationPractice({
             <RotateCcw size={14} /> Re-Record Presentation
           </button>
           <button
+            onClick={() => setIsVivaModalOpen(true)}
+            className="flex-1 py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            Take Viva Defense
+          </button>
+          <button
             onClick={() => {
               onComplete({
                 telemetry: {
@@ -731,6 +740,13 @@ export default function PresentationPractice({
           </button>
         </div>
       </div>
+      <VivaDefenseModal 
+        isOpen={isVivaModalOpen}
+        onClose={() => setIsVivaModalOpen(false)}
+        presentationTitle={fileName || 'Presentation & Slide Deck'}
+        contextSummary={slideTextContent.join('\n')}
+      />
+      </>
     );
   }
 

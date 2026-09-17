@@ -151,7 +151,7 @@ export default function Reports() {
   const getModuleName = (type: string) => {
     switch (type) {
       case 'speech': return 'Speech Coach';
-      case 'presentation': return 'Slide Analyzer';
+      case 'presentation': return 'Presentation Practice';
       case 'viva': return 'AI Viva';
       case 'interview': return 'Interview Sim';
       case 'jury': return 'Jury Panel';
@@ -309,7 +309,7 @@ export default function Reports() {
           >
             <option value="all">ALL MODULES</option>
             <option value="speech">SPEECH COACH</option>
-            <option value="presentation">SLIDE ANALYZER</option>
+            <option value="presentation">PRESENTATION PRACTICE</option>
             <option value="viva">AI VIVA</option>
           </select>
         </div>

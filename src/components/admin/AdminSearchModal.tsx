@@ -17,7 +17,7 @@ const SEARCH_ITEMS: SearchResult[] = [
   { id: '2', title: 'Premium Pro Subscribers', category: 'Users', href: '/admin/users/premium', description: 'View Pro & Pack subscriber details' },
   { id: '3', title: 'Speech Analysis Reports', category: 'Speech', href: '/admin/speech', description: 'Vocal WPM, tone clarity, and filler counts' },
   { id: '4', title: 'Speech Analytics Dashboard', category: 'Speech', href: '/admin/speech/analytics', description: 'Aggregate speech performance metrics' },
-  { id: '5', title: 'PPT Slide Deck Audits', category: 'PPT', href: '/admin/ppt', description: 'Slide layout, storytelling, and design ratings' },
+  { id: '5', title: 'Presentation Practice', category: 'PPT', href: '/admin/ppt', description: 'Practice delivery and slide content' },
   { id: '6', title: 'PPT Analytics Dashboard', category: 'PPT', href: '/admin/ppt/analytics', description: 'Deck breakdown and category insights' },
   { id: '7', title: 'Viva Defense Sessions', category: 'Viva', href: '/admin/viva', description: 'AI examiner Q&A sessions and scoring' },
   { id: '8', title: 'Viva Question Bank', category: 'Viva', href: '/admin/viva/questions', description: 'Academic and technical defense prompts' },

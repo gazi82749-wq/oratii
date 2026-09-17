@@ -14,7 +14,7 @@ const breadcrumbMap: Record<string, string> = {
   '/admin/users/premium': 'Premium Users',
   '/admin/speech': 'Analysis Reports',
   '/admin/speech/analytics': 'Speech Analytics',
-  '/admin/ppt': 'PPT Reports',
+  '/admin/ppt': 'Presentation Practice',
   '/admin/ppt/analytics': 'PPT Analytics',
   '/admin/viva': 'Sessions',
   '/admin/viva/questions': 'Question Bank',

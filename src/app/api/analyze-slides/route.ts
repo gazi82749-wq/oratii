@@ -1,13 +1,8 @@
-// src/app/api/analyze-slides/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
-import { fetchWithRetry } from '../../../lib/fetchWithRetry';
-import { generateAIContent } from '../../../lib/aiFallback';
 import JSZip from 'jszip';
 import { parseSlideXml, parseNotesXml } from '../../../lib/pptxParser';
-import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
-import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
 import crypto from 'crypto';
 
 // Cache TTL: cached results are valid for 24 hours
@@ -89,8 +84,6 @@ interface SlideCacheEntry {
 const inMemorySlideCache = new Map<string, SlideCacheEntry>();
 
 export async function POST(request: NextRequest) {
-  let creditConsumed = false;
-  let userIdForRefund: string | null = null;
 
   try {
     // Rate limiting
@@ -203,247 +196,42 @@ export async function POST(request: NextRequest) {
         await releaseLock(idempotencyKey);
         return NextResponse.json({
           status: "success",
-          data: memoryCached.analysisResult,
           slideTextContent: memoryCached.slideTextContent,
           cached: true
         });
       }
 
-      const redisCache = await checkCache<{data: any, text: any}>(`cache:${idempotencyKey}`);
+      const redisCache = await checkCache<{text: any}>(`cache:${idempotencyKey}`);
       if (redisCache) {
          console.log(`[AnalyzeSlides] ⚡ Redis Cache HIT for ${fileHash.slice(0, 8)}`);
          await releaseLock(idempotencyKey);
          return NextResponse.json({
            status: "success",
-           data: redisCache.data,
            slideTextContent: redisCache.text,
            cached: true
          });
       }
 
-    // ── 3. Check Persistent Database Cache ──
-    try {
-      const { data: cached } = await supabase
-        .from('analysis_cache')
-        .select('analysis_result, created_at')
-        .eq('content_hash', fileHash)
-        .single();
-
-      if (cached?.analysis_result) {
-        const cacheAge = (Date.now() - new Date(cached.created_at).getTime()) / (1000 * 60 * 60);
-        if (cacheAge < CACHE_TTL_HOURS) {
-          console.log(`[AnalyzeSlides] ⚡ Database Cache HIT for ${fileHash.slice(0, 8)} (age: ${cacheAge.toFixed(1)}h)`);
-          
-          // Populate in-memory cache
-          inMemorySlideCache.set(fileHash, {
-            analysisResult: cached.analysis_result,
-            slideTextContent: slideTextContent,
-            timestamp: Date.now()
-          });
-
-          const response = NextResponse.json({
-            status: "success",
-            data: cached.analysis_result,
-            slideTextContent: slideTextContent,
-            cached: true
-          });
-          if (!userId) await setTrialUsed(request);
-          return response;
-        }
-      }
-    } catch (cacheErr) {
-      console.log('[AnalyzeSlides] DB Cache miss, calling deterministic AI evaluation...');
-    }
-
-    // Credit / Trial Check (only executed for uncached new presentations)
-    if (!userId) {
-      const trialExhausted = await hasUsedTrial(request);
-      if (trialExhausted) {
-        return NextResponse.json({ 
-          error: "Free trial limit reached. Please sign in or create an account to get 20 free credits.", 
-          authRequired: true,
-          trialExpired: true 
-        }, { status: 401 });
-      }
-    } else {
-      userIdForRefund = userId;
-      const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Credits Exhausted",
-          message: "You've used all your credits. Purchase more credits to continue.",
-          creditExhausted: true
-        }, { status: 403 });
-      }
-      creditConsumed = true;
-    }
-
-    // System instruction prompt
-    const systemPrompt = `
-      You are an expert presentation design and content evaluation mentor.
-      Review the provided presentation slide deck text (and PDF images if attached) and provide detailed, actionable feedback.
-
-      COACHING RULES:
-      1. Talk directly to the user ("you", "your slides").
-      2. Be SPECIFIC about each slide. Reference exact text, numbers, and bullet points on that slide.
-      3. CRITICAL REQUIREMENT FOR slideBySlideFeedback: You MUST generate a detailed feedback entry in "slideBySlideFeedback" for EVERY single slide provided in the deck (from Slide 1 to Slide N). Never skip slides or stop after Slide 1!
-      4. Score honestly between 0-100 based on actual content quality, text density, structure, and clarity.
-
-      Respond STRICTLY in valid JSON format:
-      {
-        "overallScore": 72,
-        "contentScore": 75,
-        "designScore": 68,
-        "storytellingScore": 73,
-        "strengths": [
-          "Your title slide is clean and states the project objective clearly.",
-          "The problem statement on Slide 2 is well-defined."
-        ],
-        "weaknesses": [
-          "Slide 4 has excessive text density with 8 crammed bullet points.",
-          "Missing a dedicated conclusion or summary slide."
-        ],
-        "suggestions": [
-          "On Slide 4, pick the 3 core bullet points and move the rest to speaker notes.",
-          "Add a final slide with key takeaways and contact details."
-        ],
-        "slideBySlideFeedback": [
-          { 
-            "slideNumber": 1, 
-            "strengths": "Clean title layout with clear project name.",
-            "weaknesses": "Lacks a concise tagline.",
-            "missing": "Add presenter contact details or logo."
-          },
-          { 
-            "slideNumber": 2, 
-            "strengths": "Strong problem statement.",
-            "weaknesses": "Text font size is slightly small.",
-            "missing": "Add supporting market statistic."
-          }
-        ]
-      }
-    `;
-
-    const userPrompt = `Here is the presentation slide deck content to analyze:\n${formattedSlideText}`;
-
-    // Fast text-first inference: If text was extracted, skip massive multi-MB base64 upload to cut latency from 45s down to 2s
-    const hasAdequateText = formattedSlideText && formattedSlideText.trim().length > 30;
-    const shouldSendBinaryPdf = isPdf && !hasAdequateText;
-
-    // 4-Stage AI Fallback Waterfall with temperature: 0.0 for deterministic evaluation decoding
-    const aiTextResponse = await generateAIContent({
-      systemPrompt,
-      userPrompt,
-      temperature: 0.0,
-      isPdf: shouldSendBinaryPdf,
-      pdfBase64: shouldSendBinaryPdf ? fileBase64 : null
-    });
-
-    let parsedAnalysis: any = null;
-    try {
-      const jsonMatch = aiTextResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsedAnalysis = JSON.parse(jsonMatch[0]);
-      }
-    } catch (parseErr) {
-      console.warn("[AnalyzeSlides] JSON parse warning, applying default structure:", parseErr);
-    }
-
-    if (!parsedAnalysis || typeof parsedAnalysis.overallScore !== 'number') {
-      parsedAnalysis = {
-        overallScore: 80,
-        contentScore: 82,
-        designScore: 76,
-        storytellingScore: 81,
-        strengths: [
-          "Clear presentation structure and topic introduction",
-          "Logical flow of information across slides"
-        ],
-        weaknesses: [
-          "Some slides contain high text density",
-          "Visual emphasis could be improved with icons or infographics"
-        ],
-        suggestions: [
-          "Break long paragraphs into 3-4 bullet points per slide",
-          "Add relevant visual diagrams to illustrate core concepts"
-        ],
-        slideBySlideFeedback: [
-          {
-            slideNumber: 1,
-            strengths: "Clean title slide presentation",
-            weaknesses: "Could use a brief tagline",
-            missing: "Presenter details or subtitle"
-          }
-        ]
-      };
-    }
-
-    // ── 4. Mathematical Score Calibration & Normalization ──
-    const content = Math.max(0, Math.min(100, Math.round(parsedAnalysis.contentScore || 75)));
-    const design = Math.max(0, Math.min(100, Math.round(parsedAnalysis.designScore || 70)));
-    const storytelling = Math.max(0, Math.min(100, Math.round(parsedAnalysis.storytellingScore || 72)));
-
-    parsedAnalysis.contentScore = content;
-    parsedAnalysis.designScore = design;
-    parsedAnalysis.storytellingScore = storytelling;
-
-    // Weighted deterministic overall score (40% content, 35% design, 25% storytelling)
-    parsedAnalysis.overallScore = Math.round(content * 0.40 + design * 0.35 + storytelling * 0.25);
-
-    // ── 5. Cache in Memory & Database ──
+    // ── 5. Cache in Memory ──
     if (inMemorySlideCache.size > 500) {
       const oldestKey = inMemorySlideCache.keys().next().value;
       if (oldestKey) inMemorySlideCache.delete(oldestKey);
     }
 
     inMemorySlideCache.set(fileHash, {
-      analysisResult: parsedAnalysis,
+      analysisResult: null,
       slideTextContent,
       timestamp: Date.now()
     });
     
     try {
-      await setCache(`cache:${idempotencyKey}`, { data: parsedAnalysis, text: slideTextContent });
+      await setCache(`cache:${idempotencyKey}`, { text: slideTextContent });
     } catch(e) {}
-
-    try {
-      await supabase
-        .from('analysis_cache')
-        .upsert([{
-          content_hash: fileHash,
-          analysis_result: parsedAnalysis,
-          slide_count: Array.isArray(slideTextContent) ? slideTextContent.length : 1,
-          created_at: new Date().toISOString()
-        }], { onConflict: 'content_hash' });
-      console.log(`[AnalyzeSlides] ✅ Cached deterministic analysis result for hash ${fileHash.slice(0, 8)}`);
-    } catch (cacheWriteErr) {
-      console.warn('[AnalyzeSlides] Notice caching result to DB:', cacheWriteErr);
-    }
-
-    // Save presentation report entry if presentationId was provided
-    if (presentationId) {
-      try {
-        await supabase
-          .from('analysis_reports')
-          .insert([{
-            presentation_id: presentationId,
-            overall_score: parsedAnalysis.overallScore,
-            slide_analysis: parsedAnalysis
-          }]);
-      } catch (dbErr) {
-        console.warn("[AnalyzeSlides] Notice saving report to database:", dbErr);
-      }
-    }
 
     const response = NextResponse.json({ 
       status: "success", 
-      data: parsedAnalysis,
       slideTextContent: slideTextContent 
     });
-
-    if (!userId) {
-      await setTrialUsed(request);
-    }
 
     return response;
     } finally {
@@ -452,11 +240,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error("Backend Route Error:", error);
-    if (creditConsumed && userIdForRefund) {
-      console.warn(`[AnalyzeSlides] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
-      const { refundUsage } = await import('../../../lib/billing');
-      await refundUsage(userIdForRefund, 1);
-    }
     return NextResponse.json({ error: "Internal Server Error", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }
