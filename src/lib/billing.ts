@@ -97,3 +97,33 @@ export async function getCreditBalance(userId: string): Promise<number> {
     return 0;
   }
 }
+
+/**
+ * Refunds usage atomically if an AI operation fails completely after deduction.
+ */
+export async function refundUsage(
+  userId: string,
+  cost: number = 1
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = getServiceSupabase();
+    
+    // Call the Postgres RPC to atomically increment usage limits
+    const { data, error } = await supabase.rpc('increment_unified_usage', {
+      user_id_val: userId,
+      refund_val: cost,
+    });
+
+    if (error) {
+      console.error('[Billing] Atomic refund RPC failed:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!data) return { success: false, error: 'User usage record not found' };
+
+    return { success: true };
+  } catch (err: any) {
+    console.error('[Billing] Failed to refund unified usage:', err);
+    return { success: false, error: err.message };
+  }
+}

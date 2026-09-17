@@ -40,6 +40,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Topic is too long. Please keep it under 200 characters." }, { status: 400 });
     }
 
+    // ── Idempotency Check ──
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_speech_writer';
+    const hashString = `${topic.trim()}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    const idempotencyKey = `speech-writer:${user.id}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
+    }
+
+    // 2. Acquire lock
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 3. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
     const systemPrompt = `
       You are a kind and friendly English speech writer.
       Write a simple, inspiring 150-200 word speech on the requested topic.
@@ -88,14 +117,24 @@ export async function POST(request: NextRequest) {
       speech = aiResponse.replace(/```json|```/g, '').trim();
     }
 
-    return NextResponse.json({
+    const responseData = {
       status: "success",
       data: {
         title,
         speech,
         tips,
       }
-    });
+    };
+
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error("Speech Writer Error:", error);

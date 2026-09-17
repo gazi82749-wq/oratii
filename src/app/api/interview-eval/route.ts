@@ -47,6 +47,35 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // ── Idempotency Check ──
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_interview_eval';
+    const hashString = `${transcript.trim()}|${roleTitle}|${resumeText}|${difficultyLevel}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    const idempotencyKey = `interview-eval:${userId}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
+    }
+
+    // 2. Acquire lock
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 3. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
     // 4. Construct AI Prompt for Dynamic Interview Evaluation
     const systemPrompt = `
       You are an expert Executive Hiring Manager and Senior Recruiter evaluating a mock job interview for the position: "${roleTitle}" (Level: ${difficultyLevel}).
@@ -170,7 +199,17 @@ export async function POST(request: NextRequest) {
       ];
     }
 
-    return NextResponse.json({ status: 'success', data: parsed });
+    const responseData = { status: 'success', data: parsed };
+
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error('Interview Evaluation Endpoint Error:', error);

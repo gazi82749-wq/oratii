@@ -19,14 +19,18 @@ describe('fetchWithRetry', () => {
     expect(response).toBe(mockSuccessResponse);
   });
 
-  it('should return immediately on a 400 Bad Request', async () => {
-    const mockBadRequestResponse = { ok: false, status: 400 };
+  it('should throw immediately on a 400 Bad Request', async () => {
+    const mockBadRequestResponse = { 
+      ok: false, 
+      status: 400, 
+      text: async () => 'Bad Request' 
+    };
     global.fetch.mockResolvedValueOnce(mockBadRequestResponse);
 
-    const response = await fetchWithRetry('https://example.com/api', {}, 3, 100);
+    await expect(fetchWithRetry('https://example.com/api', {}, 3, 100))
+      .rejects.toThrow('Non-transient error 400: Bad Request');
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(response).toBe(mockBadRequestResponse);
   });
 
   it('should retry on a 429 Too Many Requests and succeed', async () => {

@@ -45,9 +45,6 @@ export default function PricingClient() {
     });
 
     if (typeof window !== 'undefined') {
-      const savedUpiId = localStorage.getItem('admin_upi_id');
-      if (savedUpiId) setAdminUpiId(savedUpiId);
-
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('success') === 'true') {
         setShowSuccessBanner(true);

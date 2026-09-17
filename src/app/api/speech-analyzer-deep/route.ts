@@ -7,6 +7,9 @@ import { supabase } from '../../../lib/supabaseClient';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+
   try {
     // Rate limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
@@ -44,17 +47,49 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Credit check
-    const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
-    if (!usageCheck.allowed) {
-      return NextResponse.json({
-        error: "Credits Exhausted",
-        message: "You've used all your credits. Purchase more credits to continue.",
-        creditExhausted: true
-      }, { status: 403 });
+    // ── Idempotency Check ──
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_deep_speech';
+    const hashString = `${wpm}|${totalFillers}|${situation}|${reqLanguage}|${timedTranscript}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    const idempotencyKey = `speech-analyzer-deep:${userId}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
     }
 
-    const numWpm = Number(wpm) || 0;
+    // 2. Acquire lock
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 3. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
+      // Credit check
+      const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
+      if (!usageCheck.allowed) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+      creditConsumed = true;
+      userIdForRefund = userId;
+
+      const numWpm = Number(wpm) || 0;
     const numFillers = Number(totalFillers) || 0;
 
     const tonePrompt = `
@@ -137,13 +172,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const responseData = {
       status: "success",
       tone: toneAnalysis
-    });
+    };
+    
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+    
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error("Deep Tone Analysis Error:", error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[SpeechAnalyzerDeep] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
+      const { refundUsage } = await import('../../../lib/billing');
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json({ 
       error: "Tone analysis failed", 
       details: error.message 

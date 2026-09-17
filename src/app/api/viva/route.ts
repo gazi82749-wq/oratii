@@ -7,6 +7,10 @@ import { supabase } from '../../../lib/supabaseClient';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+  let idempotencyKey = '';
+
   try {
     // Rate limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
@@ -48,25 +52,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Authentication required. Please sign in to use Viva Defense.", authRequired: true }, { status: 401 });
     }
 
-    // Determine current question turn count (excluding initial context prompt)
-    const validTurns = (chatHistory || []).filter(
-      (h: any) => h.question && !h.question.startsWith('Provide Context:')
-    );
-    const currentQuestionIndex = validTurns.length + 1;
-
-    // Deduct usage session credit only on the first turn of a viva session
-    if (currentQuestionIndex === 1) {
-      const usageCheck = await checkAndDecrementUsage(userId, 'viva_sessions_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Credits Exhausted",
-          message: "You've used all your credits. Purchase more credits to continue.",
-          creditExhausted: true
-        }, { status: 403 });
-      }
-    }
-
-    // Extract topic name or candidate role
+    // Extract topic name or candidate role FIRST to use in hash
     let topicName = (bodyTopic || '').trim();
     if (!topicName && chatHistory && chatHistory.length > 0) {
       const firstQ = chatHistory[0]?.question || '';
@@ -79,6 +65,58 @@ export async function POST(request: NextRequest) {
     if (!topicName) {
       topicName = interviewType === 'job_interview' ? 'General Tech/Professional Role' : 'General Presentation Topic';
     }
+
+    // Determine current question turn count (excluding initial context prompt)
+    const validTurns = (chatHistory || []).filter(
+      (h: any) => h.question && !h.question.startsWith('Provide Context:')
+    );
+    const currentQuestionIndex = validTurns.length + 1;
+
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_viva';
+    // Hash includes the exact chat history and current answer to prevent double-submitting a turn
+    const hashString = `${JSON.stringify(chatHistory || [])}|${currentAnswer || ''}|${topicName}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    idempotencyKey = `viva:${userId}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
+    }
+
+    // 2. Acquire lock
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 3. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
+      // Deduct usage session credit only on the first turn of a viva session
+      if (currentQuestionIndex === 1) {
+        const usageCheck = await checkAndDecrementUsage(userId, 'viva_sessions_count');
+        if (!usageCheck.allowed) {
+          await releaseLock(idempotencyKey);
+          return NextResponse.json({
+            error: "Credits Exhausted",
+            message: "You've used all your credits. Purchase more credits to continue.",
+            creditExhausted: true
+          }, { status: 403 });
+        }
+        creditConsumed = true;
+        userIdForRefund = userId;
+      }
+
+
 
     const hasDocument = Boolean(documentContext && documentContext.trim().length > 0);
     const hasSlides = Boolean(slideAnalysisData);
@@ -370,9 +408,27 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
       }
     }
 
-    return NextResponse.json({ status: 'success', data: parsedResponse, viva: parsedResponse });
+    const responseData = { status: 'success', data: parsedResponse, viva: parsedResponse };
+
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+
+    } finally {
+      if (idempotencyKey) {
+        await releaseLock(idempotencyKey);
+      }
+    }
+
   } catch (error: any) {
     console.error('Viva Simulator Error:', error);
+    if (typeof creditConsumed !== 'undefined' && creditConsumed && userIdForRefund) {
+      console.warn(`[Viva] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
+      const { refundUsage } = await import('../../../lib/billing');
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json(
       { error: 'Viva simulation failed', details: error?.message || 'Unknown error' },
       { status: 500 }

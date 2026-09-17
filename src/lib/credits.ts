@@ -106,10 +106,7 @@ export const CREDIT_PACKAGES = [
 export async function getUserCredits(userId: string): Promise<number> {
   if (!userId) return 0;
 
-  // 1. Check client-side admin session flag
-  if (typeof window !== 'undefined' && sessionStorage.getItem('admin_verified') === 'true') {
-    return 999999;
-  }
+  // Removed insecure client-side admin bypass
 
   try {
     const { data, error } = await supabase
@@ -148,10 +145,7 @@ export async function checkAndDeductCredits(
     return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
   }
 
-  // 1. Check client-side admin session flag
-  if (typeof window !== 'undefined' && sessionStorage.getItem('admin_verified') === 'true') {
-    return { allowed: true, remainingCredits: 999999 };
-  }
+  // Removed insecure client-side admin bypass
 
   try {
     const { data: profile } = await supabase

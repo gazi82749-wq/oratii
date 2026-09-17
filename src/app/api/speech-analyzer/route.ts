@@ -12,6 +12,10 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+  let isAnonymousTrial = false;
+
   try {
     // Rate limiting (by IP)
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
@@ -36,27 +40,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (userId) {
-      // Logged-in user — check credit balance
-      const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
-      if (!usageCheck.allowed) {
-        return NextResponse.json({
-          error: "Credits Exhausted",
-          message: "You've used all your credits. Purchase more credits to continue using Speech Coach.",
-          creditExhausted: true
-        }, { status: 403 });
-      }
-    } else {
-      // Anonymous user — check trial limit (max 2 sessions)
-      if (await hasUsedTrial(request)) {
-        return NextResponse.json({
-          error: "Free Trial Ended",
-          message: "You've used your 2 free Speech Coach sessions! Sign up for a free account to get 20 more credits.",
-          trialExpired: true
-        }, { status: 401 });
-      }
-    }
-
     // Receive raw audio blob from frontend
     const formData = await request.formData();
     const audioFile = formData.get('audio') as Blob | null;
@@ -77,6 +60,58 @@ export async function POST(request: NextRequest) {
     // Convert audio file to buffer for Deepgram API
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+
+    // ── Idempotency Check ──
+    const crypto = await import('crypto');
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    const promptVersion = 'v1_speech_analyzer';
+    const hashString = `${buffer.toString('base64')}|${reqLanguage}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    const idempotencyKey = `speech-analyzer:${userId || 'anon'}:${fileHash}`;
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
+    }
+
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 2. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
+      // 3. Billing & Trial deduction
+      if (userId) {
+        const usageCheck = await checkAndDecrementUsage(userId, 'speech_analysis_count');
+        if (!usageCheck.allowed) {
+          await releaseLock(idempotencyKey);
+          return NextResponse.json({
+            error: "Credits Exhausted",
+            message: "You've used all your credits. Purchase more credits to continue using Speech Coach.",
+            creditExhausted: true
+          }, { status: 403 });
+        }
+        userIdForRefund = userId;
+        creditConsumed = true;
+      } else {
+        if (await hasUsedTrial(request)) {
+          await releaseLock(idempotencyKey);
+          return NextResponse.json({
+            error: "Free Trial Ended",
+            message: "You've used your 2 free Speech Coach sessions! Sign up for a free account to get 20 more credits.",
+            trialExpired: true
+          }, { status: 401 });
+        }
+        isAnonymousTrial = true;
+      }
 
     // Send to Deepgram REST API with retry
     const response = await fetchWithRetry(deepgramUrl, {
@@ -170,9 +205,11 @@ export async function POST(request: NextRequest) {
     const topFillers = groupFillerWords(words);
 
     // After a successful analysis, mark trial as used (only affects anonymous users)
-    await setTrialUsed(request);
+    if (isAnonymousTrial) {
+      await setTrialUsed(request);
+    }
 
-    return NextResponse.json({
+    const responseData = {
       status: "success",
       transcript: transcript,
       words: words,
@@ -191,10 +228,26 @@ export async function POST(request: NextRequest) {
         guardrailWarning: guardrailWarning,
         rubric: auditedRubric
       }
-    });
+    };
+
+    // Cache the result for 24 hours
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+    
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error("Speech Analyzer Error:", error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[SpeechAnalyzer] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
+      const { refundUsage } = await import('../../../lib/billing');
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json({ error: "Speech analysis failed. Please try again.", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }

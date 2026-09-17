@@ -14,10 +14,6 @@ export default function AdminLogin() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     setErrorMsg('');
-    
-    // Set verification flag before redirecting to Google
-    sessionStorage.setItem('admin_verified', 'true');
-    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -31,7 +27,6 @@ export default function AdminLogin() {
     if (error) {
       setErrorMsg(error.message);
       setLoading(false);
-      sessionStorage.removeItem('admin_verified');
     }
   };
 
@@ -48,7 +43,6 @@ export default function AdminLogin() {
       setErrorMsg(error.message);
       setLoading(false);
     } else {
-      sessionStorage.setItem('admin_verified', 'true');
       router.push('/admin');
     }
   };

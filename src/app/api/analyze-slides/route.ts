@@ -4,7 +4,7 @@ import { supabase } from '../../../lib/supabaseClient';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
 import JSZip from 'jszip';
-import { XMLParser } from 'fast-xml-parser';
+import { parseSlideXml, parseNotesXml } from '../../../lib/pptxParser';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
@@ -50,63 +50,24 @@ async function parsePptx(buffer: Buffer) {
     return numA - numB;
   });
 
-  const parser = new XMLParser({
-    ignoreAttributes: false,
-    parseTagValue: false,
-    processEntities: true,
-    preserveOrder: true,
-    htmlEntities: true
-  });
-
-  function extractText(node: any): string {
-    if (typeof node === 'string' || typeof node === 'number') {
-      return String(node);
-    }
-    if (Array.isArray(node)) {
-      return node.map(extractText).join('');
-    }
-    if (typeof node === 'object' && node !== null) {
-      let text = '';
-      for (const key of Object.keys(node)) {
-        if (key === ':@') continue;
-        if (key === '#text') {
-          text += node[key];
-        } else {
-          const childText = extractText(node[key]);
-          if (childText) {
-             text += (key === 'a:p' ? childText + ' ' : childText);
-          }
-        }
-      }
-      return text;
-    }
-    return '';
-  }
-
   const slideTexts = [];
   for (const file of slideFiles) {
     const xmlContent = await zip.files[file].async('text');
-    let slideText = '';
-    try {
-      const parsed = parser.parse(xmlContent);
-      slideText = extractText(parsed).replace(/\s+/g, ' ').trim();
-    } catch(e) {
-      console.warn("Failed to parse XML for", file, e);
-    }
+    let slideText = await parseSlideXml(xmlContent);
     
     // Check for corresponding notes slide
     const slideNumberMatch = file.match(/slide(\d+)\.xml/i);
     if (slideNumberMatch) {
       const slideNum = slideNumberMatch[1];
       const notesFile = `ppt/notesSlides/notesSlide${slideNum}.xml`;
-      if (zip.files[notesFile]) {
+      const notesFileEntry = zip.files[notesFile];
+      if (notesFileEntry) {
         try {
-           const notesContent = await zip.files[notesFile].async('text');
-           const parsedNotes = parser.parse(notesContent);
-           const notesText = extractText(parsedNotes).replace(/\s+/g, ' ').trim();
-           if (notesText) {
-             slideText += `\n[Speaker Notes]: ${notesText}`;
-           }
+          const notesXmlContent = await notesFileEntry.async('text');
+          const notesText = await parseNotesXml(notesXmlContent);
+          if (notesText) {
+            slideText += `\n[SPEAKER NOTES: ${notesText}]`;
+          }
         } catch (e) {}
       }
     }
@@ -128,6 +89,9 @@ interface SlideCacheEntry {
 const inMemorySlideCache = new Map<string, SlideCacheEntry>();
 
 export async function POST(request: NextRequest) {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+
   try {
     // Rate limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
@@ -302,6 +266,7 @@ export async function POST(request: NextRequest) {
         }, { status: 401 });
       }
     } else {
+      userIdForRefund = userId;
       const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
       if (!usageCheck.allowed) {
         return NextResponse.json({
@@ -310,6 +275,7 @@ export async function POST(request: NextRequest) {
           creditExhausted: true
         }, { status: 403 });
       }
+      creditConsumed = true;
     }
 
     // System instruction prompt
@@ -486,6 +452,11 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error("Backend Route Error:", error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[AnalyzeSlides] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
+      const { refundUsage } = await import('../../../lib/billing');
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json({ error: "Internal Server Error", details: error?.message || 'Unknown error' }, { status: 500 });
   }
 }

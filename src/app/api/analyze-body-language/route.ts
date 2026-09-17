@@ -34,6 +34,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No video frames provided!" }, { status: 400 });
     }
 
+    // ── Idempotency Check ──
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_body_language';
+    // Use the first and last frame + length to generate a reasonably fast but unique deterministic hash
+    const firstFrame = frames[0] || '';
+    const lastFrame = frames[frames.length - 1] || '';
+    const hashString = `${firstFrame.slice(0, 500)}|${lastFrame.slice(0, 500)}|${frames.length}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    const idempotencyKey = `body-lang:${user.id}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    // 1. Read-only fast cache check
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) {
+      return NextResponse.json(fastCache);
+    }
+
+    // 2. Acquire lock
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    try {
+      // 3. Double-checked locking
+      const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json(redisCache);
+      }
+
     const systemPrompt = `
       You are a friendly body language coach — like a senior student who's been through dozens of presentations and knows what good stage presence looks like. You're looking at snapshots from a student's presentation video.
 
@@ -90,10 +122,20 @@ export async function POST(request: NextRequest) {
     }
     const parsedAnalysis = JSON.parse(jsonMatch[0]);
 
-    return NextResponse.json({ 
+    const responseData = { 
       status: "success", 
       data: parsedAnalysis 
-    });
+    };
+    
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
+
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error("Body Language Analysis Error:", error);
