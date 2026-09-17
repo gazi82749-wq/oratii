@@ -104,7 +104,7 @@ export default function HomeClient() {
       cta: 'Start Voice Mock Interview'
     },
     {
-      title: 'Slide Deck & Viva Studio',
+      title: 'Presentation Practice',
       subtitle: 'Audit Slide Deck ➔ Rehearse Live ➔ In-built Viva Defense',
       headline: 'Audit slides, rehearse live with webcam, and defend.',
       desc: 'Upload PPTX/PDF slides for instant visual clarity audits. Rehearse live with zero-latency Edge WASM HUD and challenge yourself with in-built academic viva defense.',
@@ -158,7 +158,7 @@ export default function HomeClient() {
       href: '/interview'
     },
     { 
-      value: 'Slide Deck & Viva Studio', 
+      value: 'Presentation Practice', 
       label: 'Audits visual slide density, offers live webcam HUD rehearsal, and tests you with unscripted AI viva defense questions.', 
       tags: ['Slide Readability', 'Webcam WASM HUD', 'Viva Defense'],
       badgeColor: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',

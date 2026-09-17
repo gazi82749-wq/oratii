@@ -29,7 +29,7 @@ export default function manifest(): MetadataRoute.Manifest {
         icons: [{ src: '/icon-192.png', sizes: '192x192' }],
       },
       {
-        name: 'Slide Deck & Viva Studio',
+        name: 'Presentation Practice',
         short_name: 'Viva Studio',
         description: 'Webcam Rehearsal & Academic Viva Defense',
         url: '/presentation',
