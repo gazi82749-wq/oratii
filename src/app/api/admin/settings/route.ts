@@ -5,13 +5,20 @@ import { supabase } from '@/lib/supabaseClient';
 export const dynamic = 'force-dynamic';
 
 async function verifyAdminCaller(request: Request) {
+  let user;
+
   const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return false;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    const { data: { user: authUser } } = await supabase.auth.getUser(token);
+    user = authUser;
+  } else {
+    // Fallback to cookie-based session
+    const { data: { user: cookieUser } } = await supabase.auth.getUser();
+    user = cookieUser;
   }
-  const token = authHeader.substring(7).trim();
-  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-  if (userError || !user) return false;
+
+  if (!user) return false;
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient
@@ -25,6 +32,11 @@ async function verifyAdminCaller(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    const isAdmin = await verifyAdminCaller(request);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+    }
+
     const serviceClient = getServiceSupabase();
     const { data, error } = await serviceClient
       .from('platform_settings')

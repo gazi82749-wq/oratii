@@ -62,6 +62,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
         console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
         errors.push(`Groq (${model}): ${err.message}`);
 
@@ -90,6 +92,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
         console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
         errors.push(`Cerebras (${model}): ${err.message}`);
         
@@ -117,6 +121,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
       const res = await callGemini(options);
       if (res) return res;
     } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
       console.warn("[AIFallback] Gemini failed or rate-limited. Falling back to OpenRouter...", err.message);
       errors.push(`Gemini: ${err.message}`);
     }
@@ -142,6 +148,8 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
         console.warn(`[AIFallback] OpenRouter model ${model} failed:`, err.message);
         errors.push(`OpenRouter (${model}): ${err.message}`);
       }
@@ -234,6 +242,8 @@ async function callOpenAICompatible({
       if (text) return text;
     }
   } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
     console.warn(`[AIFallback] json_object format attempt failed for ${model}, retrying standard request...`, err.message);
   }
 
@@ -324,6 +334,8 @@ async function callGemini(options: AIContentOptions): Promise<string> {
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) return text;
     } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
       lastError = err;
       console.warn(`[AIFallback] Gemini model ${model} failed, trying next Gemini model...`, err.message);
     }

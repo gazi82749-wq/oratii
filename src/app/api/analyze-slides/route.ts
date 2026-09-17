@@ -4,6 +4,7 @@ import { supabase } from '../../../lib/supabaseClient';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
 import JSZip from 'jszip';
+import { XMLParser } from 'fast-xml-parser';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { hasUsedTrial, setTrialUsed } from '../../../lib/trialManager';
@@ -40,7 +41,7 @@ async function parsePdf(buffer: Buffer) {
   return ["Presentation Slide Deck Content & Layout"];
 }
 
-async function parsePptx(buffer) {
+async function parsePptx(buffer: Buffer) {
   const zip = await JSZip.loadAsync(buffer);
   const slideFiles = Object.keys(zip.files).filter(name => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'));
   slideFiles.sort((a, b) => {
@@ -49,11 +50,67 @@ async function parsePptx(buffer) {
     return numA - numB;
   });
 
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    parseTagValue: false,
+    processEntities: true,
+    preserveOrder: true,
+    htmlEntities: true
+  });
+
+  function extractText(node: any): string {
+    if (typeof node === 'string' || typeof node === 'number') {
+      return String(node);
+    }
+    if (Array.isArray(node)) {
+      return node.map(extractText).join('');
+    }
+    if (typeof node === 'object' && node !== null) {
+      let text = '';
+      for (const key of Object.keys(node)) {
+        if (key === ':@') continue;
+        if (key === '#text') {
+          text += node[key];
+        } else {
+          const childText = extractText(node[key]);
+          if (childText) {
+             text += (key === 'a:p' ? childText + ' ' : childText);
+          }
+        }
+      }
+      return text;
+    }
+    return '';
+  }
+
   const slideTexts = [];
   for (const file of slideFiles) {
     const xmlContent = await zip.files[file].async('text');
-    const textMatches = Array.from(xmlContent.matchAll(/<a:t[^>]*>([\s\S]*?)<\/a:t>/gi));
-    let slideText = textMatches.map(m => m[1]).join(' ').replace(/\s+/g, ' ').trim();
+    let slideText = '';
+    try {
+      const parsed = parser.parse(xmlContent);
+      slideText = extractText(parsed).replace(/\s+/g, ' ').trim();
+    } catch(e) {
+      console.warn("Failed to parse XML for", file, e);
+    }
+    
+    // Check for corresponding notes slide
+    const slideNumberMatch = file.match(/slide(\d+)\.xml/i);
+    if (slideNumberMatch) {
+      const slideNum = slideNumberMatch[1];
+      const notesFile = `ppt/notesSlides/notesSlide${slideNum}.xml`;
+      if (zip.files[notesFile]) {
+        try {
+           const notesContent = await zip.files[notesFile].async('text');
+           const parsedNotes = parser.parse(notesContent);
+           const notesText = extractText(parsedNotes).replace(/\s+/g, ' ').trim();
+           if (notesText) {
+             slideText += `\n[Speaker Notes]: ${notesText}`;
+           }
+        } catch (e) {}
+      }
+    }
+
     if (!slideText) {
       slideText = `Slide ${slideTexts.length + 1}: Visual layout and graphic elements`;
     }
@@ -74,7 +131,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
     if (!rateResult.allowed) {
       return NextResponse.json({
         error: "Too Many Requests",
@@ -160,21 +217,45 @@ export async function POST(request: NextRequest) {
     }
 
     // ── 1. Calculate Exact File & Text SHA-256 Fingerprint ──
-    const fileHash = fileBuffer
-      ? crypto.createHash('sha256').update(fileBuffer).digest('hex')
-      : crypto.createHash('sha256').update(formattedSlideText).digest('hex');
+    const promptVersion = 'v1_slide_analysis';
+    const rawHashString = fileBuffer
+      ? fileBuffer.toString('base64') + promptVersion
+      : formattedSlideText + promptVersion;
+      
+    const fileHash = crypto.createHash('sha256').update(rawHashString).digest('hex');
+    const idempotencyKey = `analyze-slides:${fileHash}`;
 
-    // ── 2. Check High-Speed In-Memory Cache ──
-    const memoryCached = inMemorySlideCache.get(fileHash);
-    if (memoryCached && (Date.now() - memoryCached.timestamp) < CACHE_TTL_HOURS * 3600 * 1000) {
-      console.log(`[AnalyzeSlides] ⚡ In-Memory Cache HIT for ${fileHash.slice(0, 8)} — 100% Deterministic Result`);
-      return NextResponse.json({
-        status: "success",
-        data: memoryCached.analysisResult,
-        slideTextContent: memoryCached.slideTextContent,
-        cached: true
-      });
+    // ── 2. Check Idempotency / Cache ──
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
     }
+
+    try {
+      const memoryCached = inMemorySlideCache.get(fileHash);
+      if (memoryCached && (Date.now() - memoryCached.timestamp) < CACHE_TTL_HOURS * 3600 * 1000) {
+        console.log(`[AnalyzeSlides] ⚡ In-Memory Cache HIT for ${fileHash.slice(0, 8)}`);
+        await releaseLock(idempotencyKey);
+        return NextResponse.json({
+          status: "success",
+          data: memoryCached.analysisResult,
+          slideTextContent: memoryCached.slideTextContent,
+          cached: true
+        });
+      }
+
+      const redisCache = await checkCache<{data: any, text: any}>(`cache:${idempotencyKey}`);
+      if (redisCache) {
+         console.log(`[AnalyzeSlides] ⚡ Redis Cache HIT for ${fileHash.slice(0, 8)}`);
+         await releaseLock(idempotencyKey);
+         return NextResponse.json({
+           status: "success",
+           data: redisCache.data,
+           slideTextContent: redisCache.text,
+           cached: true
+         });
+      }
 
     // ── 3. Check Persistent Database Cache ──
     try {
@@ -354,6 +435,10 @@ export async function POST(request: NextRequest) {
       slideTextContent,
       timestamp: Date.now()
     });
+    
+    try {
+      await setCache(`cache:${idempotencyKey}`, { data: parsedAnalysis, text: slideTextContent });
+    } catch(e) {}
 
     try {
       await supabase
@@ -395,6 +480,9 @@ export async function POST(request: NextRequest) {
     }
 
     return response;
+    } finally {
+      await releaseLock(idempotencyKey);
+    }
 
   } catch (error: any) {
     console.error("Backend Route Error:", error);

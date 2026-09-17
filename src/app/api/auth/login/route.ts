@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   // 1. Rate limit by IP
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'unknown';
   const rateLimitKey = `login:${ip}`;
-  const rateResult = checkRateLimit(rateLimitKey, AUTH_RATE_LIMIT);
+  const rateResult = await checkRateLimit(rateLimitKey, AUTH_RATE_LIMIT);
 
   if (!rateResult.allowed) {
     return NextResponse.json(

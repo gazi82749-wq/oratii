@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting (3 conversions per minute)
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = checkRateLimit(`convert:${ip}`, CONVERT_RATE_LIMIT);
+    const rateResult = await checkRateLimit(`convert:${ip}`, CONVERT_RATE_LIMIT);
     if (!rateResult.allowed) {
       return NextResponse.json({
         error: "Too Many Requests",

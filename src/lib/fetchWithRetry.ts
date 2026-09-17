@@ -30,18 +30,35 @@ export async function fetchWithRetry(
       const response = await fetch(url, fetchOptions);
       if (timeoutId) clearTimeout(timeoutId);
 
-      // If successful, or 4xx client error (except 429), return immediately
-      if (response.ok || (response.status >= 400 && response.status < 500 && response.status !== 429)) {
+      if (response.ok) {
         return response;
       }
 
+      // Non-transient client errors (like 400, 401, 403) should NOT be retried
+      // Throw immediately to abort both the retry loop AND the fallback chain.
+      if (response.status >= 400 && response.status < 500 && response.status !== 429 && response.status !== 408) {
+        const errText = await response.text().catch(() => '');
+        const error = new Error(`Non-transient error ${response.status}: ${errText}`);
+        (error as any).status = response.status;
+        (error as any).isNonTransient = true;
+        throw error;
+      }
+
+      // If we got here, it's a 429, 408, or 5xx error. We should retry.
       if (attempt >= maxRetries) {
+        // If max retries reached, return the failed response so the caller handles it
         return response;
       }
 
       console.warn(`[API Retry] Request to ${url} failed with status ${response.status}. Retrying (${attempt + 1}/${maxRetries})...`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (timeoutId) clearTimeout(timeoutId);
+      
+      // If it's a non-transient error we explicitly threw, bubble it up immediately
+      if (error.isNonTransient) {
+        throw error;
+      }
+
       if (attempt >= maxRetries) {
         throw error;
       }

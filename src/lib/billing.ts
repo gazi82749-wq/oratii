@@ -22,78 +22,43 @@ export async function checkAndDecrementUsage(
   type: UsageType
 ): Promise<{ allowed: boolean; limitReached?: boolean; remainingCredits?: number }> {
   try {
-    // ⚠️ TESTING MODE: Credit check bypassed. Remove this when going live!
-    return { allowed: true, remainingCredits: 9999 };
-
     const supabase = getServiceSupabase();
     const cost = CREDIT_COST[type] || 1;
 
-    // Fetch current credit balance
-    const { data, error } = await supabase
+    // Fetch current credit balance to return remaining credits if needed
+    const { data: balanceData, error: balanceError } = await supabase
       .from('usage_limits')
       .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
       .eq('user_id', userId)
       .single();
 
-    if (error || !data) {
-      console.warn('[Billing] Could not fetch usage limits for user:', userId, error?.message);
-      // Fail-open with caution: allow the request but log it
-      // In a stricter setup, you could fail-closed here
-      return { allowed: true };
+    if (balanceError || !balanceData) {
+      console.warn('[Billing] Could not fetch usage limits for user:', userId, balanceError?.message);
+      return { allowed: false, limitReached: true };
     }
 
-    // Unified credit balance: sum of all remaining credit fields
     const totalCredits =
-      (data.speech_analysis_count || 0) +
-      (data.ppt_analysis_count || 0) +
-      (data.viva_sessions_count || 0);
+      (balanceData.speech_analysis_count || 0) +
+      (balanceData.ppt_analysis_count || 0) +
+      (balanceData.viva_sessions_count || 0);
 
     if (totalCredits < cost) {
       return { allowed: false, limitReached: true, remainingCredits: totalCredits };
     }
 
-    // Decrement from the specific usage type column first, then overflow to others
-    const currentTypeCount = data[type] || 0;
+    // Attempt atomic decrement
+    const { data: success, error: rpcError } = await supabase.rpc('decrement_unified_usage', {
+      user_id_val: userId,
+      cost_val: cost
+    });
 
-    if (currentTypeCount >= cost) {
-      // Decrement from the matching column
-      const { error: updateError } = await supabase
-        .from('usage_limits')
-        .update({ [type]: currentTypeCount - cost })
-        .eq('user_id', userId);
+    if (rpcError) {
+      console.error('[Billing] Atomic deduction RPC failed:', rpcError);
+      return { allowed: false, limitReached: true }; // Fail-closed on error for safety
+    }
 
-      if (updateError) {
-        console.error('[Billing] Failed to decrement usage:', updateError.message);
-        return { allowed: true }; // Fail-open: don't block user on DB write failure
-      }
-    } else {
-      // Overflow: decrement from whichever column has credits
-      // Priority: speech → ppt → viva
-      const columns: UsageType[] = ['speech_analysis_count', 'ppt_analysis_count', 'viva_sessions_count'];
-      let remaining = cost;
-      const updates: Partial<Record<UsageType, number>> = {};
-
-      for (const col of columns) {
-        if (remaining <= 0) break;
-        const available = data[col] || 0;
-        const deducted = Math.min(available, remaining);
-        updates[col] = available - deducted;
-        remaining -= deducted;
-      }
-
-      if (remaining > 0) {
-        return { allowed: false, limitReached: true, remainingCredits: 0 };
-      }
-
-      const { error: updateError } = await supabase
-        .from('usage_limits')
-        .update(updates)
-        .eq('user_id', userId);
-
-      if (updateError) {
-        console.error('[Billing] Failed to decrement usage (overflow):', updateError.message);
-        return { allowed: true };
-      }
+    if (!success) {
+      return { allowed: false, limitReached: true, remainingCredits: totalCredits };
     }
 
     const newTotal = totalCredits - cost;
@@ -101,8 +66,7 @@ export async function checkAndDecrementUsage(
 
   } catch (err: any) {
     console.error('[Billing] Unexpected error:', err?.message || err);
-    // Fail-open: don't block user on unexpected errors
-    return { allowed: true };
+    return { allowed: false, limitReached: true }; // Fail-closed on unexpected error
   }
 }
 

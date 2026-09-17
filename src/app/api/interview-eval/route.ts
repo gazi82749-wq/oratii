@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Rate Limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
+    const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
     if (!rateResult.allowed) {
       return NextResponse.json({
         error: "Too Many Requests",

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getServiceSupabase } from '@/lib/supabaseClient';
 import { sendPaymentSuccessEmail, sendPaymentFailedEmail } from '@/lib/email';
+import { CREDIT_PACKAGES } from '@/lib/credits';
 
 export async function POST(req: Request) {
   try {
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
           });
       }
 
-      // 3. Update the user's profile and reset usage limits
+      // 3. Update the user's profile and add usage limits
       const { data: userProfile } = await supabase
         .from('profiles')
         .select('full_name, email')
@@ -112,13 +113,21 @@ export async function POST(req: Request) {
         })
         .eq('id', userId);
 
+      const targetPackage = CREDIT_PACKAGES?.find((p) => p.id === (planName || 'standard').toLowerCase());
+      const creditsToAdd = targetPackage ? targetPackage.credits : 10;
+
+      const { data: usage } = await supabase
+        .from('usage_limits')
+        .select('speech_analysis_count')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      const currentSpeech = usage?.speech_analysis_count || 0;
+
       await supabase
         .from('usage_limits')
         .update({
-          speech_analysis_count: 0,
-          ppt_analysis_count: 0,
-          viva_sessions_count: 0,
-          current_month: new Date().toISOString(),
+          speech_analysis_count: currentSpeech + creditsToAdd,
         })
         .eq('user_id', userId);
         

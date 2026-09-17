@@ -32,37 +32,57 @@ export async function POST(req: Request) {
       }
     }
 
+    // Idempotency check: prevent double credit allocation
+    const { data: existingPayment } = await supabase
+      .from('payments')
+      .select('id')
+      .eq('payment_id', razorpay_payment_id)
+      .maybeSingle();
+
+    if (existingPayment) {
+      return NextResponse.json({
+        success: true,
+        message: 'Payment already verified and credits allocated.',
+      });
+    }
+
     // Calculate credits to add based on package definition
     const targetPackage = CREDIT_PACKAGES.find((p) => p.id === planId);
     const creditsToAdd = targetPackage ? targetPackage.credits : 10;
 
-    // Fetch existing credits
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('credits')
-      .eq('id', userId)
+    // Fetch existing credits from usage_limits
+    const { data: usage } = await supabase
+      .from('usage_limits')
+      .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
+      .eq('user_id', userId)
       .maybeSingle();
 
-    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 5;
-    const newCredits = currentCredits + creditsToAdd;
+    const currentSpeech = usage?.speech_analysis_count || 0;
+    const currentPpt = usage?.ppt_analysis_count || 0;
+    const currentViva = usage?.viva_sessions_count || 0;
+    
+    // We add the credits to speech_analysis_count as a unified pool since decrement_unified_usage draws from all
+    const newSpeechCredits = currentSpeech + creditsToAdd;
 
-    // Update user profile credits instantly
+    // Update user usage limits instantly
     const { error: updateErr } = await supabase
+      .from('usage_limits')
+      .update({
+        speech_analysis_count: newSpeechCredits,
+      })
+      .eq('user_id', userId);
+
+    if (updateErr) {
+      console.error('Failed to add credits to usage_limits:', updateErr);
+    }
+    
+    // Also update current_plan
+    await supabase
       .from('profiles')
       .update({
-        credits: newCredits,
         current_plan: planId,
       })
       .eq('id', userId);
-
-    if (updateErr) {
-      await supabase
-        .from('profiles')
-        .update({
-          current_plan: planId,
-        })
-        .eq('id', userId);
-    }
 
     // Record payment log
     try {
@@ -81,7 +101,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      newCredits,
+      newCredits: newSpeechCredits + currentPpt + currentViva,
       addedCredits: creditsToAdd,
       message: `Successfully added ${creditsToAdd} credits to your account!`,
     });

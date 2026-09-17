@@ -1,31 +1,8 @@
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
 // src/lib/rateLimit.ts
-// In-memory sliding-window rate limiter.
-// For multi-instance/serverless at scale, swap this for Upstash (@upstash/ratelimit).
-
-interface RateLimitEntry {
-  attempts: number[];
-}
-
-const store = new Map<string, RateLimitEntry>();
-
-// Clean up expired entries every 5 minutes to prevent memory leaks
-const CLEANUP_INTERVAL = 5 * 60 * 1000;
-let cleanupTimer: NodeJS.Timeout | null = null;
-
-function startCleanup(windowMs: number) {
-  if (cleanupTimer) return;
-  cleanupTimer = setInterval(() => {
-    const now = Date.now();
-    for (const [key, entry] of store.entries()) {
-      entry.attempts = entry.attempts.filter(ts => now - ts < windowMs);
-      if (entry.attempts.length === 0) {
-        store.delete(key);
-      }
-    }
-  }, CLEANUP_INTERVAL);
-  // Don't block process exit
-  if (cleanupTimer.unref) cleanupTimer.unref();
-}
+// Upstash Redis sliding-window rate limiter.
 
 export interface RateLimitConfig {
   /** Maximum number of attempts allowed within the window */
@@ -43,41 +20,43 @@ export interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
-const MAX_STORE_SIZE = 10000;
-
-function pruneStoreIfTooLarge() {
-  if (store.size > MAX_STORE_SIZE) {
-    // Delete first 2000 oldest keys to prevent Node.js Out-Of-Memory (OOM) memory leaks
-    let count = 0;
-    for (const key of store.keys()) {
-      store.delete(key);
-      count++;
-      if (count >= 2000) break;
+// Fallback in-memory map for graceful degradation if Redis fails
+interface RateLimitEntry {
+  attempts: number[];
+}
+const fallbackStore = new Map<string, RateLimitEntry>();
+const CLEANUP_INTERVAL = 5 * 60 * 1000;
+let cleanupTimer: NodeJS.Timeout | null = null;
+function startCleanup(windowMs: number) {
+  if (cleanupTimer) return;
+  cleanupTimer = setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of fallbackStore.entries()) {
+      entry.attempts = entry.attempts.filter(ts => now - ts < windowMs);
+      if (entry.attempts.length === 0) fallbackStore.delete(key);
     }
-  }
+  }, CLEANUP_INTERVAL);
+  if (cleanupTimer.unref) cleanupTimer.unref();
 }
 
-/**
- * Check and consume a rate limit attempt for the given key.
- * Returns whether the request is allowed, remaining attempts, and retry-after time.
- */
-export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
+function fallbackRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
   startCleanup(config.windowMs);
-
   const now = Date.now();
-  let entry = store.get(key);
-
+  let entry = fallbackStore.get(key);
   if (!entry) {
-    pruneStoreIfTooLarge();
+    if (fallbackStore.size > 10000) {
+      let count = 0;
+      for (const k of fallbackStore.keys()) {
+        fallbackStore.delete(k);
+        count++;
+        if (count >= 2000) break;
+      }
+    }
     entry = { attempts: [] };
-    store.set(key, entry);
+    fallbackStore.set(key, entry);
   }
-
-  // Remove expired attempts outside the window
   entry.attempts = entry.attempts.filter(ts => now - ts < config.windowMs);
-
   if (entry.attempts.length >= config.maxAttempts) {
-    // Rate limited — calculate retry-after from the oldest attempt in window
     const oldestAttempt = entry.attempts[0] || now;
     const retryAfterMs = Math.max(1000, config.windowMs - (now - oldestAttempt));
     return {
@@ -86,13 +65,10 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
       retryAfterSeconds: Math.ceil(retryAfterMs / 1000),
     };
   }
-
-  // Record this attempt and cap attempts length to prevent unbounded growth
   entry.attempts.push(now);
   if (entry.attempts.length > config.maxAttempts + 5) {
     entry.attempts = entry.attempts.slice(-config.maxAttempts);
   }
-
   return {
     allowed: true,
     remaining: config.maxAttempts - entry.attempts.length,
@@ -100,20 +76,57 @@ export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitR
   };
 }
 
-// Pre-configured rate limiters for auth endpoints
-export const AUTH_RATE_LIMIT: RateLimitConfig = {
-  maxAttempts: 5,
-  windowMs: 15 * 60 * 1000, // 15 minutes
+// Pre-configured rate limiters
+export const AUTH_RATE_LIMIT: RateLimitConfig = { maxAttempts: 5, windowMs: 15 * 60 * 1000 };
+export const AI_RATE_LIMIT: RateLimitConfig = { maxAttempts: 10, windowMs: 60 * 1000 };
+export const CONVERT_RATE_LIMIT: RateLimitConfig = { maxAttempts: 3, windowMs: 60 * 1000 };
+
+// Create a single Upstash Ratelimit instance factory
+const createLimiter = (config: RateLimitConfig) => {
+  try {
+    if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+      return null;
+    }
+    const redis = Redis.fromEnv();
+    return new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(config.maxAttempts, `${Math.ceil(config.windowMs / 1000)} s`),
+      analytics: false,
+      ephemeralCache: new Map(),
+    });
+  } catch (err) {
+    console.warn('[RateLimit] Failed to initialize Upstash Redis:', err);
+    return null;
+  }
 };
 
-// Rate limiter for AI-powered endpoints (speech analysis, slide analysis, viva, etc.)
-export const AI_RATE_LIMIT: RateLimitConfig = {
-  maxAttempts: 10,
-  windowMs: 60 * 1000, // 10 requests per minute
+const limiters = {
+  auth: createLimiter(AUTH_RATE_LIMIT),
+  ai: createLimiter(AI_RATE_LIMIT),
+  convert: createLimiter(CONVERT_RATE_LIMIT),
 };
 
-// Rate limiter for file conversion endpoints (PPTX → PDF)
-export const CONVERT_RATE_LIMIT: RateLimitConfig = {
-  maxAttempts: 3,
-  windowMs: 60 * 1000, // 3 conversions per minute
-};
+export async function checkRateLimit(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
+  let type: 'auth' | 'ai' | 'convert' = 'ai';
+  if (config.windowMs === AUTH_RATE_LIMIT.windowMs) type = 'auth';
+  else if (config.windowMs === CONVERT_RATE_LIMIT.windowMs) type = 'convert';
+  
+  const limiter = limiters[type];
+  
+  if (!limiter) {
+    return fallbackRateLimit(key, config);
+  }
+
+  try {
+    const { success, limit, remaining, reset } = await limiter.limit(key);
+    
+    return {
+      allowed: success,
+      remaining,
+      retryAfterSeconds: success ? 0 : Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
+    };
+  } catch (err) {
+    console.error('[RateLimit] Upstash Redis failure, falling back to memory:', err);
+    return fallbackRateLimit(key, config);
+  }
+}

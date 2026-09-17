@@ -35,22 +35,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .eq('id', session.user.id)
         .maybeSingle();
 
-      const isVerified = sessionStorage.getItem('admin_verified') === 'true';
-
-      if ((profile && profile.role === 'admin') || isVerified) {
+      if (profile && profile.role === 'admin') {
         setIsAuthorized(true);
-        sessionStorage.setItem('admin_verified', 'true');
-        // Ensure profile has admin role in database
-        if (profile && profile.role !== 'admin') {
-          await supabase.from('profiles').update({ role: 'admin' }).eq('id', session.user.id);
-        }
         if (pathname === '/admin/login') {
           router.push('/admin');
         }
       } else {
         setIsAuthorized(false);
         setErrorMsg('Your account does not have administrator privileges. Please sign in with an authorized admin account.');
-        sessionStorage.removeItem('admin_verified');
         if (pathname !== '/admin/login') {
           router.push('/dashboard');
         }
