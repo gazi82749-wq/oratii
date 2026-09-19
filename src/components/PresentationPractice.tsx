@@ -35,7 +35,8 @@ export default function PresentationPractice({
   const [isProcessing, setIsProcessing] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showThumbnails, setShowThumbnails] = useState(true);
-  const [cameraLayout, setCameraLayout] = useState<'docked' | 'pip'>('docked');
+  const [thumbnailPosition, setThumbnailPosition] = useState<'left' | 'bottom'>('left');
+  const [cameraLayout, setCameraLayout] = useState<'docked' | 'pip'>('pip');
   const [cameraSize, setCameraSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [cameraZoom, setCameraZoom] = useState(1);
   const [cameraFit, setCameraFit] = useState<'cover' | 'contain'>('cover');
@@ -791,20 +792,96 @@ export default function PresentationPractice({
               </button>
 
               <button
-                onClick={() => setShowThumbnails(!showThumbnails)}
-                title="Toggle Slide Thumbnails"
-                className={`p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${showThumbnails ? 'bg-[#0B0E27] text-[#F2A93B] border border-amber-500/30' : 'text-slate-400 hover:text-white bg-slate-800/50'}`}
+                onClick={() => {
+                  if (!showThumbnails) {
+                    setShowThumbnails(true);
+                    setThumbnailPosition('left');
+                  } else if (thumbnailPosition === 'left') {
+                    setThumbnailPosition('bottom');
+                  } else {
+                    setShowThumbnails(false);
+                  }
+                }}
+                title="Toggle PowerPoint Slide Panel (Left / Bottom / Hidden)"
+                className={`p-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  showThumbnails 
+                    ? 'bg-[#0B0E27] text-[#F2A93B] border border-amber-500/30' 
+                    : 'text-slate-400 hover:text-white bg-slate-800/50 border border-transparent'
+                }`}
               >
-                <Grid size={15} />
+                <Grid size={14} />
+                <span className="hidden md:inline text-[10px] uppercase font-black">
+                  {!showThumbnails ? 'No Pane' : thumbnailPosition === 'left' ? 'PPT Pane' : 'Bottom Bar'}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setCameraLayout(prev => prev === 'pip' ? 'docked' : 'pip')}
+                title={cameraLayout === 'pip' ? 'Switch to Side Dock Camera' : 'Switch to Floating Camera Overlay'}
+                className={`p-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                  cameraLayout === 'pip'
+                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+                    : 'bg-slate-800 text-slate-300 border border-slate-700'
+                }`}
+              >
+                <Camera size={14} />
+                <span className="hidden md:inline text-[10px] uppercase font-black">
+                  {cameraLayout === 'pip' ? 'Floating Cam' : 'Docked'}
+                </span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Main Display Body — Stage + Optional Presenter Side Dock */}
-        <div ref={pipContainerRef} className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex flex-col md:flex-row">
+        {/* Main Display Body — PowerPoint Workspace Layout */}
+        <div ref={pipContainerRef} className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex flex-row">
           
-          {/* Left / Center PowerPoint Slide Stage — 100% clean, unobstructed, swipeable on mobile/tablet */}
+          {/* PowerPoint-Style Left Vertical Slide Pane (Matching PowerPoint Left Navigation Pane!) */}
+          {showThumbnails && thumbnailPosition === 'left' && totalSlides > 1 && (
+            <div className="hidden sm:flex flex-col w-36 lg:w-44 bg-[#0d1025] border-r border-slate-800/80 p-2 gap-2 shrink-0 select-none z-20 overflow-hidden">
+              <div className="flex items-center justify-between px-1 pb-1.5 border-b border-slate-800/60">
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
+                  <Grid size={12} className="text-amber-400" /> Slides ({totalSlides})
+                </span>
+                <button 
+                  onClick={() => setThumbnailPosition('bottom')}
+                  title="Switch to Bottom Carousel View"
+                  className="text-[9px] text-slate-400 hover:text-amber-400 font-extrabold uppercase px-1.5 py-0.5 rounded bg-slate-800/60 border border-slate-700/60 transition-colors"
+                >
+                  Bottom ⇄
+                </button>
+              </div>
+              <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-0.5" style={{ scrollbarWidth: 'thin' }}>
+                {Array.from({ length: totalSlides }, (_, i) => i + 1).map((slideNum) => (
+                  <button
+                    key={slideNum}
+                    onClick={() => handleSlideChange(slideNum)}
+                    className={`w-full flex items-center gap-2 p-1.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
+                      currentSlide === slideNum
+                        ? 'bg-amber-500/10 border-[#F2A93B] shadow-md shadow-amber-500/20 ring-1 ring-[#F2A93B]/40'
+                        : 'bg-slate-900/60 border-slate-800/80 opacity-70 hover:opacity-100 hover:border-slate-600'
+                    }`}
+                  >
+                    <span className={`text-[10px] font-black w-4 text-center shrink-0 ${currentSlide === slideNum ? 'text-amber-400' : 'text-slate-400'}`}>
+                      {slideNum}
+                    </span>
+                    <div className="flex-1 aspect-[16/10] rounded-lg overflow-hidden bg-black border border-slate-800 relative">
+                      {slideImages[slideNum] ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={slideImages[slideNum]} alt={`Slide ${slideNum}`} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[9px] font-bold text-slate-400 bg-slate-900">
+                          S{slideNum}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Center PowerPoint Slide Stage — Maximum Width & Height, 100% Unobstructed High-Res Display */}
           <div 
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -996,9 +1073,16 @@ export default function PresentationPractice({
 
         </div>
 
-        {/* Thumbnail Strip */}
-        {showThumbnails && totalSlides > 1 && (
+        {/* Horizontal Bottom Thumbnail Strip (Active when thumbnailPosition === 'bottom') */}
+        {showThumbnails && thumbnailPosition === 'bottom' && totalSlides > 1 && (
           <div className="z-20 overflow-x-auto py-1.5 px-3 bg-[#0d1025] border-t border-slate-800/80 flex items-center gap-1.5 shrink-0" style={{ scrollbarWidth: 'thin' }}>
+            <button
+              onClick={() => setThumbnailPosition('left')}
+              title="Switch to PowerPoint Left Navigation Pane"
+              className="text-[9px] font-black text-amber-400 hover:text-amber-300 bg-slate-800/80 px-2 py-1 rounded border border-slate-700 shrink-0 mr-1 uppercase"
+            >
+              Left Pane ⇄
+            </button>
             {Array.from({ length: totalSlides }, (_, i) => i + 1).map((slideNum) => (
               <button
                 key={slideNum}
