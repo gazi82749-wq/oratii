@@ -752,45 +752,52 @@ export default function PresentationPractice({
   }
 
   return (
-    <div className="w-full min-h-[calc(100vh-5.5rem)] max-h-[calc(100vh-4.5rem)] flex flex-col font-sans bg-[#0B0E27] overflow-hidden p-2 sm:p-3 gap-2 rounded-2xl shadow-2xl">
+    <div className="w-full min-h-[calc(100vh-5.5rem)] max-h-[calc(100vh-4.5rem)] flex flex-col font-sans bg-[#F1F5F9] text-slate-900 overflow-hidden p-2 sm:p-3 gap-2 rounded-2xl shadow-xl">
       
-      {/* PPT Viewer Main Box — fits inside available viewport height */}
-      <div className="relative bg-[#0B0E27] overflow-hidden flex flex-col mx-auto w-full max-w-[1400px] flex-1 rounded-2xl border border-slate-800 shadow-2xl min-h-0">
+      {/* PPT Viewer Main Box — Light White PowerPoint UI */}
+      <div className="relative bg-white overflow-hidden flex flex-col mx-auto w-full max-w-[1400px] flex-1 rounded-2xl border border-slate-300 shadow-2xl min-h-0">
         
-        {/* Top Control Bar */}
-        <div className="flex items-center justify-between z-20 bg-[#151930] px-3.5 sm:px-5 py-2 border-b border-slate-800/80 shrink-0">
-          <div className="flex items-center gap-2.5 truncate max-w-xs sm:max-w-md">
-            <button 
-              onClick={onCancel} 
-              className="text-[11px] font-extrabold text-slate-400 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700 transition-all cursor-pointer shrink-0"
-            >
-              ← Back
-            </button>
-            <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></div>
-            <FileText size={14} className="text-slate-400 shrink-0" />
-            <span className="text-xs font-bold text-slate-200 truncate tracking-wide">{fileName}</span>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className={`text-xs font-mono px-2.5 py-1 rounded-lg border flex items-center gap-2 transition-colors ${isRecording ? (isPaused ? 'text-amber-400 bg-amber-950/50 border-amber-800/80' : 'text-red-400 bg-red-950/50 border-red-800/80') : 'text-[#F2A93B] bg-[#0B0E27] border-slate-800'}`}>
-              <span className={`w-2 h-2 rounded-full ${isRecording ? (isPaused ? 'bg-amber-500' : 'bg-red-500 animate-ping') : 'bg-slate-600'}`}></span>
-              <span className="font-extrabold tracking-wider">{isRecording ? (isPaused ? 'PAUSED' : 'REC') : 'READY'} {formatTimer(elapsedSeconds)} / 03:00</span>
+        {/* Top PowerPoint Ribbon & Tools Header */}
+        <div className="flex flex-col z-20 shrink-0 select-none border-b border-slate-300">
+          {/* Top Title Bar (PowerPoint Red/Burgundy Accent) */}
+          <div className="bg-[#B7472A] text-white px-3.5 sm:px-5 py-2 flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2.5 truncate max-w-xs sm:max-w-md">
+              <button 
+                onClick={onCancel} 
+                className="text-[11px] font-extrabold text-white hover:bg-white/20 px-2.5 py-1 rounded-lg bg-white/10 border border-white/20 transition-all cursor-pointer shrink-0"
+              >
+                ← Back
+              </button>
+              <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></div>
+              <FileText size={14} className="text-white/80 shrink-0" />
+              <span className="text-xs font-bold text-white truncate tracking-wide">{fileName}</span>
             </div>
 
-            <div className="hidden sm:flex text-xs font-extrabold text-slate-300 bg-[#0B0E27] px-2.5 py-1 rounded-lg border border-slate-800">
-              Slide <span className="text-[#F2A93B] font-black ml-1">{currentSlide}</span>/{totalSlides}
-            </div>
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <div className={`text-xs font-mono px-2.5 py-1 rounded-lg border flex items-center gap-2 transition-colors ${isRecording ? (isPaused ? 'text-amber-900 bg-amber-100 border-amber-300' : 'text-rose-900 bg-rose-100 border-rose-300') : 'text-slate-900 bg-white border-slate-300'}`}>
+                <span className={`w-2 h-2 rounded-full ${isRecording ? (isPaused ? 'bg-amber-600' : 'bg-rose-600 animate-ping') : 'bg-slate-400'}`}></span>
+                <span className="font-black tracking-wider">{isRecording ? (isPaused ? 'PAUSED' : 'REC') : 'READY'} {formatTimer(elapsedSeconds)} / 03:00</span>
+              </div>
 
-            <div className="flex items-center gap-1.5 border-l border-slate-800 pl-2.5">
+              <div className="hidden sm:flex text-xs font-extrabold text-slate-800 bg-white px-2.5 py-1 rounded-lg border border-slate-300">
+                Slide <span className="text-[#B7472A] font-black ml-1">{currentSlide}</span>/{totalSlides}
+              </div>
+
               <button
                 onClick={() => setIsSlideShowMode(true)}
                 title="PowerPoint Slide Show Mode (F5)"
-                className="p-1.5 px-2.5 rounded-lg text-xs font-bold text-slate-200 hover:text-white bg-[#0B0E27] border border-slate-800 hover:border-amber-500/40 transition-colors cursor-pointer flex items-center gap-1.5"
+                className="p-1.5 px-2.5 rounded-lg text-xs font-bold text-white hover:bg-white/20 bg-white/10 border border-white/20 transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                <Tv size={14} className="text-amber-400" />
+                <Tv size={14} className="text-amber-300" />
                 <span className="hidden sm:inline text-[10px] uppercase tracking-wider font-extrabold">Slide Show</span>
               </button>
+            </div>
+          </div>
 
+          {/* Secondary Ribbon Tools Section (PowerPoint Tools Bar) */}
+          <div className="bg-slate-100 px-3.5 sm:px-5 py-1.5 flex flex-wrap items-center justify-between gap-2 border-t border-white/20 text-xs">
+            {/* Tool Group 1: Slide Pane & Display Controls */}
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => {
                   if (!showThumbnails) {
@@ -803,50 +810,67 @@ export default function PresentationPractice({
                   }
                 }}
                 title="Toggle PowerPoint Slide Panel (Left / Bottom / Hidden)"
-                className={`p-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${
                   showThumbnails 
-                    ? 'bg-[#0B0E27] text-[#F2A93B] border border-amber-500/30' 
-                    : 'text-slate-400 hover:text-white bg-slate-800/50 border border-transparent'
+                    ? 'bg-white text-[#B7472A] border-slate-300 shadow-xs' 
+                    : 'text-slate-600 hover:text-slate-900 bg-slate-200/60 border-transparent'
                 }`}
               >
-                <Grid size={14} />
-                <span className="hidden md:inline text-[10px] uppercase font-black">
-                  {!showThumbnails ? 'No Pane' : thumbnailPosition === 'left' ? 'PPT Pane' : 'Bottom Bar'}
+                <Grid size={13} />
+                <span className="font-extrabold text-[10px] uppercase">
+                  {!showThumbnails ? 'No Pane' : thumbnailPosition === 'left' ? 'Left PPT Pane' : 'Bottom Bar'}
                 </span>
+              </button>
+            </div>
+
+            {/* Tool Group 2: Camera Quick Settings */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => toggleCamera(!hasVideo)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                  hasVideo ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-slate-200 text-slate-700 border-slate-300'
+                }`}
+              >
+                {hasVideo ? <Video size={13} className="text-emerald-600" /> : <VideoOff size={13} />}
+                <span>{hasVideo ? 'Cam ON' : 'Cam OFF'}</span>
               </button>
 
-              <button
-                onClick={() => setCameraLayout(prev => prev === 'pip' ? 'docked' : 'pip')}
-                title={cameraLayout === 'pip' ? 'Switch to Side Dock Camera' : 'Switch to Floating Camera Overlay'}
-                className={`p-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  cameraLayout === 'pip'
-                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                    : 'bg-slate-800 text-slate-300 border border-slate-700'
-                }`}
-              >
-                <Camera size={14} />
-                <span className="hidden md:inline text-[10px] uppercase font-black">
-                  {cameraLayout === 'pip' ? 'Floating Cam' : 'Docked'}
-                </span>
-              </button>
+              {hasVideo && (
+                <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-slate-300">
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-wider px-1.5">Size</span>
+                  {(['sm', 'md', 'lg'] as const).map(size => (
+                    <button
+                      key={size}
+                      onClick={() => setCameraSize(size)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
+                        cameraSize === size 
+                          ? 'bg-[#B7472A] text-white shadow-xs' 
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Main Display Body — PowerPoint Workspace Layout */}
-        <div ref={pipContainerRef} className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex flex-row">
+        {/* Main Display Body — PowerPoint Workspace Layout (Light Theme) */}
+        <div ref={pipContainerRef} className="relative flex-1 min-h-0 bg-[#E2E8F0] overflow-hidden flex flex-row">
           
           {/* PowerPoint-Style Left Vertical Slide Pane (Matching PowerPoint Left Navigation Pane!) */}
           {showThumbnails && thumbnailPosition === 'left' && totalSlides > 1 && (
-            <div className="hidden sm:flex flex-col w-36 lg:w-44 bg-[#0d1025] border-r border-slate-800/80 p-2 gap-2 shrink-0 select-none z-20 overflow-hidden">
-              <div className="flex items-center justify-between px-1 pb-1.5 border-b border-slate-800/60">
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
-                  <Grid size={12} className="text-amber-400" /> Slides ({totalSlides})
+            <div className="hidden sm:flex flex-col w-36 lg:w-44 bg-white border-r border-slate-300 p-2 gap-2 shrink-0 select-none z-20 overflow-hidden shadow-xs">
+              <div className="flex items-center justify-between px-1 pb-1.5 border-b border-slate-200">
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest flex items-center gap-1">
+                  <Grid size={12} className="text-[#B7472A]" /> Slides ({totalSlides})
                 </span>
                 <button 
                   onClick={() => setThumbnailPosition('bottom')}
                   title="Switch to Bottom Carousel View"
-                  className="text-[9px] text-slate-400 hover:text-amber-400 font-extrabold uppercase px-1.5 py-0.5 rounded bg-slate-800/60 border border-slate-700/60 transition-colors"
+                  className="text-[9px] text-slate-500 hover:text-[#B7472A] font-extrabold uppercase px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 transition-colors"
                 >
                   Bottom ⇄
                 </button>
@@ -858,19 +882,19 @@ export default function PresentationPractice({
                     onClick={() => handleSlideChange(slideNum)}
                     className={`w-full flex items-center gap-2 p-1.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
                       currentSlide === slideNum
-                        ? 'bg-amber-500/10 border-[#F2A93B] shadow-md shadow-amber-500/20 ring-1 ring-[#F2A93B]/40'
-                        : 'bg-slate-900/60 border-slate-800/80 opacity-70 hover:opacity-100 hover:border-slate-600'
+                        ? 'bg-rose-50/60 border-[#B7472A] shadow-md ring-2 ring-[#B7472A]/30'
+                        : 'bg-slate-50 border-slate-200 opacity-80 hover:opacity-100 hover:border-slate-400'
                     }`}
                   >
-                    <span className={`text-[10px] font-black w-4 text-center shrink-0 ${currentSlide === slideNum ? 'text-amber-400' : 'text-slate-400'}`}>
+                    <span className={`text-[10px] font-black w-4 text-center shrink-0 ${currentSlide === slideNum ? 'text-[#B7472A]' : 'text-slate-500'}`}>
                       {slideNum}
                     </span>
-                    <div className="flex-1 aspect-[16/10] rounded-lg overflow-hidden bg-black border border-slate-800 relative">
+                    <div className="flex-1 aspect-[16/10] rounded-lg overflow-hidden bg-slate-100 border border-slate-300 relative shadow-2xs">
                       {slideImages[slideNum] ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={slideImages[slideNum]} alt={`Slide ${slideNum}`} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[9px] font-bold text-slate-400 bg-slate-900">
+                        <div className="w-full h-full flex items-center justify-center text-[9px] font-bold text-slate-500 bg-slate-100">
                           S{slideNum}
                         </div>
                       )}
@@ -881,20 +905,20 @@ export default function PresentationPractice({
             </div>
           )}
 
-          {/* Center PowerPoint Slide Stage — Maximum Width & Height, 100% Unobstructed High-Res Display */}
+          {/* Center PowerPoint Slide Stage — Maximum Width & Height, 100% Light Theme Display */}
           <div 
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="relative flex-1 min-h-0 bg-[#0B0E27] overflow-hidden flex items-center justify-center p-2 sm:p-4 touch-pan-y"
+            className="relative flex-1 min-h-0 bg-[#E2E8F0] overflow-hidden flex items-center justify-center p-2 sm:p-4 touch-pan-y"
           >
             {/* Live Verbatim Slide Reading Coach Alert */}
             {liveVerbatimAlert && (
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-rose-950/95 border-2 border-rose-500/80 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-bold animate-bounce max-w-md sm:max-w-lg">
-                <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 z-40 bg-rose-900 text-white border-2 border-rose-400 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-bold animate-bounce max-w-md sm:max-w-lg">
+                <AlertCircle className="w-5 h-5 text-rose-300 shrink-0" />
                 <span className="leading-snug text-[11px] sm:text-xs">{liveVerbatimAlert}</span>
                 <button
                   onClick={() => setLiveVerbatimAlert(null)}
-                  className="text-slate-400 hover:text-white text-xs ml-auto shrink-0"
+                  className="text-slate-300 hover:text-white text-xs ml-auto shrink-0"
                 >
                   ✕
                 </button>
@@ -907,14 +931,14 @@ export default function PresentationPractice({
                 <img 
                   src={slideImages[currentSlide]} 
                   alt={`Slide ${currentSlide}`}
-                  className="max-w-full max-h-full object-contain select-none rounded-xl border border-slate-800/80 shadow-2xl transition-all duration-300"
+                  className="max-w-full max-h-full object-contain select-none rounded-xl border border-slate-300 shadow-2xl bg-white transition-all duration-300"
                 />
               ) : (
-                <div className="w-full h-full max-w-5xl bg-gradient-to-b from-[#151930] to-[#0B0E27] border border-slate-800 rounded-2xl p-6 sm:p-10 flex flex-col justify-center items-center text-center shadow-2xl overflow-y-auto">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-6 shrink-0">
+                <div className="w-full h-full max-w-5xl bg-white border border-slate-300 rounded-2xl p-6 sm:p-10 flex flex-col justify-center items-center text-center shadow-2xl overflow-y-auto text-slate-900">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-300 text-[#B7472A] text-xs font-extrabold uppercase tracking-widest mb-6 shrink-0">
                     Slide {currentSlide} Content
                   </div>
-                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-relaxed tracking-tight">
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-slate-900 leading-relaxed tracking-tight">
                     {slideTextContent[currentSlide - 1] || `Slide ${currentSlide} text breakdown active for live practice.`}
                   </p>
                   <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-6 shrink-0">
@@ -924,19 +948,19 @@ export default function PresentationPractice({
               )}
             </div>
 
-            {/* Webcam PiP (Rendered inside stage when cameraLayout === 'pip' OR on mobile/tablet screens) */}
-            {hasVideo && (cameraLayout === 'pip' || (cameraLayout === 'docked' && typeof window !== 'undefined' && window.innerWidth < 1024)) && (
+            {/* Floating Camera Overlay ONLY */}
+            {hasVideo && (
               <div
                 ref={pipRef}
                 onPointerDown={handlePipPointerDown}
                 onPointerMove={handlePipPointerMove}
                 onPointerUp={handlePipPointerUp}
-                className={`absolute aspect-[4/3] rounded-xl overflow-hidden border-2 shadow-2xl bg-black z-30 select-none ${
-                  cameraSize === 'sm' ? 'w-24 sm:w-36' : cameraSize === 'lg' ? 'w-44 sm:w-64' : 'w-32 sm:w-48'
+                className={`absolute aspect-[4/3] rounded-2xl overflow-hidden border-2 shadow-2xl bg-black z-30 select-none ${
+                  cameraSize === 'sm' ? 'w-28 sm:w-40' : cameraSize === 'lg' ? 'w-48 sm:w-72' : 'w-36 sm:w-56'
                 } ${
                   isDraggingPip
-                    ? 'border-amber-300 shadow-amber-500/40 scale-105 ring-2 ring-amber-400/50'
-                    : 'border-[#F2A93B] hover:shadow-amber-500/30'
+                    ? 'border-rose-500 shadow-rose-500/40 scale-105 ring-4 ring-rose-400/40'
+                    : 'border-[#B7472A] hover:shadow-2xl'
                 }`}
                 style={{
                   cursor: isDraggingPip ? 'grabbing' : 'grab',
@@ -958,128 +982,22 @@ export default function PresentationPractice({
                     objectFit: cameraFit
                   }}
                 />
-                <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-slate-950/80 backdrop-blur-md text-[9px] text-amber-300 font-extrabold rounded-md border border-amber-500/30 flex items-center gap-1 shadow-md pointer-events-none">
-                  <Camera size={9} className="text-[#F2A93B]" /> Live Cam ({Math.round(cameraZoom * 100)}%)
+                <div className="absolute top-2 left-2 px-2 py-0.5 bg-slate-950/85 backdrop-blur-md text-[9.5px] text-white font-extrabold rounded-md border border-white/20 flex items-center gap-1.5 shadow-md pointer-events-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <Camera size={10} className="text-amber-400" /> Live Cam
                 </div>
               </div>
             )}
           </div>
-
-          {/* Right Presenter Side Dock (Desktop screens >= 1024px) */}
-          {hasVideo && cameraLayout === 'docked' && (
-            <div className="hidden lg:flex w-72 lg:w-80 bg-[#121633] border-l border-slate-800/80 p-3.5 flex-col justify-between gap-3 shrink-0 z-20">
-              {/* Live Webcam Feed Box */}
-              <div className="flex flex-col gap-2.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-amber-400 uppercase tracking-wider">
-                    <Camera size={13} className="text-[#F2A93B]" /> Presenter Camera
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => toggleCamera(!hasVideo)}
-                      className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[#F2A93B] text-[10px] font-bold border border-slate-700 flex items-center gap-1 cursor-pointer"
-                      title={hasVideo ? "Turn OFF Camera (Stops hardware camera stream)" : "Turn ON Camera (Requests permission)"}
-                    >
-                      {hasVideo ? <VideoOff size={11} /> : <Video size={11} />}
-                      <span>{hasVideo ? 'Turn OFF' : 'Turn ON'}</span>
-                    </button>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  </div>
-                </div>
-
-                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border-2 border-[#F2A93B]/80 bg-black shadow-xl relative group">
-                  <video 
-                    ref={videoRef} 
-                    autoPlay 
-                    playsInline 
-                    muted 
-                    className="w-full h-full transition-transform duration-200"
-                    style={{
-                      transform: `scale(${cameraZoom}) scaleX(-1)`,
-                      objectFit: cameraFit
-                    }}
-                  />
-                  <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-slate-950/80 backdrop-blur-md text-[9px] text-slate-200 font-mono font-bold rounded border border-slate-800">
-                    Live Stream Active
-                  </div>
-                </div>
-
-                {/* Camera View Controls — Size, Zoom Out/In & Framing */}
-                <div className="flex flex-col gap-2 bg-[#0B0E27] p-2.5 rounded-xl border border-slate-800/80 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Camera Size</span>
-                    <div className="flex items-center gap-1">
-                      {(['sm', 'md', 'lg'] as const).map(size => (
-                        <button
-                          key={size}
-                          onClick={() => setCameraSize(size)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase transition-all cursor-pointer ${
-                            cameraSize === size 
-                              ? 'bg-[#F2A93B] text-[#151930] shadow-xs' 
-                              : 'bg-slate-800 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between border-t border-slate-800/80 pt-2">
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Camera Framing</span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setCameraZoom(prev => Math.max(0.6, parseFloat((prev - 0.1).toFixed(1))))}
-                        className="p-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded cursor-pointer"
-                        title="Zoom Out / Compress Camera Framing"
-                      >
-                        <ZoomOut size={12} />
-                      </button>
-                      <span className="font-mono text-[10px] font-bold text-slate-200 w-8 text-center">
-                        {Math.round(cameraZoom * 100)}%
-                      </span>
-                      <button
-                        onClick={() => setCameraZoom(prev => Math.min(1.6, parseFloat((prev + 0.1).toFixed(1))))}
-                        className="p-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded cursor-pointer"
-                        title="Zoom In Camera View"
-                      >
-                        <ZoomIn size={12} />
-                      </button>
-                      <button
-                        onClick={() => setCameraFit(prev => prev === 'cover' ? 'contain' : 'cover')}
-                        className="ml-1 px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold border border-slate-700 flex items-center gap-1 cursor-pointer"
-                        title={cameraFit === 'cover' ? 'Fit Framing without cropping' : 'Fill Box'}
-                      >
-                        {cameraFit === 'cover' ? <Minimize2 size={10} /> : <Maximize2 size={10} />}
-                        <span>{cameraFit === 'cover' ? 'Fit' : 'Fill'}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Presenter Controls */}
-              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                <span>Slide {currentSlide} of {totalSlides}</span>
-                <button
-                  onClick={() => setCameraLayout(prev => prev === 'docked' ? 'pip' : 'docked')}
-                  className="text-[10px] font-bold text-amber-400 hover:text-amber-300 underline cursor-pointer"
-                >
-                  {cameraLayout === 'docked' ? 'Switch to Floating Cam' : 'Dock Camera'}
-                </button>
-              </div>
-            </div>
-          )}
-
         </div>
 
         {/* Horizontal Bottom Thumbnail Strip (Active when thumbnailPosition === 'bottom') */}
         {showThumbnails && thumbnailPosition === 'bottom' && totalSlides > 1 && (
-          <div className="z-20 overflow-x-auto py-1.5 px-3 bg-[#0d1025] border-t border-slate-800/80 flex items-center gap-1.5 shrink-0" style={{ scrollbarWidth: 'thin' }}>
+          <div className="z-20 overflow-x-auto py-1.5 px-3 bg-slate-100 border-t border-slate-300 flex items-center gap-1.5 shrink-0" style={{ scrollbarWidth: 'thin' }}>
             <button
               onClick={() => setThumbnailPosition('left')}
               title="Switch to PowerPoint Left Navigation Pane"
-              className="text-[9px] font-black text-amber-400 hover:text-amber-300 bg-slate-800/80 px-2 py-1 rounded border border-slate-700 shrink-0 mr-1 uppercase"
+              className="text-[9px] font-black text-[#B7472A] hover:text-[#963820] bg-white px-2 py-1 rounded border border-slate-300 shrink-0 mr-1 uppercase shadow-2xs"
             >
               Left Pane ⇄
             </button>
@@ -1089,12 +1007,12 @@ export default function PresentationPractice({
                 onClick={() => handleSlideChange(slideNum)}
                 className={`flex-shrink-0 relative rounded-lg overflow-hidden transition-all duration-200 border-2 cursor-pointer ${
                   currentSlide === slideNum 
-                    ? 'border-[#F2A93B] scale-105 shadow-lg shadow-amber-500/20 ring-2 ring-[#F2A93B]/40' 
-                    : 'border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-600'
+                    ? 'border-[#B7472A] scale-105 shadow-md ring-2 ring-[#B7472A]/30' 
+                    : 'border-slate-300 opacity-70 hover:opacity-100 hover:border-slate-400'
                 }`}
               >
                 {slideImages[slideNum] ? (
-                  <div className="w-12 h-8 sm:w-16 sm:h-10 bg-slate-950 relative overflow-hidden">
+                  <div className="w-12 h-8 sm:w-16 sm:h-10 bg-slate-200 relative overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={slideImages[slideNum]} alt={`Thumbnail ${slideNum}`} className="w-full h-full object-cover" />
                     <div className="absolute top-0.5 left-0.5 px-1 bg-black/80 text-[8px] font-bold text-white rounded">
@@ -1102,7 +1020,7 @@ export default function PresentationPractice({
                     </div>
                   </div>
                 ) : (
-                  <div className="w-12 h-8 sm:w-14 sm:h-9 bg-slate-900 flex items-center justify-center text-xs font-bold text-slate-300">
+                  <div className="w-12 h-8 sm:w-14 sm:h-9 bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-700">
                     S{slideNum}
                   </div>
                 )}
@@ -1111,37 +1029,49 @@ export default function PresentationPractice({
           </div>
         )}
 
-        {/* Bottom Navigation & Practice Action Bar */}
-        <div className="flex items-center justify-between z-20 bg-[#151930]/95 backdrop-blur-md px-3.5 sm:px-6 py-2.5 border-t border-slate-800/80 shrink-0 gap-2">
+        {/* Bottom Navigation & Practice Action Bar (Light PowerPoint Style) */}
+        <div className="flex items-center justify-between z-20 bg-slate-100 px-3.5 sm:px-6 py-2.5 border-t border-slate-300 shrink-0 gap-2 shadow-xs">
           <button
             onClick={() => handleSlideChange(currentSlide - 1)}
             disabled={currentSlide === 1}
-            className="flex items-center gap-1.5 text-xs font-extrabold text-slate-200 bg-[#0B0E27] hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none px-3.5 py-2 rounded-xl border border-slate-800 hover:border-slate-700 transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 text-xs font-extrabold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none px-3.5 py-2 rounded-xl border border-slate-300 shadow-2xs transition-all cursor-pointer shrink-0"
           >
-            <ChevronLeft size={16} /> Previous <span className="hidden sm:inline text-slate-400 font-mono text-[10px]">(←)</span>
+            <ChevronLeft size={16} /> Previous <span className="hidden sm:inline text-slate-500 font-mono text-[10px]">(←)</span>
           </button>
 
           {isRecording ? (
             <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={togglePauseRecording}
-                className="px-3.5 py-2 bg-[#151930] hover:bg-slate-800 text-slate-200 text-xs font-black rounded-xl border border-slate-700 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 {isPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} fill="currentColor" />}
                 <span className="hidden sm:inline">{isPaused ? 'Resume' : 'Pause'}</span>
               </button>
               
               <button
-                onClick={cancelPracticeSession}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
-                title="Cancel practice session without running final analysis"
+                onClick={() => {
+                  if (confirm("Retry live presentation recording? Current session progress will be reset.")) {
+                    setIsRecording(false);
+                    setIsPaused(false);
+                    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+                    if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
+                    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+                      mediaRecorderRef.current.stop();
+                    }
+                    setElapsedSeconds(0);
+                    setTimeout(() => startPracticeRecording(), 300);
+                  }
+                }}
+                className="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer"
+                title="Retry practice recording from slide 1"
               >
-                <XCircle size={13} /> Cancel
+                <RotateCcw size={13} /> Retry
               </button>
 
               <button
                 onClick={stopPracticeRecording}
-                className={`px-4 sm:px-5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-black rounded-xl shadow-lg shadow-rose-950 transition-all flex items-center gap-2 cursor-pointer ${!isPaused ? 'animate-pulse' : ''}`}
+                className={`px-4 sm:px-5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-black rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer ${!isPaused ? 'animate-pulse' : ''}`}
               >
                 <Square size={12} fill="currentColor" /> Finish & Evaluate
               </button>
@@ -1149,31 +1079,31 @@ export default function PresentationPractice({
           ) : (
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Slide + Video vs Audio Only Mode Selector */}
-              <div className="hidden sm:flex items-center gap-1 bg-[#0B0E27] p-1 rounded-xl border border-slate-800">
+              <div className="hidden sm:flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 shadow-2xs">
                 <button
                   onClick={() => toggleCamera(true)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    hasVideo ? 'bg-[#B7472A] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  title="Enable Slide + Video Mode (Requests camera permission)"
+                  title="Enable Slide + Video Mode"
                 >
                   <Video size={13} /> Slide + Video
                 </button>
                 <button
                   onClick={() => toggleCamera(false)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${
-                    !hasVideo ? 'bg-[#F2A93B] text-[#151930] shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    !hasVideo ? 'bg-[#B7472A] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  title="Enable Audio Only Mode (Stops camera hardware stream)"
+                  title="Enable Audio Only Mode"
                 >
                   <Mic size={13} /> Audio Only
                 </button>
               </div>
 
-              {/* Start Live Practice CTA Button BELOW PPT View */}
+              {/* Start Live Practice CTA Button */}
               <button
                 onClick={handleStartButtonClick}
-                className="px-4 sm:px-6 py-2 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-[#e0992b] text-[#151930] font-black rounded-xl shadow-lg shadow-amber-500/20 transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:scale-[1.02]"
+                className="px-5 sm:px-7 py-2.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black rounded-xl shadow-lg shadow-emerald-600/20 transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer transform hover:scale-[1.02]"
               >
                 <Play size={15} fill="currentColor" /> Start Live Practice
               </button>
@@ -1183,9 +1113,9 @@ export default function PresentationPractice({
           <button
             onClick={() => handleSlideChange(currentSlide + 1)}
             disabled={currentSlide === totalSlides}
-            className="flex items-center gap-1.5 text-xs font-extrabold text-slate-200 bg-[#0B0E27] hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none px-3.5 py-2 rounded-xl border border-slate-800 hover:border-slate-700 transition-all cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 text-xs font-extrabold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none px-3.5 py-2 rounded-xl border border-slate-300 shadow-2xs transition-all cursor-pointer shrink-0"
           >
-            Next <span className="hidden sm:inline text-slate-400 font-mono text-[10px]">(→)</span> <ChevronRight size={16} />
+            Next <span className="hidden sm:inline text-slate-500 font-mono text-[10px]">(→)</span> <ChevronRight size={16} />
           </button>
         </div>
 
