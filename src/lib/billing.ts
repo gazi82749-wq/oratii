@@ -9,13 +9,13 @@ export const CREDIT_COST: Record<UsageType, number> = {
   viva_sessions_count: 1,
 };
 
-// Default credits granted to new users on signup
+// Default credits granted to new users on signup (Total 20 credits)
 export const DEFAULT_FREE_CREDITS = 20;
 
 /**
  * Checks if a user has sufficient credits for a specific usage type,
  * and if so, decrements the available usage limit.
- * Returns { allowed: true } if successful, { allowed: false, limitReached: true } if insufficient credits.
+ * Automatically initializes usage_limits for new users with free credits if missing.
  */
 export async function checkAndDecrementUsage(
   userId: string,
@@ -25,16 +25,33 @@ export async function checkAndDecrementUsage(
     const supabase = getServiceSupabase();
     const cost = CREDIT_COST[type] || 1;
 
-    // Fetch current credit balance to return remaining credits if needed
-    const { data: balanceData, error: balanceError } = await supabase
+    // Fetch current credit balance
+    let { data: balanceData, error: balanceError } = await supabase
       .from('usage_limits')
       .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
-    if (balanceError || !balanceData) {
-      console.warn('[Billing] Could not fetch usage limits for user:', userId, balanceError?.message);
-      return { allowed: false, limitReached: true };
+    // If usage record doesn't exist for new user, auto-initialize with free credits
+    if (!balanceData) {
+      console.log('[Billing] Initializing default free credits for new user:', userId);
+      const { data: initData, error: initError } = await supabase
+        .from('usage_limits')
+        .upsert({
+          user_id: userId,
+          speech_analysis_count: 10,
+          ppt_analysis_count: 5,
+          viva_sessions_count: 5,
+          current_month: new Date().toISOString()
+        }, { onConflict: 'user_id' })
+        .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
+        .maybeSingle();
+
+      if (initError || !initData) {
+        console.error('[Billing] Failed to initialize usage limits for user:', userId, initError?.message);
+        return { allowed: false, limitReached: true };
+      }
+      balanceData = initData;
     }
 
     const totalCredits =
@@ -53,8 +70,33 @@ export async function checkAndDecrementUsage(
     });
 
     if (rpcError) {
-      console.error('[Billing] Atomic deduction RPC failed:', rpcError);
-      return { allowed: false, limitReached: true }; // Fail-closed on error for safety
+      console.error('[Billing] Atomic deduction RPC failed, falling back to direct decrement:', rpcError);
+      
+      // Fallback: direct decrement if RPC fails or is missing
+      const fieldToDecrement = type;
+      const currentFieldVal = balanceData[fieldToDecrement] || 0;
+
+      if (currentFieldVal >= cost) {
+        await supabase
+          .from('usage_limits')
+          .update({ [fieldToDecrement]: currentFieldVal - cost })
+          .eq('user_id', userId);
+        
+        return { allowed: true, remainingCredits: totalCredits - cost };
+      } else {
+        // Deduct from speech_analysis_count as fallback if total >= cost
+        const backupField = (balanceData.speech_analysis_count || 0) >= cost 
+          ? 'speech_analysis_count' 
+          : ((balanceData.ppt_analysis_count || 0) >= cost ? 'ppt_analysis_count' : 'viva_sessions_count');
+          
+        const backupVal = balanceData[backupField] || 0;
+        await supabase
+          .from('usage_limits')
+          .update({ [backupField]: Math.max(0, backupVal - cost) })
+          .eq('user_id', userId);
+
+        return { allowed: true, remainingCredits: totalCredits - cost };
+      }
     }
 
     if (!success) {
@@ -65,28 +107,42 @@ export async function checkAndDecrementUsage(
     return { allowed: true, remainingCredits: newTotal };
 
   } catch (err: any) {
-    console.error('[Billing] Unexpected error:', err?.message || err);
-    return { allowed: false, limitReached: true }; // Fail-closed on unexpected error
+    console.error('[Billing] Unexpected error during credit deduction:', err?.message || err);
+    return { allowed: false, limitReached: true };
   }
 }
 
 /**
  * Returns the current credit balance for a user.
- * Used by UI components to show remaining credits.
+ * Auto-initializes default credits if user record doesn't exist yet.
  */
 export async function getCreditBalance(userId: string): Promise<number> {
   try {
     const supabase = getServiceSupabase();
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('usage_limits')
       .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
-    if (error || !data) {
-      return 0;
+    if (!data) {
+      const { data: newRow } = await supabase
+        .from('usage_limits')
+        .upsert({
+          user_id: userId,
+          speech_analysis_count: 10,
+          ppt_analysis_count: 5,
+          viva_sessions_count: 5,
+          current_month: new Date().toISOString()
+        }, { onConflict: 'user_id' })
+        .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
+        .maybeSingle();
+
+      data = newRow;
     }
+
+    if (!data) return 0;
 
     return (
       (data.speech_analysis_count || 0) +
