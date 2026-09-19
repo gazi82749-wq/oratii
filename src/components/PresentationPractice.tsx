@@ -40,7 +40,6 @@ export default function PresentationPractice({
   const [cameraSize, setCameraSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [cameraZoom, setCameraZoom] = useState(1);
   const [cameraFit, setCameraFit] = useState<'cover' | 'contain'>('cover');
-  const [isSlideShowMode, setIsSlideShowMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [slideEventLog, setSlideEventLog] = useState<Array<{ slideNumber: number; timestamp: number; time: string }>>([]);
 
@@ -222,7 +221,7 @@ export default function PresentationPractice({
     touchStartXRef.current = null;
   };
 
-  // Keyboard navigation for slide deck (Arrow left/right, Esc & F5 for Slide Show)
+  // Keyboard navigation for slide deck (Arrow left/right, Space, F5 for Full View)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isProcessing) return;
@@ -232,17 +231,14 @@ export default function PresentationPractice({
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         handleSlideChange(currentSlide - 1);
-      } else if (e.key === 'Escape' && isSlideShowMode) {
-        e.preventDefault();
-        setIsSlideShowMode(false);
       } else if (e.key === 'F5') {
         e.preventDefault();
-        setIsSlideShowMode(prev => !prev);
+        toggleBrowserFullscreen();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlide, isProcessing, isSlideShowMode, handleSlideChange]);
+  }, [currentSlide, isProcessing, handleSlideChange, toggleBrowserFullscreen]);
 
   const stopMediaStream = useCallback(() => {
     if (mediaStreamRef.current) {
@@ -856,19 +852,10 @@ export default function PresentationPractice({
             <button
               onClick={toggleBrowserFullscreen}
               title={isFullscreen ? "Exit Fullscreen" : "Full View Mode (Maximize Slide)"}
-              className="p-1 px-2 rounded-md text-xs font-bold text-white hover:bg-white/20 bg-white/10 border border-white/20 transition-colors cursor-pointer flex items-center gap-1"
+              className="p-1 px-2.5 rounded-md text-xs font-bold text-white hover:bg-white/20 bg-white/10 border border-white/20 transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
               {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
-              <span className="hidden sm:inline text-[10px] uppercase font-extrabold">{isFullscreen ? "Exit Full" : "Full View"}</span>
-            </button>
-
-            <button
-              onClick={() => setIsSlideShowMode(true)}
-              title="PowerPoint Fullscreen Slide Show Mode (F5)"
-              className="p-1 px-2.5 rounded-md text-xs font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
-            >
-              <Tv size={13} className="text-slate-900" />
-              <span className="hidden sm:inline text-[10px] uppercase tracking-wider font-black">F5 Show</span>
+              <span className="hidden sm:inline text-[10px] uppercase font-black">{isFullscreen ? "Exit Full" : "Full View"}</span>
             </button>
           </div>
         </div>
@@ -1137,108 +1124,6 @@ export default function PresentationPractice({
 
       </div>
 
-      {/* PowerPoint Fullscreen Slide Show Mode Overlay */}
-      {isSlideShowMode && (
-        <div className="fixed inset-0 z-[99999] bg-black text-white flex flex-col justify-between overflow-hidden select-none animate-fade-in">
-          {/* Main Full-Bleed Slide Stage */}
-          <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-4">
-            {slideImages[currentSlide] ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img 
-                src={slideImages[currentSlide]} 
-                alt={`Slide ${currentSlide} - Slide Show`}
-                className="w-full h-full object-contain drop-shadow-2xl select-none"
-              />
-            ) : (
-              <div className="w-full h-full max-w-5xl bg-[#151930] rounded-2xl p-8 flex flex-col justify-center items-center text-center shadow-2xl">
-                <p className="text-2xl font-black text-white mb-4">Slide {currentSlide}</p>
-                <p className="text-lg text-slate-300 font-medium">{slideTextContent[currentSlide - 1]}</p>
-              </div>
-            )}
-
-            {/* Floating Webcam Overlay in Slide Show Mode */}
-            {hasVideo && (
-              <div className="absolute bottom-16 right-4 w-40 sm:w-52 aspect-[4/3] rounded-xl overflow-hidden border-2 border-[#F2A93B] shadow-2xl bg-black z-40">
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  muted 
-                  className="w-full h-full object-cover transform -scale-x-100"
-                />
-                <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-slate-950/80 backdrop-blur-md text-[9px] text-amber-300 font-extrabold rounded-md border border-amber-500/30 flex items-center gap-1 shadow-md">
-                  <Camera size={9} className="text-[#F2A93B]" /> Live Cam
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Floating Hover Presenter Toolbar */}
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#151930]/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-800 shadow-2xl flex items-center gap-3 text-xs">
-            <button
-              onClick={() => handleSlideChange(currentSlide - 1)}
-              disabled={currentSlide === 1}
-              className="p-1.5 hover:bg-slate-800 rounded-lg disabled:opacity-30 disabled:pointer-events-none text-slate-200 transition-colors cursor-pointer"
-              title="Previous Slide (←)"
-            >
-              <ChevronLeft size={18} />
-            </button>
-
-            <span className="font-mono text-xs font-bold text-amber-400">
-              Slide {currentSlide} / {totalSlides}
-            </span>
-
-            <button
-              onClick={() => handleSlideChange(currentSlide + 1)}
-              disabled={currentSlide === totalSlides}
-              className="p-1.5 hover:bg-slate-800 rounded-lg disabled:opacity-30 disabled:pointer-events-none text-slate-200 transition-colors cursor-pointer"
-              title="Next Slide (→)"
-            >
-              <ChevronRight size={18} />
-            </button>
-
-            <div className="h-4 w-px bg-slate-700 mx-1"></div>
-
-            {isRecording ? (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={togglePauseRecording}
-                  className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700 flex items-center gap-1.5 cursor-pointer"
-                >
-                  {isPaused ? <Play size={11} fill="currentColor" /> : <Pause size={11} fill="currentColor" />}
-                  <span>{isPaused ? 'Resume' : 'Pause'}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setIsSlideShowMode(false);
-                    stopPracticeRecording();
-                  }}
-                  className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Square size={11} fill="currentColor" /> Finish
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={startPracticeRecording}
-                className="px-3 py-1 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] text-xs font-black rounded-lg flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play size={11} fill="currentColor" /> Start Practice
-              </button>
-            )}
-
-            <div className="h-4 w-px bg-slate-700 mx-1"></div>
-
-            <button
-              onClick={() => setIsSlideShowMode(false)}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-slate-700 flex items-center gap-1 cursor-pointer"
-              title="Exit Slide Show (Esc)"
-            >
-              <X size={14} /> Exit Show <span className="text-[9px] text-slate-400 font-mono">(Esc)</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Privacy Consent Modal (BIPA / GDPR Article 9 Compliant) */}
       <PrivacyConsentModal
