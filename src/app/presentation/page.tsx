@@ -301,8 +301,9 @@ function PresentationPracticeContent() {
 export default function PresentationPracticePage() {
   return (
     <Suspense fallback={
-      <div className="w-full h-96 flex items-center justify-center">
-        <ScribbleLoader text="Loading Presentation Practice..." />
+      <div className="w-full h-96 flex flex-col items-center justify-center gap-3">
+        <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm font-semibold text-slate-600">Loading Presentation Practice...</p>
       </div>
     }>
       <PresentationPracticeContent />

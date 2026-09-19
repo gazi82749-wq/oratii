@@ -567,7 +567,7 @@ export default function TrainerDashboardPage() {
                   <option value="all">All Tracks (Speech, Interview & Viva)</option>
                   <option value="speech">Speech Delivery & Fluency Track</option>
                   <option value="interview">Campus Placement & Mock Interview Track</option>
-                  <option value="presentation_viva">Slide Deck & Academic Viva Track</option>
+                  <option value="presentation_viva">Presentation Practice & Viva Track</option>
                 </select>
               </div>
 

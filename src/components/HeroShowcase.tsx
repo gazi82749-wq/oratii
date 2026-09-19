@@ -264,7 +264,7 @@ function PresentationFrame() {
               <span className="text-[10px] font-extrabold text-indigo-200 truncate">Slide 3: Executive Growth Strategy</span>
             </div>
             <span className="text-[8px] font-extrabold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-0.2 rounded-full">
-              Slide Deck Studio
+              Presentation Practice
             </span>
           </div>
 

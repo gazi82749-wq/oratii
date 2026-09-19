@@ -105,18 +105,18 @@ export default function HomeClient() {
     },
     {
       title: 'Presentation Practice',
-      subtitle: 'Audit Slide Deck ➔ Rehearse Live ➔ In-built Viva Defense',
-      headline: 'Audit slides, rehearse live with webcam, and defend.',
-      desc: 'Upload PPTX/PDF slides for instant visual clarity audits. Rehearse live with zero-latency Edge WASM HUD and challenge yourself with in-built academic viva defense.',
+      subtitle: 'Presentation Practice & Viva Defense',
+      headline: 'Rehearse live presentations with slides and webcam.',
+      desc: 'Upload PPTX/PDF slides to present live with zero-latency Edge WASM HUD, webcam feedback, and in-built academic viva defense.',
       highlights: [
-        'Step 1: AI Slide Density & Readability Audit',
+        'Step 1: Upload & Render Presentation Slides',
         'Step 2: Live Webcam Rehearsal Studio with WASM HUD',
         'Step 3: In-built Academic Viva Defense'
       ],
       icon: <Video size={28} className="text-[#1B2140]" />,
       iconBg: 'bg-indigo-50 border-indigo-200',
       href: '/presentation',
-      cta: 'Launch Presentation & Viva Studio'
+      cta: 'Start Presentation Practice'
     },
     {
       title: '20-Day Speech Challenge',
@@ -159,8 +159,8 @@ export default function HomeClient() {
     },
     { 
       value: 'Presentation Practice', 
-      label: 'Audits visual slide density, offers live webcam HUD rehearsal, and tests you with unscripted AI viva defense questions.', 
-      tags: ['Slide Readability', 'Webcam WASM HUD', 'Viva Defense'],
+      label: 'Offers live presentation rehearsal with webcam HUD, slide rendering, and optional AI viva defense questions.', 
+      tags: ['Slide Rendering', 'Webcam WASM HUD', 'Viva Defense'],
       badgeColor: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',
       iconColor: 'text-indigo-600',
       href: '/presentation'
@@ -212,7 +212,7 @@ export default function HomeClient() {
 
           <FadeUp delay={200}>
             <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-medium">
-              Real-time AI feedback on your vocal pacing (WPM), filler words, slide deck density, and viva interview delivery.
+              Real-time AI feedback on your vocal pacing (WPM), filler words, presentation slides, and viva interview delivery.
             </p>
           </FadeUp>
 
@@ -638,7 +638,7 @@ export default function HomeClient() {
             {[
               { icon: <GraduationCap size={32} className="text-[#F2A93B]" />, title: "Academic & Viva Defenses", desc: "Conquer unexpected committee questions with AI slide-to-Q&A simulation and live scoring." },
               { icon: <Briefcase size={32} className="text-[#F2A93B]" />, title: "Pitches & Boardrooms", desc: "Identify and eliminate filler words ('um', 'basically', 'you know') to sound composed and convincing." },
-              { icon: <BarChart3 size={32} className="text-[#F2A93B]" />, title: "Slide Deck Density", desc: "Audit your slides for text density and readability before presenting to any audience or panel." }
+              { icon: <BarChart3 size={32} className="text-[#F2A93B]" />, title: "Presentation Practice", desc: "Rehearse with your presentation slides and get real-time posture and pacing telemetry." }
             ].map((item, i) => (
               <FadeUp key={i} delay={i * 100}>
                 <div className="bg-white/5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 flex flex-col justify-between hover:border-[#F2A93B]/40 hover:bg-white/10 transition-all backdrop-blur-md h-full">

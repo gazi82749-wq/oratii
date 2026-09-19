@@ -169,7 +169,7 @@ export default function StudentJoinBatchPage() {
               </span>
             ) : (
               <span className="flex items-center gap-1.5 text-indigo-600">
-                <Tv size={14} /> Slide Deck & Academic Viva Track
+                <Tv size={14} /> Presentation Practice & Academic Viva Track
               </span>
             )}
           </div>

@@ -102,7 +102,7 @@ export default function PricingClient() {
   const faqs = [
     {
       q: 'How do Oratii credits work?',
-      a: 'Credits are simple: 1 Credit = 1 Speech Audio Analysis, 1 Credit = 1 PPT Slide Deck Analysis, and 2 Credits = 1 AI Viva Defense Q&A Session. You only pay for what you actually use.'
+      a: 'Credits are simple: 1 Credit = 1 Speech Audio Analysis, 1 Credit = 1 Presentation Practice Session, and 2 Credits = 1 AI Viva Defense Q&A Session. You only pay for what you actually use.'
     },
     {
       q: 'Do paid credits ever expire?',
@@ -110,7 +110,7 @@ export default function PricingClient() {
     },
     {
       q: 'What is included in the Free Trial?',
-      a: 'When you sign up, you automatically receive 5 Free Credits with full access to test out Speech Analysis, PPT Slide Audits, and AI Viva Defense sessions.'
+      a: 'When you sign up, you automatically receive 5 Free Credits with full access to test out Speech Analysis, Presentation Practice, and AI Viva Defense sessions.'
     },
     {
       q: 'How fast are credits added after payment?',

@@ -264,11 +264,11 @@ export default function ProfessionalDashboard() {
     },
     {
       num: '03',
-      title: 'Slide Presentation & Viva Studio',
-      desc: 'Upload PowerPoint/PDF decks for slide audits, live rehearsal with WASM Edge HUD, and in-built academic viva defense.',
+      title: 'Presentation Practice',
+      desc: 'Upload PowerPoint/PDF decks to practice presenting live with WASM Edge HUD, webcam feedback, and optional AI viva defense.',
       href: '/presentation',
       icon: <FileText size={22} className="text-white" />,
-      badge: 'Deck Audit, HUD & Viva',
+      badge: 'Rehearsal, HUD & Viva',
       gradient: 'from-indigo-600 to-purple-600',
       badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
       features: ['Real-time WPM & Gaze Vector', 'In-built Committee Defense']
@@ -548,7 +548,7 @@ export default function ProfessionalDashboard() {
                   onClick={() => router.push('/presentation')}
                   className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  <FileText size={14} /> Analyze Slide Deck
+                  <FileText size={14} /> Presentation Practice
                 </button>
                 <button
                   onClick={() => router.push('/presentation?mode=practice')}
@@ -591,7 +591,7 @@ export default function ProfessionalDashboard() {
       ) : (
         <EmptyState
           title="No practice sessions recorded yet"
-          description="Upload your slide deck or start a speech coaching session above to view your real-time analytics!"
+          description="Start a presentation practice session or speech drill above to view your real-time analytics!"
           type="audio"
         />
       )}

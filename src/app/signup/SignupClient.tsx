@@ -135,7 +135,7 @@ export default function SignupClient() {
         <div className="relative z-10 space-y-4 border-t border-white/10 pt-8">
           {[
             { icon: Mic, text: 'Real-time speech analysis' },
-            { icon: BarChart3, text: 'Instant slide deck evaluation' },
+            { icon: BarChart3, text: 'Interactive Presentation Practice' },
             { icon: Trophy, text: 'Gamified challenges & badges' },
           ].map((f, i) => {
             const Icon = f.icon;

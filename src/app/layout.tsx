@@ -122,7 +122,7 @@ const softwareAppSchema = {
     price: '0',
     priceCurrency: 'INR',
   },
-  description: 'AI-powered speech and presentation coach providing real-time feedback on vocal pacing, filler words, and slide deck delivery.',
+  description: 'AI-powered speech and presentation coach providing real-time feedback on vocal pacing, filler words, and presentation delivery.',
 };
 
 const organizationSchema = {

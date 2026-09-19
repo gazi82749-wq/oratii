@@ -46,7 +46,7 @@ export default function SlideAnalyzerMockup() {
                 : 'text-slate-600 hover:text-slate-900 opacity-70'
             }`}
           >
-            <span>1. Slide Audit</span>
+            <span>1. Slide Content</span>
             {activeStep === 1 && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>}
           </button>
 
@@ -81,11 +81,11 @@ export default function SlideAnalyzerMockup() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
               </span>
               <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1">
-                <Zap size={12} className="text-indigo-600" /> Step 1: AI Slide Audit Active
+                <Zap size={12} className="text-indigo-600" /> Step 1: Slide Extraction Active
               </span>
             </div>
             <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full animate-pulse">
-              Deck Score: 94/100
+              Slides Ready: 12
             </span>
           </div>
 
@@ -98,9 +98,9 @@ export default function SlideAnalyzerMockup() {
             />
 
             <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1.5">
-              <span className="text-[10px] font-extrabold text-slate-700">Slide Structure & Clarity Scan</span>
+              <span className="text-[10px] font-extrabold text-slate-700">Slide Content Extraction</span>
               <span className="text-[8px] font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                Scanning 12 Slides...
+                Processing 12 Slides...
               </span>
             </div>
 

@@ -32,7 +32,7 @@ export default function AboutUs() {
               We built Oratii because public speaking shouldn’t be terrifying. Whether you’re pitching a startup, defending a thesis, or trying to speak up more in executive boardrooms, true confidence comes from objective practice. 
             </p>
             <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-4 sm:mb-6">
-              Traditional human coaching is expensive, and rewatching your own raw video recordings can be painful. We created an AI platform that acts as your personal, non-judgmental coach—delivering real-time feedback on pacing, filler words, WPM, slide deck clutter, and viva Q&amp;A defense.
+              Traditional human coaching is expensive, and rewatching your own raw video recordings can be painful. We created an AI platform that acts as your personal, non-judgmental coach—delivering real-time feedback on pacing, filler words, WPM, live presentations, and viva Q&A defense.
             </p>
             <p className="text-base sm:text-lg text-slate-950 font-bold leading-relaxed">
               Our goal is simple: Help you master your message and find your true voice.

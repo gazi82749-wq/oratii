@@ -129,12 +129,12 @@ const FAQS = [
     answer: 'In Chrome or Edge, click the tune/settings icon on the left side of the address bar (next to the URL). Set "Microphone" to "Allow" and refresh the page. On macOS, also verify that System Settings > Privacy & Security > Microphone has Chrome/your browser enabled.'
   },
   {
-    question: 'What file formats does the Slide Deck Analyzer support?',
-    answer: 'We support PDF (.pdf) and PowerPoint (.pptx) formats up to 50MB and up to 50 slides per audit. For best visual density auditing, export your presentation directly as high-resolution PDF.'
+    question: 'What file formats does Presentation Practice support?',
+    answer: 'We support PDF (.pdf) and PowerPoint (.pptx) formats up to 50MB and up to 50 slides per session. For best results, upload high-resolution PPTX or PDF slides.'
   },
   {
     question: 'How do credits work and what if a session fails?',
-    answer: '1 credit allows 1 speech delivery audit or 1 slide deck audit. 2 credits are used for an interactive AI Viva Defense session. If any analysis experiences a network or processing error, credits are automatically retained in your balance.'
+    answer: '1 credit allows 1 speech delivery audit or 1 presentation practice session. 2 credits are used for an interactive AI Viva Defense session. If any analysis experiences a network or processing error, credits are automatically retained in your balance.'
   },
   {
     question: 'How quickly does the engineering support team reply?',
@@ -152,7 +152,7 @@ const FAQS = [
 
 const CATEGORIES = [
   { id: 'Speech Coach', label: 'Speech Coach & Mic', icon: Mic, color: 'text-rose-500 bg-rose-50 border-rose-200' },
-  { id: 'Slide Analyzer', label: 'Slide Deck Analyzer', icon: FileText, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+  { id: 'Presentation Practice', label: 'Presentation Practice', icon: FileText, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
   { id: 'Mock Interview', label: 'AI Mock Interview', icon: Briefcase, color: 'text-amber-600 bg-amber-50 border-amber-200' },
   { id: 'Viva Defense', label: 'Academic Viva Defense', icon: Video, color: 'text-purple-600 bg-purple-50 border-purple-200' },
   { id: 'Billing & Credits', label: 'Billing & Credit Packs', icon: CreditCard, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
