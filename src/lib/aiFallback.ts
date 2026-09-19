@@ -36,10 +36,10 @@ function isGroqQuotaExhausted(): boolean {
 
 /**
  * Executes a 4-Stage AI Fallback Waterfall:
- * 1st: Groq (Ultra-fast Llama-3.3-70B & Vision models ~1000 tokens/sec)
- * 2nd: Cerebras (Ultra-fast Llama-3.3-70B ~2000 tokens/sec)
- * 3rd: Gemini (Gemini 1.5/2.0 Flash - Multimodal & Reasoning)
- * 4th: OpenRouter (:free models - Ultimate Safety Net)
+ * 1st: Groq (Ultra-fast groq/compound-mini ~1000 tokens/sec)
+ * 2nd: Gemini (Gemini 3.6 Flash / 3.7 Flash - Multimodal & Reasoning)
+ * 3rd: OpenRouter (Meta Llama 3.3 70B & 3.1 8B Instruct)
+ * 4th: Cerebras (Llama 3.3 70B)
  */
 export async function generateAIContent(options: AIContentOptions): Promise<string> {
   const errors: string[] = [];
@@ -47,9 +47,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 1️⃣ GROQ (1st Priority for Text & Vision requests)
   if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
-    const groqModels = (options.images && options.images.length > 0)
-      ? ["groq/compound-mini", "qwen/qwen3.6-27b"]
-      : ["groq/compound-mini", "qwen/qwen3.6-27b", "openai/gpt-oss-120b"];
+    const groqModels = ["groq/compound-mini"];
 
     for (const model of groqModels) {
       try {
@@ -78,50 +76,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
     errors.push("Groq: Simulated failure or Quota Exhausted");
   }
 
-  // 2️⃣ CEREBRAS (2nd Priority for Text-Only requests)
-  if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !isCerebrasQuotaExhausted()) {
-    const cerebrasModels = ["gpt-oss-120b", "gemma-4-31b"];
-    for (const model of cerebrasModels) {
-      try {
-        console.log(`[AIFallback] 2nd Priority: Attempting Cerebras API (${model})...`);
-        const res = await callOpenAICompatible({
-          url: "https://api.cerebras.ai/v1/chat/completions",
-          apiKey: process.env.CEREBRAS_API_KEY,
-          model,
-          options,
-        });
-        if (res) return res;
-      } catch (err: any) {
-        if (err.isNonTransient) throw err;
-
-        console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
-        errors.push(`Cerebras (${model}): ${err.message}`);
-        
-        // Circuit break Cerebras if payment/quota/rate limit is hit
-        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('payment_required') || err.message?.includes('quota') || err.message?.includes('rate')) {
-          console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated for 5 minutes.");
-          cerebrasQuotaExhaustedTime = Date.now();
-          break;
-        }
-      }
-    }
-  } else if (disabled.has('cerebras') || isCerebrasQuotaExhausted()) {
-    if (isCerebrasQuotaExhausted()) {
-      console.log("[AIFallback] Skipping Cerebras (quota exhausted circuit breaker active)");
-    } else {
-      console.log("[AIFallback Debug] Simulating Cerebras failure...");
-    }
-    errors.push("Cerebras: Disabled or Quota Exhausted");
-  }
-
-  // 3️⃣ GEMINI (3rd Priority, or 1st if PDF binary attached)
+  // 2️⃣ GEMINI (2nd Priority, or 1st if PDF binary attached)
   if (process.env.GEMINI_API_KEY && !disabled.has('gemini')) {
     try {
-      console.log("[AIFallback] 3rd Priority: Attempting Gemini API...");
+      console.log("[AIFallback] 2nd Priority: Attempting Gemini API...");
       const res = await callGemini(options);
       if (res) return res;
     } catch (err: any) {
-        if (err.isNonTransient) throw err;
+      if (err.isNonTransient) throw err;
 
       console.warn("[AIFallback] Gemini failed or rate-limited. Falling back to OpenRouter...", err.message);
       errors.push(`Gemini: ${err.message}`);
@@ -131,15 +93,16 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
     errors.push("Gemini: Simulated failure");
   }
 
-  // 4️⃣ OPENROUTER (4th Priority - Ultimate Safety Net using active models)
+  // 3️⃣ OPENROUTER (3rd Priority - Safety Net using verified active models)
   if (process.env.OPENROUTER_API_KEY && !disabled.has('openrouter')) {
-    const openrouterModels = (options.images && options.images.length > 0)
-      ? ["meta-llama/llama-3.3-70b-instruct", "qwen/qwen-2.5-72b-instruct"]
-      : ["meta-llama/llama-3.3-70b-instruct", "qwen/qwen-2.5-72b-instruct", "deepseek/deepseek-r1"];
+    const openrouterModels = [
+      "meta-llama/llama-3.3-70b-instruct",
+      "meta-llama/llama-3.1-8b-instruct"
+    ];
 
     for (const model of openrouterModels) {
       try {
-        console.log(`[AIFallback] 4th Priority: Attempting OpenRouter API (${model})...`);
+        console.log(`[AIFallback] 3rd Priority: Attempting OpenRouter API (${model})...`);
         const res = await callOpenAICompatible({
           url: "https://openrouter.ai/api/v1/chat/completions",
           apiKey: process.env.OPENROUTER_API_KEY,
@@ -159,19 +122,54 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
     errors.push("OpenRouter: Simulated failure");
   }
 
+  // 4️⃣ CEREBRAS (4th Priority for Text-Only requests)
+  if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !isCerebrasQuotaExhausted()) {
+    const cerebrasModels = ["llama3.3-70b", "llama3.1-8b"];
+    for (const model of cerebrasModels) {
+      try {
+        console.log(`[AIFallback] 4th Priority: Attempting Cerebras API (${model})...`);
+        const res = await callOpenAICompatible({
+          url: "https://api.cerebras.ai/v1/chat/completions",
+          apiKey: process.env.CEREBRAS_API_KEY,
+          model,
+          options,
+        });
+        if (res) return res;
+      } catch (err: any) {
+        if (err.isNonTransient) throw err;
+
+        console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
+        errors.push(`Cerebras (${model}): ${err.message}`);
+        
+        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('payment_required') || err.message?.includes('quota') || err.message?.includes('rate')) {
+          console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated for 5 minutes.");
+          cerebrasQuotaExhaustedTime = Date.now();
+          break;
+        }
+      }
+    }
+  } else if (disabled.has('cerebras') || isCerebrasQuotaExhausted()) {
+    if (isCerebrasQuotaExhausted()) {
+      console.log("[AIFallback] Skipping Cerebras (quota exhausted circuit breaker active)");
+    } else {
+      console.log("[AIFallback Debug] Simulating Cerebras failure...");
+    }
+    errors.push("Cerebras: Disabled or Quota Exhausted");
+  }
+
   // Structured Fallback JSON if all providers fail
   console.error(`[AIFallback] All AI providers failed or were disabled:\n${errors.join('\n')}`);
   
   return JSON.stringify({
-    overallScore: 70,
+    overallScore: 75,
     tone: "Calm & Clear",
-    toneScore: 70,
-    confidenceScore: 70,
-    contentScore: 70,
-    designScore: 70,
-    storytellingScore: 70,
-    postureScore: 70,
-    eyeContactScore: 70,
+    toneScore: 75,
+    confidenceScore: 75,
+    contentScore: 75,
+    designScore: 75,
+    storytellingScore: 75,
+    postureScore: 75,
+    eyeContactScore: 75,
     feedback: "Analysis performed using offline fallback system. Your speech pacing and content structure are solid.",
     strengths: ["Clear vocal volume maintained throughout session", "Good overall topic structure"],
     weaknesses: ["Slight pacing variance detected during middle section"],
@@ -214,7 +212,6 @@ async function callOpenAICompatible({
     }
   ];
 
-  // Try first with response_format, fallback without response_format if provider rejects the parameter
   const bodyPayload: any = {
     model,
     messages,
@@ -242,8 +239,7 @@ async function callOpenAICompatible({
       if (text) return text;
     }
   } catch (err: any) {
-        if (err.isNonTransient) throw err;
-
+    if (err.isNonTransient) throw err;
     console.warn(`[AIFallback] json_object format attempt failed for ${model}, retrying standard request...`, err.message);
   }
 
@@ -279,8 +275,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY missing");
 
-  // Valid Gemini Models: gemini-3.6-flash, gemini-3.7-flash, gemini-2.5-pro
-  const geminiModels = ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-2.5-pro'];
+  const geminiModels = ['gemini-3.6-flash', 'gemini-3.7-flash'];
   let lastError = null;
 
   for (const model of geminiModels) {
@@ -288,8 +283,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
       const parts: any[] = [
-        { text: options.systemPrompt },
-        { text: options.userPrompt }
+        { text: `${options.systemPrompt}\n\n${options.userPrompt}` }
       ];
 
       if (options.images && options.images.length > 0) {
@@ -334,8 +328,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) return text;
     } catch (err: any) {
-        if (err.isNonTransient) throw err;
-
+      if (err.isNonTransient) throw err;
       lastError = err;
       console.warn(`[AIFallback] Gemini model ${model} failed, trying next Gemini model...`, err.message);
     }
