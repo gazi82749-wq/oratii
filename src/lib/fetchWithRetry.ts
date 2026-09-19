@@ -9,7 +9,7 @@ export async function fetchWithRetry(
   options: RequestInit = {},
   maxRetries: number = 2,
   baseDelayMs: number = 1000,
-  timeoutMs: number = 8000
+  timeoutMs: number = 25000
 ): Promise<Response> {
   let attempt = 0;
 

@@ -113,15 +113,21 @@ export async function POST(request: NextRequest) {
         isAnonymousTrial = true;
       }
 
-    // Send to Deepgram REST API with retry
-    const response = await fetchWithRetry(deepgramUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${apiKey}`,
-        'Content-Type': audioFile.type || 'audio/wav',
+    // Send to Deepgram REST API with retry (45s timeout for audio processing)
+    const response = await fetchWithRetry(
+      deepgramUrl,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': audioFile.type || 'audio/wav',
+        },
+        body: buffer
       },
-      body: buffer
-    });
+      2,     // maxRetries
+      1000,  // baseDelayMs
+      45000  // timeoutMs: 45 seconds
+    );
 
     if (!response.ok) {
       const errorData = await response.text();
