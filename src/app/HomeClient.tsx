@@ -1,16 +1,16 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { Mic, FileText, Video, MessageSquare, Timer, Target, BarChart as BarChartIcon, Zap, CheckCircle2, Flame, ArrowRight, AlertTriangle, Trophy, GraduationCap, Briefcase, BarChart3, Sparkles } from 'lucide-react';
+import { Mic, Video, MessageSquare, Zap, CheckCircle2, Flame, ArrowRight, Trophy, GraduationCap, Briefcase, BarChart3, Sparkles } from 'lucide-react';
 import StreakBadge from '../components/StreakBadge';
 import HeroShowcase from '../components/HeroShowcase';
 import dynamic from 'next/dynamic';
 
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: true });
 
-import { FadeUp, useInViewAnim } from '@/components/ui/FadeUp';
+import { FadeUp } from '@/components/ui/FadeUp';
 import SpeechCoachMockup from '@/components/home/SpeechCoachMockup';
 import SlideAnalyzerMockup from '@/components/home/SlideAnalyzerMockup';
 import VivaDefenseMockup from '@/components/home/VivaDefenseMockup';
@@ -140,47 +140,6 @@ export default function HomeClient() {
     }
   ];
 
-  const metrics = [
-    { 
-      value: 'Speech Pacing & WPM', 
-      label: 'Tracks live Words Per Minute (WPM), pause cadence, and eliminates regional filler words ("matlab", "basically", "ums").', 
-      tags: ['WPM Tracking', 'Filler Detection', 'AI Rewrites'],
-      badgeColor: 'bg-rose-50 text-rose-700 border-rose-200/80',
-      iconColor: 'text-rose-500',
-      href: '/speech-coach'
-    },
-    { 
-      value: 'Voice Mock Interviewer', 
-      label: 'Interactive tech & HR voice rounds. Upload your resume PDF and receive instant STAR method scoring & answer feedback.', 
-      tags: ['Resume PDF Audit', 'STAR Method', 'Voice Q&A'],
-      badgeColor: 'bg-amber-50 text-amber-800 border-amber-200/80',
-      iconColor: 'text-amber-600',
-      href: '/interview'
-    },
-    { 
-      value: 'Presentation Practice', 
-      label: 'Offers live presentation rehearsal with webcam HUD, slide rendering, and optional AI viva defense questions.', 
-      tags: ['Slide Rendering', 'Webcam WASM HUD', 'Viva Defense'],
-      badgeColor: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',
-      iconColor: 'text-indigo-600',
-      href: '/presentation'
-    },
-    { 
-      value: '20-Day Speech Challenge', 
-      label: 'Build daily speaking habits with 3-minute prompts, streak tracking, XP rewards, and downloadable completion certificates.', 
-      tags: ['Daily Prompts', 'Streak Engine', 'PDF Certificate'],
-      badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
-      iconColor: 'text-emerald-600',
-      href: '/challenge'
-    }
-  ];
-
-  const cardStyles = [
-    { num: '01', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
-    { num: '02', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
-    { num: '03', borderAccent: 'border-l-4 border-l-[#0F1426]', glow: 'rgba(15,20,38,0.04)', hoverGlow: 'rgba(15,20,38,0.08)', accentColor: 'text-slate-900', badgeBg: 'bg-slate-100 text-slate-900 border-slate-200', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
-    { num: '04', borderAccent: 'border-l-4 border-l-[#F2A93B]', glow: 'rgba(242,169,59,0.06)', hoverGlow: 'rgba(242,169,59,0.12)', accentColor: 'text-amber-800', badgeBg: 'bg-amber-50 text-amber-900 border-amber-200/80', ctaClasses: 'bg-[#0F1426] hover:bg-[#1A2035] text-white shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10 rounded-2xl' },
-  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans antialiased text-slate-900 overflow-x-hidden">
@@ -284,51 +243,8 @@ export default function HomeClient() {
       </section>
 
 
-      {/* Metrics / How We Analyze — Feature Matched */}
-      <section className="py-14 sm:py-20 relative z-20 -mt-8 sm:-mt-12 bg-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-20">
-          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 text-slate-800 text-[10px] sm:text-xs font-extrabold uppercase tracking-widest mb-3 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> Actionable AI Analytics
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">Track your progress easily.</h2>
-            <p className="text-slate-600 text-base sm:text-lg font-medium">Get real-time, actionable feedback on how you speak, present, and interview.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 sm:gap-8">
-            {metrics.map((m, i) => {
-              return (
-                <FadeUp key={i} delay={i * 100} className="h-full">
-                  <Link 
-                    href={m.href}
-                    className="group h-full bg-white rounded-3xl border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(15,20,38,0.05)] hover:shadow-[0_12px_36px_-6px_rgba(15,20,38,0.1)] hover:border-indigo-300/80 hover:-translate-y-1 transition-all duration-300 flex flex-col p-6 sm:p-7 cursor-pointer block"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full border ${m.badgeColor}`}>
-                        AI Module
-                      </span>
-                      <ArrowRight size={16} className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
-                    </div>
-                    <h3 className="text-xl font-extrabold text-slate-950 mb-2.5 tracking-tight group-hover:text-indigo-900 transition-colors">{m.value}</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed mb-6 font-normal">{m.label}</p>
-                    
-                    <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100">
-                      {m.tags.map((tag, idx) => (
-                        <span key={idx} className="px-2.5 py-1 text-[11px] font-semibold text-slate-600 bg-slate-50 rounded-lg border border-slate-200/60">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
-                </FadeUp>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Unified Features Section */}
-      <section id="how-it-works" className="py-16 sm:py-20 relative overflow-hidden bg-[#F8FAFC] scroll-mt-20">
+      <section className="py-16 sm:py-24 relative overflow-hidden bg-white scroll-mt-20">
         {/* Subtle Ambient Depth */}
         <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none" />
@@ -371,11 +287,10 @@ export default function HomeClient() {
           <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
           {features.map((f, i) => {
             const isReversed = i % 2 !== 0;
-            const cs = cardStyles[i % cardStyles.length] || cardStyles[0];
             return (
               <FadeUp key={i} delay={i * 80}>
               <div id={`module-card-${i}`} className="relative group scroll-mt-24">
-                <div className={`grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden relative ${cs.borderAccent}`}
+                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden relative"
                 >
                   {/* Subtle top divider line */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-slate-100" />
@@ -392,78 +307,6 @@ export default function HomeClient() {
                     </div>
                   </div>
 
-                  {/* Continuous Floating Collage Popovers */}
-                  <div className="absolute -top-4 -right-4 z-20 hidden md:block animate-float-slow">
-                     {(f.title.includes('Speech') || f.title.includes('Vocal')) && (
-                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Good Pace</span>
-                         <span className="text-xl font-bold">145 WPM</span>
-                       </div>
-                     )}
-                     {(f.title.includes('Slide') || f.title.includes('Presenter')) && (
-                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Live Presenter Active</span>
-                         <span className="text-xl font-bold">142 WPM • Live Cam</span>
-                       </div>
-                     )}
-                     {(f.title.includes('Interview') || f.title.includes('Viva')) && (
-                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">Unscripted Discussion</span>
-                         <span className="text-xl font-bold">Tech &amp; STAR Scoring</span>
-                       </div>
-                     )}
-                     {f.title.includes('Challenge') && (
-                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Streak Active</span>
-                         <span className="text-xl font-bold">7-Day Streak</span>
-                       </div>
-                     )}
-                     {(f.title.includes('Partner') || f.title.includes('Academy')) && (
-                       <div className="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-1 cursor-default">
-                         <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">WhatsApp Auto-Sync</span>
-                         <span className="text-xl font-bold">45/45 Graded</span>
-                       </div>
-                     )}
-                  </div>
-
-                  <div className="absolute -bottom-4 -left-4 z-20 hidden md:block animate-float-slow-reverse">
-                     {(f.title.includes('Speech') || f.title.includes('Vocal')) && (
-                       <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
-                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Mic size={18} /></div>
-                         <div className="flex flex-col">
-                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Recording</span>
-                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> 03:45</span>
-                         </div>
-                       </div>
-                     )}
-                     {(f.title.includes('Slide') || f.title.includes('Presenter')) && (
-                       <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
-                         <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700"><Video size={18} /></div>
-                         <div className="flex flex-col">
-                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Live Presenter Mode</span>
-                           <span className="text-sm font-bold text-slate-900">Slide 3 of 12</span>
-                         </div>
-                       </div>
-                     )}
-                     {(f.title.includes('Interview') || f.title.includes('Viva')) && (
-                       <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
-                         <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><Mic size={18} /></div>
-                         <div className="flex flex-col">
-                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">AI Status</span>
-                           <span className="text-sm font-bold text-slate-900">Listening...</span>
-                         </div>
-                       </div>
-                     )}
-                     {(f.title.includes('Partner') || f.title.includes('Academy')) && (
-                       <div className="bg-white/90 backdrop-blur-md text-slate-800 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-white flex items-center gap-3 cursor-default">
-                         <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700"><GraduationCap size={18} /></div>
-                         <div className="flex flex-col">
-                           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Partner Academy</span>
-                           <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Auto-Graded Cohorts</span>
-                         </div>
-                       </div>
-                     )}
-                  </div>
                 </div>
 
                 {/* Text View */}
@@ -529,7 +372,7 @@ export default function HomeClient() {
                         }
                       }
                     }}
-                    className={`inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group ${cs.ctaClasses}`}
+                    className="inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group bg-[#0F1426] hover:bg-[#1A2035] shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10"
                   >
                     {f.cta}
                     <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
@@ -613,46 +456,6 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* Core Use Cases & Benefits Grid — Dark Brand Navy Theme */}
-      <section className="py-20 sm:py-28 relative overflow-hidden bg-[#0F1426] text-white">
-        {/* Deep subtle ambient warmth */}
-        <div className="absolute top-0 right-[-10%] w-[500px] h-[500px] bg-slate-800/20 blur-[140px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-[-10%] w-[400px] h-[400px] bg-[#F2A93B]/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <FadeUp>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-[#F2A93B] text-xs font-bold uppercase tracking-widest mb-4 border border-white/10">
-                Proven Results
-              </div>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                Master Pacing, Eliminate Fillers &amp; Ace Q&amp;A
-              </h2>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-                Oratii delivers instant, objective AI feedback so you speak with total clarity and executive confidence.
-              </p>
-            </div>
-          </FadeUp>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { icon: <GraduationCap size={32} className="text-[#F2A93B]" />, title: "Academic & Viva Defenses", desc: "Conquer unexpected committee questions with AI slide-to-Q&A simulation and live scoring." },
-              { icon: <Briefcase size={32} className="text-[#F2A93B]" />, title: "Pitches & Boardrooms", desc: "Identify and eliminate filler words ('um', 'basically', 'you know') to sound composed and convincing." },
-              { icon: <BarChart3 size={32} className="text-[#F2A93B]" />, title: "Presentation Practice", desc: "Rehearse with your presentation slides and get real-time posture and pacing telemetry." }
-            ].map((item, i) => (
-              <FadeUp key={i} delay={i * 100}>
-                <div className="bg-white/5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 flex flex-col justify-between hover:border-[#F2A93B]/40 hover:bg-white/10 transition-all backdrop-blur-md h-full">
-                  <div>
-                    <div className="mb-5 p-3 rounded-2xl bg-white/10 w-max border border-white/10">{item.icon}</div>
-                    <h3 className="font-extrabold text-white text-xl mb-3 tracking-tight">{item.title}</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed font-normal">{item.desc}</p>
-                  </div>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Gamification Feature Section — Sleek Brand Styling */}
       <section className="py-16 sm:py-24 bg-white border-y border-slate-200/80">
