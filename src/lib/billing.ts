@@ -15,6 +15,7 @@ export const DEFAULT_FREE_CREDITS = 20;
 /**
  * Checks if a user has sufficient credits for a specific usage type,
  * and if so, decrements the available usage limit.
+ * Administrator accounts bypass credit checks completely and receive unlimited usage.
  * Automatically initializes usage_limits for new users with free credits if missing.
  */
 export async function checkAndDecrementUsage(
@@ -24,6 +25,23 @@ export async function checkAndDecrementUsage(
   try {
     const supabase = getServiceSupabase();
     const cost = CREDIT_COST[type] || 1;
+
+    // 0. Check if user is an Admin in profiles table (Admin bypass)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, current_plan, email')
+      .eq('id', userId)
+      .maybeSingle();
+
+    const isAdmin =
+      profile?.role === 'admin' ||
+      profile?.current_plan === 'admin_unlimited' ||
+      (profile?.email && (profile.email.startsWith('admin') || profile.email.includes('admin@')));
+
+    if (isAdmin) {
+      console.log('[Billing] Admin user bypasses credit deduction:', userId);
+      return { allowed: true, remainingCredits: 999999 };
+    }
 
     // Fetch current credit balance
     let { data: balanceData, error: balanceError } = await supabase
@@ -114,11 +132,27 @@ export async function checkAndDecrementUsage(
 
 /**
  * Returns the current credit balance for a user.
+ * Admin accounts receive 999999.
  * Auto-initializes default credits if user record doesn't exist yet.
  */
 export async function getCreditBalance(userId: string): Promise<number> {
   try {
     const supabase = getServiceSupabase();
+
+    // Check if user is an Admin
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, current_plan, email')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (
+      profile?.role === 'admin' ||
+      profile?.current_plan === 'admin_unlimited' ||
+      (profile?.email && (profile.email.startsWith('admin') || profile.email.includes('admin@')))
+    ) {
+      return 999999;
+    }
 
     let { data, error } = await supabase
       .from('usage_limits')
@@ -156,6 +190,7 @@ export async function getCreditBalance(userId: string): Promise<number> {
 
 /**
  * Refunds usage atomically if an AI operation fails completely after deduction.
+ * Admin accounts bypass refund logic.
  */
 export async function refundUsage(
   userId: string,
@@ -163,6 +198,20 @@ export async function refundUsage(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = getServiceSupabase();
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, current_plan, email')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (
+      profile?.role === 'admin' ||
+      profile?.current_plan === 'admin_unlimited' ||
+      (profile?.email && (profile.email.startsWith('admin') || profile.email.includes('admin@')))
+    ) {
+      return { success: true };
+    }
     
     // Call the Postgres RPC to atomically increment usage limits
     const { data, error } = await supabase.rpc('increment_unified_usage', {
