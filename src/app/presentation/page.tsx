@@ -175,7 +175,7 @@ function PresentationPracticeContent() {
     <>
       {/* Fullscreen Practice Mode Overlay */}
       {isPracticeMode && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 z-[9999] bg-[#0B0E27] overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] bg-[#F8FAFC] overflow-hidden w-screen h-screen">
           <PresentationPractice 
             fileName={file?.name || 'Presentation Deck'}
             slideImages={slideImages}
