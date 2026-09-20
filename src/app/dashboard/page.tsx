@@ -27,7 +27,8 @@ import {
   ChevronRight,
   BookOpen,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  KeyRound
 } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 import { getHistory, getStatistics, getProfile, saveProfile, getSettings, saveSettings } from '@/lib/storage';
@@ -36,6 +37,7 @@ import { getChallengeState } from '@/lib/challenge';
 import EmptyState from '@/components/EmptyState';
 import ReferralCard from '@/components/ReferralCard';
 import NotificationPrompt from '@/components/NotificationPrompt';
+import SetPasswordModal from '@/components/SetPasswordModal';
 import Footer from '@/components/Footer';
 
 function AnimatedNumber({ value, duration = 800 }: { value: number; duration?: number }) {
@@ -116,6 +118,8 @@ export default function ProfessionalDashboard() {
 
   // Modals state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSetPasswordModalOpen, setIsSetPasswordModalOpen] = useState(false);
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [editName, setEditName] = useState('');
   const [editAvatar, setEditAvatar] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
@@ -130,10 +134,13 @@ export default function ProfessionalDashboard() {
       if (e.key === 'Escape' && isEditModalOpen) {
         setIsEditModalOpen(false);
       }
+      if (e.key === 'Escape' && isSetPasswordModalOpen) {
+        setIsSetPasswordModalOpen(false);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isEditModalOpen]);
+  }, [isEditModalOpen, isSetPasswordModalOpen]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -152,6 +159,12 @@ export default function ProfessionalDashboard() {
       }
 
       setUser(activeUser);
+
+      // Check if user authenticated via Google OAuth
+      const providers = activeUser?.app_metadata?.providers || [];
+      if (providers.includes('google')) {
+        setIsGoogleUser(true);
+      }
 
       // Load Profile & Settings
       const storedProfile = getProfile() || {};
@@ -346,6 +359,15 @@ export default function ProfessionalDashboard() {
         {/* Action Buttons */}
         <div className="flex items-center gap-3 shrink-0 z-10">
           <button
+            onClick={() => setIsSetPasswordModalOpen(true)}
+            className="px-4 py-2.5 bg-[#F2A93B]/20 hover:bg-[#F2A93B]/30 border border-[#F2A93B]/40 text-[#F2A93B] text-xs font-bold rounded-2xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
+            title="Create or update your email login password"
+          >
+            <KeyRound size={15} />
+            <span>Set Password</span>
+          </button>
+
+          <button
             onClick={handleOpenEditModal}
             className="px-4 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-bold rounded-2xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
           >
@@ -369,6 +391,33 @@ export default function ProfessionalDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Google OAuth User Password Suggestion Banner */}
+      {isGoogleUser && (
+        <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-300/80 rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-[#0F1426] text-[#F2A93B] flex items-center justify-center shrink-0 shadow-sm">
+              <KeyRound size={20} />
+            </div>
+            <div>
+              <h4 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
+                Signed up with Google?
+                <span className="text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-md">Tip</span>
+              </h4>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed mt-0.5">
+                Create a password so you can also log in directly using your email ({profile.email}) anytime.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsSetPasswordModalOpen(true)}
+            className="px-5 py-2.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-xs font-bold rounded-xl transition-all shadow-md shrink-0 flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+          >
+            <KeyRound size={15} className="text-[#F2A93B]" />
+            <span>Create Password</span>
+          </button>
+        </div>
+      )}
 
       {/* 2. PERFORMANCE METRICS (Landing Page Soft Cards) */}
       <div className="space-y-4">
@@ -722,6 +771,13 @@ export default function ProfessionalDashboard() {
         </div>,
         document.body
       )}
+
+      {/* SET PASSWORD MODAL FOR EMAIL LOGIN */}
+      <SetPasswordModal
+        isOpen={isSetPasswordModalOpen}
+        onClose={() => setIsSetPasswordModalOpen(false)}
+        userEmail={profile.email}
+      />
       </div>
       <Footer />
     </div>

@@ -37,7 +37,12 @@ export default function LoginClient() {
       }
 
       if (!res.ok) {
-        setError(data.error || 'Login failed');
+        const errMsg = data.error || 'Login failed';
+        if (errMsg.toLowerCase().includes('invalid login credentials')) {
+          setError('Invalid login credentials. If you signed up with Google, click "Continue with Google" above or click "Forgot password?" to set an email password.');
+        } else {
+          setError(errMsg);
+        }
         setLoading(false);
         return;
       }
