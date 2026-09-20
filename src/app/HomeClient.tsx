@@ -99,15 +99,21 @@ export default function HomeClient() {
       <div className="flex-1 pt-16 sm:pt-20">
 
       {/* 2. Hero Section */}
-      <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC] overflow-hidden">
+        
+        {/* Ambient Pulsing Light Glow Auras */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-[#F2A93B]/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+        <div className="absolute top-1/4 right-[-10%] w-[400px] h-[400px] bg-teal-400/10 rounded-full blur-[130px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           
           {/* Left Column: Headline & Subtitle */}
           <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
             <FadeUp delay={50}>
-              <span className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-3 block text-center lg:text-left">
-                AI Communication Practice
-              </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF7ED] border border-[#F2A93B]/40 text-[#D98200] text-xs font-black uppercase tracking-widest mb-4 shadow-2xs">
+                <Sparkles size={14} className="text-[#F2A93B] animate-pulse" />
+                <span>AI Communication Practice</span>
+              </div>
             </FadeUp>
 
             <FadeUp delay={150} className="w-full">
@@ -146,6 +152,13 @@ export default function HomeClient() {
                 >
                   See how it works
                 </button>
+              </div>
+            </FadeUp>
+
+            <FadeUp delay={300}>
+              <div className="flex items-center justify-center lg:justify-start gap-2 pt-6 text-xs font-semibold text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Real-time voice &amp; slide feedback • No app installation required</span>
               </div>
             </FadeUp>
           </div>
