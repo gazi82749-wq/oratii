@@ -182,58 +182,58 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 4. Text-Driven Modern Feature Sections (Clean Layout) */}
+      {/* 4. Full-Width Alternating Modern Feature Sections (LEFT / RIGHT) */}
       <section id="features" className="py-12 sm:py-20 bg-white relative scroll-mt-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-12 sm:space-y-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24">
 
-          {/* FEATURE 01 — SPEECH COACH */}
-          <div id="feature-speech" className="scroll-mt-28">
+          {/* FEATURE 01 — SPEECH COACH (FULL WIDTH - ALIGNED LEFT) */}
+          <div id="feature-speech" className="scroll-mt-28 w-full">
             <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-14 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left">
-                <div className="max-w-3xl space-y-6">
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+                <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-black uppercase tracking-widest">
                     <span>01</span>
                     <span className="text-slate-300">•</span>
                     <span>Speech Coach</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
                     Find your natural speaking pace.
                   </h2>
 
-                  <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed">
+                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Oratii listens while you practice and gives you immediate feedback on pacing, filler words and clarity.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> 145 WPM
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> 145 WPM
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Optimal speaking speed indicator</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Optimal speaking speed indicator and pace target</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Filler Word Audit
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm sm:text-base">
+                        <CheckCircle2 size={18} /> Filler Word Detection
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Flags &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Live flags for &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;, &quot;you know&quot;</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Vocal Telemetry
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Vocal Telemetry
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Real-time clarity &amp; energy scores</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time clarity score and energy level tracking</p>
                     </div>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/speech-coach"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
                     >
-                      Try Speech Coach <ArrowRight size={16} className="text-[#F2A93B]" />
+                      Try Speech Coach <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
@@ -250,54 +250,54 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 02 — PRESENTATION PRACTICE */}
-          <div id="feature-presentation" className="scroll-mt-28">
+          {/* FEATURE 02 — PRESENTATION PRACTICE (FULL WIDTH - ALIGNED RIGHT) */}
+          <div id="feature-presentation" className="scroll-mt-28 w-full">
             <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-14 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left">
-                <div className="max-w-3xl space-y-6">
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end">
+                <div className="w-full flex flex-col md:items-end space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-widest">
                     <span>02</span>
                     <span className="text-slate-300">•</span>
                     <span>Presentation Practice</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
                     Present like you&apos;re already confident.
                   </h2>
 
-                  <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed">
+                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Practice your presentation while Oratii observes your delivery, pacing and presentation behavior.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Slide Canvas HUD
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Slide Canvas HUD
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Real-time slide timing telemetry</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Webcam PIP Feed
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Webcam PIP Feed
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Eye contact &amp; delivery tracking</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Slide Density Audit
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Slide Density Audit
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Pacing &amp; slide transition checks</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
                     </div>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/presentation"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
                     >
-                      Practice Presentation <ArrowRight size={16} className="text-[#F2A93B]" />
+                      Practice Presentation <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
@@ -314,54 +314,54 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 03 — AI VOICE INTERVIEWER */}
-          <div id="feature-interview" className="scroll-mt-28">
+          {/* FEATURE 03 — AI VOICE INTERVIEWER (FULL WIDTH - ALIGNED LEFT) */}
+          <div id="feature-interview" className="scroll-mt-28 w-full">
             <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-14 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left">
-                <div className="max-w-3xl space-y-6">
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+                <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-widest">
                     <span>03</span>
                     <span className="text-slate-300">•</span>
                     <span>AI Voice Interviewer</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
                     Stop rehearsing predictable answers.
                   </h2>
 
-                  <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed">
+                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Practice conversations that don&apos;t follow a script. Get tested on unexpected questions and follow-ups.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Dynamic Q&amp;A Probes
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Dynamic Q&amp;A Probes
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Adaptive behavioral follow-ups</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> STAR Framework
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> STAR Framework
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Situation, Task, Action, Result audit</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Specificity Score
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Specificity Score
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Metric impact &amp; depth check</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
                     </div>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/interview"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
                     >
-                      Start Mock Interview <ArrowRight size={16} className="text-[#F2A93B]" />
+                      Start Mock Interview <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
@@ -378,54 +378,54 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — VIVA DEFENSE */}
-          <div id="feature-viva" className="scroll-mt-28">
+          {/* FEATURE 04 — VIVA DEFENSE (FULL WIDTH - ALIGNED RIGHT) */}
+          <div id="feature-viva" className="scroll-mt-28 w-full">
             <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-14 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left">
-                <div className="max-w-3xl space-y-6">
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end">
+                <div className="w-full flex flex-col md:items-end space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-black uppercase tracking-widest">
                     <span>04</span>
                     <span className="text-slate-300">•</span>
                     <span>Viva Defense</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
                     Be ready for the question you didn&apos;t prepare for.
                   </h2>
 
-                  <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed">
+                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Prepare for academic and technical defense panels where examiners push back on your methods and assumptions.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Examiner Push-back
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Examiner Push-back
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Academic &amp; tech panel simulation</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Depth &amp; Reasoning
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Depth &amp; Reasoning
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Methodology defense scoring</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Defensive Poise
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Defensive Poise
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Composure &amp; clarity evaluation</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
                     </div>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/presentation"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
                     >
-                      Practice Viva Defense <ArrowRight size={16} className="text-[#F2A93B]" />
+                      Practice Viva Defense <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
@@ -433,54 +433,54 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 05 — 20-DAY CHALLENGE */}
-          <div id="feature-challenge" className="scroll-mt-28">
+          {/* FEATURE 05 — 20-DAY CHALLENGE (FULL WIDTH - ALIGNED LEFT) */}
+          <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-14 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left">
-                <div className="max-w-3xl space-y-6">
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+                <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black uppercase tracking-widest">
                     <span>05</span>
                     <span className="text-slate-300">•</span>
                     <span>Habit Building</span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
                     Improvement is built one day at a time.
                   </h2>
 
-                  <p className="text-slate-600 text-base sm:text-xl font-medium leading-relaxed">
+                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Build a consistent daily speaking habit with targeted practice prompts and streak rewards.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Daily 2-Min Prompts
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Daily 2-Min Prompts
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Bite-sized speaking habits</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> Streak Rewards
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> Streak Rewards
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Level progression &amp; +120 XP</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm">
-                        <CheckCircle2 size={16} /> 20-Day Path
+                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                        <CheckCircle2 size={18} /> 20-Day Path
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">Structured improvement roadmap</p>
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
                     </div>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/challenge"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
                     >
-                      Join 20-Day Challenge <ArrowRight size={16} className="text-[#F2A93B]" />
+                      Join 20-Day Challenge <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
