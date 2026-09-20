@@ -419,23 +419,23 @@ export default function HomeClient() {
 
           {/* FEATURE 04 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
-            <FadeInLeft>
-              <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
+            <FadeInRight>
+              <div className="bg-gradient-to-bl from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
+                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
                     <span>04</span>
                     <span className="text-emerald-400">•</span>
                     <span>Habit Building</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-left">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
                     Improvement is built one day at a time.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-left">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
                     Build a consistent daily speaking habit with targeted practice prompts and streak rewards.
                   </p>
 
@@ -468,7 +468,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-start">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
                     <Link
                       href="/challenge"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
@@ -478,7 +478,7 @@ export default function HomeClient() {
                   </div>
                 </div>
               </div>
-            </FadeInLeft>
+            </FadeInRight>
           </div>
 
         </div>
