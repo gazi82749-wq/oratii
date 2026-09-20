@@ -15,10 +15,12 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
 
+  const [timedOut, setTimedOut] = useState(false);
+
   useEffect(() => {
-    // Listen for the PASSWORD_RECOVERY event that Supabase fires
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+    // Listen for the PASSWORD_RECOVERY or SIGNED_IN event that Supabase fires on link click
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
         setSessionReady(true);
       }
     });
@@ -30,7 +32,15 @@ export default function ResetPassword() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Timeout fallback after 4 seconds if link token is invalid/missing
+    const timer = setTimeout(() => {
+      setTimedOut(true);
+    }, 4000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const getPasswordStrength = (pass: string) => {
@@ -119,19 +129,25 @@ export default function ResetPassword() {
             /* Waiting for session */
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-indigo-50 border border-indigo-100 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-xs">
-                <Loader2 size={32} className="text-indigo-600 animate-spin" />
+                {timedOut ? (
+                  <AlertCircle size={32} className="text-amber-600" />
+                ) : (
+                  <Loader2 size={32} className="text-indigo-600 animate-spin" />
+                )}
               </div>
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">
-                Verifying Reset Link
+                {timedOut ? 'Reset Link Expired or Invalid' : 'Verifying Reset Link'}
               </h2>
               <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                We’re authenticating your secure reset token. If this takes more than a few seconds, your link may have expired.
+                {timedOut 
+                  ? 'We could not verify your password reset link. Please click below to send a fresh reset link to your email.'
+                  : 'We’re authenticating your secure reset token. If this takes more than a few seconds, your link may have expired.'}
               </p>
               <Link 
                 href="/forgot-password"
-                className="inline-block px-5 py-2.5 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-50 transition-all shadow-xs"
+                className="inline-block px-6 py-3 bg-[#151930] hover:bg-[#1f2547] text-white text-xs font-bold rounded-xl transition-all shadow-sm"
               >
-                Request a New Link
+                Request New Password Link
               </Link>
             </div>
           ) : (
