@@ -243,147 +243,130 @@ export default function HomeClient() {
       </section>
 
 
-      {/* Unified Features Section */}
-      <section className="py-16 sm:py-24 relative overflow-hidden bg-white scroll-mt-20">
+      {/* Unified Attached Interactive Showcase Section */}
+      <section className="py-16 sm:py-24 relative overflow-hidden bg-slate-50 border-y border-slate-200/80 scroll-mt-20">
         {/* Subtle Ambient Depth */}
-        <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none" />
-        
+        <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-indigo-100/40 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/30 blur-[120px] rounded-full pointer-events-none" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col relative z-10">
           
-          {/* PayPal-inspired Sticky Feature Sub-Nav Bar */}
-          <div className="sticky top-20 z-30 mb-8 py-2 px-3 bg-white/85 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-sm flex items-center justify-start md:justify-center gap-2 overflow-x-auto no-scrollbar max-w-4xl mx-auto">
-            {features.map((f, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setActiveFeatureScrollIndex(i);
-                  const target = document.getElementById(`module-card-${i}`);
-                  if (target) {
-                    const y = target.getBoundingClientRect().top + window.pageYOffset - 110;
-                    window.scrollTo({ top: y, behavior: 'smooth' });
-                  }
-                }}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeFeatureScrollIndex === i
-                    ? 'bg-[#0F1426] text-white shadow-md border border-white/10 scale-105'
-                    : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 border border-slate-200/60'
-                }`}
-              >
-                <span className={activeFeatureScrollIndex === i ? 'text-[#F2A93B]' : 'text-slate-400'}>
-                  {i === 0 && '🎙️'}
-                  {i === 1 && '💼'}
-                  {i === 2 && '📹'}
-                  {i === 3 && '🏆'}
-                  {i === 4 && '🎓'}
-                </span>
-                <span>{f.title}</span>
-              </button>
-            ))}
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-[#0F1426] text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-4 shadow-xs">
+                <Sparkles size={13} className="text-[#F2A93B]" /> Comprehensive AI Coaching Modules
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight mb-4">
+                Feedback for every speaking scenario.
+              </h2>
+              <p className="text-slate-600 text-base sm:text-lg font-medium">
+                Click any module below to preview live AI analysis metrics, real-time telemetry, and actionable speech recommendations.
+              </p>
+            </FadeUp>
           </div>
 
-          {/* Feature Cards Grid */}
-
-          <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
-          {features.map((f, i) => {
-            const isReversed = i % 2 !== 0;
-            return (
-              <FadeUp key={i} delay={i * 80}>
-              <div id={`module-card-${i}`} className="relative group scroll-mt-24">
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-6 sm:gap-10 lg:gap-16 bg-white rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-10 lg:p-14 border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden relative"
-                >
-                  {/* Subtle top divider line */}
-                  <div className="absolute top-0 left-0 right-0 h-px bg-slate-100" />
-                
-                {/* Result Card View (Hidden on mobile to keep mobile layout clean, lightweight & lag-free) */}
-                <div className={`hidden lg:block w-full relative order-2 ${isReversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div className="w-full relative aspect-square sm:aspect-[4/3] rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] sm:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] border border-slate-200 bg-white p-1.5 sm:p-2 lg:p-3 hover:scale-[1.02] hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 ease-out">
-                    <div className="w-full h-full rounded-xl sm:rounded-3xl overflow-hidden shadow-inner bg-slate-50 relative z-10">
-                      {(f.title.includes('Speech') || f.title.includes('Vocal')) && <SpeechCoachMockup />}
-                      {(f.title.includes('Slide') || f.title.includes('Presenter')) && <SlideAnalyzerMockup />}
-                      {(f.title.includes('Interview') || f.title.includes('Viva')) && <VivaDefenseMockup />}
-                      {f.title.includes('Challenge') && <ChallengeMockup />}
-                      {(f.title.includes('Partner') || f.title.includes('Academy') || f.title.includes('Coaching')) && <PartnerAcademyMockup />}
-                    </div>
-                  </div>
-
+          {/* Attached Cohesive Container (Sticky Preview + Connected Accordion List) */}
+          <div className="bg-white rounded-3xl sm:rounded-[2.5rem] border border-slate-200/90 shadow-xl overflow-hidden p-4 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Left Sticky Result View Canvas (Span 6) */}
+            <div className="lg:col-span-6 w-full lg:sticky lg:top-28">
+              <div className="w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-900 p-2 sm:p-3 relative group">
+                <div className="w-full h-full rounded-xl sm:rounded-2xl overflow-hidden relative z-10">
+                  {activeFeatureScrollIndex === 0 && <SpeechCoachMockup />}
+                  {activeFeatureScrollIndex === 1 && <VivaDefenseMockup />}
+                  {activeFeatureScrollIndex === 2 && <SlideAnalyzerMockup />}
+                  {activeFeatureScrollIndex === 3 && <ChallengeMockup />}
+                  {activeFeatureScrollIndex === 4 && <PartnerAcademyMockup />}
                 </div>
+              </div>
+            </div>
 
-                {/* Text View */}
-                <div className={`w-full flex flex-col items-start text-left order-1 ${isReversed ? 'lg:order-1' : 'lg:order-2'} lg:px-10`}>
-                  <div className={`w-12 sm:w-16 h-12 sm:h-16 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6 border border-slate-100 shadow-sm ${f.iconBg} bg-white`}>
-                    {f.icon}
-                  </div>
-                  
-                  {/* Two-Tier Heading */}
-                  <div className="flex flex-col gap-1.5 mb-3 sm:mb-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900`}>
-                        {f.title}
-                      </span>
-                      {f.subtitle && (
-                        <span className="px-3 py-1 bg-amber-50 border border-amber-300 text-amber-900 text-[10px] sm:text-xs font-black rounded-full shadow-2xs">
-                          {f.subtitle}
+            {/* Right Connected Module Selector List (Span 6) */}
+            <div className="lg:col-span-6 flex flex-col gap-3">
+              {features.map((f, i) => {
+                const isActive = activeFeatureScrollIndex === i;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setActiveFeatureScrollIndex(i)}
+                    className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 cursor-pointer border ${
+                      isActive
+                        ? 'bg-[#0F1426] text-white border-indigo-500/50 shadow-lg scale-[1.01]'
+                        : 'bg-slate-50/80 hover:bg-slate-100/80 text-slate-800 border-slate-200/80'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-2 rounded-xl border ${isActive ? 'bg-white/10 border-white/20' : f.iconBg}`}>
+                          {f.icon}
+                        </div>
+                        <span className={`text-xs font-black uppercase tracking-wider ${isActive ? 'text-amber-400' : 'text-indigo-600'}`}>
+                          {f.title}
+                        </span>
+                      </div>
+                      {isActive && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">
+                          Active View
                         </span>
                       )}
                     </div>
-                    <h3 className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+
+                    <h3 className={`text-lg sm:text-xl font-bold mb-2 tracking-tight ${isActive ? 'text-white' : 'text-slate-900'}`}>
                       {f.headline}
                     </h3>
-                  </div>
-                  <p className="text-slate-500 text-sm sm:text-lg md:text-xl leading-relaxed mb-5 sm:mb-10 font-medium">
-                    {f.desc}
-                  </p>
-                  
-                  {/* Visual Highlights List */}
-                  <div className="flex flex-col gap-2 sm:gap-4 mb-6 sm:mb-12">
-                    {f.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-center gap-2.5 sm:gap-4 bg-slate-50 border border-slate-100 shadow-sm rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 hover:shadow-md transition-shadow">
-                        <div className="flex-shrink-0 bg-white rounded-full p-1 shadow-sm border border-slate-100">
-                          <CheckCircle2 size={18} className="text-emerald-500" />
-                        </div>
-                        <span className="text-slate-800 font-bold text-sm sm:text-base">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
+                    <p className={`text-xs sm:text-sm font-medium mb-4 leading-relaxed ${isActive ? 'text-slate-300' : 'text-slate-600'}`}>
+                      {f.desc}
+                    </p>
 
-                  <Link 
-                    href={f.href === '/trainer' && !user ? '/signup?role=trainer' : f.href} 
-                    onClick={async (e) => {
-                      if (f.href === '/trainer') {
-                        e.preventDefault();
+                    {/* Highlights */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {f.highlights.map((h, idx) => (
+                        <span
+                          key={idx}
+                          className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 ${
+                            isActive
+                              ? 'bg-white/10 text-slate-200 border border-white/10'
+                              : 'bg-white text-slate-700 border border-slate-200/60 shadow-2xs'
+                          }`}
+                        >
+                          <CheckCircle2 size={12} className={isActive ? 'text-amber-400' : 'text-emerald-500'} /> {h}
+                        </span>
+                      ))}
+                    </div>
+
+                    <Link
+                      href={f.href === '/trainer' && !user ? '/signup?role=trainer' : f.href}
+                      onClick={async (e) => {
                         e.stopPropagation();
-
-                        if (!user) {
-                          router.push('/signup?role=trainer');
-                          return;
+                        if (f.href === '/trainer') {
+                          if (!user) {
+                            router.push('/signup?role=trainer');
+                            return;
+                          }
+                          let role = userRole;
+                          if (!role && user?.id) {
+                            const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+                            role = data?.role || 'student';
+                          }
+                          if (role === 'trainer' || role === 'admin') {
+                            router.push('/trainer');
+                          } else {
+                            setShowEducatorModal(true);
+                          }
                         }
+                      }}
+                      className={`inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold transition-all group ${
+                        isActive ? 'text-amber-400 hover:text-amber-300' : 'text-indigo-600 hover:text-indigo-800'
+                      }`}
+                    >
+                      {f.cta} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
 
-                        let role = userRole;
-                        if (!role && user?.id) {
-                          const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-                          role = data?.role || 'student';
-                        }
-
-                        if (role === 'trainer' || role === 'admin') {
-                          router.push('/trainer');
-                        } else {
-                          setShowEducatorModal(true);
-                        }
-                      }
-                    }}
-                    className="inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 text-white font-bold text-sm sm:text-base rounded-2xl hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group bg-[#0F1426] hover:bg-[#1A2035] shadow-[0_10px_25px_-5px_rgba(15,20,38,0.25)] border border-white/10"
-                  >
-                    {f.cta}
-                    <ArrowRight size={18} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-
-              </div>
-              </div>
-              </FadeUp>
-            );
-          })}
           </div>
         </div>
       </section>
