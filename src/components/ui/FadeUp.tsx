@@ -37,7 +37,7 @@ export function FadeUp({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
     );
 
     observer.observe(el);
@@ -90,7 +90,7 @@ export function FadeInLeft({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
     );
 
     observer.observe(el);
@@ -142,7 +142,7 @@ export function FadeInRight({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
     );
 
     observer.observe(el);
