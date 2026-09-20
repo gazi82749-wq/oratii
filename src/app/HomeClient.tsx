@@ -408,11 +408,11 @@ export default function HomeClient() {
             </FadeInLeft>
           </div>
 
-          {/* TRANSITION BRIDGE 3 */}
+          {/* TRANSITION BRIDGE 3 (FOR INTERVIEW) */}
           <div className="py-1 text-center">
             <FadeUp>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
-                &quot;Then make improvement a daily habit.&quot;
+                &quot;Then prepare for unscripted interview probes.&quot;
               </div>
             </FadeUp>
           </div>
@@ -479,6 +479,15 @@ export default function HomeClient() {
                 </div>
               </div>
             </FadeInRight>
+          </div>
+
+          {/* TRANSITION BRIDGE 4 (FOR HABIT BUILDING) */}
+          <div className="py-1 text-center">
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
+                &quot;Make improvement a daily habit.&quot;
+              </div>
+            </FadeUp>
           </div>
 
         </div>
