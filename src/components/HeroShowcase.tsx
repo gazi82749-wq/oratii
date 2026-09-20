@@ -97,12 +97,20 @@ export default function HeroShowcase() {
                 </div>
 
                 <div className="absolute bottom-3 right-3 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 border-[#F2A93B] shadow-lg bg-slate-900">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"
-                    alt="Presenter Webcam Feed"
-                    className="w-full h-full object-cover"
-                  />
+                  {/* Vector Presenter Webcam Feed (Guaranteed 100% Reliable Render) */}
+                  <svg className="w-full h-full object-cover bg-gradient-to-br from-slate-800 via-slate-900 to-[#0F1426]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="30" r="35" fill="#F2A93B" opacity="0.15" />
+                    <circle cx="50" cy="38" r="18" fill="#F2A93B" opacity="0.85" />
+                    <circle cx="50" cy="36" r="16" fill="#1E293B" />
+                    <path d="M25 85 C25 65 38 56 50 56 C62 56 75 65 75 85 Z" fill="#334155" />
+                    <ellipse cx="50" cy="40" rx="11" ry="13" fill="#FDE68A" />
+                    <circle cx="45" cy="38" r="1.5" fill="#0F1426" />
+                    <circle cx="55" cy="38" r="1.5" fill="#0F1426" />
+                    <path d="M46 46 Q50 49 54 46" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                    <path d="M38 42 C36 48 40 52 46 51" stroke="#F2A93B" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                    <circle cx="46" cy="51" r="2" fill="#F2A93B" />
+                    <rect x="34" y="24" width="32" height="32" rx="4" stroke="#F2A93B" strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
+                  </svg>
                   <div className="absolute bottom-0.5 right-0.5 px-1 py-0.2 bg-slate-950/90 rounded text-[7px] font-bold text-emerald-400 flex items-center gap-1 border border-emerald-500/40">
                     <Video size={8} /> LIVE
                   </div>
