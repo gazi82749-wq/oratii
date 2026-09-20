@@ -926,51 +926,55 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ─── Global Scroll Reveal & Entrance Animations ─── */
+@keyframes fadeUpEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes scaleUpEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .fade-up-scroll,
 .animate-on-scroll {
-  opacity: 0;
-  transform: translateY(24px) scale(0.98);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fadeUpEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
 }
 
 .scale-up-scroll {
-  opacity: 0;
-  transform: scale(0.93) translateY(16px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: scaleUpEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
 }
 
 .slide-right-scroll {
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fadeUpEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
 }
 
 .slide-left-scroll {
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fadeUpEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
 }
 
-/* Active State Triggered by IntersectionObserver */
-.fade-up-scroll.is-visible,
-.animate-on-scroll.is-visible,
-.scale-up-scroll.is-visible,
-.slide-right-scroll.is-visible,
-.slide-left-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
-}
-
 /* Stagger Delays for Grid & List Elements */
-.stagger-1, .fade-up-scroll:nth-child(1) { transition-delay: 60ms; }
-.stagger-2, .fade-up-scroll:nth-child(2) { transition-delay: 120ms; }
-.stagger-3, .fade-up-scroll:nth-child(3) { transition-delay: 180ms; }
-.stagger-4, .fade-up-scroll:nth-child(4) { transition-delay: 240ms; }
-.stagger-5, .fade-up-scroll:nth-child(5) { transition-delay: 300ms; }
+.stagger-1 { animation-delay: 60ms; }
+.stagger-2 { animation-delay: 120ms; }
+.stagger-3 { animation-delay: 180ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 300ms; }
 
 /* Pure CSS View Timeline for Scroll-Driven Animations in Modern Browsers */
 @supports (animation-timeline: view()) {
