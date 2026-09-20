@@ -102,8 +102,9 @@ export default function HomeClient() {
       <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC] overflow-hidden">
         
         {/* Ambient Pulsing Light Glow Auras */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-[#F2A93B]/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
-        <div className="absolute top-1/4 right-[-10%] w-[400px] h-[400px] bg-teal-400/10 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-[#F2A93B]/15 rounded-full blur-[140px] pointer-events-none animate-float-blob-1" />
+        <div className="absolute top-1/4 right-[-5%] w-[450px] h-[450px] bg-teal-400/15 rounded-full blur-[130px] pointer-events-none animate-float-blob-2" />
+        <div className="absolute bottom-10 left-[-5%] w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-[130px] pointer-events-none animate-float-blob-3" />
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           
@@ -203,7 +204,8 @@ export default function HomeClient() {
             <FadeInLeft>
               <div className="bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-teal-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-2" />
 
                 <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
@@ -276,7 +278,8 @@ export default function HomeClient() {
             <FadeInRight>
               <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-amber-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-2" />
+                <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-orange-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
 
                 <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
@@ -349,7 +352,8 @@ export default function HomeClient() {
             <FadeInLeft>
               <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-indigo-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-3" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
 
                 <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
@@ -422,7 +426,8 @@ export default function HomeClient() {
             <FadeInRight>
               <div className="bg-gradient-to-bl from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
+                <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-3" />
 
                 <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">

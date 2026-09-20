@@ -7,7 +7,7 @@ export function FadeUp({
   children,
   className = '',
   delay = 0,
-  duration = 700,
+  duration = 800,
 }: {
   children: React.ReactNode;
   delay?: number;
@@ -37,7 +37,7 @@ export function FadeUp({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
     observer.observe(el);
@@ -49,7 +49,7 @@ export function FadeUp({
       ref={elRef}
       style={{ transitionDuration: `${duration}ms` }}
       className={`transition-all cubic-bezier(0.16,1,0.3,1) ${
-        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-[0.98]'
+        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.95]'
       } ${className}`}
     >
       {children}
@@ -90,7 +90,7 @@ export function FadeInLeft({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
     observer.observe(el);
@@ -100,8 +100,8 @@ export function FadeInLeft({
   return (
     <div
       ref={elRef}
-      className={`transition-all duration-700 cubic-bezier(0.16,1,0.3,1) ${
-        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'
+      className={`transition-all duration-800 cubic-bezier(0.16,1,0.3,1) ${
+        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-16'
       } ${className}`}
     >
       {children}
@@ -142,7 +142,7 @@ export function FadeInRight({
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.05, rootMargin: '0px 0px 50px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
     observer.observe(el);
@@ -152,8 +152,8 @@ export function FadeInRight({
   return (
     <div
       ref={elRef}
-      className={`transition-all duration-700 cubic-bezier(0.16,1,0.3,1) ${
-        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'
+      className={`transition-all duration-800 cubic-bezier(0.16,1,0.3,1) ${
+        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-16'
       } ${className}`}
     >
       {children}
