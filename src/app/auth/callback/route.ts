@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
   const nextParam = requestUrl.searchParams.get('next') || '/dashboard';
   let targetPath = nextParam.startsWith('/') ? nextParam : `/${nextParam}`;
 
+  const isSignup = requestUrl.searchParams.get('is_signup') === 'true';
+
   if (code) {
     const cookieStore = cookies();
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://vzbxhxlrmshmtgiocqkh.supabase.co';
@@ -88,7 +90,13 @@ export async function GET(request: NextRequest) {
         console.warn('[OAuth Callback] Trainer check notice:', checkErr);
       }
 
-      const response = NextResponse.redirect(new URL(targetPath, request.url));
+      // If initial Google Signup, route via setup-password page
+      let finalRedirectUrl = targetPath;
+      if (isSignup) {
+        finalRedirectUrl = `/setup-password?next=${encodeURIComponent(targetPath)}`;
+      }
+
+      const response = NextResponse.redirect(new URL(finalRedirectUrl, request.url));
       response.cookies.set('Oratii_logged_in', 'true', {
         path: '/',
         maxAge: 31536000,

@@ -87,7 +87,7 @@ export default function SignupClient() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}&role=${selectedRole}`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}&role=${selectedRole}&is_signup=true`,
         queryParams: {
           prompt: 'select_account',
         },
