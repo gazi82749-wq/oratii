@@ -182,15 +182,23 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 4. Full-Width Alternating Colorful Feature Sections */}
-      <section id="features" className="py-12 sm:py-20 bg-white relative scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24">
+      {/* 4. Full-Width Alternating Feature Sections with Animated Background Glows */}
+      <section id="features" className="py-12 sm:py-20 bg-white relative scroll-mt-20 overflow-hidden">
+        
+        {/* Ambient Canvas Animated Glows */}
+        <div className="absolute top-1/4 left-[-10%] w-[600px] h-[600px] bg-[#F2A93B]/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+        <div className="absolute top-2/3 right-[-10%] w-[600px] h-[600px] bg-teal-400/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
 
-          {/* FEATURE 01 — SPEECH COACH (SOFT TEAL/EMERALD TINT CARD) */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24 relative z-10">
+
+          {/* FEATURE 01 — SPEECH COACH (ANIMATED BG GLOW) */}
           <div id="feature-speech" className="scroll-mt-28 w-full">
             <FadeInLeft>
               <div className="bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-teal-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
-                <div className="w-full space-y-6">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+                <div className="w-full space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>01</span>
                     <span className="text-teal-400">•</span>
@@ -256,11 +264,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 02 — PRESENTATION PRACTICE (SOFT AMBER/GOLD TINT CARD) */}
+          {/* FEATURE 02 — PRESENTATION PRACTICE (ANIMATED BG GLOW) */}
           <div id="feature-presentation" className="scroll-mt-28 w-full">
             <FadeInRight>
               <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-amber-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
-                <div className="w-full flex flex-col md:items-end space-y-6">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+                <div className="w-full flex flex-col md:items-end space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>02</span>
                     <span className="text-amber-400">•</span>
@@ -326,11 +337,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 03 — AI VOICE INTERVIEWER (SOFT INDIGO TINT CARD) */}
+          {/* FEATURE 03 — AI VOICE INTERVIEWER (ANIMATED BG GLOW) */}
           <div id="feature-interview" className="scroll-mt-28 w-full">
             <FadeInLeft>
               <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-indigo-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
-                <div className="w-full space-y-6">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+                <div className="w-full space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>03</span>
                     <span className="text-indigo-400">•</span>
@@ -396,11 +410,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — VIVA DEFENSE (SOFT PURPLE TINT CARD) */}
+          {/* FEATURE 04 — VIVA DEFENSE (ANIMATED BG GLOW) */}
           <div id="feature-viva" className="scroll-mt-28 w-full">
             <FadeInRight>
               <div className="bg-gradient-to-bl from-purple-50/80 via-fuchsia-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-purple-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
-                <div className="w-full flex flex-col md:items-end space-y-6">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+                <div className="w-full flex flex-col md:items-end space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300 text-purple-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>04</span>
                     <span className="text-purple-400">•</span>
@@ -457,11 +474,14 @@ export default function HomeClient() {
             </FadeInRight>
           </div>
 
-          {/* FEATURE 05 — 20-DAY CHALLENGE (SOFT EMERALD/TEAL TINT CARD) */}
+          {/* FEATURE 05 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeInLeft>
               <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-emerald-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
-                <div className="w-full space-y-6">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
+                <div className="w-full space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>05</span>
                     <span className="text-emerald-400">•</span>
