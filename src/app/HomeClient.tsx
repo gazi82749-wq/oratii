@@ -103,24 +103,24 @@ export default function HomeClient() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Column: Headline & Subtitle */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left">
+          <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
             <FadeUp delay={50}>
-              <span className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-3 block">
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-3 block text-center lg:text-left">
                 AI Communication Practice
               </span>
             </FadeUp>
 
             <FadeUp delay={150} className="w-full">
               {/* Mobile View: Clean Static Headline (Zero Layout Shifts or Jumpiness) */}
-              <h1 className="block md:hidden text-3xl font-black text-[#0F1426] tracking-tight leading-snug mb-4">
+              <h1 className="block md:hidden text-3xl font-black text-[#0F1426] tracking-tight leading-snug mb-4 text-center lg:text-left">
                 Say it well. <br />
                 Show it <span className="text-[#F2A93B]">better</span>.
               </h1>
 
               {/* Desktop View: Dynamic Rotating Headline */}
-              <h1 className="hidden md:block text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[160px]">
+              <h1 className="hidden md:block text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[160px] text-center lg:text-left">
                 Say it well. <br />
-                <span className="inline-flex flex-wrap items-center gap-2 transition-all duration-500">
+                <span className="inline-flex flex-wrap items-center justify-center lg:justify-start gap-2 transition-all duration-500">
                   <span>{heroPhrases[heroIndex].action}</span>
                   <span className={`px-3.5 py-1 rounded-2xl border text-4xl lg:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
                     {heroPhrases[heroIndex].target}
@@ -130,13 +130,13 @@ export default function HomeClient() {
             </FadeUp>
 
             <FadeUp delay={200}>
-              <p className="text-slate-600 text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-lg mb-8">
+              <p className="text-slate-600 text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-lg mb-8 text-center lg:text-left">
                 Practice speaking, presentations, interviews and viva sessions with real-time AI feedback.
               </p>
             </FadeUp>
 
             <FadeUp delay={250} className="w-full sm:w-auto">
-              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link 
                   href="/speech-coach"
                   className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer"
@@ -194,26 +194,26 @@ export default function HomeClient() {
           {/* FEATURE 01 — SPEECH COACH (ANIMATED BG GLOW) */}
           <div id="feature-speech" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-teal-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-teal-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs">
+                <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
                     <span>01</span>
                     <span className="text-teal-400">•</span>
                     <span>Speech Coach</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-left">
                     Find your natural speaking pace.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-left">
                     Oratii listens while you practice and gives you immediate feedback on pacing, filler words and clarity.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
                     <FadeUp delay={100}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-teal-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-teal-700 font-extrabold text-sm sm:text-base">
@@ -242,7 +242,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-start">
                     <Link
                       href="/speech-coach"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
@@ -267,22 +267,22 @@ export default function HomeClient() {
           {/* FEATURE 02 — PRESENTATION PRACTICE (ANIMATED BG GLOW) */}
           <div id="feature-presentation" className="scroll-mt-28 w-full">
             <FadeInRight>
-              <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-amber-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
+              <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-amber-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full flex flex-col md:items-end space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs">
+                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
                     <span>02</span>
                     <span className="text-amber-400">•</span>
                     <span>Presentation Practice</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
                     Present like you&apos;re already confident.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
                     Practice your presentation while Oratii observes your delivery, pacing and presentation behavior.
                   </p>
 
@@ -315,7 +315,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
                     <Link
                       href="/presentation"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
@@ -340,26 +340,26 @@ export default function HomeClient() {
           {/* FEATURE 03 — AI VOICE INTERVIEWER (ANIMATED BG GLOW) */}
           <div id="feature-interview" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-indigo-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-indigo-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs">
+                <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
                     <span>03</span>
                     <span className="text-indigo-400">•</span>
                     <span>AI Voice Interviewer</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-left">
                     Stop rehearsing predictable answers.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-left">
                     Practice conversations that don&apos;t follow a script. Get tested on unexpected questions and follow-ups.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
                     <FadeUp delay={100}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-sm sm:text-base">
@@ -388,7 +388,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-start">
                     <Link
                       href="/interview"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
@@ -413,22 +413,22 @@ export default function HomeClient() {
           {/* FEATURE 04 — VIVA DEFENSE (ANIMATED BG GLOW) */}
           <div id="feature-viva" className="scroll-mt-28 w-full">
             <FadeInRight>
-              <div className="bg-gradient-to-bl from-purple-50/80 via-fuchsia-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-purple-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
+              <div className="bg-gradient-to-bl from-purple-50/80 via-fuchsia-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-purple-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full flex flex-col md:items-end space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300 text-purple-950 text-xs font-black uppercase tracking-widest shadow-2xs">
+                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300 text-purple-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
                     <span>04</span>
                     <span className="text-purple-400">•</span>
                     <span>Viva Defense</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
                     Be ready for the question you didn&apos;t prepare for.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
                     Prepare for academic and technical defense panels where examiners push back on your methods and assumptions.
                   </p>
 
@@ -461,7 +461,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
                     <Link
                       href="/presentation"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
@@ -477,26 +477,26 @@ export default function HomeClient() {
           {/* FEATURE 05 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
-                <div className="w-full space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs">
+                <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
                     <span>05</span>
                     <span className="text-emerald-400">•</span>
                     <span>Habit Building</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-left">
                     Improvement is built one day at a time.
                   </h2>
 
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-left">
                     Build a consistent daily speaking habit with targeted practice prompts and streak rewards.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
                     <FadeUp delay={100}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
@@ -525,7 +525,7 @@ export default function HomeClient() {
                     </FadeUp>
                   </div>
 
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto">
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-start">
                     <Link
                       href="/challenge"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
