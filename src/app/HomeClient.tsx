@@ -106,20 +106,27 @@ export default function HomeClient() {
       <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Column: Animated Headline & Action */}
+          {/* Left Column: Animated Headline (Desktop) & Clean Static Headline (Mobile) */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
             <FadeUp delay={50}>
-              <span className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4 block">
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-slate-500 mb-3 sm:mb-4 block">
                 AI Communication Practice
               </span>
             </FadeUp>
 
-            <FadeUp delay={150}>
-              <h1 className="text-4xl sm:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[140px] sm:min-h-[160px]">
+            <FadeUp delay={150} className="w-full">
+              {/* Mobile View: Clean Static Headline (Zero Layout Shift or Height Jumps) */}
+              <h1 className="block md:hidden text-3xl font-black text-[#0F1426] tracking-tight leading-snug mb-4">
+                Say it well. <br />
+                Show it <span className="text-[#F2A93B]">better</span>.
+              </h1>
+
+              {/* Desktop View: Dynamic Rotating Text Highlight */}
+              <h1 className="hidden md:block text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[160px]">
                 Say it well. <br />
                 <span className="inline-flex flex-wrap items-center gap-2 transition-all duration-500">
                   <span>{heroPhrases[heroIndex].action}</span>
-                  <span className={`px-3.5 py-1 rounded-2xl border text-3xl sm:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
+                  <span className={`px-3.5 py-1 rounded-2xl border text-4xl lg:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
                     {heroPhrases[heroIndex].target}
                   </span>
                 </span>
@@ -127,13 +134,13 @@ export default function HomeClient() {
             </FadeUp>
 
             <FadeUp delay={200}>
-              <p className="text-slate-600 text-lg sm:text-xl font-medium leading-relaxed max-w-lg mb-8">
+              <p className="text-slate-600 text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-lg mb-6 sm:mb-8">
                 Practice presentations, viva defense, and interviews with real-time feedback that shows you exactly where to improve.
               </p>
             </FadeUp>
 
-            <FadeUp delay={250}>
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <FadeUp delay={250} className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link 
                   href="/speech-coach"
                   className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group"
