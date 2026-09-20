@@ -182,18 +182,18 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 4. Full-Width Alternating Modern Feature Sections with Smooth Scroll Animations */}
+      {/* 4. Full-Width Alternating Colorful Feature Sections */}
       <section id="features" className="py-12 sm:py-20 bg-white relative scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24">
 
-          {/* FEATURE 01 — SPEECH COACH (FULL WIDTH - ALIGNED LEFT) */}
+          {/* FEATURE 01 — SPEECH COACH (SOFT TEAL/EMERALD TINT CARD) */}
           <div id="feature-speech" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-teal-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-black uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>01</span>
-                    <span className="text-slate-300">•</span>
+                    <span className="text-teal-400">•</span>
                     <span>Speech Coach</span>
                   </div>
 
@@ -201,35 +201,35 @@ export default function HomeClient() {
                     Find your natural speaking pace.
                   </h2>
 
-                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Oratii listens while you practice and gives you immediate feedback on pacing, filler words and clarity.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
                     <FadeUp delay={100}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> 145 WPM
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-teal-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-teal-700 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-teal-600" /> 145 WPM
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Optimal speaking speed indicator and pace target</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Optimal speaking speed indicator and pace target</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={18} /> Filler Word Detection
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-teal-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-teal-700 font-extrabold text-sm sm:text-base">
+                          <CheckCircle2 size={18} className="text-teal-600" /> Filler Word Detection
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Live flags for &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;, &quot;you know&quot;</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live flags for &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;, &quot;you know&quot;</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Vocal Telemetry
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-teal-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-teal-700 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-teal-600" /> Vocal Telemetry
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time clarity score and energy level tracking</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Real-time clarity score and energy level tracking</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -256,14 +256,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 02 — PRESENTATION PRACTICE (FULL WIDTH - ALIGNED RIGHT) */}
+          {/* FEATURE 02 — PRESENTATION PRACTICE (SOFT AMBER/GOLD TINT CARD) */}
           <div id="feature-presentation" className="scroll-mt-28 w-full">
             <FadeInRight>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
+              <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-amber-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
                 <div className="w-full flex flex-col md:items-end space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>02</span>
-                    <span className="text-slate-300">•</span>
+                    <span className="text-amber-400">•</span>
                     <span>Presentation Practice</span>
                   </div>
 
@@ -271,35 +271,35 @@ export default function HomeClient() {
                     Present like you&apos;re already confident.
                   </h2>
 
-                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Practice your presentation while Oratii observes your delivery, pacing and presentation behavior.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
                     <FadeUp delay={100}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Slide Canvas HUD
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-amber-600" /> Slide Canvas HUD
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Webcam PIP Feed
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-amber-600" /> Webcam PIP Feed
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Slide Density Audit
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-amber-600" /> Slide Density Audit
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -326,14 +326,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 03 — AI VOICE INTERVIEWER (FULL WIDTH - ALIGNED LEFT) */}
+          {/* FEATURE 03 — AI VOICE INTERVIEWER (SOFT INDIGO TINT CARD) */}
           <div id="feature-interview" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-indigo-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>03</span>
-                    <span className="text-slate-300">•</span>
+                    <span className="text-indigo-400">•</span>
                     <span>AI Voice Interviewer</span>
                   </div>
 
@@ -341,35 +341,35 @@ export default function HomeClient() {
                     Stop rehearsing predictable answers.
                   </h2>
 
-                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Practice conversations that don&apos;t follow a script. Get tested on unexpected questions and follow-ups.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
                     <FadeUp delay={100}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Dynamic Q&amp;A Probes
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-indigo-600" /> Dynamic Q&amp;A Probes
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> STAR Framework
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-indigo-600" /> STAR Framework
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Specificity Score
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-indigo-600" /> Specificity Score
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -396,14 +396,14 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — VIVA DEFENSE (FULL WIDTH - ALIGNED RIGHT) */}
+          {/* FEATURE 04 — VIVA DEFENSE (SOFT PURPLE TINT CARD) */}
           <div id="feature-viva" className="scroll-mt-28 w-full">
             <FadeInRight>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
+              <div className="bg-gradient-to-bl from-purple-50/80 via-fuchsia-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-purple-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
                 <div className="w-full flex flex-col md:items-end space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-black uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300 text-purple-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>04</span>
-                    <span className="text-slate-300">•</span>
+                    <span className="text-purple-400">•</span>
                     <span>Viva Defense</span>
                   </div>
 
@@ -411,35 +411,35 @@ export default function HomeClient() {
                     Be ready for the question you didn&apos;t prepare for.
                   </h2>
 
-                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Prepare for academic and technical defense panels where examiners push back on your methods and assumptions.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
                     <FadeUp delay={100}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Examiner Push-back
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-purple-600" /> Examiner Push-back
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Depth &amp; Reasoning
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-purple-600" /> Depth &amp; Reasoning
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Defensive Poise
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-purple-600" /> Defensive Poise
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -457,14 +457,14 @@ export default function HomeClient() {
             </FadeInRight>
           </div>
 
-          {/* FEATURE 05 — 20-DAY CHALLENGE (FULL WIDTH - ALIGNED LEFT) */}
+          {/* FEATURE 05 — 20-DAY CHALLENGE (SOFT EMERALD/TEAL TINT CARD) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeInLeft>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
+              <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-emerald-200/80 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs">
                     <span>05</span>
-                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-400">•</span>
                     <span>Habit Building</span>
                   </div>
 
@@ -472,35 +472,35 @@ export default function HomeClient() {
                     Improvement is built one day at a time.
                   </h2>
 
-                  <p className="text-slate-600 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
+                  <p className="text-slate-700 text-lg sm:text-2xl font-medium leading-relaxed max-w-4xl">
                     Build a consistent daily speaking habit with targeted practice prompts and streak rewards.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
                     <FadeUp delay={100}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Daily 2-Min Prompts
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-emerald-600" /> Daily 2-Min Prompts
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> Streak Rewards
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-emerald-600" /> Streak Rewards
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
-                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                          <CheckCircle2 size={18} /> 20-Day Path
+                      <div className="p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-base">
+                          <CheckCircle2 size={18} className="text-emerald-600" /> 20-Day Path
                         </div>
-                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
                       </div>
                     </FadeUp>
                   </div>
