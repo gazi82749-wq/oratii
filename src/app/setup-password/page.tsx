@@ -87,14 +87,14 @@ export default function SetupPasswordPage() {
             </div>
             <div>
               <span className="text-[10px] font-black uppercase tracking-wider text-[#D98200] block mb-0.5">
-                Account Security (Optional)
+                First-Time Setup (Required)
               </span>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create a Password</h1>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create Your Password</h1>
             </div>
           </div>
 
           <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed mb-6">
-            Set an email password for your Oratii account so you can also log in directly using your email address without Google.
+            Please create a password for your new Oratii account. This allows you to log in anytime using either Google or your email and password.
           </p>
 
           {error && (
@@ -109,8 +109,8 @@ export default function SetupPasswordPage() {
               <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 size={24} />
               </div>
-              <h3 className="text-base font-bold text-emerald-900">Password Set Successfully!</h3>
-              <p className="text-xs text-emerald-700">Redirecting to your dashboard...</p>
+              <h3 className="text-base font-bold text-emerald-900">Password Created Successfully!</h3>
+              <p className="text-xs text-emerald-700">Logging you into Oratii...</p>
             </div>
           ) : (
             <form onSubmit={handleSetPassword} className="space-y-4">
@@ -151,29 +151,20 @@ export default function SetupPasswordPage() {
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-col gap-3">
+              <div className="pt-2">
                 <button
                   type="submit"
                   disabled={loading}
                   className="w-full py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {loading ? (
-                    <span>Saving password...</span>
+                    <span>Creating password...</span>
                   ) : (
                     <>
                       <ShieldCheck size={18} className="text-[#F2A93B]" />
-                      <span>Save Password &amp; Continue</span>
+                      <span>Create Password &amp; Complete Signup</span>
                     </>
                   )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleSkip}
-                  className="w-full py-3 bg-white hover:bg-slate-50 text-slate-600 font-semibold text-xs rounded-xl border border-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <span>Skip for now &amp; go to Dashboard</span>
-                  <ArrowRight size={14} />
                 </button>
               </div>
             </form>
