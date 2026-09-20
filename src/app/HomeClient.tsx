@@ -144,294 +144,136 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans antialiased text-slate-900 overflow-x-hidden">
       
-      <div className="flex-1">
+      {/* 1. Calm Header Navigation */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 font-black text-xl text-[#0F1426]">
+            <span className="w-8 h-8 rounded-lg bg-[#0F1426] text-[#F2A93B] flex items-center justify-center font-black text-sm">O</span>
+            <span>Oratii</span>
+          </Link>
 
-      {/* Hero Section — Screen view viewport centered */}
-      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center pt-28 sm:pt-32 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
-        {/* Subtle Ambient Depth */}
-        <div className="absolute top-[-10%] right-[-5%] w-[45vw] h-[45vw] bg-amber-100/30 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/40 blur-[120px] rounded-full pointer-events-none" />
+          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+            <a href="#studio" className="hover:text-[#0F1426] transition-colors">Product</a>
+            <a href="#practice" className="hover:text-[#0F1426] transition-colors">Practice</a>
+            <a href="#transformation" className="hover:text-[#0F1426] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#0F1426] transition-colors">How it works</a>
+          </nav>
 
-        <div className="w-full max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-10 min-w-0 max-w-full my-auto">
+          <div className="flex items-center gap-4">
+            {user ? (
+              <Link href="/dashboard" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all">
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/speech-coach" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all">
+                Try Oratii
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <div className="flex-1 pt-20 sm:pt-24">
+
+      {/* 2. Product-First Hero Section */}
+      <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Column: Text & CTAs */}
-          <div className="w-full text-center md:text-left flex flex-col items-center md:items-start min-w-0 max-w-full">
-          <FadeUp delay={50}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-[#0F1426] text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-5 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> AI Speech, Presentation &amp; Interview Coach
-            </div>
-          </FadeUp>
+          {/* Left Column: Headline & Action */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
+            <FadeUp delay={50}>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4 block">
+                AI Communication Practice
+              </span>
+            </FadeUp>
 
-          <FadeUp delay={150}>
-            <h1 className="text-[clamp(2.5rem,4.8vw,4.2rem)] lg:text-6xl leading-[1.1] font-black tracking-tight text-slate-900 mb-5 break-words max-w-2xl">
-              Say it well. <br className="hidden sm:block" />
-              <span className="text-[#F2A93B]">Show it well.</span>
-            </h1>
-          </FadeUp>
+            <FadeUp delay={150}>
+              <h1 className="text-4xl sm:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.1] mb-6">
+                Say it well. <br />
+                Show it <span className="text-[#F2A93B]">better</span>.
+              </h1>
+            </FadeUp>
 
-          <FadeUp delay={200}>
-            <p className="text-slate-600 text-base sm:text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-medium">
-              Real-time AI feedback on your vocal pacing (WPM), filler words, presentation slides, and viva interview delivery.
-            </p>
-          </FadeUp>
+            <FadeUp delay={200}>
+              <p className="text-slate-600 text-lg sm:text-xl font-medium leading-relaxed max-w-lg mb-8">
+                Practice presentations, interviews, and speaking with real-time feedback that shows you exactly where to improve.
+              </p>
+            </FadeUp>
 
-          <FadeUp delay={250} className="w-full sm:w-auto">
-            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start w-full sm:w-auto">
-              {user ? (
+            <FadeUp delay={250}>
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                 <Link 
                   href="/speech-coach"
-                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
+                  className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group"
                 >
-                  Launch Practice Studio <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
+                  Start practicing <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
                 </Link>
-              ) : (
-                <div className="flex flex-col items-center sm:items-start gap-1.5 w-full sm:w-auto">
-                  <Link 
-                    href="/speech-coach"
-                    className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl shadow-[0_10px_30px_-10px_rgba(15,20,38,0.5)] border border-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 min-h-[52px] group"
-                  >
-                    Try Free Speech Coach <Sparkles size={18} className="text-[#F2A93B]" /> <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-                    <Zap size={12} className="text-amber-500 fill-amber-500" /> Instant access • No sign-up or credit card needed
-                  </span>
-                </div>
-              )}
-              
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  const target = document.getElementById('how-it-works');
-                  if (target) {
-                    const targetPos = target.getBoundingClientRect().top + window.pageYOffset - 80;
-                    const startPos = window.pageYOffset;
-                    const dist = targetPos - startPos;
-                    const dur = 850;
-                    let startTime: number | null = null;
-                    const step = (now: number) => {
-                      if (!startTime) startTime = now;
-                      const elapsed = now - startTime;
-                      const progress = Math.min(elapsed / dur, 1);
-                      const ease = progress < 0.5 
-                        ? 4 * progress * progress * progress 
-                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-                      window.scrollTo(0, startPos + dist * ease);
-                      if (elapsed < dur) requestAnimationFrame(step);
-                    };
-                    requestAnimationFrame(step);
-                  }
-                }}
-                className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 text-base font-bold border border-slate-200/90 rounded-2xl hover:bg-slate-50 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 transition-all shadow-xs active:scale-[0.98] flex items-center justify-center gap-2 min-h-[52px] cursor-pointer"
-              >
-                See How It Works
-              </button>
-            </div>
-            <p className="mt-4 text-[11px] sm:text-xs font-semibold text-slate-400 text-center md:text-left">
-              No credit card required • Free plan available
-            </p>
-          </FadeUp>
-
+                <button 
+                  onClick={() => {
+                    const target = document.getElementById('how-it-works');
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 font-bold text-base rounded-xl border border-slate-200 hover:bg-slate-50 transition-all cursor-pointer"
+                >
+                  See how it works
+                </button>
+              </div>
+            </FadeUp>
           </div>
 
-          {/* Right Column: Hero Showcase (Hidden on small mobile screens to prevent vertical clutter & scrolling lag) */}
-          <div className="hidden lg:block w-full relative min-w-0 max-w-full">
-            <FadeUp delay={350} className="w-full">
+          {/* Right Column: Large Minimalist Product Framing */}
+          <div className="lg:col-span-6 w-full">
+            <FadeUp delay={350}>
               <HeroShowcase />
             </FadeUp>
           </div>
         </div>
       </section>
 
-
-      {/* Unified Attached Interactive Showcase Section */}
-      <section className="py-16 sm:py-24 relative overflow-hidden bg-slate-50 border-y border-slate-200/80 scroll-mt-20">
-        {/* Subtle Ambient Depth */}
-        <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-indigo-100/40 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-5%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/30 blur-[120px] rounded-full pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col relative z-10">
-          
-          {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            <FadeUp>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-[#0F1426] text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-4 shadow-xs">
-                <Sparkles size={13} className="text-[#F2A93B]" /> Comprehensive AI Coaching Modules
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight mb-4">
-                Feedback for every speaking scenario.
-              </h2>
-              <p className="text-slate-600 text-base sm:text-lg font-medium">
-                Click any module below to preview live AI analysis metrics, real-time telemetry, and actionable speech recommendations.
-              </p>
-            </FadeUp>
-          </div>
-
-          {/* Attached Cohesive Container (Sticky Preview + Connected Accordion List) */}
-          <div className="bg-white rounded-3xl sm:rounded-[2.5rem] border border-slate-200/90 shadow-xl overflow-hidden p-4 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left Sticky Result View Canvas (Span 6) */}
-            <div className="lg:col-span-6 w-full lg:sticky lg:top-28">
-              <div className="w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-900 p-2 sm:p-3 relative group">
-                <div className="w-full h-full rounded-xl sm:rounded-2xl overflow-hidden relative z-10">
-                  {activeFeatureScrollIndex === 0 && <SpeechCoachMockup />}
-                  {activeFeatureScrollIndex === 1 && <VivaDefenseMockup />}
-                  {activeFeatureScrollIndex === 2 && <SlideAnalyzerMockup />}
-                  {activeFeatureScrollIndex === 3 && <ChallengeMockup />}
-                  {activeFeatureScrollIndex === 4 && <PartnerAcademyMockup />}
-                </div>
-              </div>
+      {/* 3. Editorial Context / Trust Section */}
+      <section className="py-16 bg-white border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <FadeUp>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-400 mb-8 tracking-tight">
+              Built for moments when communication matters.
+            </h2>
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-base sm:text-lg font-extrabold text-[#0F1426]">
+              <span>Students</span>
+              <span className="text-slate-300">•</span>
+              <span>Professionals</span>
+              <span className="text-slate-300">•</span>
+              <span>Job Seekers</span>
+              <span className="text-slate-300">•</span>
+              <span>Presenters</span>
+              <span className="text-slate-300">•</span>
+              <span>Educators</span>
             </div>
-
-            {/* Right Connected Module Selector List (Span 6) */}
-            <div className="lg:col-span-6 flex flex-col gap-3">
-              {features.map((f, i) => {
-                const isActive = activeFeatureScrollIndex === i;
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setActiveFeatureScrollIndex(i)}
-                    className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 cursor-pointer border ${
-                      isActive
-                        ? 'bg-[#0F1426] text-white border-indigo-500/50 shadow-lg scale-[1.01]'
-                        : 'bg-slate-50/80 hover:bg-slate-100/80 text-slate-800 border-slate-200/80'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className={`p-2 rounded-xl border ${isActive ? 'bg-white/10 border-white/20' : f.iconBg}`}>
-                          {f.icon}
-                        </div>
-                        <span className={`text-xs font-black uppercase tracking-wider ${isActive ? 'text-amber-400' : 'text-indigo-600'}`}>
-                          {f.title}
-                        </span>
-                      </div>
-                      {isActive && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">
-                          Active View
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className={`text-lg sm:text-xl font-bold mb-2 tracking-tight ${isActive ? 'text-white' : 'text-slate-900'}`}>
-                      {f.headline}
-                    </h3>
-                    <p className={`text-xs sm:text-sm font-medium mb-4 leading-relaxed ${isActive ? 'text-slate-300' : 'text-slate-600'}`}>
-                      {f.desc}
-                    </p>
-
-                    {/* Highlights */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {f.highlights.map((h, idx) => (
-                        <span
-                          key={idx}
-                          className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 ${
-                            isActive
-                              ? 'bg-white/10 text-slate-200 border border-white/10'
-                              : 'bg-white text-slate-700 border border-slate-200/60 shadow-2xs'
-                          }`}
-                        >
-                          <CheckCircle2 size={12} className={isActive ? 'text-amber-400' : 'text-emerald-500'} /> {h}
-                        </span>
-                      ))}
-                    </div>
-
-                    <Link
-                      href={f.href === '/trainer' && !user ? '/signup?role=trainer' : f.href}
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (f.href === '/trainer') {
-                          if (!user) {
-                            router.push('/signup?role=trainer');
-                            return;
-                          }
-                          let role = userRole;
-                          if (!role && user?.id) {
-                            const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-                            role = data?.role || 'student';
-                          }
-                          if (role === 'trainer' || role === 'admin') {
-                            router.push('/trainer');
-                          } else {
-                            setShowEducatorModal(true);
-                          }
-                        }
-                      }}
-                      className={`inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold transition-all group ${
-                        isActive ? 'text-amber-400 hover:text-amber-300' : 'text-indigo-600 hover:text-indigo-800'
-                      }`}
-                    >
-                      {f.cta} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-
-          </div>
+          </FadeUp>
         </div>
       </section>
 
-      {/* How It Works Section — Aligned with Exact Website Features */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-[#F8FAFC] border-t border-slate-200/80 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center relative z-10">
+      {/* 4. Emotional Problem Section */}
+      <section className="py-20 sm:py-28 bg-[#F8FAFC]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <FadeUp>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-800 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest mb-4 shadow-sm">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span> Simple 4-Step Practice Workflow
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 mb-4 tracking-tight">How Oratii Works</h2>
-            <p className="text-slate-500 text-base sm:text-lg max-w-2xl mx-auto mb-12 font-medium">From live speech recording and resume upload to AI voice Q&amp;A and instant scorecards.</p>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#0F1426] tracking-tight mb-16">
+              You can practice. <br />
+              <span className="text-slate-500">But do you know what you&apos;re doing wrong?</span>
+            </h2>
           </FadeUp>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 text-left relative">
-            {[
-              { 
-                step: '01', 
-                title: 'Select Your Practice Mode', 
-                desc: 'Pick 3-minute speech drills, upload your Resume PDF for voice mock interviews, or drop PPTX slides for viva presentation studio.',
-                gradient: 'from-indigo-600 to-blue-600',
-                icon: <Mic size={24} className="text-indigo-600" />,
-                iconBg: 'bg-indigo-50 border-indigo-100'
-              },
-              { 
-                step: '02', 
-                title: 'Rehearse Live Out Loud', 
-                desc: 'Speak into your mic with real-time vocal pacing (WPM) meters, pause detection, filler word alerts, and live webcam HUD.',
-                gradient: 'from-indigo-700 to-purple-600',
-                icon: <Zap size={24} className="text-purple-600" />,
-                iconBg: 'bg-purple-50 border-purple-100'
-              },
-              { 
-                step: '03', 
-                title: 'Face Unscripted AI Q&A', 
-                desc: 'Answer realistic technical questions, STAR method interview probes, and slide-based academic viva questions under pressure.',
-                gradient: 'from-amber-500 to-orange-500',
-                icon: <MessageSquare size={24} className="text-amber-600" />,
-                iconBg: 'bg-amber-50 border-amber-100'
-              },
-              { 
-                step: '04', 
-                title: 'Instant AI Scorecards & Streaks', 
-                desc: 'Receive instant WPM pacing charts, filler word breakdowns, STAR scores, streak XP badges, and shareable PDF certificates.',
-                gradient: 'from-emerald-500 to-teal-600',
-                icon: <Trophy size={24} className="text-emerald-600" />,
-                iconBg: 'bg-emerald-50 border-emerald-100'
-              }
-            ].map((s, i) => (
-              <FadeUp key={s.step} delay={i * 100} className="relative z-10 h-full">
-                <div className="h-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col p-6 relative overflow-hidden group">
-                  {/* Refined Brand Indicator */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200 group-hover:bg-[#F2A93B] transition-colors"></div>
 
-                  <div className="flex items-center justify-between mb-5">
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border shadow-xs ${s.iconBg}`}>
-                      {s.icon}
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200">
-                      Step {s.step}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 mb-2.5 tracking-tight">{s.title}</h3>
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal">{s.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
+            {[
+              { title: "Speaking Too Fast", desc: "Speeding through slides when nervous." },
+              { title: "Filler Overload", desc: '"Basically... um... I think..."' },
+              { title: "Unclear Structure", desc: "Losing audience attention during Q&A." },
+              { title: "Low Confidence", desc: "Hesitating under defense pressure." }
+            ].map((p, idx) => (
+              <FadeUp key={idx} delay={idx * 80}>
+                <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between h-full">
+                  <div className="text-xs font-black text-[#F2A93B] mb-2 uppercase tracking-wider">Issue 0{idx + 1}</div>
+                  <h3 className="text-lg font-extrabold text-[#0F1426] mb-2">{p.title}</h3>
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed">{p.desc}</p>
                 </div>
               </FadeUp>
             ))}
@@ -439,169 +281,247 @@ export default function HomeClient() {
         </div>
       </section>
 
-
-      {/* Gamification Feature Section — Sleek Brand Styling */}
-      <section className="py-16 sm:py-24 bg-white border-y border-slate-200/80">
+      {/* 5. Main Product Showcase — "One Studio" */}
+      <section id="studio" className="py-20 sm:py-28 bg-white border-t border-slate-100 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeUp>
-            <div className="bg-[#0F1426] rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 flex flex-col md:flex-row items-center gap-8 sm:gap-12 relative overflow-hidden border border-slate-800 shadow-2xl">
-              {/* Ambient Warmth */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-[100px] pointer-events-none"></div>
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-2 block">
+                One Studio
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-[#0F1426] tracking-tight">
+                Multiple ways to practice.
+              </h2>
+            </div>
+          </FadeUp>
 
-              <div className="w-full md:w-1/2 relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-6 border border-white/10">
-                  <Flame size={14} className="text-amber-400" /> Consistency &amp; Progress Engine
-                </div>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-4 sm:mb-6 tracking-tight leading-tight">
-                  Track your speech, interview &amp; viva progress.
-                </h3>
-                <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 font-medium">
-                  Public speaking is a muscle. Oratii tracks every session, measuring your vocal pacing, filler word elimination, and Q&amp;A readiness over time.
-                </p>
-                <ul className="flex flex-col gap-3.5 text-slate-200 font-semibold text-sm sm:text-base">
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Track live WPM vocal pacing &amp; pause durations</li>
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Audit filler words (&ldquo;matlab&rdquo;, &ldquo;basically&rdquo;, &ldquo;ums&rdquo;)</li>
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-emerald-400" /> Rehearse mock interviews, viva Q&amp;A &amp; 3-min drills</li>
-                  <li className="flex items-center gap-3"><CheckCircle2 size={18} className="text-amber-400" /> Grammarly-style weekly progress email reports</li>
-                </ul>
-              </div>
+          {/* Interactive Mode Selector */}
+          <div className="flex items-center justify-center gap-2 mb-10 overflow-x-auto no-scrollbar pb-2">
+            {[
+              { id: 0, label: 'Speech Coach', icon: Mic },
+              { id: 1, label: 'Presentation Practice', icon: Video },
+              { id: 2, label: 'AI Interviewer', icon: Briefcase },
+              { id: 3, label: 'Viva Defense', icon: GraduationCap }
+            ].map((m) => {
+              const Icon = m.icon;
+              const isActive = activeFeatureIndex === m.id;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => setActiveFeatureIndex(m.id)}
+                  className={`px-5 py-3 rounded-xl font-extrabold text-sm transition-all flex items-center gap-2 cursor-pointer border ${
+                    isActive
+                      ? 'bg-[#0F1426] text-white border-[#0F1426] shadow-md'
+                      : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border-slate-200'
+                  }`}
+                >
+                  <Icon size={16} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
+                  <span>{m.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-              <div className="w-full md:w-1/2 relative z-10 flex justify-center">
-                <div className="bg-white p-5 sm:p-6 rounded-2xl w-full max-w-md border border-slate-200 shadow-xl">
-                  <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
-                    <span className="text-slate-900 font-black text-sm sm:text-base flex items-center gap-2">
-                      <BarChart3 size={18} className="text-indigo-600" /> Real-Time Analytics &amp; Progress
-                    </span>
-                    {user ? <StreakBadge /> : <div className="flex items-center gap-1.5 text-amber-600 font-black bg-amber-50 px-3 py-1 rounded-full border border-amber-200"><Flame size={15} fill="currentColor" /> 1-Day Streak</div>}
-                  </div>
-
-                  {/* Live Feature Progress Metrics */}
-                  <div className="space-y-3 mb-5">
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-orange-100 text-orange-600"><Mic size={16} /></div>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-bold text-slate-800">Speech Pacing (WPM)</span>
-                          <span className="text-[10px] text-slate-500 font-medium">Target: 130–150 WPM</span>
-                        </div>
-                      </div>
-                      <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">142 WPM (Optimal)</span>
+          {/* Studio Stage */}
+          <div className="bg-[#0F1426] rounded-3xl border border-slate-800 p-4 sm:p-8 shadow-2xl min-h-[420px] flex flex-col justify-center">
+            <div className="w-full max-w-4xl mx-auto aspect-[16/10] sm:aspect-[16/9]">
+              {activeFeatureIndex === 0 && <SpeechCoachMockup />}
+              {activeFeatureIndex === 1 && <SlideAnalyzerMockup />}
+              {activeFeatureIndex === 2 && (
+                <div className="w-full h-full bg-slate-950 text-white rounded-2xl p-6 flex flex-col justify-between border border-slate-800">
+                  <div className="text-xs font-bold text-[#F2A93B] uppercase tracking-wider mb-2">AI Interviewer Probe</div>
+                  <p className="text-base sm:text-xl font-bold text-slate-100 italic mb-4">
+                    &quot;Tell me about a complex system architecture decision you made under deadline pressure.&quot;
+                  </p>
+                  <div className="grid grid-cols-3 gap-3 text-xs">
+                    <div className="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                      <span className="text-emerald-400 font-bold block mb-1">Structure — Strong</span>
+                      <span className="text-slate-400">STAR method followed</span>
                     </div>
-
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-amber-100 text-amber-700"><Briefcase size={16} /></div>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-bold text-slate-800">AI Mock Interview</span>
-                          <span className="text-[10px] text-slate-500 font-medium">STAR Method Audit</span>
-                        </div>
-                      </div>
-                      <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-200">92/100 Score</span>
+                    <div className="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                      <span className="text-amber-400 font-bold block mb-1">Specificity — Improve</span>
+                      <span className="text-slate-400">Add quantitative impact</span>
                     </div>
-
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-purple-100 text-purple-700"><Video size={16} /></div>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-bold text-slate-800">Slide &amp; Viva Studio</span>
-                          <span className="text-[10px] text-slate-500 font-medium">Slide Density &amp; Viva Q&amp;A</span>
-                        </div>
-                      </div>
-                      <span className="text-xs font-black text-purple-600 bg-purple-50 px-2 py-1 rounded-md border border-purple-200">0 Fillers (&ldquo;um/matlab&rdquo;)</span>
+                    <div className="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                      <span className="text-emerald-400 font-bold block mb-1">Confidence — Good</span>
+                      <span className="text-slate-400">Steady vocal pitch</span>
                     </div>
                   </div>
-
-                  {user ? (
-                    <Link href="/dashboard" className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-bold text-sm shadow-md block text-center transition-all">
-                      View Live Dashboard Analytics
-                    </Link>
-                  ) : (
-                    <Link href="/signup" className="w-full py-3 bg-slate-950 text-white rounded-xl font-bold text-sm shadow-md block text-center hover:bg-indigo-900 transition-all">
-                      Track Your Progress Free
-                    </Link>
-                  )}
                 </div>
-              </div>
+              )}
+              {activeFeatureIndex === 3 && <VivaDefenseMockup />}
+            </div>
+          </div>
+        </div>
+      </section>
 
+      {/* 6. Habit & Practice Retention (20-Day Challenge) */}
+      <section className="py-16 bg-[#F8FAFC] border-y border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          <FadeUp>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0F1426] mb-4">
+              Improvement comes from repetition.
+            </h2>
+            <p className="text-slate-600 text-base font-medium max-w-xl mx-auto mb-8">
+              Build a daily speaking habit with targeted practice prompts and streak rewards.
+            </p>
+
+            <div className="inline-flex items-center gap-6 px-6 py-3 rounded-2xl bg-white border border-slate-200 shadow-xs font-bold text-sm text-[#0F1426]">
+              <span className="flex items-center gap-2"><Trophy size={16} className="text-[#F2A93B]" /> Day 12 / 20</span>
+              <span className="text-slate-300">|</span>
+              <span className="flex items-center gap-2"><Flame size={16} className="text-rose-500" /> 12-day streak</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-emerald-600">+120 XP</span>
             </div>
           </FadeUp>
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
-      <section className="py-20 sm:py-28 bg-[#F8FAFC] border-t border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      {/* 7. Transformation Showcase (Before → After) */}
+      <section id="transformation" className="py-20 sm:py-28 bg-white border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <FadeUp>
-            <div className="text-center mb-12 sm:mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold uppercase tracking-widest mb-3 border border-slate-200">
-                Help &amp; Support
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Frequently Asked Questions</h2>
-              <p className="text-slate-600 text-base">Everything you need to know about Oratii AI coaching.</p>
-            </div>
+            <span className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 block">
+              Transformation
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#0F1426] tracking-tight mb-16">
+              Practice → Understand → Improve
+            </h2>
           </FadeUp>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch text-left">
+            {/* Before */}
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-extrabold uppercase text-slate-400 block mb-3">Before Oratii</span>
+                <ul className="space-y-3 text-sm font-semibold text-slate-700">
+                  <li className="flex items-center gap-2 text-rose-600">❌ 145 WPM (Too fast)</li>
+                  <li className="flex items-center gap-2 text-rose-600">❌ 8 filler words</li>
+                  <li className="flex items-center gap-2 text-rose-600">❌ Weak structure</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Feedback */}
+            <div className="p-6 rounded-2xl bg-[#0F1426] text-white border border-slate-800 flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-extrabold uppercase text-[#F2A93B] block mb-3">Oratii Feedback</span>
+                <ul className="space-y-3 text-sm font-semibold text-slate-200">
+                  <li className="flex items-center gap-2">💡 Slow down on slide 3</li>
+                  <li className="flex items-center gap-2">💡 Remove filler &quot;basically&quot;</li>
+                  <li className="flex items-center gap-2">💡 Add STAR conclusion</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* After */}
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-extrabold uppercase text-emerald-600 block mb-3">After 3 Sessions</span>
+                <ul className="space-y-3 text-sm font-semibold text-slate-800">
+                  <li className="flex items-center gap-2 text-emerald-600">✓ 128 WPM (Controlled)</li>
+                  <li className="flex items-center gap-2 text-emerald-600">✓ Clear delivery</li>
+                  <li className="flex items-center gap-2 text-emerald-600">✓ Confident explanation</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. How Oratii Works */}
+      <section id="how-it-works" className="py-20 sm:py-28 bg-[#F8FAFC] border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <FadeUp>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#0F1426] mb-16 tracking-tight">
+              How Oratii Works
+            </h2>
+          </FadeUp>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
             {[
-              { q: "Is my voice recording stored securely?", a: "Yes. All audio recordings are processed in real-time with end-to-end encryption and are never sold or used for public AI training." },
-              { q: "Can I try Oratii completely free?", a: "Yes! Our free plan includes 5 speech analyses, 2 PPT slide analyses, and 3 Viva defense sessions every month." },
-              { q: "How accurate is the filler word and pacing analysis?", a: "Our speech engine operates with high transcription accuracy, identifying subtle pause patterns and specific filler words like 'um', 'ah', and 'basically'." },
-              { q: "What presentation formats are supported?", a: "Slide Analyzer supports PPTX files, PDF decks, and Keynote files exported to PDF." }
-            ].map((faq, idx) => (
-              <FadeUp key={idx} delay={idx * 50}>
-                <details className="group bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all [&_summary::-webkit-details-marker]:hidden cursor-pointer">
-                  <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg">
-                    <span>{faq.q}</span>
-                    <span className="ml-4 shrink-0 transition-transform group-open:-rotate-180 text-slate-500">↓</span>
-                  </summary>
-                  <p className="mt-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 font-normal">
-                    {faq.a}
-                  </p>
-                </details>
+              { num: "01", title: "Choose Practice Mode", desc: "Select speech coach, interview probes, or presentation studio." },
+              { num: "02", title: "Practice Out Loud", desc: "Speak into mic with live webcam & slide HUD telemetry." },
+              { num: "03", title: "Get Real-time Feedback", desc: "See exact WPM, filler word locations, and clarity scores." },
+              { num: "04", title: "Practice Again", desc: "Refine your delivery and track your streak progress." }
+            ].map((step, idx) => (
+              <FadeUp key={idx} delay={idx * 80}>
+                <div className="border-t-2 border-slate-200 pt-6">
+                  <div className="text-2xl font-black text-[#F2A93B] mb-2">{step.num}</div>
+                  <h3 className="text-lg font-extrabold text-[#0F1426] mb-2">{step.title}</h3>
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed">{step.desc}</p>
+                </div>
               </FadeUp>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section — Oratii Official Hero CTA Banner */}
-      <section className="py-20 sm:py-28 bg-[#0F1426] text-center px-4 sm:px-6 relative overflow-hidden text-white border-t border-slate-800">
-        {/* Glow Spheres */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#F2A93B]/10 blur-[130px] pointer-events-none"></div>
+      {/* 9. Audience Section */}
+      <section className="py-20 sm:py-28 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <FadeUp>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-3xl sm:text-4xl font-black text-[#0F1426] tracking-tight">
+                Designed for your specific goals.
+              </h2>
+            </div>
+          </FadeUp>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200">
+              <h3 className="text-xl font-black text-[#0F1426] mb-4">Students</h3>
+              <ul className="space-y-3 text-sm font-semibold text-slate-600">
+                <li>• Viva &amp; Thesis Defense</li>
+                <li>• Class Presentations</li>
+                <li>• Campus Interviews</li>
+              </ul>
+            </div>
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200">
+              <h3 className="text-xl font-black text-[#0F1426] mb-4">Professionals</h3>
+              <ul className="space-y-3 text-sm font-semibold text-slate-600">
+                <li>• Executive Pitch Decks</li>
+                <li>• Client Meetings</li>
+                <li>• Team Communication</li>
+              </ul>
+            </div>
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200">
+              <h3 className="text-xl font-black text-[#0F1426] mb-4">Job Seekers</h3>
+              <ul className="space-y-3 text-sm font-semibold text-slate-600">
+                <li>• Behavioral HR Probes</li>
+                <li>• Technical Deep Dives</li>
+                <li>• Self Introductions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Final CTA Section */}
+      <section className="py-20 sm:py-28 bg-[#0F1426] text-center px-4 sm:px-6 relative overflow-hidden text-white">
         <div className="max-w-4xl mx-auto relative z-10">
           <FadeUp>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-[#F2A93B] text-xs font-bold uppercase tracking-widest mb-6 border border-white/10">
-              Start Improving Today
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-              Ready to lead the room?
+            <h2 className="text-3xl sm:text-5xl font-black text-white mb-4 tracking-tight">
+              Your next presentation starts here.
             </h2>
-            <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-normal">
-              Join ambitious professionals who use Oratii to perfect their pitches, presentations, and public speaking.
+            <p className="text-slate-300 text-lg sm:text-xl max-w-xl mx-auto mb-10 font-medium">
+              Practice. Get feedback. Improve.
             </p>
-            {user ? (
-              <Link 
-                href="/dashboard"
-                className="inline-block px-10 py-4 bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] text-base font-bold rounded-2xl transition-all shadow-xl shadow-[#F2A93B]/20 hover:-translate-y-0.5 cursor-pointer"
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <Link 
-                href="/signup"
-                className="inline-block px-10 py-4 bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] text-base font-bold rounded-2xl transition-all shadow-xl shadow-[#F2A93B]/20 hover:-translate-y-0.5 cursor-pointer"
-              >
-                Start Free Analysis
-              </Link>
-            )}
+            <Link 
+              href="/speech-coach"
+              className="inline-block px-10 py-4 bg-[#F2A93B] hover:bg-[#d98200] text-[#0F1426] text-base font-extrabold rounded-xl transition-all shadow-xl hover:-translate-y-0.5"
+            >
+              Start practicing
+            </Link>
           </FadeUp>
         </div>
       </section>
+
       </div>
+
       <Footer />
 
-      {/* Educator / Institute Mode Switch Modal Popup */}
+      {/* Educator Modal */}
       <EducatorSwitchModal
         isOpen={showEducatorModal}
         onClose={() => setShowEducatorModal(false)}
@@ -610,3 +530,4 @@ export default function HomeClient() {
     </div>
   );
 }
+
