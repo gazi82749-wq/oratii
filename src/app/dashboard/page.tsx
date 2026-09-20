@@ -143,65 +143,79 @@ export default function ProfessionalDashboard() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const { data: { user } } = await supabase.auth.getUser();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { user } } = await supabase.auth.getUser();
 
-      const activeUser = user || session?.user;
+        const activeUser = user || session?.user;
 
-      if (!activeUser) {
-        if (typeof document !== 'undefined') {
-          document.cookie = "Oratii_logged_in=; path=/; max-age=0;";
+        if (!activeUser) {
+          if (typeof document !== 'undefined') {
+            document.cookie = "Oratii_logged_in=; path=/; max-age=0;";
+          }
+          await supabase.auth.signOut();
+          router.push('/login');
+          return;
         }
-        await supabase.auth.signOut();
-        router.push('/login');
-        return;
+
+        setUser(activeUser);
+
+        // Load Profile & Settings (safely use activeUser)
+        const storedProfile = getProfile() || {};
+        const fullName = storedProfile.name || activeUser.user_metadata?.full_name || activeUser.user_metadata?.name || activeUser.email?.split('@')[0] || 'User';
+        const userEmail = activeUser.email || storedProfile.email || '';
+        const userAvatar = storedProfile.avatar || activeUser.user_metadata?.avatar_url || null;
+
+        setProfileState({
+          name: fullName,
+          email: userEmail,
+          avatar: userAvatar,
+        });
+
+        const createdAt = activeUser.created_at ? new Date(activeUser.created_at) : new Date();
+        const formattedDate = createdAt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+        // Session History & Gamification safely
+        let history: any[] = [];
+        let gamification: any = { xp: 0, streak: 0, level: 1, nextThreshold: 200, freezes: 0 };
+        let statistics: any = { totalSessions: 0, averageScore: 0 };
+        let cState: any = { streak_count: 0 };
+
+        try {
+          history = getHistory() || [];
+          gamification = getGamificationSummary() || gamification;
+          statistics = getStatistics() || statistics;
+          cState = getChallengeState() || cState;
+        } catch (storageErr) {
+          console.warn('[Dashboard] Local storage load notice:', storageErr);
+        }
+
+        let recentScore = 0;
+        if (history.length > 0) {
+          recentScore = history[0]?.scores?.overall || 0;
+          setHasHistory(true);
+          setRecentSessions(history.slice(0, 5));
+          setScoreTrend([...history].slice(0, 10).reverse().map(s => s?.scores?.overall || 0));
+        }
+
+        setStats({
+          xp: gamification.xp || 0,
+          streak: cState.streak_count || gamification.streak || 0,
+          recentScore,
+          level: gamification.level || 1,
+          nextThreshold: gamification.nextThreshold || 200,
+          freezes: gamification.freezes || 0,
+          totalSessions: statistics.totalSessions || 0,
+          averageScore: statistics.averageScore || 0,
+          memberSince: formattedDate,
+        });
+
+        setSettingsState(getSettings() || { notifications: true, theme: 'light' });
+      } catch (authErr) {
+        console.error('[Dashboard] Auth check error:', authErr);
+      } finally {
+        setLoaded(true);
       }
-
-      setUser(activeUser);
-
-      // Load Profile & Settings
-      const storedProfile = getProfile() || {};
-      const fullName = storedProfile.name || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
-      const userEmail = user.email || storedProfile.email || '';
-      const userAvatar = storedProfile.avatar || user.user_metadata?.avatar_url || null;
-
-      setProfileState({
-        name: fullName,
-        email: userEmail,
-        avatar: userAvatar,
-      });
-
-      const createdAt = user.created_at ? new Date(user.created_at) : new Date();
-      const formattedDate = createdAt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-
-      // Session History & Gamification
-      const history = getHistory();
-      const gamification = getGamificationSummary();
-      const statistics = getStatistics();
-      const cState = getChallengeState();
-
-      let recentScore = 0;
-      if (history.length > 0) {
-        recentScore = history[0].scores?.overall || 0;
-        setHasHistory(true);
-        setRecentSessions(history.slice(0, 5));
-        setScoreTrend([...history].slice(0, 10).reverse().map(s => s.scores?.overall || 0));
-      }
-
-      setStats({
-        xp: gamification.xp,
-        streak: cState.streak_count || gamification.streak,
-        recentScore,
-        level: gamification.level || 1,
-        nextThreshold: gamification.nextThreshold || 200,
-        freezes: gamification.freezes || 0,
-        totalSessions: statistics.totalSessions,
-        averageScore: statistics.averageScore,
-        memberSince: formattedDate,
-      });
-
-      setSettingsState(getSettings());
-      requestAnimationFrame(() => setLoaded(true));
     };
 
     checkAuth();
