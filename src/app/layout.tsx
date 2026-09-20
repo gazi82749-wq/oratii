@@ -4,7 +4,6 @@ import "./globals.css";
 import SidebarLayout from "../components/SidebarLayout";
 import ServiceWorkerRegister from "../components/ServiceWorkerRegister";
 import PwaInstallPrompt from "../components/PwaInstallPrompt";
-import ScrollAnimationObserver from "../components/ScrollAnimationObserver";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -169,7 +168,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SidebarLayout>
           {children}
         </SidebarLayout>
-        <ScrollAnimationObserver />
         <ServiceWorkerRegister />
         <PwaInstallPrompt />
       </body>

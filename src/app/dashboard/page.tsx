@@ -395,8 +395,8 @@ export default function ProfessionalDashboard() {
       <NotificationPrompt />
 
       {/* 1. HERO PROFILE CARD (Executive Brand Palette) */}
-      <div className="relative bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6 fade-up-scroll">
-        
+      <div className="relative bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+
         {/* Subtle Warm Backdrop Accent */}
         <div className="absolute -top-12 -right-12 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none"></div>
 
@@ -468,7 +468,7 @@ export default function ProfessionalDashboard() {
       </div>
 
       {/* 2. PERFORMANCE METRICS (Landing Page Soft Cards) */}
-      <div className="space-y-4 fade-up-scroll">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
             <BarChart2 size={20} className="text-indigo-600" /> Performance Overview
@@ -480,7 +480,7 @@ export default function ProfessionalDashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Card 1: Average Presentation Rating */}
-          <div className="mobile-card-vibrant vibrant-border-indigo p-5 sm:p-6 flex flex-col justify-between active-touch-scale fade-up-scroll stagger-1">
+          <div className="mobile-card-vibrant vibrant-border-indigo p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Overall Rating</span>
               <div className="w-9 h-9 rounded-xl bg-indigo-100/90 text-indigo-900 flex items-center justify-center shadow-xs">
@@ -498,7 +498,7 @@ export default function ProfessionalDashboard() {
           </div>
 
           {/* Card 2: Active Habit Streak */}
-          <div className="mobile-card-vibrant vibrant-border-amber p-5 sm:p-6 flex flex-col justify-between active-touch-scale fade-up-scroll stagger-2">
+          <div className="mobile-card-vibrant vibrant-border-amber p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Practice Streak</span>
               <div className="w-9 h-9 rounded-xl bg-amber-100/90 text-amber-900 flex items-center justify-center shadow-xs">
@@ -516,7 +516,7 @@ export default function ProfessionalDashboard() {
           </div>
 
           {/* Card 3: Presenter Level & XP */}
-          <div className="mobile-card-vibrant vibrant-border-rose p-5 sm:p-6 flex flex-col justify-between active-touch-scale fade-up-scroll stagger-3">
+          <div className="mobile-card-vibrant vibrant-border-rose p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Presenter Level</span>
               <span className="text-xs font-extrabold text-rose-900 bg-rose-100/90 border border-rose-300 px-2.5 py-0.5 rounded-full">
@@ -537,7 +537,7 @@ export default function ProfessionalDashboard() {
           </div>
 
           {/* Card 4: Total Sessions Analyzed */}
-          <div className="mobile-card-vibrant vibrant-border-emerald p-5 sm:p-6 flex flex-col justify-between active-touch-scale fade-up-scroll stagger-4">
+          <div className="mobile-card-vibrant vibrant-border-emerald p-5 sm:p-6 flex flex-col justify-between active-touch-scale">
             <div className="flex items-center justify-between text-slate-500">
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">Total Audits</span>
               <div className="w-9 h-9 rounded-xl bg-purple-100/90 text-purple-900 flex items-center justify-center shadow-xs">
@@ -557,12 +557,12 @@ export default function ProfessionalDashboard() {
       </div>
 
       {/* VIRAL REFERRAL PROGRAM CARD */}
-      <div className="fade-up-scroll">
+      <div>
         <ReferralCard />
       </div>
 
       {/* 3. CORE AI MODULES GRID (Vibrant Landing Page Cards) */}
-      <div className="space-y-4 fade-up-scroll">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
             <Sparkles size={20} className="text-indigo-600" /> AI Practice Modules & Presentation Studio
@@ -574,7 +574,7 @@ export default function ProfessionalDashboard() {
             <div
               key={idx}
               onClick={() => router.push(m.href)}
-              className={`group bg-white border border-slate-200/90 hover:border-indigo-400 rounded-3xl p-6 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden flex flex-col justify-between gap-5 transform hover:-translate-y-1 fade-up-scroll stagger-${(idx % 4) + 1}`}
+              className="group bg-white border border-slate-200/90 hover:border-indigo-400 rounded-3xl p-6 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden flex flex-col justify-between gap-5 transform hover:-translate-y-1"
             >
               {/* Card Top Header */}
               <div className="flex items-start justify-between gap-4">
