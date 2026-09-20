@@ -27,7 +27,21 @@ export default function HomeClient() {
   const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [showEducatorModal, setShowEducatorModal] = useState(false);
-  const [activeFeatureScrollIndex, setActiveFeatureScrollIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  const heroPhrases = [
+    { action: 'Ace your', target: 'presentations & viva.', highlightBg: 'bg-[#FEF7ED] text-[#D98200] border-[#F2A93B]/40' },
+    { action: 'Crush your', target: 'voice mock interviews.', highlightBg: 'bg-amber-50 text-amber-800 border-amber-200' },
+    { action: 'Eliminate', target: 'filler words & pauses.', highlightBg: 'bg-rose-50 text-rose-700 border-rose-200' },
+    { action: 'Master your', target: 'public speaking habits.', highlightBg: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % heroPhrases.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -55,92 +69,6 @@ export default function HomeClient() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // PayPal-inspired scroll detection for features section
-  useEffect(() => {
-    const handleScroll = () => {
-      const cards = [0, 1, 2, 3, 4].map((i) => document.getElementById(`module-card-${i}`));
-      const scrollPos = window.pageYOffset + 220;
-      for (let i = cards.length - 1; i >= 0; i--) {
-        const card = cards[i];
-        if (card && card.offsetTop <= scrollPos) {
-          setActiveFeatureScrollIndex(i);
-          break;
-        }
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const features: Array<{
-    title: string;
-    subtitle?: string;
-    headline: string;
-    desc: string;
-    highlights: string[];
-    icon: any;
-    iconBg: string;
-    href: string;
-    cta: string;
-  }> = [
-    {
-      title: 'Speech Delivery Coach',
-      headline: 'Analyze vocal pacing & filler words.',
-      desc: 'Record live speech or audio clips for instant AI vocal pacing (WPM), filler word detection, tone analysis, and automated rewrites.',
-      highlights: ['Live WPM & Pause Meter', 'Filler Word Detection', 'AI Speech Rewrites'],
-      icon: <Mic size={28} className="text-rose-500" />,
-      iconBg: 'bg-rose-50 border-rose-100',
-      href: '/speech-coach',
-      cta: 'Explore Speech Coach'
-    },
-    {
-      title: 'AI Voice Mock Interviewer',
-      headline: 'Unscripted tech & behavioral interviews.',
-      desc: 'Upload your Resume PDF or question paper into an interactive voice window. Experience realistic 4-round technical discussions & STAR method scoring.',
-      highlights: ['Resume PDF & Role Upload', 'Interactive Voice AI Interface', 'STAR Method & Tech Scoring'],
-      icon: <Briefcase size={28} className="text-amber-600" />,
-      iconBg: 'bg-amber-50 border-amber-100',
-      href: '/interview',
-      cta: 'Start Voice Mock Interview'
-    },
-    {
-      title: 'Presentation Practice',
-      subtitle: 'Presentation Practice & Viva Defense',
-      headline: 'Rehearse live presentations with slides and webcam.',
-      desc: 'Upload PPTX/PDF slides to present live with zero-latency Edge WASM HUD, webcam feedback, and in-built academic viva defense.',
-      highlights: [
-        'Step 1: Upload & Render Presentation Slides',
-        'Step 2: Live Webcam Rehearsal Studio with WASM HUD',
-        'Step 3: In-built Academic Viva Defense'
-      ],
-      icon: <Video size={28} className="text-[#1B2140]" />,
-      iconBg: 'bg-indigo-50 border-indigo-200',
-      href: '/presentation',
-      cta: 'Start Presentation Practice'
-    },
-    {
-      title: '20-Day Speech Challenge',
-      headline: 'Build a daily speaking habit.',
-      desc: 'Transform your public speaking confidence in 20 days. Complete daily targeted practice prompts, track streaks, and earn downloadable certificates.',
-      highlights: ['Daily Speaking Prompts', 'Streak Tracking & XP Badges', 'PDF Completion Certificate'],
-      icon: <Trophy size={28} className="text-[#D98200]" />,
-      iconBg: 'bg-emerald-50 border-emerald-100',
-      href: '/challenge',
-      cta: 'Join 20-Day Challenge'
-    },
-    {
-      title: 'Partner Academy & Coaching Hub',
-      headline: 'Automate student speaking drills & viva homework.',
-      desc: 'For Spoken English centers, IELTS institutes, and College Placement Cells. Create batches, share 6-character WhatsApp invite codes, and auto-grade student homework.',
-      highlights: ['1-Click WhatsApp Batch Invites', 'Class Leaderboard & CEFR Band Grades', 'Automated Student Homework Grading'],
-      icon: <GraduationCap size={28} className="text-indigo-600" />,
-      iconBg: 'bg-indigo-50 border-indigo-100',
-      href: '/trainer',
-      cta: 'Open Partner Academy Portal'
-    }
-  ];
-
-
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans antialiased text-slate-900 overflow-x-hidden">
       
@@ -154,7 +82,6 @@ export default function HomeClient() {
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <a href="#studio" className="hover:text-[#0F1426] transition-colors">Product</a>
-            <a href="#practice" className="hover:text-[#0F1426] transition-colors">Practice</a>
             <a href="#transformation" className="hover:text-[#0F1426] transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-[#0F1426] transition-colors">How it works</a>
           </nav>
@@ -175,11 +102,11 @@ export default function HomeClient() {
 
       <div className="flex-1 pt-20 sm:pt-24">
 
-      {/* 2. Product-First Hero Section */}
+      {/* 2. Product-First Hero Section with Left Animated Text Highlight */}
       <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Column: Headline & Action */}
+          {/* Left Column: Animated Headline & Action */}
           <div className="lg:col-span-6 flex flex-col items-start text-left">
             <FadeUp delay={50}>
               <span className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4 block">
@@ -188,15 +115,20 @@ export default function HomeClient() {
             </FadeUp>
 
             <FadeUp delay={150}>
-              <h1 className="text-4xl sm:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.1] mb-6">
+              <h1 className="text-4xl sm:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[140px] sm:min-h-[160px]">
                 Say it well. <br />
-                Show it <span className="text-[#F2A93B]">better</span>.
+                <span className="inline-flex flex-wrap items-center gap-2 transition-all duration-500">
+                  <span>{heroPhrases[heroIndex].action}</span>
+                  <span className={`px-3.5 py-1 rounded-2xl border text-3xl sm:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
+                    {heroPhrases[heroIndex].target}
+                  </span>
+                </span>
               </h1>
             </FadeUp>
 
             <FadeUp delay={200}>
               <p className="text-slate-600 text-lg sm:text-xl font-medium leading-relaxed max-w-lg mb-8">
-                Practice presentations, interviews, and speaking with real-time feedback that shows you exactly where to improve.
+                Practice presentations, viva defense, and interviews with real-time feedback that shows you exactly where to improve.
               </p>
             </FadeUp>
 
@@ -281,7 +213,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 5. Main Product Showcase — "One Studio" */}
+      {/* 5. Main Product Showcase — "One Studio" (Viva consolidated inside Presentation Practice) */}
       <section id="studio" className="py-20 sm:py-28 bg-white border-t border-slate-100 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeUp>
@@ -295,13 +227,12 @@ export default function HomeClient() {
             </div>
           </FadeUp>
 
-          {/* Interactive Mode Selector */}
-          <div className="flex items-center justify-center gap-2 mb-10 overflow-x-auto no-scrollbar pb-2">
+          {/* Interactive Mode Selector (3 Core Practice Modes) */}
+          <div className="flex items-center justify-center gap-3 mb-10 overflow-x-auto no-scrollbar pb-2">
             {[
               { id: 0, label: 'Speech Coach', icon: Mic },
-              { id: 1, label: 'Presentation Practice', icon: Video },
-              { id: 2, label: 'AI Interviewer', icon: Briefcase },
-              { id: 3, label: 'Viva Defense', icon: GraduationCap }
+              { id: 1, label: 'Presentation & Viva Studio', icon: Video },
+              { id: 2, label: 'AI Voice Interviewer', icon: Briefcase }
             ].map((m) => {
               const Icon = m.icon;
               const isActive = activeFeatureIndex === m.id;
@@ -309,13 +240,13 @@ export default function HomeClient() {
                 <button
                   key={m.id}
                   onClick={() => setActiveFeatureIndex(m.id)}
-                  className={`px-5 py-3 rounded-xl font-extrabold text-sm transition-all flex items-center gap-2 cursor-pointer border ${
+                  className={`px-6 py-3.5 rounded-xl font-extrabold text-sm transition-all flex items-center gap-2.5 cursor-pointer border ${
                     isActive
-                      ? 'bg-[#0F1426] text-white border-[#0F1426] shadow-md'
+                      ? 'bg-[#0F1426] text-white border-[#0F1426] shadow-md scale-105'
                       : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border-slate-200'
                   }`}
                 >
-                  <Icon size={16} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
+                  <Icon size={18} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
                   <span>{m.label}</span>
                 </button>
               );
@@ -349,7 +280,6 @@ export default function HomeClient() {
                   </div>
                 </div>
               )}
-              {activeFeatureIndex === 3 && <VivaDefenseMockup />}
             </div>
           </div>
         </div>
