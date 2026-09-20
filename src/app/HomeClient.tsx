@@ -282,7 +282,7 @@ export default function HomeClient() {
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
                     <span>02</span>
                     <span className="text-amber-400">•</span>
-                    <span>Presentation Practice</span>
+                    <span>Presentation Practice &amp; Viva Defense</span>
                   </div>
 
                   <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
@@ -290,7 +290,7 @@ export default function HomeClient() {
                   </h2>
 
                   <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
-                    Practice your presentation while Oratii observes your delivery, pacing and presentation behavior.
+                    Practice your presentation and thesis defense while Oratii observes your delivery, pacing, examiner Q&amp;A defense, and slide density.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
@@ -306,18 +306,18 @@ export default function HomeClient() {
                     <FadeUp delay={200}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Webcam PIP Feed
+                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Viva Panel Simulation
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Academic thesis defense &amp; examiner push-back audit</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Slide Density Audit
+                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Webcam PIP Feed
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -412,76 +412,12 @@ export default function HomeClient() {
           <div className="py-1 text-center">
             <FadeUp>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
-                &quot;Then prepare for the unexpected.&quot;
+                &quot;Then make improvement a daily habit.&quot;
               </div>
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — VIVA DEFENSE (ANIMATED BG GLOW) */}
-          <div id="feature-viva" className="scroll-mt-28 w-full">
-            <FadeInRight>
-              <div className="bg-gradient-to-bl from-purple-50/80 via-fuchsia-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-purple-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
-                {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
-
-                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100/90 border border-purple-300 text-purple-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
-                    <span>04</span>
-                    <span className="text-purple-400">•</span>
-                    <span>Viva Defense</span>
-                  </div>
-
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
-                    Be ready for the question you didn&apos;t prepare for.
-                  </h2>
-
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
-                    Prepare for academic and technical defense panels where examiners push back on your methods and assumptions.
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
-                    <FadeUp delay={100}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-purple-600 sm:w-4 sm:h-4" /> Examiner Push-back
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
-                      </div>
-                    </FadeUp>
-
-                    <FadeUp delay={200}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-purple-600 sm:w-4 sm:h-4" /> Depth &amp; Reasoning
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
-                      </div>
-                    </FadeUp>
-
-                    <FadeUp delay={300}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-purple-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-purple-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-purple-600 sm:w-4 sm:h-4" /> Defensive Poise
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
-                      </div>
-                    </FadeUp>
-                  </div>
-
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
-                    <Link
-                      href="/presentation"
-                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
-                    >
-                      Practice Viva Defense <ArrowRight size={18} className="text-[#F2A93B]" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </FadeInRight>
-          </div>
-
-          {/* FEATURE 05 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
+          {/* FEATURE 04 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeInLeft>
               <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
@@ -490,7 +426,7 @@ export default function HomeClient() {
 
                 <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
-                    <span>05</span>
+                    <span>04</span>
                     <span className="text-emerald-400">•</span>
                     <span>Habit Building</span>
                   </div>
@@ -647,7 +583,7 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-left">
             {[
-              { num: "01", title: "Choose What to Practice", desc: "Select speech coach, viva defense, presentation studio, or interview probes." },
+              { num: "01", title: "Choose What to Practice", desc: "Select speech coach, presentation studio, voice interview probes, or daily habit challenges." },
               { num: "02", title: "Practice Out Loud", desc: "Speak into your mic with live webcam telemetry and slide HUD support." },
               { num: "03", title: "Get Real-time Feedback", desc: "See exact WPM, filler word timestamps, structure feedback, and clarity scores." },
               { num: "04", title: "Improve", desc: "Refine your delivery and track your 20-day habit streak." }
