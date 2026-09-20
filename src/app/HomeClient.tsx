@@ -111,18 +111,12 @@ export default function HomeClient() {
             </FadeUp>
 
             <FadeUp delay={150} className="w-full">
-              {/* Mobile View: Clean Static Headline (Zero Layout Shifts or Jumpiness) */}
-              <h1 className="block md:hidden text-3xl font-black text-[#0F1426] tracking-tight leading-snug mb-4 text-center lg:text-left">
+              {/* Dynamic Animated Headline for Mobile and Laptop */}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.2] mb-6 min-h-[110px] sm:min-h-[160px] text-center lg:text-left">
                 Say it well. <br />
-                Show it <span className="text-[#F2A93B]">better</span>.
-              </h1>
-
-              {/* Desktop View: Dynamic Rotating Headline */}
-              <h1 className="hidden md:block text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.15] mb-6 min-h-[160px] text-center lg:text-left">
-                Say it well. <br />
-                <span className="inline-flex flex-wrap items-center justify-center lg:justify-start gap-2 transition-all duration-500">
+                <span className="inline-flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 transition-all duration-500">
                   <span>{heroPhrases[heroIndex].action}</span>
-                  <span className={`px-3.5 py-1 rounded-2xl border text-4xl lg:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
+                  <span className={`px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl border text-2xl sm:text-4xl lg:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
                     {heroPhrases[heroIndex].target}
                   </span>
                 </span>
