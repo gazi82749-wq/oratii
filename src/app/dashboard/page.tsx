@@ -160,11 +160,27 @@ export default function ProfessionalDashboard() {
 
         setUser(activeUser);
 
-        // Load Profile & Settings (safely use activeUser)
+        // Load Profile from Local Storage & Supabase
         const storedProfile = getProfile() || {};
-        const fullName = storedProfile.name || activeUser.user_metadata?.full_name || activeUser.user_metadata?.name || activeUser.email?.split('@')[0] || 'User';
-        const userEmail = activeUser.email || storedProfile.email || '';
-        const userAvatar = storedProfile.avatar || activeUser.user_metadata?.avatar_url || null;
+        let fullName = storedProfile.name || activeUser.user_metadata?.full_name || activeUser.user_metadata?.name || activeUser.email?.split('@')[0] || 'User';
+        let userEmail = activeUser.email || storedProfile.email || '';
+        let userAvatar = storedProfile.avatar || activeUser.user_metadata?.avatar_url || null;
+
+        try {
+          const { data: dbProfile } = await supabase
+            .from('profiles')
+            .select('full_name, email, avatar_url')
+            .eq('id', activeUser.id)
+            .maybeSingle();
+
+          if (dbProfile) {
+            if (dbProfile.full_name) fullName = dbProfile.full_name;
+            if (dbProfile.email) userEmail = dbProfile.email;
+            if (dbProfile.avatar_url) userAvatar = dbProfile.avatar_url;
+          }
+        } catch (profileErr) {
+          console.warn('[Dashboard] Supabase profile fetch notice:', profileErr);
+        }
 
         setProfileState({
           name: fullName,
@@ -172,10 +188,13 @@ export default function ProfessionalDashboard() {
           avatar: userAvatar,
         });
 
+        // Save back to local storage for fast cached rendering
+        saveProfile({ name: fullName, email: userEmail, avatar: userAvatar });
+
         const createdAt = activeUser.created_at ? new Date(activeUser.created_at) : new Date();
         const formattedDate = createdAt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 
-        // Session History & Gamification safely
+        // Session History & Gamification safely (localStorage + Supabase DB)
         let history: any[] = [];
         let gamification: any = { xp: 0, streak: 0, level: 1, nextThreshold: 200, freezes: 0 };
         let statistics: any = { totalSessions: 0, averageScore: 0 };
@@ -190,12 +209,61 @@ export default function ProfessionalDashboard() {
           console.warn('[Dashboard] Local storage load notice:', storageErr);
         }
 
+        // Fetch user stats from Supabase user_stats table
+        try {
+          const { data: dbStats } = await supabase
+            .from('user_stats')
+            .select('total_xp, current_streak, level')
+            .eq('user_id', activeUser.id)
+            .maybeSingle();
+
+          if (dbStats) {
+            gamification.xp = Math.max(gamification.xp || 0, dbStats.total_xp || 0);
+            gamification.streak = Math.max(gamification.streak || 0, dbStats.current_streak || 0);
+            gamification.level = Math.max(gamification.level || 1, dbStats.level || 1);
+          }
+        } catch (statsErr) {
+          console.warn('[Dashboard] Supabase stats fetch notice:', statsErr);
+        }
+
+        // Fetch sessions from Supabase sessions table if local history is empty
+        try {
+          const { data: dbSessions } = await supabase
+            .from('sessions')
+            .select('*')
+            .eq('user_id', activeUser.id)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+          if (dbSessions && dbSessions.length > 0) {
+            const mappedSessions = dbSessions.map(s => ({
+              id: s.id,
+              topic: s.session_type ? s.session_type.replace('_', ' ').toUpperCase() : 'Practice Session',
+              timestamp: s.created_at,
+              scores: { overall: s.score || 85 },
+            }));
+
+            if (history.length === 0) {
+              history = mappedSessions;
+            }
+          }
+        } catch (sessionsErr) {
+          console.warn('[Dashboard] Supabase sessions fetch notice:', sessionsErr);
+        }
+
         let recentScore = 0;
         if (history.length > 0) {
           recentScore = history[0]?.scores?.overall || 0;
           setHasHistory(true);
           setRecentSessions(history.slice(0, 5));
           setScoreTrend([...history].slice(0, 10).reverse().map(s => s?.scores?.overall || 0));
+
+          const allScores = history.map(s => s?.scores?.overall || 0).filter(sc => sc > 0);
+          if (allScores.length > 0) {
+            const scoreSum = allScores.reduce((a, b) => a + b, 0);
+            statistics.averageScore = Math.round(scoreSum / allScores.length);
+            statistics.totalSessions = Math.max(statistics.totalSessions || 0, history.length);
+          }
         }
 
         setStats({
