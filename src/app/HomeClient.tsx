@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: true });
 
-import { FadeUp } from '@/components/ui/FadeUp';
+import { FadeUp, FadeInLeft, FadeInRight } from '@/components/ui/FadeUp';
 import EducatorSwitchModal from '../components/EducatorSwitchModal';
 
 export default function HomeClient() {
@@ -182,14 +182,14 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 4. Full-Width Alternating Modern Feature Sections (LEFT / RIGHT) */}
+      {/* 4. Full-Width Alternating Modern Feature Sections with Smooth Scroll Animations */}
       <section id="features" className="py-12 sm:py-20 bg-white relative scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16 sm:space-y-24">
 
           {/* FEATURE 01 — SPEECH COACH (FULL WIDTH - ALIGNED LEFT) */}
           <div id="feature-speech" className="scroll-mt-28 w-full">
-            <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+            <FadeInLeft>
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-black uppercase tracking-widest">
                     <span>01</span>
@@ -206,39 +206,45 @@ export default function HomeClient() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> 145 WPM
+                    <FadeUp delay={100}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> 145 WPM
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Optimal speaking speed indicator and pace target</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Optimal speaking speed indicator and pace target</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm sm:text-base">
-                        <CheckCircle2 size={18} /> Filler Word Detection
+                    <FadeUp delay={200}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm sm:text-base">
+                          <CheckCircle2 size={18} /> Filler Word Detection
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Live flags for &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;, &quot;you know&quot;</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Live flags for &quot;basically&quot;, &quot;um&quot;, &quot;like&quot;, &quot;you know&quot;</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Vocal Telemetry
+                    <FadeUp delay={300}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Vocal Telemetry
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time clarity score and energy level tracking</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time clarity score and energy level tracking</p>
-                    </div>
+                    </FadeUp>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/speech-coach"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Try Speech Coach <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
               </div>
-            </FadeUp>
+            </FadeInLeft>
           </div>
 
           {/* TRANSITION BRIDGE 1 */}
@@ -252,8 +258,8 @@ export default function HomeClient() {
 
           {/* FEATURE 02 — PRESENTATION PRACTICE (FULL WIDTH - ALIGNED RIGHT) */}
           <div id="feature-presentation" className="scroll-mt-28 w-full">
-            <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end">
+            <FadeInRight>
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
                 <div className="w-full flex flex-col md:items-end space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-widest">
                     <span>02</span>
@@ -270,39 +276,45 @@ export default function HomeClient() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Slide Canvas HUD
+                    <FadeUp delay={100}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Slide Canvas HUD
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Webcam PIP Feed
+                    <FadeUp delay={200}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Webcam PIP Feed
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Slide Density Audit
+                    <FadeUp delay={300}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Slide Density Audit
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Automated pacing and slide transition timing checks</p>
-                    </div>
+                    </FadeUp>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/presentation"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Practice Presentation <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
               </div>
-            </FadeUp>
+            </FadeInRight>
           </div>
 
           {/* TRANSITION BRIDGE 2 */}
@@ -316,8 +328,8 @@ export default function HomeClient() {
 
           {/* FEATURE 03 — AI VOICE INTERVIEWER (FULL WIDTH - ALIGNED LEFT) */}
           <div id="feature-interview" className="scroll-mt-28 w-full">
-            <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+            <FadeInLeft>
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-widest">
                     <span>03</span>
@@ -334,39 +346,45 @@ export default function HomeClient() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Dynamic Q&amp;A Probes
+                    <FadeUp delay={100}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Dynamic Q&amp;A Probes
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> STAR Framework
+                    <FadeUp delay={200}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> STAR Framework
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Specificity Score
+                    <FadeUp delay={300}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Specificity Score
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
-                    </div>
+                    </FadeUp>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/interview"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Start Mock Interview <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
               </div>
-            </FadeUp>
+            </FadeInLeft>
           </div>
 
           {/* TRANSITION BRIDGE 3 */}
@@ -380,8 +398,8 @@ export default function HomeClient() {
 
           {/* FEATURE 04 — VIVA DEFENSE (FULL WIDTH - ALIGNED RIGHT) */}
           <div id="feature-viva" className="scroll-mt-28 w-full">
-            <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end">
+            <FadeInRight>
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left md:text-right w-full flex flex-col md:items-end group">
                 <div className="w-full flex flex-col md:items-end space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-black uppercase tracking-widest">
                     <span>04</span>
@@ -398,45 +416,51 @@ export default function HomeClient() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full text-left">
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Examiner Push-back
+                    <FadeUp delay={100}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Examiner Push-back
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Academic thesis &amp; technical panel simulation</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Depth &amp; Reasoning
+                    <FadeUp delay={200}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Depth &amp; Reasoning
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Methodology defense &amp; architectural rationale scoring</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Defensive Poise
+                    <FadeUp delay={300}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Defensive Poise
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Vocal composure &amp; defensive clarity evaluation</p>
-                    </div>
+                    </FadeUp>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/presentation"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Practice Viva Defense <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
               </div>
-            </FadeUp>
+            </FadeInRight>
           </div>
 
           {/* FEATURE 05 — 20-DAY CHALLENGE (FULL WIDTH - ALIGNED LEFT) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
-            <FadeUp>
-              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden text-left w-full">
+            <FadeInLeft>
+              <div className="bg-[#F8FAFC] rounded-3xl sm:rounded-[36px] border border-slate-200/90 p-8 sm:p-12 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-left w-full group">
                 <div className="w-full space-y-6">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-black uppercase tracking-widest">
                     <span>05</span>
@@ -453,39 +477,45 @@ export default function HomeClient() {
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 w-full">
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Daily 2-Min Prompts
+                    <FadeUp delay={100}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Daily 2-Min Prompts
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> Streak Rewards
+                    <FadeUp delay={200}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> Streak Rewards
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
-                    </div>
+                    </FadeUp>
 
-                    <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                      <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
-                        <CheckCircle2 size={18} /> 20-Day Path
+                    <FadeUp delay={300}>
+                      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-base">
+                          <CheckCircle2 size={18} /> 20-Day Path
+                        </div>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
                       </div>
-                      <p className="text-xs text-slate-500 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
-                    </div>
+                    </FadeUp>
                   </div>
 
                   <div className="pt-4">
                     <Link
                       href="/challenge"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Join 20-Day Challenge <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
               </div>
-            </FadeUp>
+            </FadeInLeft>
           </div>
 
         </div>
@@ -505,67 +535,73 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch text-left">
             {/* Before */}
-            <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-extrabold uppercase text-rose-600 tracking-wider block mb-4">Before Oratii</span>
-                <ul className="space-y-4 text-sm font-bold text-slate-700">
-                  <li className="flex items-center gap-3 text-rose-700">
-                    <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
-                    <span>145 WPM (Speeding through slides)</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-rose-700">
-                    <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
-                    <span>8 filler words (&quot;basically... um...&quot;)</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-rose-700">
-                    <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
-                    <span>Unclear response structure in Q&amp;A</span>
-                  </li>
-                </ul>
+            <FadeUp delay={100}>
+              <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between h-full">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-rose-600 tracking-wider block mb-4">Before Oratii</span>
+                  <ul className="space-y-4 text-sm font-bold text-slate-700">
+                    <li className="flex items-center gap-3 text-rose-700">
+                      <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
+                      <span>145 WPM (Speeding through slides)</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-rose-700">
+                      <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
+                      <span>8 filler words (&quot;basically... um...&quot;)</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-rose-700">
+                      <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs">✕</span>
+                      <span>Unclear response structure in Q&amp;A</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            </FadeUp>
 
             {/* Feedback */}
-            <div className="p-8 rounded-3xl bg-[#0F1426] text-white border border-slate-800 shadow-xl flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-extrabold uppercase text-[#F2A93B] tracking-wider block mb-4">Oratii Feedback</span>
-                <ul className="space-y-4 text-sm font-semibold text-slate-200">
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
-                    <span>Slow down on slide 3 explanations</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
-                    <span>Pause deliberately instead of filler phrases</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
-                    <span>Use STAR framework for complex answers</span>
-                  </li>
-                </ul>
+            <FadeUp delay={200}>
+              <div className="p-8 rounded-3xl bg-[#0F1426] text-white border border-slate-800 shadow-xl flex flex-col justify-between h-full">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-[#F2A93B] tracking-wider block mb-4">Oratii Feedback</span>
+                  <ul className="space-y-4 text-sm font-semibold text-slate-200">
+                    <li className="flex items-center gap-3">
+                      <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
+                      <span>Slow down on slide 3 explanations</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
+                      <span>Pause deliberately instead of filler phrases</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="w-6 h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs">💡</span>
+                      <span>Use STAR framework for complex answers</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            </FadeUp>
 
             {/* After */}
-            <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-extrabold uppercase text-emerald-600 tracking-wider block mb-4">After 3 Sessions</span>
-                <ul className="space-y-4 text-sm font-bold text-slate-800">
-                  <li className="flex items-center gap-3 text-emerald-700">
-                    <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
-                    <span>128 WPM (Controlled, steady delivery)</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-emerald-700">
-                    <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
-                    <span>Zero filler word distractions</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-emerald-700">
-                    <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
-                    <span>Confident explanation under defense pressure</span>
-                  </li>
-                </ul>
+            <FadeUp delay={300}>
+              <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between h-full">
+                <div>
+                  <span className="text-xs font-extrabold uppercase text-emerald-600 tracking-wider block mb-4">After 3 Sessions</span>
+                  <ul className="space-y-4 text-sm font-bold text-slate-800">
+                    <li className="flex items-center gap-3 text-emerald-700">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
+                      <span>128 WPM (Controlled, steady delivery)</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-emerald-700">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
+                      <span>Zero filler word distractions</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-emerald-700">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">✓</span>
+                      <span>Confident explanation under defense pressure</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            </FadeUp>
           </div>
         </div>
       </section>
@@ -589,7 +625,7 @@ export default function HomeClient() {
               { num: "03", title: "Get Real-time Feedback", desc: "See exact WPM, filler word timestamps, structure feedback, and clarity scores." },
               { num: "04", title: "Improve", desc: "Refine your delivery and track your 20-day habit streak." }
             ].map((step, idx) => (
-              <FadeUp key={idx} delay={idx * 80}>
+              <FadeUp key={idx} delay={idx * 100}>
                 <div className="border-t-2 border-[#0F1426] pt-6">
                   <div className="text-3xl font-black text-[#F2A93B] mb-3">{step.num}</div>
                   <h3 className="text-xl font-extrabold text-[#0F1426] mb-2">{step.title}</h3>
@@ -642,76 +678,78 @@ export default function HomeClient() {
           </div>
 
           {/* Active Tab Content Card */}
-          <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-lg">
-            {activeAudienceTab === 'students' && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 text-[#0F1426]">
-                  <GraduationCap size={28} className="text-[#F2A93B]" />
-                  <h3 className="text-2xl font-black">For Students &amp; Researchers</h3>
+          <FadeUp key={activeAudienceTab}>
+            <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-lg">
+              {activeAudienceTab === 'students' && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 text-[#0F1426]">
+                    <GraduationCap size={28} className="text-[#F2A93B]" />
+                    <h3 className="text-2xl font-black">For Students &amp; Researchers</h3>
+                  </div>
+                  <p className="text-slate-600 text-base font-medium leading-relaxed">
+                    Prepare for high-stakes academic evaluations, thesis defenses, class presentations, and competitive placement interviews.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      🎓 Viva &amp; Thesis Defense
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      📊 Class Presentations
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      🚀 Campus Interviews
+                    </div>
+                  </div>
                 </div>
-                <p className="text-slate-600 text-base font-medium leading-relaxed">
-                  Prepare for high-stakes academic evaluations, thesis defenses, class presentations, and competitive placement interviews.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    🎓 Viva &amp; Thesis Defense
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    📊 Class Presentations
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    🚀 Campus Interviews
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
 
-            {activeAudienceTab === 'professionals' && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 text-[#0F1426]">
-                  <Briefcase size={28} className="text-[#F2A93B]" />
-                  <h3 className="text-2xl font-black">For Professionals &amp; Leaders</h3>
+              {activeAudienceTab === 'professionals' && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 text-[#0F1426]">
+                    <Briefcase size={28} className="text-[#F2A93B]" />
+                    <h3 className="text-2xl font-black">For Professionals &amp; Leaders</h3>
+                  </div>
+                  <p className="text-slate-600 text-base font-medium leading-relaxed">
+                    Deliver convincing client presentations, executive board pitch decks, product demos, and crisp meeting updates.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      💼 Executive Pitch Decks
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      🤝 Client Meetings
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      📢 Team Alignment
+                    </div>
+                  </div>
                 </div>
-                <p className="text-slate-600 text-base font-medium leading-relaxed">
-                  Deliver convincing client presentations, executive board pitch decks, product demos, and crisp meeting updates.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    💼 Executive Pitch Decks
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    🤝 Client Meetings
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    📢 Team Alignment
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
 
-            {activeAudienceTab === 'jobseekers' && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 text-[#0F1426]">
-                  <Trophy size={28} className="text-[#F2A93B]" />
-                  <h3 className="text-2xl font-black">For Job Seekers &amp; Candidates</h3>
+              {activeAudienceTab === 'jobseekers' && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 text-[#0F1426]">
+                    <Trophy size={28} className="text-[#F2A93B]" />
+                    <h3 className="text-2xl font-black">For Job Seekers &amp; Candidates</h3>
+                  </div>
+                  <p className="text-slate-600 text-base font-medium leading-relaxed">
+                    Eliminate hesitation during behavioral HR rounds, technical system architecture deep dives, and self-introductions.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      🎯 Behavioral HR Probes
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      ⚡ Technical Deep Dives
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
+                      ✨ 2-Min Elevator Pitch
+                    </div>
+                  </div>
                 </div>
-                <p className="text-slate-600 text-base font-medium leading-relaxed">
-                  Eliminate hesitation during behavioral HR rounds, technical system architecture deep dives, and self-introductions.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    🎯 Behavioral HR Probes
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    ⚡ Technical Deep Dives
-                  </div>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">
-                    ✨ 2-Min Elevator Pitch
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </FadeUp>
         </div>
       </section>
 
