@@ -19,14 +19,30 @@ export default function PwaInstallPrompt() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Check if app is already running in installed standalone app mode
-    const isStandaloneMode =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true ||
-      document.referrer.includes('android-app://');
+    const checkInstalled = async () => {
+      let installed =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.matchMedia('(display-mode: minimal-ui)').matches ||
+        window.matchMedia('(display-mode: fullscreen)').matches ||
+        window.matchMedia('(display-mode: window-controls-overlay)').matches ||
+        (window.navigator as any).standalone === true ||
+        document.referrer.includes('android-app://');
+      
+      if (!installed && 'getInstalledRelatedApps' in navigator) {
+        try {
+          const relatedApps = await (navigator as any).getInstalledRelatedApps();
+          if (relatedApps && relatedApps.length > 0) {
+            installed = true;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setIsStandalone(installed);
+      return installed;
+    };
     
-    setIsStandalone(isStandaloneMode);
-    if (isStandaloneMode) return;
+    checkInstalled();
 
     // Detect iOS
     const ua = window.navigator.userAgent;
@@ -132,48 +148,50 @@ export default function PwaInstallPrompt() {
     <>
       {/* ─── DIRECT 1-TAP MOBILE INSTALL BANNER ─── */}
       {showPrompt && !showGuideModal && (
-        <div className="fixed bottom-20 left-3 right-3 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-sm z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300 print:hidden">
-          <div className="bg-[#151930] text-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl shadow-2xl border border-indigo-500/40 backdrop-blur-xl relative overflow-hidden">
+        <div className="fixed bottom-20 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-sm z-[9999] animate-in fade-in slide-in-from-bottom-5 duration-300 print:hidden">
+          <div className="bg-white/95 text-slate-900 p-4 sm:p-5 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-white/60 backdrop-blur-2xl relative overflow-hidden ring-1 ring-slate-900/5">
             {/* Ambient Glow */}
-            <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/15 blur-2xl rounded-full pointer-events-none"></div>
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full pointer-events-none"></div>
 
             <button
               onClick={handleDismiss}
-              className="absolute top-3 right-3 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+              className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer z-10"
               title="Close"
             >
               <X size={16} />
             </button>
 
-            <div className="flex items-start gap-3 pr-5">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 text-[#151930] font-black text-lg flex items-center justify-center shrink-0 shadow-lg border border-amber-300">
+            <div className="flex items-start gap-3.5 pr-6 relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-[#1B2140] text-white font-black text-xl flex items-center justify-center shrink-0 shadow-[0_8px_16px_-6px_rgba(27,33,64,0.5)] border border-slate-700/50">
                 O
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1 pt-0.5">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <h4 className="font-extrabold text-sm text-white">Add Oratii to Home Screen</h4>
-                  <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
-                    Mobile App
+                  <h4 className="font-extrabold text-sm text-slate-900 tracking-tight">Add to Home Screen</h4>
+                  <span className="bg-indigo-100 text-indigo-700 font-bold uppercase px-2 py-0.5 rounded-full text-[9px] tracking-wider">
+                    App
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 font-medium leading-tight">
-                  1-Tap install to phone home screen. Zero storage (0 MB).
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  Install Oratii for a faster, full-screen mobile experience (0 MB).
                 </p>
               </div>
             </div>
 
             {/* Bottom Action Bar */}
-            <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-              <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                <ShieldCheck size={12} className="text-emerald-400 shrink-0" />
-                Verified App
+            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-3 relative z-10">
+              <span className="text-[10px] text-slate-500 font-semibold flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+                Verified
               </span>
               <button
                 onClick={handleInstallClick}
                 disabled={installing}
-                className="px-4 py-2 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-[#151930] font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 active:scale-95 cursor-pointer disabled:opacity-50"
+                className="px-5 py-2.5 bg-[#1B2140] hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-lg shadow-slate-900/20 transition-all flex items-center gap-2 shrink-0 active:scale-95 cursor-pointer disabled:opacity-50"
               >
-                <Download size={14} /> {installing ? 'Installing...' : 'Install App Directly'}
+                <Download size={14} className={installing ? "animate-bounce" : ""} /> 
+                {installing ? 'Installing...' : 'Install App'}
               </button>
             </div>
           </div>
