@@ -1,17 +1,47 @@
 // src/components/ChatGPTInterviewStudio.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { createPortal } from 'react-dom';
+import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { createPortal } from "react-dom";
 import {
-  Mic, MicOff, Upload, FileText, Send, Sparkles, X, CheckCircle2,
-  Volume2, VolumeX, ArrowRight, RotateCcw, Award, ChevronRight, MessageSquare, Briefcase, Zap,
-  GraduationCap, Code2, BarChart3, Globe, LineChart, Headphones, Check, AlertCircle, Scissors, Target,
-  Timer, Flame, RefreshCw, Play, Square, CheckCircle, Volume1
-} from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
-import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
+  Mic,
+  MicOff,
+  Upload,
+  FileText,
+  Send,
+  Sparkles,
+  X,
+  CheckCircle2,
+  Volume2,
+  VolumeX,
+  ArrowRight,
+  RotateCcw,
+  Award,
+  ChevronRight,
+  MessageSquare,
+  Briefcase,
+  Zap,
+  GraduationCap,
+  Code2,
+  BarChart3,
+  Globe,
+  LineChart,
+  Headphones,
+  Check,
+  AlertCircle,
+  Scissors,
+  Target,
+  Timer,
+  Flame,
+  RefreshCw,
+  Play,
+  Square,
+  CheckCircle,
+  Volume1,
+} from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
+import ConfidenceGraph, { ScoreRing } from "@/components/ConfidenceGraph";
 
 interface ChatGPTInterviewStudioProps {
   onCancel?: () => void;
@@ -19,85 +49,108 @@ interface ChatGPTInterviewStudioProps {
 
 export const HIGH_STAKES_ROLE_PRESETS = [
   {
-    id: 'campus_tech',
-    title: 'Top Tech MNC Campus Placement (HR + Tech)',
-    tag: 'Campus Placement',
-    desc: 'Core OOPs, project logic, situational adaptability & structured communication'
+    id: "campus_tech",
+    title: "Top Tech MNC Campus Placement (HR + Tech)",
+    tag: "Campus Placement",
+    desc: "Core OOPs, project logic, situational adaptability & structured communication",
   },
   {
-    id: 'sde1',
-    title: 'Software Development Engineer (SDE-1)',
-    tag: 'Tech Best-Seller',
-    desc: 'DSA rationale, clean API design, edge cases & time/space trade-offs'
+    id: "sde1",
+    title: "Software Development Engineer (SDE-1)",
+    tag: "Tech Best-Seller",
+    desc: "DSA rationale, clean API design, edge cases & time/space trade-offs",
   },
   {
-    id: 'data_analyst',
-    title: 'Data Analyst & BI Associate',
-    tag: 'High Demand',
-    desc: 'SQL query design, KPI anomaly diagnosis (Churn/CAC) & data storytelling'
+    id: "data_analyst",
+    title: "Data Analyst & BI Associate",
+    tag: "High Demand",
+    desc: "SQL query design, KPI anomaly diagnosis (Churn/CAC) & data storytelling",
   },
   {
-    id: 'ielts_speaking',
-    title: 'IELTS Speaking Examination (Band 7-9 Mock)',
-    tag: 'Global Mobility',
-    desc: 'Part 1 Personal, Part 2 2-min Cue Card & Part 3 Abstract reasoning rubric'
+    id: "ielts_speaking",
+    title: "IELTS Speaking Examination (Band 7-9 Mock)",
+    tag: "Global Mobility",
+    desc: "Part 1 Personal, Part 2 2-min Cue Card & Part 3 Abstract reasoning rubric",
   },
   {
-    id: 'mba_consulting',
-    title: 'MBA / Consulting Case Study Defense',
-    tag: 'Strategy & Mgmt',
-    desc: 'MECE frameworks, market sizing, profit trees & top-down communication'
+    id: "mba_consulting",
+    title: "MBA / Consulting Case Study Defense",
+    tag: "Strategy & Mgmt",
+    desc: "MECE frameworks, market sizing, profit trees & top-down communication",
   },
   {
-    id: 'bpo_customer',
-    title: 'BPO & Customer Success Professional',
-    tag: 'Corporate Comms',
-    desc: 'De-escalation under SLA, customer empathy & active vocal modulation'
-  }
+    id: "bpo_customer",
+    title: "BPO & Customer Success Professional",
+    tag: "Corporate Comms",
+    desc: "De-escalation under SLA, customer empathy & active vocal modulation",
+  },
 ];
 
-export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStudioProps) {
+export default function ChatGPTInterviewStudio({
+  onCancel,
+}: ChatGPTInterviewStudioProps) {
   const [mounted, setMounted] = useState(false);
-  const [step, setStep] = useState<'setup' | 'interview' | 'results'>('setup');
-  const [roleTitle, setRoleTitle] = useState('Top Tech MNC Campus Placement (HR + Tech)');
-  const [selectedPresetId, setSelectedPresetId] = useState('campus_tech');
-  const [difficultyLevel, setDifficultyLevel] = useState<'fresher' | 'pro'>('fresher');
-  const [resumeText, setResumeText] = useState('');
+  const [step, setStep] = useState<"setup" | "interview" | "results">("setup");
+  const [roleTitle, setRoleTitle] = useState(
+    "Top Tech MNC Campus Placement (HR + Tech)",
+  );
+  const [selectedPresetId, setSelectedPresetId] = useState("campus_tech");
+  const [difficultyLevel, setDifficultyLevel] = useState<"fresher" | "pro">(
+    "fresher",
+  );
+  const [resumeText, setResumeText] = useState("");
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
-  const [examinerTone, setExaminerTone] = useState<'friendly' | 'strict' | 'star'>('friendly');
+  const [examinerTone, setExaminerTone] = useState<
+    "friendly" | "strict" | "star"
+  >("friendly");
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const searchParams = useSearchParams();
-  const roleQuery = searchParams?.get('role');
+  const roleQuery = searchParams?.get("role");
 
   // Map URL aliases (e.g. ?role=sde) to preset IDs
   const ROLE_ALIASES: Record<string, string> = {
-    sde: 'sde1', sde1: 'sde1', tech: 'sde1',
-    bpo: 'bpo_customer', bpo_customer: 'bpo_customer', voice: 'bpo_customer',
-    campus: 'campus_tech', campus_tech: 'campus_tech',
-    data_analyst: 'data_analyst', analytics: 'data_analyst',
-    mba: 'mba_consulting', mba_consulting: 'mba_consulting',
-    ielts: 'ielts_speaking', ielts_speaking: 'ielts_speaking',
+    sde: "sde1",
+    sde1: "sde1",
+    tech: "sde1",
+    bpo: "bpo_customer",
+    bpo_customer: "bpo_customer",
+    voice: "bpo_customer",
+    campus: "campus_tech",
+    campus_tech: "campus_tech",
+    data_analyst: "data_analyst",
+    analytics: "data_analyst",
+    mba: "mba_consulting",
+    mba_consulting: "mba_consulting",
+    ielts: "ielts_speaking",
+    ielts_speaking: "ielts_speaking",
   };
 
   useEffect(() => {
     if (!roleQuery) return;
     const presetId = ROLE_ALIASES[roleQuery.toLowerCase()];
     if (presetId) {
-      const preset = HIGH_STAKES_ROLE_PRESETS.find(p => p.id === presetId);
-      if (preset) { setSelectedPresetId(preset.id); setRoleTitle(preset.title); }
+      const preset = HIGH_STAKES_ROLE_PRESETS.find((p) => p.id === presetId);
+      if (preset) {
+        setSelectedPresetId(preset.id);
+        setRoleTitle(preset.title);
+      }
     }
   }, [roleQuery]);
 
   const [isListening, setIsListening] = useState(false);
   const [isAiSpeaking, setIsAiSpeaking] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
-  const [stageLabel, setStageLabel] = useState('Round 1: Candidate Introduction');
-  const [answerFormatHint, setAnswerFormatHint] = useState('Give a 1-2 minute overview of your background & key skills.');
-  
-  const [currentQuestion, setCurrentQuestion] = useState('');
-  const [userAnswerText, setUserAnswerText] = useState('');
+  const [stageLabel, setStageLabel] = useState(
+    "Round 1: Candidate Introduction",
+  );
+  const [answerFormatHint, setAnswerFormatHint] = useState(
+    "Give a 1-2 minute overview of your background & key skills.",
+  );
+
+  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [userAnswerText, setUserAnswerText] = useState("");
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
@@ -107,24 +160,24 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     communication: 92,
     starAlignment: 85,
     relevance: 90,
-    overall: 88
+    overall: 88,
   });
   const [strengths, setStrengths] = useState<string[]>([]);
   const [weaknesses, setWeaknesses] = useState<string[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [whatToCut, setWhatToCut] = useState<string[]>([]);
-  const [modelAnswer, setModelAnswer] = useState('');
+  const [modelAnswer, setModelAnswer] = useState("");
 
   const [speakingSeconds, setSpeakingSeconds] = useState(0);
   const speakingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [showDrillModal, setShowDrillModal] = useState(false);
-  const [drillTargetQuestion, setDrillTargetQuestion] = useState('');
-  const [drillWeakness, setDrillWeakness] = useState('');
-  const [drillModelSnippet, setDrillModelSnippet] = useState('');
+  const [drillTargetQuestion, setDrillTargetQuestion] = useState("");
+  const [drillWeakness, setDrillWeakness] = useState("");
+  const [drillModelSnippet, setDrillModelSnippet] = useState("");
   const [drillCountdown, setDrillCountdown] = useState(45);
   const [isDrillRecording, setIsDrillRecording] = useState(false);
-  const [drillTranscript, setDrillTranscript] = useState('');
+  const [drillTranscript, setDrillTranscript] = useState("");
   const [drillCompleted, setDrillCompleted] = useState(false);
   const [drillFillersFound, setDrillFillersFound] = useState<string[]>([]);
   const [drillBonusXp, setDrillBonusXp] = useState(0);
@@ -134,39 +187,57 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  const COMMON_FILLERS = ['um', 'uh', 'like', 'matlab', 'basically', 'actually', 'you know', 'literally', 'so yeah', 'sort of'];
+  const COMMON_FILLERS = [
+    "um",
+    "uh",
+    "like",
+    "matlab",
+    "basically",
+    "actually",
+    "you know",
+    "literally",
+    "so yeah",
+    "sort of",
+  ];
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showDrillModal) closeDrillModal();
+      if (e.key === "Escape" && showDrillModal) closeDrillModal();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [showDrillModal]);
 
   // Initialize Web Speech API for both Interview & Rapid Re-Do Drill
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      
+    if (
+      typeof window !== "undefined" &&
+      ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)
+    ) {
+      const SpeechRecognitionClass =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+
       // Main interview speech recognition
       const recognition = new SpeechRecognitionClass();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = "en-US";
 
       recognition.onresult = (event: any) => {
-        let fullTranscript = '';
+        let fullTranscript = "";
         for (let i = 0; i < event.results.length; i++) {
-          fullTranscript += event.results[i][0].transcript + ' ';
+          fullTranscript += event.results[i][0].transcript + " ";
         }
         setUserAnswerText(fullTranscript.trim());
       };
 
       recognition.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         stopListeningTimer();
       };
 
@@ -180,24 +251,26 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       const drillRec = new SpeechRecognitionClass();
       drillRec.continuous = true;
       drillRec.interimResults = true;
-      drillRec.lang = 'en-US';
+      drillRec.lang = "en-US";
 
       drillRec.onresult = (event: any) => {
-        let text = '';
+        let text = "";
         for (let i = 0; i < event.results.length; i++) {
-          text += event.results[i][0].transcript + ' ';
+          text += event.results[i][0].transcript + " ";
         }
         const clean = text.trim();
         setDrillTranscript(clean);
 
         // Real-time filler detection
         const words = clean.toLowerCase().split(/\s+/);
-        const detected = words.filter(w => COMMON_FILLERS.includes(w.replace(/[^a-z]/g, '')));
+        const detected = words.filter((w) =>
+          COMMON_FILLERS.includes(w.replace(/[^a-z]/g, "")),
+        );
         setDrillFillersFound(detected);
       };
 
       drillRec.onerror = (event: any) => {
-        console.error('Drill speech recognition error:', event.error);
+        console.error("Drill speech recognition error:", event.error);
         setIsDrillRecording(false);
       };
 
@@ -214,7 +287,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     setSpeakingSeconds(0);
     if (speakingTimerRef.current) clearInterval(speakingTimerRef.current);
     speakingTimerRef.current = setInterval(() => {
-      setSpeakingSeconds(prev => prev + 1);
+      setSpeakingSeconds((prev) => prev + 1);
     }, 1000);
   };
 
@@ -227,12 +300,29 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   // Re-Do Drill Handlers
-  const openDrillModal = (question?: string, weakness?: string, model?: string) => {
-    setDrillTargetQuestion(question || currentQuestion || (chatHistory[0]?.question || `Tell me about a challenging engineering situation and how you handled it.`));
-    setDrillWeakness(weakness || (whatToCut[0] || 'Cut redundant filler phrasing and start directly with your actions.'));
-    setDrillModelSnippet(model || (modelAnswer || 'Structure your answer: Situation (10s), Action (25s), Result (10s).'));
+  const openDrillModal = (
+    question?: string,
+    weakness?: string,
+    model?: string,
+  ) => {
+    setDrillTargetQuestion(
+      question ||
+        currentQuestion ||
+        chatHistory[0]?.question ||
+        `Tell me about a challenging engineering situation and how you handled it.`,
+    );
+    setDrillWeakness(
+      weakness ||
+        whatToCut[0] ||
+        "Cut redundant filler phrasing and start directly with your actions.",
+    );
+    setDrillModelSnippet(
+      model ||
+        modelAnswer ||
+        "Structure your answer: Situation (10s), Action (25s), Result (10s).",
+    );
     setDrillCountdown(45);
-    setDrillTranscript('');
+    setDrillTranscript("");
     setDrillFillersFound([]);
     setDrillCompleted(false);
     setDrillBonusXp(0);
@@ -240,7 +330,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   const startDrillRecording = () => {
-    setDrillTranscript('');
+    setDrillTranscript("");
     setDrillFillersFound([]);
     setDrillCountdown(45);
     setDrillCompleted(false);
@@ -250,13 +340,14 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       try {
         drillRecognitionRef.current.start();
       } catch (e) {
-        console.warn('Drill recognition start error:', e);
+        console.warn("Drill recognition start error:", e);
       }
     }
 
-    if (drillCountdownTimerRef.current) clearInterval(drillCountdownTimerRef.current);
+    if (drillCountdownTimerRef.current)
+      clearInterval(drillCountdownTimerRef.current);
     drillCountdownTimerRef.current = setInterval(() => {
-      setDrillCountdown(prev => {
+      setDrillCountdown((prev) => {
         if (prev <= 1) {
           stopDrillRecording();
           return 0;
@@ -276,7 +367,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       try {
         drillRecognitionRef.current.stop();
       } catch (e) {
-        console.warn('Drill recognition stop error:', e);
+        console.warn("Drill recognition stop error:", e);
       }
     }
     setDrillCompleted(true);
@@ -290,11 +381,16 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isLoading]);
 
   const speakText = (text: string) => {
-    if (!voiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (
+      !voiceEnabled ||
+      typeof window === "undefined" ||
+      !("speechSynthesis" in window)
+    )
+      return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
@@ -305,7 +401,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       utterance.onerror = () => setIsAiSpeaking(false);
       window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.warn('Speech synthesis failed:', e);
+      console.warn("Speech synthesis failed:", e);
       setIsAiSpeaking(false);
     }
   };
@@ -319,50 +415,66 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   };
 
   const startInterviewSession = async () => {
-    setStep('interview');
+    setStep("interview");
     setIsLoading(true);
     setCurrentRound(1);
     setChatHistory([]);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const authHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const authHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
       if (session?.access_token) {
-        authHeaders['Authorization'] = `Bearer ${session.access_token}`;
+        authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       }
 
-      const res = await fetch('/api/viva', {
-        method: 'POST',
+      const res = await fetch("/api/viva", {
+        method: "POST",
         headers: authHeaders,
         body: JSON.stringify({
-          chatHistory: [{ question: `Provide Context: Job Candidate applying for ${roleTitle} (${difficultyLevel === 'pro' ? 'Placement Pro Mode' : 'Campus Fresher Mode'})`, answer: 'Understood' }],
-          currentAnswer: 'Ready to start interview',
+          chatHistory: [
+            {
+              question: `Provide Context: Job Candidate applying for ${roleTitle} (${difficultyLevel === "pro" ? "Placement Pro Mode" : "Campus Fresher Mode"})`,
+              answer: "Understood",
+            },
+          ],
+          currentAnswer: "Ready to start interview",
           examinerTone: examinerTone,
           topic: roleTitle,
-          interviewType: 'job_interview',
+          interviewType: "job_interview",
           difficultyLevel: difficultyLevel,
-          documentContext: resumeText
-        })
+          documentContext: resumeText,
+        }),
       });
 
       const data = await res.json();
       const payload = data.data || data.viva;
-      if (data.status === 'success' && payload) {
-        const firstQ = payload.nextQuestion || `Welcome to your interview for the ${roleTitle} position! To get started, please tell me about yourself and your background.`;
+      if (data.status === "success" && payload) {
+        const firstQ =
+          payload.nextQuestion ||
+          `Welcome to your interview for the ${roleTitle} position! To get started, please tell me about yourself and your background.`;
         setCurrentQuestion(firstQ);
-        setStageLabel(payload.stageLabel || 'Round 1: Candidate Introduction');
-        setAnswerFormatHint(payload.answerFormatHint || 'Give a 1-2 minute overview of your background & skills.');
+        setStageLabel(payload.stageLabel || "Round 1: Candidate Introduction");
+        setAnswerFormatHint(
+          payload.answerFormatHint ||
+            "Give a 1-2 minute overview of your background & skills.",
+        );
 
-        setChatHistory([{
-          role: 'interviewer',
-          question: firstQ,
-          stageLabel: payload.stageLabel || 'Round 1: Introduction'
-        }]);
+        setChatHistory([
+          {
+            role: "interviewer",
+            question: firstQ,
+            stageLabel: payload.stageLabel || "Round 1: Introduction",
+          },
+        ]);
 
         speakText(firstQ);
       }
     } catch (err) {
-      console.error('Failed to start interview:', err);
+      console.error("Failed to start interview:", err);
     } finally {
       setIsLoading(false);
     }
@@ -371,59 +483,69 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
   const submitAnswer = async () => {
     if (!userAnswerText.trim() || isLoading) return;
     const userAns = userAnswerText.trim();
-    setUserAnswerText('');
+    setUserAnswerText("");
     setIsLoading(true);
 
     const updatedHistory = [
       ...chatHistory,
-      { role: 'candidate', text: userAns }
+      { role: "candidate", text: userAns },
     ];
     setChatHistory(updatedHistory);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const authHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const authHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
       if (session?.access_token) {
-        authHeaders['Authorization'] = `Bearer ${session.access_token}`;
+        authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       }
 
-      const res = await fetch('/api/viva', {
-        method: 'POST',
+      const res = await fetch("/api/viva", {
+        method: "POST",
         headers: authHeaders,
         body: JSON.stringify({
           chatHistory: updatedHistory,
           currentAnswer: userAns,
           examinerTone: examinerTone,
           topic: roleTitle,
-          interviewType: 'job_interview',
+          interviewType: "job_interview",
           difficultyLevel: difficultyLevel,
-          documentContext: resumeText
-        })
+          documentContext: resumeText,
+        }),
       });
 
       const data = await res.json();
       const payload = data.data || data.viva;
-      if (data.status === 'success' && payload) {
+      if (data.status === "success" && payload) {
         const nextQ = payload.nextQuestion;
         setCurrentQuestion(nextQ);
-        setCurrentRound(prev => prev + 1);
-        setStageLabel(payload.stageLabel || `Round ${currentRound + 1}: Deep Technical Discussion`);
-        setAnswerFormatHint(payload.answerFormatHint || 'Discuss your technical solution & trade-offs.');
+        setCurrentRound((prev) => prev + 1);
+        setStageLabel(
+          payload.stageLabel ||
+            `Round ${currentRound + 1}: Deep Technical Discussion`,
+        );
+        setAnswerFormatHint(
+          payload.answerFormatHint ||
+            "Discuss your technical solution & trade-offs.",
+        );
 
-        setChatHistory(prev => [
+        setChatHistory((prev) => [
           ...prev,
           {
-            role: 'interviewer',
+            role: "interviewer",
             question: nextQ,
             feedback: payload.feedbackToPreviousAnswer,
-            stageLabel: payload.stageLabel
-          }
+            stageLabel: payload.stageLabel,
+          },
         ]);
 
         speakText(nextQ);
       }
     } catch (err) {
-      console.error('Error submitting answer:', err);
+      console.error("Error submitting answer:", err);
     } finally {
       setIsLoading(false);
     }
@@ -433,24 +555,42 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
     setIsLoading(true);
     try {
       const candidateAnswers = chatHistory
-        .filter((item) => item.role === 'candidate' && item.text)
+        .filter((item) => item.role === "candidate" && item.text)
         .map((item) => item.text);
 
       if (candidateAnswers.length === 0) {
-        setScores({ technical: 0, communication: 0, starAlignment: 0, relevance: 0, overall: 0 });
-        setStrengths(['Session initialized.']);
-        setWeaknesses(['No interview responses recorded. Practice answering questions aloud or by typing to receive authentic evaluation.']);
-        setAiSuggestions(['Start by answering the first introductory question using the STAR technique.']);
-        setWhatToCut(['Do not leave questions unanswered in an actual placement drive.']);
-        setModelAnswer('State your degree, major project, and why you are keen on this role.');
-        setStep('results');
+        setScores({
+          technical: 0,
+          communication: 0,
+          starAlignment: 0,
+          relevance: 0,
+          overall: 0,
+        });
+        setStrengths(["Session initialized."]);
+        setWeaknesses([
+          "No interview responses recorded. Practice answering questions aloud or by typing to receive authentic evaluation.",
+        ]);
+        setAiSuggestions([
+          "Start by answering the first introductory question using the STAR technique.",
+        ]);
+        setWhatToCut([
+          "Do not leave questions unanswered in an actual placement drive.",
+        ]);
+        setModelAnswer(
+          "State your degree, major project, and why you are keen on this role.",
+        );
+        setStep("results");
         return;
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
-      const authHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const authHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
       if (session?.access_token) {
-        authHeaders['Authorization'] = `Bearer ${session.access_token}`;
+        authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       }
 
       const transcriptSummary = chatHistory
@@ -460,21 +600,21 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           return null;
         })
         .filter(Boolean)
-        .join('\n');
+        .join("\n");
 
-      const res = await fetch('/api/interview-eval', {
-        method: 'POST',
+      const res = await fetch("/api/interview-eval", {
+        method: "POST",
         headers: authHeaders,
         body: JSON.stringify({
           transcript: transcriptSummary,
           roleTitle,
           resumeText,
-          difficultyLevel
-        })
+          difficultyLevel,
+        }),
       });
 
       const data = await res.json();
-      if (data.status === 'success' && data.data) {
+      if (data.status === "success" && data.data) {
         const evalData = data.data;
 
         if (evalData.scores) {
@@ -501,31 +641,57 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           setModelAnswer(evalData.betterWayToSayIt);
         }
       } else {
-        console.warn('AI evaluation API notice:', data.error || data.message);
-        setScores({ technical: 75, communication: 78, starAlignment: 72, relevance: 80, overall: 76 });
-        setStrengths([`Demonstrated baseline technical domain knowledge for ${roleTitle}`]);
-        setWeaknesses(['Detail specific engineering trade-offs and quantitative results']);
-        setAiSuggestions(['Structure your answer using Situation, Task, Action, and Result (STAR)']);
-        setWhatToCut(['Remove verbal hesitation markers ("um", "like", "basically")']);
-        setModelAnswer(`"In my candidate response, I presented the core project requirements. To achieve maximum impact, I focused on structural clarity and key performance metrics."`);
+        console.warn("AI evaluation API notice:", data.error || data.message);
+        setScores({
+          technical: 75,
+          communication: 78,
+          starAlignment: 72,
+          relevance: 80,
+          overall: 76,
+        });
+        setStrengths([
+          `Demonstrated baseline technical domain knowledge for ${roleTitle}`,
+        ]);
+        setWeaknesses([
+          "Detail specific engineering trade-offs and quantitative results",
+        ]);
+        setAiSuggestions([
+          "Structure your answer using Situation, Task, Action, and Result (STAR)",
+        ]);
+        setWhatToCut([
+          'Remove verbal hesitation markers ("um", "like", "basically")',
+        ]);
+        setModelAnswer(
+          `"In my candidate response, I presented the core project requirements. To achieve maximum impact, I focused on structural clarity and key performance metrics."`,
+        );
       }
     } catch (err) {
       console.warn("Generating dynamic evaluation report notice:", err);
-      setScores({ technical: 82, communication: 85, starAlignment: 80, relevance: 88, overall: 84 });
+      setScores({
+        technical: 82,
+        communication: 85,
+        starAlignment: 80,
+        relevance: 88,
+        overall: 84,
+      });
       setStrengths([`Domain alignment for ${roleTitle}`]);
-      setWeaknesses(['Provide deeper technical details on project trade-offs']);
-      setAiSuggestions(['Use STAR framework for situational questions']);
-      setWhatToCut(['Avoid rambling into non-technical hobbies during technical rounds.']);
-      setModelAnswer('Frame answers around: Situation, Task, Action taken, and Quantified Result.');
+      setWeaknesses(["Provide deeper technical details on project trade-offs"]);
+      setAiSuggestions(["Use STAR framework for situational questions"]);
+      setWhatToCut([
+        "Avoid rambling into non-technical hobbies during technical rounds.",
+      ]);
+      setModelAnswer(
+        "Frame answers around: Situation, Task, Action taken, and Quantified Result.",
+      );
     } finally {
       setIsLoading(false);
-      setStep('results');
+      setStep("results");
     }
   };
 
   const toggleMic = () => {
     if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser.');
+      alert("Speech recognition is not supported in your browser.");
       return;
     }
     if (isListening) {
@@ -538,14 +704,17 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
         recognitionRef.current.start();
         startListeningTimer();
       } catch (e) {
-        console.warn('Speech recognition start failed:', e);
+        console.warn("Speech recognition start failed:", e);
         stopListeningTimer();
       }
     }
   };
 
   return (
-    <div className="border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans" style={{ isolation: 'isolate' }}>
+    <div
+      className="border border-slate-200/80 rounded-2xl sm:rounded-3xl bg-white shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans"
+      style={{ isolation: "isolate" }}
+    >
       {/* Top Accent Gradient Stripe matching Speech Coach 100% */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-[#F2A93B]"></div>
 
@@ -557,7 +726,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <span>Practice &amp; Rehearse Mock Interview</span>
           </h2>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Select interviewer panel, enter target role, and optionally ground questions in your resume.
+            Select interviewer panel, enter target role, and optionally ground
+            questions in your resume.
           </p>
         </div>
 
@@ -565,27 +735,33 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
         <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/80 shrink-0">
           <button
             type="button"
-            onClick={() => setExaminerTone('friendly')}
+            onClick={() => setExaminerTone("friendly")}
             className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
-              examinerTone === 'friendly' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
+              examinerTone === "friendly"
+                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
+                : "text-slate-500 hover:text-slate-900"
             }`}
           >
             Standard Mock
           </button>
           <button
             type="button"
-            onClick={() => setExaminerTone('strict')}
+            onClick={() => setExaminerTone("strict")}
             className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
-              examinerTone === 'strict' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
+              examinerTone === "strict"
+                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
+                : "text-slate-500 hover:text-slate-900"
             }`}
           >
             Technical Panel
           </button>
           <button
             type="button"
-            onClick={() => setExaminerTone('star')}
+            onClick={() => setExaminerTone("star")}
             className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
-              examinerTone === 'star' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'
+              examinerTone === "star"
+                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
+                : "text-slate-500 hover:text-slate-900"
             }`}
           >
             STAR Method
@@ -594,9 +770,8 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       </div>
 
       {/* STEP 1: SETUP (Matching Speech Coach Layout 100%) */}
-      {step === 'setup' && (
+      {step === "setup" && (
         <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
-          
           {/* Option 1: Clean Single Target Role Card with Smart Chips & Voice Toggle */}
           <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80 space-y-3.5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -611,12 +786,12 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="md:col-span-2 relative">
-                <input 
+                <input
                   type="text"
                   value={roleTitle}
                   onChange={(e) => {
                     setRoleTitle(e.target.value);
-                    setSelectedPresetId('custom');
+                    setSelectedPresetId("custom");
                   }}
                   placeholder="e.g. Software Engineer, BPO Customer Voice, Data Analyst, IELTS..."
                   className="w-full bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 font-bold shadow-2xs pr-8"
@@ -624,7 +799,10 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 {roleTitle && (
                   <button
                     type="button"
-                    onClick={() => { setRoleTitle(''); setSelectedPresetId('custom'); }}
+                    onClick={() => {
+                      setRoleTitle("");
+                      setSelectedPresetId("custom");
+                    }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
                     title="Clear input"
                   >
@@ -638,11 +816,17 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   type="button"
                   onClick={() => setVoiceEnabled(!voiceEnabled)}
                   className={`w-full py-2.5 px-3 rounded-xl border text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                    voiceEnabled ? 'bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm' : 'bg-white text-slate-600 border-slate-200'
+                    voiceEnabled
+                      ? "bg-[#151930] text-[#F2A93B] border-amber-500/40 shadow-sm"
+                      : "bg-white text-slate-600 border-slate-200"
                   }`}
                 >
-                  {voiceEnabled ? <Volume2 size={15} className="text-amber-400" /> : <VolumeX size={15} />}
-                  <span>{voiceEnabled ? 'Voice Aloud ON' : 'Voice Muted'}</span>
+                  {voiceEnabled ? (
+                    <Volume2 size={15} className="text-amber-400" />
+                  ) : (
+                    <VolumeX size={15} />
+                  )}
+                  <span>{voiceEnabled ? "Voice Aloud ON" : "Voice Muted"}</span>
                 </button>
               </div>
             </div>
@@ -664,17 +848,71 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                     }}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 ${
                       isSelected
-                        ? 'bg-[#0F1426] text-white shadow-xs border border-[#0F1426]'
-                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/90'
+                        ? "bg-[#0F1426] text-white shadow-xs border border-[#0F1426]"
+                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/90"
                     }`}
                   >
-                    {p.id === 'sde1' && <Code2 size={13} className={isSelected ? 'text-amber-400' : 'text-blue-600'} />}
-                    {p.id === 'bpo_customer' && <Headphones size={13} className={isSelected ? 'text-amber-400' : 'text-rose-600'} />}
-                    {p.id === 'campus_tech' && <GraduationCap size={13} className={isSelected ? 'text-amber-400' : 'text-indigo-600'} />}
-                    {p.id === 'data_analyst' && <BarChart3 size={13} className={isSelected ? 'text-amber-400' : 'text-emerald-600'} />}
-                    {p.id === 'mba_consulting' && <LineChart size={13} className={isSelected ? 'text-amber-400' : 'text-amber-600'} />}
-                    {p.id === 'ielts_speaking' && <Globe size={13} className={isSelected ? 'text-amber-400' : 'text-purple-600'} />}
-                    <span>{p.id === 'sde1' ? 'SDE / Tech' : p.id === 'bpo_customer' ? 'BPO / Customer Voice' : p.id === 'campus_tech' ? 'Campus Placement' : p.id === 'data_analyst' ? 'Data Analyst' : p.id === 'mba_consulting' ? 'MBA Case' : 'IELTS Speaking'}</span>
+                    {p.id === "sde1" && (
+                      <Code2
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-blue-600"
+                        }
+                      />
+                    )}
+                    {p.id === "bpo_customer" && (
+                      <Headphones
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-rose-600"
+                        }
+                      />
+                    )}
+                    {p.id === "campus_tech" && (
+                      <GraduationCap
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-indigo-600"
+                        }
+                      />
+                    )}
+                    {p.id === "data_analyst" && (
+                      <BarChart3
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-emerald-600"
+                        }
+                      />
+                    )}
+                    {p.id === "mba_consulting" && (
+                      <LineChart
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-amber-600"
+                        }
+                      />
+                    )}
+                    {p.id === "ielts_speaking" && (
+                      <Globe
+                        size={13}
+                        className={
+                          isSelected ? "text-amber-400" : "text-purple-600"
+                        }
+                      />
+                    )}
+                    <span>
+                      {p.id === "sde1"
+                        ? "SDE / Tech"
+                        : p.id === "bpo_customer"
+                          ? "BPO / Customer Voice"
+                          : p.id === "campus_tech"
+                            ? "Campus Placement"
+                            : p.id === "data_analyst"
+                              ? "Data Analyst"
+                              : p.id === "mba_consulting"
+                                ? "MBA Case"
+                                : "IELTS Speaking"}
+                    </span>
                   </button>
                 );
               })}
@@ -688,15 +926,18 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 Difficulty Calibration
               </div>
               <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                Starts at your level, then dynamically adapts follow-up depth based on your answers.
+                Starts at your level, then dynamically adapts follow-up depth
+                based on your answers.
               </p>
             </div>
             <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 w-full sm:w-auto">
               <button
                 type="button"
-                onClick={() => setDifficultyLevel('fresher')}
+                onClick={() => setDifficultyLevel("fresher")}
                 className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  difficultyLevel === 'fresher' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-800'
+                  difficultyLevel === "fresher"
+                    ? "bg-white text-slate-950 shadow-xs border border-slate-200"
+                    : "text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -704,9 +945,11 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               </button>
               <button
                 type="button"
-                onClick={() => setDifficultyLevel('pro')}
+                onClick={() => setDifficultyLevel("pro")}
                 className={`flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  difficultyLevel === 'pro' ? 'bg-white text-slate-950 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-800'
+                  difficultyLevel === "pro"
+                    ? "bg-white text-slate-950 shadow-xs border border-slate-200"
+                    : "text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
@@ -719,7 +962,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl flex items-center gap-3 text-xs text-amber-900 font-medium">
             <Zap size={15} className="text-amber-600 shrink-0" />
             <span>
-              <strong>3-Round Micro-Drill:</strong> Warmup Intro ➔ Technical Depth ➔ STAR Cross-Exam. Designed to build instant interview reflexes without freezing.
+              <strong>3-Round Micro-Drill:</strong> Warmup Intro ➔ Technical
+              Depth ➔ STAR Cross-Exam. Designed to build instant interview
+              reflexes without freezing.
             </span>
           </div>
 
@@ -739,22 +984,23 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 </div>
 
                 <p className="text-xs text-indigo-900/80 font-medium text-center">
-                  AI interviewer will ground technical questions directly in your resume experience &amp; projects.
+                  AI interviewer will ground technical questions directly in
+                  your resume experience &amp; projects.
                 </p>
 
                 <div className="flex items-center gap-3 w-full pt-1">
                   <button
                     onClick={() => {
                       setResumeFileName(null);
-                      setResumeText('');
-                      if (fileInputRef.current) fileInputRef.current.value = '';
+                      setResumeText("");
+                      if (fileInputRef.current) fileInputRef.current.value = "";
                     }}
                     className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
                     title="Remove resume and select a new file"
                   >
                     Change Resume
                   </button>
-                  
+
                   <button
                     onClick={startInterviewSession}
                     disabled={isLoading}
@@ -767,12 +1013,17 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             ) : (
               /* Single Spacious Drag & Drop Upload Container (Matching Speech Coach) */
               <div className="w-full flex flex-col items-center justify-center">
-                <div 
+                <div
                   className={`w-full max-w-lg border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center transition-all cursor-pointer group ${
-                    isDragActive ? 'border-amber-500 bg-amber-50/60' : 'border-slate-300 bg-slate-50/80 hover:bg-indigo-50/40 hover:border-[#151930]'
-                  }`} 
+                    isDragActive
+                      ? "border-amber-500 bg-amber-50/60"
+                      : "border-slate-300 bg-slate-50/80 hover:bg-indigo-50/40 hover:border-[#151930]"
+                  }`}
                   onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => { e.preventDefault(); setIsDragActive(true); }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragActive(true);
+                  }}
                   onDragLeave={() => setIsDragActive(false)}
                   onDrop={async (e) => {
                     e.preventDefault();
@@ -788,9 +1039,20 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-[#151930] flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-sm">
                     <Upload size={20} className="text-slate-600" />
                   </div>
-                  <p className="font-extrabold text-slate-950 text-sm sm:text-base">Click or Drag &amp; Drop Resume PDF here</p>
-                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">Optional: AI grounds technical questions in your resume (PDF, TXT, DOCX)</p>
-                  <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.txt,.doc,.docx" onChange={handleFileUpload} />
+                  <p className="font-extrabold text-slate-950 text-sm sm:text-base">
+                    Click or Drag &amp; Drop Resume PDF here
+                  </p>
+                  <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                    Optional: AI grounds technical questions in your resume
+                    (PDF, TXT, DOCX)
+                  </p>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept=".pdf,.txt,.doc,.docx"
+                    onChange={handleFileUpload}
+                  />
                 </div>
 
                 <button
@@ -799,7 +1061,11 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                   className="mt-5 w-full max-w-lg py-3.5 bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#151930] font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:scale-[1.01]"
                 >
                   <Sparkles className="w-4 h-4 text-[#151930]" />
-                  <span>{isLoading ? 'Starting Interview Session...' : 'Launch Mock Interview'}</span>
+                  <span>
+                    {isLoading
+                      ? "Starting Interview Session..."
+                      : "Launch Mock Interview"}
+                  </span>
                 </button>
               </div>
             )}
@@ -808,7 +1074,7 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       )}
 
       {/* STEP 2: INTERACTIVE VOICE INTERVIEW STAGE */}
-      {step === 'interview' && (
+      {step === "interview" && (
         <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
           {/* Voice-First Header Ribbon */}
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
@@ -817,21 +1083,26 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <span>Voice-First Practice Mode Active</span>
             </div>
             <span className="text-xs text-slate-500 font-extrabold">
-              Round {currentRound} of 5 • Speaking aloud builds 3x more retention
+              Round {currentRound} of 5 • Speaking aloud builds 3x more
+              retention
             </span>
           </div>
 
           {/* AI Voice Visualizer Stage Card */}
           <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-[#151930] rounded-2xl border border-slate-800 text-white relative overflow-hidden shadow-2xl px-4">
-            <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 ${
-              isAiSpeaking
-                ? 'bg-amber-400 text-[#151930] scale-110 animate-pulse shadow-lg shadow-amber-500/30'
-                : isListening
-                ? 'bg-emerald-500 text-white scale-105 shadow-lg shadow-emerald-500/30'
-                : 'bg-slate-800 border-2 border-slate-700'
-            }`}>
+            <div
+              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 ${
+                isAiSpeaking
+                  ? "bg-amber-400 text-[#151930] scale-110 animate-pulse shadow-lg shadow-amber-500/30"
+                  : isListening
+                    ? "bg-emerald-500 text-white scale-105 shadow-lg shadow-emerald-500/30"
+                    : "bg-slate-800 border-2 border-slate-700"
+              }`}
+            >
               {isAiSpeaking ? (
-                <span className="text-[#151930] font-black text-[10px] sm:text-xs uppercase tracking-wider animate-bounce">AI Speaking</span>
+                <span className="text-[#151930] font-black text-[10px] sm:text-xs uppercase tracking-wider animate-bounce">
+                  AI Speaking
+                </span>
               ) : isListening ? (
                 <Mic className="w-7 h-7 sm:w-8 sm:h-8 text-white animate-pulse" />
               ) : (
@@ -839,48 +1110,69 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               )}
             </div>
 
-            <span className="mt-3 text-xs font-black text-amber-400 uppercase tracking-widest text-center">{stageLabel}</span>
-            <span className="text-[11px] text-slate-400 font-medium mt-1 text-center px-2">{answerFormatHint}</span>
+            <span className="mt-3 text-xs font-black text-amber-400 uppercase tracking-widest text-center">
+              {stageLabel}
+            </span>
+            <span className="text-[11px] text-slate-400 font-medium mt-1 text-center px-2">
+              {answerFormatHint}
+            </span>
           </div>
 
           {/* Real-Time Pacing & Delivery Guidance */}
           {isListening && (
-            <div className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all animate-fade-in shadow-xs ${
-              speakingSeconds > 75
-                ? 'bg-rose-50 border-rose-300 text-rose-900'
-                : speakingSeconds > 45
-                ? 'bg-amber-50 border-amber-300 text-amber-900'
-                : 'bg-indigo-50 border-indigo-200 text-indigo-900'
-            }`}>
+            <div
+              className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all animate-fade-in shadow-xs ${
+                speakingSeconds > 75
+                  ? "bg-rose-50 border-rose-300 text-rose-900"
+                  : speakingSeconds > 45
+                    ? "bg-amber-50 border-amber-300 text-amber-900"
+                    : "bg-indigo-50 border-indigo-200 text-indigo-900"
+              }`}
+            >
               <div className="flex items-center gap-2 font-bold shrink-0">
-                <Timer size={15} className={speakingSeconds > 75 ? 'text-rose-600 animate-pulse' : 'text-amber-600'} />
+                <Timer
+                  size={15}
+                  className={
+                    speakingSeconds > 75
+                      ? "text-rose-600 animate-pulse"
+                      : "text-amber-600"
+                  }
+                />
                 <span className="font-mono">{speakingSeconds}s elapsed</span>
                 <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-white/80 border border-current">
                   Pacing Cue
                 </span>
               </div>
               <div className="text-xs font-medium">
-                {speakingSeconds <= 45 && "🟢 State your Situation & your direct role clearly."}
-                {speakingSeconds > 45 && speakingSeconds <= 75 && "🟡 Transition into specific Actions & technical trade-offs."}
-                {speakingSeconds > 75 && "🟠 Wrap up: Recruiters lose focus after 90s. State your quantitative Result now!"}
+                {speakingSeconds <= 45 &&
+                  "🟢 State your Situation & your direct role clearly."}
+                {speakingSeconds > 45 &&
+                  speakingSeconds <= 75 &&
+                  "🟡 Transition into specific Actions & technical trade-offs."}
+                {speakingSeconds > 75 &&
+                  "🟠 Wrap up: Recruiters lose focus after 90s. State your quantitative Result now!"}
               </div>
             </div>
           )}
 
           {/* Chat Stream View */}
-          <div className="max-h-64 sm:max-h-80 overflow-y-auto space-y-3 p-3.5 sm:p-4 bg-[#151930] rounded-2xl border border-slate-800 text-xs shadow-inner">
+          <div className="max-h-96 sm:max-h-[32rem] overflow-y-auto space-y-4 p-4 sm:p-6 bg-[#151930] rounded-2xl border border-slate-700 text-sm shadow-inner">
             {chatHistory.map((item, idx) => (
               <div key={idx} className="space-y-1.5">
                 {item.question && (
-                  <div className="flex items-start space-x-2 text-white p-3 rounded-xl bg-[#0B0E27] border border-slate-800">
-                    <span className="font-extrabold text-amber-400 shrink-0">Interviewer:</span>
-                    <p className="leading-relaxed font-semibold">{item.question}</p>
+                  <div className="flex items-start space-x-3 text-slate-100 p-4 rounded-xl bg-[#0B0E27] border border-slate-700 shadow-sm">
+                    <span className="font-extrabold text-amber-400 shrink-0 text-sm">
+                      Interviewer:
+                    </span>
+                    <p className="leading-relaxed font-medium text-sm sm:text-base">
+                      {item.question}
+                    </p>
                   </div>
                 )}
                 {item.text && (
-                  <div className="flex items-start space-x-2 text-[#151930] p-3 rounded-xl bg-amber-500 font-medium">
-                    <span className="font-black shrink-0">Candidate:</span>
-                    <p className="leading-relaxed font-semibold">{item.text}</p>
+                  <div className="flex items-start space-x-3 text-[#151930] p-4 rounded-xl bg-amber-400 font-medium shadow-sm">
+                    <span className="font-black shrink-0 text-sm">Candidate:</span>
+                    <p className="leading-relaxed font-semibold text-sm sm:text-base">{item.text}</p>
                   </div>
                 )}
               </div>
@@ -894,27 +1186,37 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <button
                 onClick={toggleMic}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer shrink-0 ${
-                  isListening ? 'bg-red-600 text-white border-red-500 animate-pulse' : 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700'
+                  isListening
+                    ? "bg-red-600 text-white border-red-500 animate-pulse"
+                    : "bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700"
                 }`}
-                title={isListening ? 'Stop Listening' : 'Speak Your Answer'}
+                title={isListening ? "Stop Listening" : "Speak Your Answer"}
               >
-                {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                {isListening ? (
+                  <MicOff className="w-5 h-5" />
+                ) : (
+                  <Mic className="w-5 h-5" />
+                )}
               </button>
 
               <input
                 type="text"
                 value={userAnswerText}
                 onChange={(e) => setUserAnswerText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && submitAnswer()}
-                placeholder={isListening ? 'Listening to your voice...' : 'Type or speak your answer...'}
-                className="w-full bg-[#151930] border border-slate-800 rounded-xl px-4 py-3.5 text-xs text-white font-medium focus:outline-none focus:border-amber-400"
+                onKeyDown={(e) => e.key === "Enter" && submitAnswer()}
+                placeholder={
+                  isListening
+                    ? "Listening to your voice..."
+                    : "Type or speak your answer..."
+                }
+                className="w-full bg-[#151930] border border-slate-700 rounded-xl px-5 py-4 text-sm sm:text-base text-white font-medium focus:outline-none focus:border-amber-400 shadow-sm"
               />
             </div>
 
             <button
               onClick={submitAnswer}
               disabled={isLoading || !userAnswerText.trim()}
-              className="w-full sm:w-auto px-5 py-3.5 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-extrabold text-xs rounded-xl disabled:opacity-40 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shrink-0"
+              className="w-full sm:w-auto px-6 py-4 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-extrabold text-sm rounded-xl disabled:opacity-40 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shrink-0 shadow-md"
             >
               <span>Send</span>
               <Send className="w-3.5 h-3.5" />
@@ -922,29 +1224,38 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
-            <span className="text-[11px] text-slate-400 font-extrabold">Round {currentRound} of 4</span>
+            <span className="text-sm text-slate-400 font-extrabold">
+              Round {currentRound} of 4
+            </span>
             <button
               onClick={finishInterview}
               disabled={isLoading}
-              className="text-xs text-amber-400 hover:text-amber-300 font-black underline cursor-pointer"
+              className="text-sm text-amber-400 hover:text-amber-300 font-black underline cursor-pointer"
             >
-              {isLoading ? 'Generating Evaluation Report...' : 'Finish & Generate Real AI Report ➔'}
+              {isLoading
+                ? "Generating Evaluation Report..."
+                : "Finish & Generate Real AI Report ➔"}
             </button>
           </div>
         </div>
       )}
 
       {/* STEP 3: REAL AI INTERVIEW SCORECARD & REPORT */}
-      {step === 'results' && (
+      {step === "results" && (
         <div className="space-y-6 relative z-10 animate-in fade-in duration-300 pt-2 sm:pt-4 text-slate-900">
           <div className="text-center space-y-2 mb-3 pt-1">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-amber-50 text-amber-900 border border-amber-200/80 shadow-2xs">
-              <Sparkles size={12} className="text-amber-600" /> Deep AI Performance Report
+              <Sparkles size={12} className="text-amber-600" /> Deep AI
+              Performance Report
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-slate-950 leading-snug tracking-tight px-2">
-              Interview Scorecard: <span className="text-[#151930]">{roleTitle}</span>
+              Interview Scorecard:{" "}
+              <span className="text-[#151930]">{roleTitle}</span>
             </h3>
-            <p className="text-xs text-slate-500 font-medium">Comprehensive breakdown of your technical answers, STAR method alignment, and communication style.</p>
+            <p className="text-xs text-slate-500 font-medium">
+              Comprehensive breakdown of your technical answers, STAR method
+              alignment, and communication style.
+            </p>
           </div>
 
           {/* Placement Practice Gym Action Banner */}
@@ -952,13 +1263,16 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="bg-white rounded-[15px] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black uppercase tracking-wider">
-                  <Flame size={12} className="text-amber-600" /> Placement Practice Gym
+                  <Flame size={12} className="text-amber-600" /> Placement
+                  Practice Gym
                 </div>
                 <h4 className="text-sm sm:text-base font-black text-slate-950">
-                  Don&apos;t just read the scorecard — Re-Deliver in a 45-Second Rapid Drill
+                  Don&apos;t just read the scorecard — Re-Deliver in a 45-Second
+                  Rapid Drill
                 </h4>
                 <p className="text-xs text-slate-600 font-medium max-w-xl">
-                  Repeated spoken rehearsal builds interview confidence. Click to re-record with live filler detection and zero fluff.
+                  Repeated spoken rehearsal builds interview confidence. Click
+                  to re-record with live filler detection and zero fluff.
                 </p>
               </div>
               <button
@@ -973,50 +1287,50 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           {/* Circular Score Ring Gauge Bar (Speech Coach Design Standard) */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-gradient-to-r from-indigo-50/60 via-slate-50 to-amber-50/40 p-5 rounded-2xl border border-indigo-100/80 shadow-2xs">
-            <ScoreRing 
-              value={scores.overall} 
-              max={100} 
-              size={76} 
-              strokeWidth={8} 
-              color="#6c5ce7" 
-              label="Overall Rating" 
-              unit="%" 
+            <ScoreRing
+              value={scores.overall}
+              max={100}
+              size={76}
+              strokeWidth={8}
+              color="#6c5ce7"
+              label="Overall Rating"
+              unit="%"
             />
-            <ScoreRing 
-              value={scores.technical} 
-              max={100} 
-              size={76} 
-              strokeWidth={8} 
-              color="#00cec9" 
-              label="Technical" 
-              unit="%" 
+            <ScoreRing
+              value={scores.technical}
+              max={100}
+              size={76}
+              strokeWidth={8}
+              color="#00cec9"
+              label="Technical"
+              unit="%"
             />
-            <ScoreRing 
-              value={scores.communication} 
-              max={100} 
-              size={76} 
-              strokeWidth={8} 
-              color="#fd79a8" 
-              label="Communication" 
-              unit="%" 
+            <ScoreRing
+              value={scores.communication}
+              max={100}
+              size={76}
+              strokeWidth={8}
+              color="#fd79a8"
+              label="Communication"
+              unit="%"
             />
-            <ScoreRing 
-              value={scores.starAlignment} 
-              max={100} 
-              size={76} 
-              strokeWidth={8} 
-              color="#f2a93b" 
-              label="STAR Method" 
-              unit="%" 
+            <ScoreRing
+              value={scores.starAlignment}
+              max={100}
+              size={76}
+              strokeWidth={8}
+              color="#f2a93b"
+              label="STAR Method"
+              unit="%"
             />
-            <ScoreRing 
-              value={scores.relevance} 
-              max={100} 
-              size={76} 
-              strokeWidth={8} 
-              color="#10b981" 
-              label="Relevance & Focus" 
-              unit="%" 
+            <ScoreRing
+              value={scores.relevance}
+              max={100}
+              size={76}
+              strokeWidth={8}
+              color="#10b981"
+              label="Relevance & Focus"
+              unit="%"
             />
           </div>
 
@@ -1024,24 +1338,37 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
           <div className="bg-gradient-to-br from-indigo-50/50 via-slate-50 to-white border border-indigo-100 rounded-2xl p-5 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-black text-slate-900 uppercase tracking-wider">Interview Delivery & Response Timeline</span>
-                <p className="text-[11px] text-indigo-600 font-medium">Confidence & STAR structural alignment across rounds</p>
+                <span className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                  Interview Delivery & Response Timeline
+                </span>
+                <p className="text-[11px] text-indigo-600 font-medium">
+                  Confidence & STAR structural alignment across rounds
+                </p>
               </div>
               <span className="text-xs font-bold text-slate-400">
                 {chatHistory.length} Rounds Evaluated
               </span>
             </div>
-            <ConfidenceGraph 
-              data={chatHistory.map((_, i) => ({
-                timestamp: (i + 1) * 30,
-                wpm: Math.min(180, Math.max(90, Math.round(scores.overall + (Math.sin(i * 1.5) * 15)))),
-                confidence: Math.round(scores.overall + (Math.sin(i * 1.2) * 10))
-              }))} 
-              events={[]} 
-              type="area" 
-              dataKey="wpm" 
-              label="Delivery Score" 
-              color="#6c5ce7" 
+            <ConfidenceGraph
+              data={chatHistory
+                .filter((h) => h.role === "candidate")
+                .map((item, i) => {
+                  const wordCount = item.text ? item.text.split(" ").length : 0;
+                  const turnConfidence = scores.overall
+                    ? scores.overall + Math.min(5, wordCount / 10)
+                    : 80;
+                  const estimatedWpm = 110 + Math.min(50, wordCount * 2);
+                  return {
+                    timestamp: (i + 1) * 30,
+                    wpm: Math.round(estimatedWpm),
+                    confidence: Math.round(turnConfidence),
+                  };
+                })}
+              events={[]}
+              type="area"
+              dataKey="wpm"
+              label="Delivery Score"
+              color="#6c5ce7"
               height={180}
             />
           </div>
@@ -1060,7 +1387,10 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
                 {strengths.map((str, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <Check size={13} className="text-emerald-600 shrink-0 mt-0.5" />
+                    <Check
+                      size={13}
+                      className="text-emerald-600 shrink-0 mt-0.5"
+                    />
                     <span className="leading-relaxed">{str}</span>
                   </li>
                 ))}
@@ -1077,12 +1407,21 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
                 </h4>
               </div>
               <ul className="space-y-2.5 text-xs text-slate-800 font-medium flex-1">
-                {weaknesses.length > 0 ? weaknesses.map((wk, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <AlertCircle size={13} className="text-amber-600 shrink-0 mt-0.5" />
-                    <span className="leading-relaxed">{wk}</span>
+                {weaknesses.length > 0 ? (
+                  weaknesses.map((wk, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <AlertCircle
+                        size={13}
+                        className="text-amber-600 shrink-0 mt-0.5"
+                      />
+                      <span className="leading-relaxed">{wk}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-slate-400 italic">
+                    No specific weak areas flagged.
                   </li>
-                )) : <li className="text-slate-400 italic">No specific weak areas flagged.</li>}
+                )}
               </ul>
             </div>
           </div>
@@ -1100,13 +1439,26 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               </div>
               <ul className="space-y-2.5 text-xs text-rose-950 font-medium">
                 {whatToCut.map((cut, idx) => (
-                  <li key={idx} className="flex items-center justify-between gap-2 bg-white/70 p-2.5 rounded-xl border border-rose-200/60">
+                  <li
+                    key={idx}
+                    className="flex items-center justify-between gap-2 bg-white/70 p-2.5 rounded-xl border border-rose-200/60"
+                  >
                     <div className="flex items-start gap-2 flex-1 min-w-0">
-                      <span className="text-rose-600 font-bold shrink-0 mt-0.5">✕</span>
-                      <span className="leading-relaxed text-slate-900">{cut}</span>
+                      <span className="text-rose-600 font-bold shrink-0 mt-0.5">
+                        ✕
+                      </span>
+                      <span className="leading-relaxed text-slate-900">
+                        {cut}
+                      </span>
                     </div>
                     <button
-                      onClick={() => openDrillModal(chatHistory[0]?.question, cut, modelAnswer)}
+                      onClick={() =>
+                        openDrillModal(
+                          chatHistory[0]?.question,
+                          cut,
+                          modelAnswer,
+                        )
+                      }
                       className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[10px] uppercase tracking-wider rounded-lg shadow-2xs transition-all cursor-pointer shrink-0 flex items-center gap-1"
                       title="Practice this question eliminating this specific fluff"
                     >
@@ -1146,8 +1498,14 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
               </div>
               <div className="space-y-2 text-xs font-medium">
                 {aiSuggestions.map((sug, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <ArrowRight size={13} className="text-indigo-600 shrink-0 mt-0.5" />
+                  <div
+                    key={idx}
+                    className="flex items-start gap-2.5 text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200"
+                  >
+                    <ArrowRight
+                      size={13}
+                      className="text-indigo-600 shrink-0 mt-0.5"
+                    />
                     <span className="leading-relaxed">{sug}</span>
                   </div>
                 ))}
@@ -1160,25 +1518,44 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-left space-y-3.5 max-h-[380px] overflow-y-auto">
               <div className="text-xs font-black text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-2 flex items-center justify-between">
                 <span>Detailed Interview Discussion & QA Critique</span>
-                <span className="text-slate-500 font-mono text-[10px]">All Interview Rounds</span>
+                <span className="text-slate-500 font-mono text-[10px]">
+                  All Interview Rounds
+                </span>
               </div>
 
               {chatHistory.map((item, qIdx) => (
-                <div key={qIdx} className="bg-white border border-slate-200 p-3.5 rounded-xl space-y-2 text-xs shadow-2xs">
+                <div
+                  key={qIdx}
+                  className="bg-white border border-slate-200 p-3.5 rounded-xl space-y-2 text-xs shadow-2xs"
+                >
                   {item.question && (
                     <p className="text-slate-900 font-semibold leading-relaxed">
-                      <span className="text-amber-800 font-extrabold">Interviewer Q:</span> {item.question}
+                      <span className="text-amber-800 font-extrabold">
+                        Interviewer Q:
+                      </span>{" "}
+                      {item.question}
                     </p>
                   )}
                   {item.text && (
                     <div className="space-y-2">
                       <p className="text-slate-800 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-200 leading-relaxed">
-                        <span className="font-bold text-slate-900">Your Answer:</span> {item.text}
+                        <span className="font-bold text-slate-900">
+                          Your Answer:
+                        </span>{" "}
+                        {item.text}
                       </p>
                       <div className="flex items-center justify-between pt-1">
-                        <span className="text-[10px] text-slate-400 font-bold">Turn {qIdx + 1}</span>
+                        <span className="text-[10px] text-slate-400 font-bold">
+                          Turn {qIdx + 1}
+                        </span>
                         <button
-                          onClick={() => openDrillModal(item.question, 'Cut unnecessary preamble and deliver using the STAR framework', modelAnswer)}
+                          onClick={() =>
+                            openDrillModal(
+                              item.question,
+                              "Cut unnecessary preamble and deliver using the STAR framework",
+                              modelAnswer,
+                            )
+                          }
                           className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-[11px] rounded-lg border border-indigo-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                         >
                           <RefreshCw size={11} />
@@ -1194,9 +1571,9 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
 
           <button
             onClick={() => {
-              setStep('setup');
+              setStep("setup");
               setChatHistory([]);
-              setUserAnswerText('');
+              setUserAnswerText("");
             }}
             className="w-full py-4 bg-[#151930] hover:bg-[#0B0E27] text-white font-black text-xs sm:text-sm rounded-xl shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center space-x-2 cursor-pointer"
           >
@@ -1207,154 +1584,199 @@ export default function ChatGPTInterviewStudio({ onCancel }: ChatGPTInterviewStu
       )}
 
       {/* RAPID RE-DO DRILL MODAL (REHEARSAL GYM) */}
-      {showDrillModal && mounted && typeof document !== 'undefined' && createPortal(
-        <div 
-          className="fixed inset-0 z-[9999] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeDrillModal();
-          }}
-        >
-          <div className="bg-[#0B0E27] border border-slate-700/80 rounded-3xl max-w-xl w-full p-5 sm:p-7 text-white shadow-2xl relative overflow-hidden flex flex-col gap-4 my-auto max-h-[90vh] overflow-y-auto">
-            {/* Top Accent Gradient Stripe */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-orange-500 to-indigo-600"></div>
+      {showDrillModal &&
+        mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeDrillModal();
+            }}
+          >
+            <div className="bg-[#0B0E27] border border-slate-700/80 rounded-3xl max-w-xl w-full p-5 sm:p-7 text-white shadow-2xl relative overflow-hidden flex flex-col gap-4 my-auto max-h-[90vh] overflow-y-auto">
+              {/* Top Accent Gradient Stripe */}
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-orange-500 to-indigo-600"></div>
 
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center text-xs font-black">
-                  <Flame size={14} />
-                </span>
-                <div>
-                  <h3 className="text-sm sm:text-base font-black text-white">45-Second Rapid Re-Do Drill</h3>
-                  <p className="text-[11px] text-slate-400 font-medium">Placement Gym • Re-deliver without fillers or hesitation</p>
-                </div>
-              </div>
-              <button
-                onClick={closeDrillModal}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
-                title="Close drill (Esc)"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Drill Target Card */}
-            <div className="bg-[#151930] rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">Target Question</span>
-                <p className="text-slate-200 font-semibold leading-relaxed mt-0.5">{drillTargetQuestion}</p>
-              </div>
-              {drillWeakness && (
-                <div className="pt-2 border-t border-slate-800/80 flex items-start gap-1.5 text-rose-300">
-                  <span className="font-bold text-[10px] uppercase text-rose-400 shrink-0">Fluff to Cut:</span>
-                  <span className="font-medium text-[11px]">{drillWeakness}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Drill Recording & Timer Area */}
-            <div className="bg-[#0e1233] border border-indigo-950/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center gap-3">
-              {/* 45s Circular Countdown Gauge */}
-              <div className="relative flex items-center justify-center">
-                <div className={`w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all ${
-                  isDrillRecording 
-                    ? 'bg-red-600/20 border-2 border-red-500 animate-pulse text-red-400' 
-                    : drillCompleted
-                    ? 'bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400'
-                    : 'bg-slate-800 border-2 border-slate-700 text-slate-300'
-                }`}>
-                  <span className="text-2xl font-black font-mono leading-none">{drillCountdown}</span>
-                  <span className="text-[9px] uppercase font-bold tracking-wider mt-0.5">SEC</span>
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center gap-3">
-                {!isDrillRecording && !drillCompleted && (
-                  <button
-                    onClick={startDrillRecording}
-                    className="px-6 py-3 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
-                  >
-                    <Mic size={15} />
-                    <span>Start 45s Drill</span>
-                  </button>
-                )}
-
-                {isDrillRecording && (
-                  <button
-                    onClick={stopDrillRecording}
-                    className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
-                  >
-                    <Square size={14} className="fill-white" />
-                    <span>Complete &amp; Evaluate</span>
-                  </button>
-                )}
-
-                {drillCompleted && (
-                  <button
-                    onClick={startDrillRecording}
-                    className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <RotateCcw size={13} />
-                    <span>Try Drill Again</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Real-time Filler Count Pill */}
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <span className="text-slate-400">Fillers detected in retry:</span>
-                <span className={`px-2 py-0.5 rounded-full font-mono font-black ${
-                  drillFillersFound.length === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
-                }`}>
-                  {drillFillersFound.length} {drillFillersFound.length === 1 ? 'word' : 'words'}
-                </span>
-              </div>
-
-              {/* Live Transcript / Speech Feedback */}
-              {drillTranscript && (
-                <div className="w-full bg-[#151930] border border-slate-800 rounded-xl p-3 text-left max-h-24 overflow-y-auto text-xs font-medium text-slate-200 leading-relaxed">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Your Re-Spoken Delivery:</span>
-                  &ldquo;{drillTranscript}&rdquo;
-                </div>
-              )}
-
-              {/* Drill Evaluation Result */}
-              {drillCompleted && (
-                <div className={`w-full p-3.5 rounded-xl border text-left text-xs font-medium space-y-1 animate-fade-in ${
-                  drillFillersFound.length === 0
-                    ? 'bg-emerald-950/40 border-emerald-600/60 text-emerald-200'
-                    : 'bg-amber-950/40 border-amber-600/60 text-amber-200'
-                }`}>
-                  <div className="flex items-center justify-between font-black uppercase text-[11px]">
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle2 size={14} className={drillFillersFound.length === 0 ? 'text-emerald-400' : 'text-amber-400'} />
-                      <span>{drillFillersFound.length === 0 ? 'Zero-Filler Mastery Achieved!' : 'Drill Completed!'}</span>
-                    </span>
-                    <span className="text-amber-400 font-extrabold">+{drillBonusXp} Bonus XP</span>
+              {/* Modal Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-xl bg-amber-400/20 text-amber-400 flex items-center justify-center text-xs font-black">
+                    <Flame size={14} />
+                  </span>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-black text-white">
+                      45-Second Rapid Re-Do Drill
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium">
+                      Placement Gym • Re-deliver without fillers or hesitation
+                    </p>
                   </div>
-                  <p className="text-[11px] leading-relaxed">
-                    {drillFillersFound.length === 0
-                      ? 'Exceptional execution. You cut all hesitation markers and delivered a clean, punchy explanation.'
-                      : `Solid repetition. You reduced filler dependency. Practice replacing '${drillFillersFound[0] || 'fillers'}' with 1 second of deliberate silence.`}
+                </div>
+                <button
+                  onClick={closeDrillModal}
+                  className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+                  title="Close drill (Esc)"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Drill Target Card */}
+              <div className="bg-[#151930] rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
+                    Target Question
+                  </span>
+                  <p className="text-slate-200 font-semibold leading-relaxed mt-0.5">
+                    {drillTargetQuestion}
                   </p>
                 </div>
-              )}
-            </div>
+                {drillWeakness && (
+                  <div className="pt-2 border-t border-slate-800/80 flex items-start gap-1.5 text-rose-300">
+                    <span className="font-bold text-[10px] uppercase text-rose-400 shrink-0">
+                      Fluff to Cut:
+                    </span>
+                    <span className="font-medium text-[11px]">
+                      {drillWeakness}
+                    </span>
+                  </div>
+                )}
+              </div>
 
-            {/* Modal Footer */}
-            <div className="flex justify-end gap-2 pt-1 border-t border-slate-800">
-              <button
-                onClick={closeDrillModal}
-                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
-              >
-                Back to Full Report
-              </button>
+              {/* Drill Recording & Timer Area */}
+              <div className="bg-[#0e1233] border border-indigo-950/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center gap-3">
+                {/* 45s Circular Countdown Gauge */}
+                <div className="relative flex items-center justify-center">
+                  <div
+                    className={`w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all ${
+                      isDrillRecording
+                        ? "bg-red-600/20 border-2 border-red-500 animate-pulse text-red-400"
+                        : drillCompleted
+                          ? "bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400"
+                          : "bg-slate-800 border-2 border-slate-700 text-slate-300"
+                    }`}
+                  >
+                    <span className="text-2xl font-black font-mono leading-none">
+                      {drillCountdown}
+                    </span>
+                    <span className="text-[9px] uppercase font-bold tracking-wider mt-0.5">
+                      SEC
+                    </span>
+                  </div>
+                </div>
+
+                {/* Controls */}
+                <div className="flex items-center gap-3">
+                  {!isDrillRecording && !drillCompleted && (
+                    <button
+                      onClick={startDrillRecording}
+                      className="px-6 py-3 bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 text-[#151930] font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
+                    >
+                      <Mic size={15} />
+                      <span>Start 45s Drill</span>
+                    </button>
+                  )}
+
+                  {isDrillRecording && (
+                    <button
+                      onClick={stopDrillRecording}
+                      className="px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                    >
+                      <Square size={14} className="fill-white" />
+                      <span>Complete &amp; Evaluate</span>
+                    </button>
+                  )}
+
+                  {drillCompleted && (
+                    <button
+                      onClick={startDrillRecording}
+                      className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <RotateCcw size={13} />
+                      <span>Try Drill Again</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Real-time Filler Count Pill */}
+                <div className="flex items-center gap-2 text-xs font-semibold">
+                  <span className="text-slate-400">
+                    Fillers detected in retry:
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full font-mono font-black ${
+                      drillFillersFound.length === 0
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-rose-500/20 text-rose-400"
+                    }`}
+                  >
+                    {drillFillersFound.length}{" "}
+                    {drillFillersFound.length === 1 ? "word" : "words"}
+                  </span>
+                </div>
+
+                {/* Live Transcript / Speech Feedback */}
+                {drillTranscript && (
+                  <div className="w-full bg-[#151930] border border-slate-800 rounded-xl p-3 text-left max-h-24 overflow-y-auto text-xs font-medium text-slate-200 leading-relaxed">
+                    <span className="text-[10px] font-bold text-slate-400 block mb-1">
+                      Your Re-Spoken Delivery:
+                    </span>
+                    &ldquo;{drillTranscript}&rdquo;
+                  </div>
+                )}
+
+                {/* Drill Evaluation Result */}
+                {drillCompleted && (
+                  <div
+                    className={`w-full p-3.5 rounded-xl border text-left text-xs font-medium space-y-1 animate-fade-in ${
+                      drillFillersFound.length === 0
+                        ? "bg-emerald-950/40 border-emerald-600/60 text-emerald-200"
+                        : "bg-amber-950/40 border-amber-600/60 text-amber-200"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between font-black uppercase text-[11px]">
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2
+                          size={14}
+                          className={
+                            drillFillersFound.length === 0
+                              ? "text-emerald-400"
+                              : "text-amber-400"
+                          }
+                        />
+                        <span>
+                          {drillFillersFound.length === 0
+                            ? "Zero-Filler Mastery Achieved!"
+                            : "Drill Completed!"}
+                        </span>
+                      </span>
+                      <span className="text-amber-400 font-extrabold">
+                        +{drillBonusXp} Bonus XP
+                      </span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      {drillFillersFound.length === 0
+                        ? "Exceptional execution. You cut all hesitation markers and delivered a clean, punchy explanation."
+                        : `Solid repetition. You reduced filler dependency. Practice replacing '${drillFillersFound[0] || "fillers"}' with 1 second of deliberate silence.`}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="flex justify-end gap-2 pt-1 border-t border-slate-800">
+                <button
+                  onClick={closeDrillModal}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Back to Full Report
+                </button>
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

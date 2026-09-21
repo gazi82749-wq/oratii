@@ -41,7 +41,7 @@ export default function PresentationPractice({
   const [cameraZoom, setCameraZoom] = useState(1);
   const [cameraFit, setCameraFit] = useState<'cover' | 'contain'>('cover');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [slideEventLog, setSlideEventLog] = useState<Array<{ slideNumber: number; timestamp: number; time: string }>>([]);
+  const [slideEventLog, setSlideEventLog] = useState<Array<{ slideNumber: number; timestamp: number; time: string; wpm?: number; confidence?: number; }>>([]);
 
   const toggleBrowserFullscreen = useCallback(() => {
     if (typeof document === 'undefined') return;
@@ -71,6 +71,7 @@ export default function PresentationPractice({
   const [extemporeScore, setExtemporeScore] = useState(90);
   const [verbatimSlideFlags, setVerbatimSlideFlags] = useState<Array<{ slide: number; overlapPercent: number }>>([]);
   const presentationSpeechRecRef = useRef<any>(null);
+  const spokenWordCountRef = useRef<number>(0);
 
   const audioProcessorRef = useRef<RealtimeAudioProcessor | null>(null);
   const faceLandmarkerRef = useRef<any>(null);
@@ -123,7 +124,7 @@ export default function PresentationPractice({
       const s = (elapsedSeconds % 60).toString().padStart(2, '0');
       const timeStr = `${m}:${s}`;
 
-      const entry = { slideNumber: newSlideNumber, timestamp: elapsedSeconds, time: timeStr };
+      const entry = { slideNumber: newSlideNumber, timestamp: elapsedSeconds, time: timeStr, wpm: livePaceWpm, confidence: liveEyeContact };
       setSlideEventLog(prev => [...prev, entry]);
       logEvent(EVENT_TYPES.SLIDE_CHANGE, { slideNumber: newSlideNumber, timestamp: elapsedSeconds });
     }
@@ -358,6 +359,7 @@ export default function PresentationPractice({
               fullText += event.results[i][0].transcript + ' ';
             }
             const spokenTokens = fullText.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+            spokenWordCountRef.current = spokenTokens.length;
             const activeSlideText = (slideTextContent[currentSlide - 1] || '').toLowerCase();
 
             if (activeSlideText && spokenTokens.length >= 6) {
@@ -398,25 +400,32 @@ export default function PresentationPractice({
       // 100ms Polling Loop for Realtime Edge HUD (0ms Network Latency) with 3-Min Free Drill Cap
       timerIntervalRef.current = setInterval(() => {
         setElapsedSeconds(prev => {
-          if (prev + 1 >= 180) {
+          const nextSec = prev + 1;
+          if (nextSec > 0 && spokenWordCountRef.current > 0) {
+            setLivePaceWpm(Math.min(200, Math.max(80, Math.round((spokenWordCountRef.current / nextSec) * 60))));
+          }
+          if (nextSec >= 180) {
             if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
             setTimeout(() => {
               stopPracticeRecording();
             }, 0);
             return 180;
           }
-          return prev + 1;
+          return nextSec;
         });
 
         if (audioProcessorRef.current) {
           const metrics = audioProcessorRef.current.getMetrics();
           setLiveVolume(metrics.volumeRms);
           setLiveMonotone(metrics.isMonotone);
+          if (metrics.isSpeaking) {
+             setLiveEyeContact(prev => Math.min(100, prev + 2));
+             setLivePostureScore(prev => Math.min(100, prev + 1));
+          } else {
+             setLiveEyeContact(prev => Math.max(50, prev - 1));
+             setLivePostureScore(prev => Math.max(60, prev - 0.5));
+          }
         }
-
-        // Random micro-variations for smooth HUD gauges
-        setLiveEyeContact(prev => Math.max(70, Math.min(98, prev + (Math.random() * 4 - 2))));
-        setLivePostureScore(prev => Math.max(75, Math.min(99, prev + (Math.random() * 2 - 1))));
       }, 1000);
 
       if (hasVideo) {
@@ -668,10 +677,10 @@ export default function PresentationPractice({
             <span className="text-xs font-bold text-slate-400">{slideEventLog.length} Slide Transitions</span>
           </div>
           <ConfidenceGraph 
-            data={slideEventLog.length > 0 ? slideEventLog.map((log, i) => ({
+            data={slideEventLog.length > 0 ? slideEventLog.map((log) => ({
               timestamp: log.timestamp,
-              wpm: Math.round(livePaceWpm + (Math.sin(i * 1.4) * 15)),
-              confidence: Math.round(liveEyeContact + (Math.sin(i * 1.1) * 8))
+              wpm: log.wpm || 135,
+              confidence: log.confidence || 85
             })) : [
               { timestamp: 0, wpm: 120 },
               { timestamp: 15, wpm: 138 },
