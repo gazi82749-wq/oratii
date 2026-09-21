@@ -672,12 +672,26 @@ h1, h2, h3, h4, h5, h6 {
   50% { transform: translate(35px, 45px) scale(1.15); }
 }
 
+@keyframes laser-scan-horizontal {
+  0% { transform: translateX(-100%); opacity: 0; }
+  30% { opacity: 0.8; }
+  70% { opacity: 0.8; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+
 .animate-pulse-dot { animation: pulse-dot 2s infinite; }
 .animate-type-1 { animation: type-line-1 6s infinite steps(40, end); white-space: nowrap; overflow: hidden; }
 .animate-type-2 { animation: type-line-2 6s infinite steps(40, end); white-space: nowrap; overflow: hidden; }
 .animate-slide-tag-1 { animation: slide-in-tag 6s infinite ease-out; animation-delay: 1.5s; opacity: 0; animation-fill-mode: forwards; }
 .animate-slide-tag-2 { animation: slide-in-tag 6s infinite ease-out; animation-delay: 2.5s; opacity: 0; animation-fill-mode: forwards; }
 .animate-laser { animation: laser-scan 4s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+.animate-laser-scan-horizontal { animation: laser-scan-horizontal 6s infinite ease-in-out; }
+.animate-pulse-glow { animation: pulse-glow 7s ease-in-out infinite; }
 .animate-highlight { animation: highlight-fade 4s infinite; }
 .animate-soundwave { animation: soundwave-pulse 2s infinite; }
 .animate-pop-1 { animation: pop-up-bubble 6s infinite cubic-bezier(0.34, 1.56, 0.64, 1); }

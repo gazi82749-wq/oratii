@@ -11,6 +11,7 @@ import dynamic from 'next/dynamic';
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: true });
 
 import { FadeUp, FadeInLeft, FadeInRight } from '@/components/ui/FadeUp';
+import ModernBackgroundAnimation from '@/components/ui/ModernBackgroundAnimation';
 import EducatorSwitchModal from '../components/EducatorSwitchModal';
 
 export default function HomeClient() {
@@ -99,13 +100,7 @@ export default function HomeClient() {
       <div className="flex-1 pt-16 sm:pt-20">
 
       {/* 2. Hero Section */}
-      <section className="relative pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC] overflow-hidden">
-        
-        {/* Ambient Pulsing Light Glow Auras */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-[#F2A93B]/15 rounded-full blur-[140px] pointer-events-none animate-float-blob-1" />
-        <div className="absolute top-1/4 right-[-5%] w-[450px] h-[450px] bg-teal-400/15 rounded-full blur-[130px] pointer-events-none animate-float-blob-2" />
-        <div className="absolute bottom-10 left-[-5%] w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-[130px] pointer-events-none animate-float-blob-3" />
-
+      <ModernBackgroundAnimation variant="hero" className="pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           
           {/* Left Column: Headline & Subtitle */}
@@ -171,11 +166,11 @@ export default function HomeClient() {
             </FadeUp>
           </div>
         </div>
-      </section>
+      </ModernBackgroundAnimation>
 
       {/* 3. Scroll Narrative Transition Section */}
-      <section id="scroll-narrative" className="py-12 sm:py-24 bg-white border-y border-slate-100 scroll-mt-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <ModernBackgroundAnimation variant="narrative" className="py-12 sm:py-24 border-y border-slate-100">
+        <div id="scroll-narrative" className="max-w-4xl mx-auto px-4 sm:px-6 text-center scroll-mt-20">
           <FadeUp>
             <span className="text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-2 sm:mb-3 block">
               The Oratii Experience
@@ -188,7 +183,7 @@ export default function HomeClient() {
             </p>
           </FadeUp>
         </div>
-      </section>
+      </ModernBackgroundAnimation>
 
       {/* 4. Full-Width Alternating Feature Sections with Animated Background Glows */}
       <section id="features" className="py-8 sm:py-20 bg-white relative scroll-mt-20 overflow-hidden">
@@ -731,7 +726,7 @@ export default function HomeClient() {
       </section>
 
       {/* 8. Final CTA Section */}
-      <section className="py-16 sm:py-32 bg-[#0F1426] text-center px-4 sm:px-6 relative overflow-hidden text-white">
+      <ModernBackgroundAnimation variant="cta" className="py-16 sm:py-32 text-center px-4 sm:px-6 text-white">
         <div className="max-w-4xl mx-auto relative z-10">
           <FadeUp>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 tracking-tight">
@@ -748,7 +743,7 @@ export default function HomeClient() {
             </Link>
           </FadeUp>
         </div>
-      </section>
+      </ModernBackgroundAnimation>
 
       </div>
 

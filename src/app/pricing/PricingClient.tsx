@@ -19,6 +19,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import ModernBackgroundAnimation from '@/components/ui/ModernBackgroundAnimation';
 import Footer from '@/components/Footer';
 import ReferralCard from '@/components/ReferralCard';
 import { supabase } from '@/lib/supabaseClient';
@@ -123,7 +124,7 @@ export default function PricingClient() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 overflow-x-hidden relative">
+    <ModernBackgroundAnimation variant="global" className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900">
       {/* Subtle Ambient Depth */}
       <div className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] bg-slate-200/30 blur-[120px] rounded-full pointer-events-none -z-10" />
       <div className="absolute top-[15%] right-[-5%] w-[35vw] h-[35vw] bg-amber-100/20 blur-[120px] rounded-full pointer-events-none -z-10" />
@@ -536,6 +537,6 @@ export default function PricingClient() {
           </div>
         </div>
       )}
-    </div>
+    </ModernBackgroundAnimation>
   );
 }

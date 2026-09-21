@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Footer from '@/components/Footer';
+import ModernBackgroundAnimation from '@/components/ui/ModernBackgroundAnimation';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -12,7 +13,7 @@ export default function AboutUs() {
       
       <div className="flex-1">
       {/* About Hero Section */}
-      <section className="relative bg-[#F8FAFC] pt-12 sm:pt-16 md:pt-20 pb-20 sm:pb-28 px-4 sm:px-6 overflow-hidden ui-grid-bg">
+      <ModernBackgroundAnimation variant="global" className="pt-12 sm:pt-16 md:pt-20 pb-20 sm:pb-28 px-4 sm:px-6">
         
         <div className="w-full max-w-4xl mx-auto relative z-10 text-center md:text-left flex flex-col items-center md:items-start">
           <div className="ui-badge-pill mb-4">
@@ -43,7 +44,7 @@ export default function AboutUs() {
             </div>
           </div>
         </div>
-      </section>
+      </ModernBackgroundAnimation>
       </div>
       <Footer />
     </div>
