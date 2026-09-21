@@ -74,7 +74,7 @@ export default function SecurityEthicsPage() {
             <div>
               <h2 className="text-xl font-black text-slate-950 mb-2">3. Unbiased Ethical AI Scoring</h2>
               <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                Our AI Job Interviewer and Speech Coach evaluate speech purely on merit—focusing strictly on WPM pacing, filler word frequency, and STAR method response structure without demographic, accent, or background bias.
+                Our Mock Interviewer and Speech Coach evaluate speech purely on merit—focusing strictly on WPM pacing, filler word frequency, and STAR method response structure without demographic, accent, or background bias.
               </p>
             </div>
             <div className="mt-5 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-extrabold text-emerald-700">

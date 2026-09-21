@@ -154,7 +154,7 @@ export async function sendWeeklyDigestEmail(toEmail: string, userName: string, s
         <!-- CTA Button -->
         <div style="text-align: center; margin-bottom: 20px;">
           <a href="${siteUrl}/speech-coach" style="display: inline-block; background-color: #1B2140; color: #FFFFFF; font-size: 15px; font-weight: 800; padding: 14px 32px; border-radius: 100px; text-decoration: none; box-shadow: 0 4px 14px rgba(27,33,64,0.3);">
-            Launch This Week's 3-Min Drill &rarr;
+            Launch This Week's Speech Coach &rarr;
           </a>
         </div>
       </div>

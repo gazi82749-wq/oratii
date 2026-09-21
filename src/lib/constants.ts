@@ -122,7 +122,7 @@ export const BADGES = [
   { id: 'Oratii_master', name: 'Oratii Master', icon: '🎖️', description: 'Reach Level 5' }
 ];
 
-// ——— Challenge Days (20-Day Challenge) ———
+// ——— Challenge Days (Daily Challenge) ———
 export const CHALLENGE_DAYS = [
   { day: 1, title: 'Introduce Yourself', description: 'Record a 1-minute self-introduction', xp: 20, type: 'speech' },
   { day: 2, title: 'One Minute Speech', description: 'Speak on any topic for exactly 60 seconds', xp: 20, type: 'speech' },

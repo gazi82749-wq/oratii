@@ -416,7 +416,7 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — 20-DAY CHALLENGE (ANIMATED BG GLOW) */}
+          {/* FEATURE 04 — Daily Challenge (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
             <FadeInRight>
               <div className="bg-gradient-to-bl from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
@@ -461,9 +461,9 @@ export default function HomeClient() {
                     <FadeUp delay={300}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> 20-Day Path
+                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Daily Path
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Structured 20-day communication improvement roadmap</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Structured Daily communication improvement roadmap</p>
                       </div>
                     </FadeUp>
                   </div>
@@ -473,7 +473,7 @@ export default function HomeClient() {
                       href="/challenge"
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
-                      Join 20-Day Challenge <ArrowRight size={18} className="text-[#F2A93B]" />
+                      Join Daily Challenge <ArrowRight size={18} className="text-[#F2A93B]" />
                     </Link>
                   </div>
                 </div>
@@ -595,7 +595,7 @@ export default function HomeClient() {
               { num: "01", title: "Choose What to Practice", desc: "Select speech coach, presentation studio, voice interview probes, or daily habit challenges." },
               { num: "02", title: "Practice Out Loud", desc: "Speak into your mic with live webcam telemetry and slide HUD support." },
               { num: "03", title: "Get Real-time Feedback", desc: "See exact WPM, filler word timestamps, structure feedback, and clarity scores." },
-              { num: "04", title: "Improve", desc: "Refine your delivery and track your 20-day habit streak." }
+              { num: "04", title: "Improve", desc: "Refine your delivery and track your Daily habit streak." }
             ].map((step, idx) => (
               <FadeUp key={idx} delay={idx * 100}>
                 <div className="border-t-2 border-[#0F1426] pt-4 sm:pt-6">

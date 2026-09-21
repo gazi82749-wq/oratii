@@ -1,5 +1,5 @@
 // src/lib/challenge.ts
-// Data model and state management for the 20-Day Challenge module
+// Data model and state management for the Daily Challenge module
 
 import { getStreak, updateStreak } from './storage';
 

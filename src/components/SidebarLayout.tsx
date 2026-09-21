@@ -134,13 +134,13 @@ export default function SidebarLayout({ children }) {
 
   // Product dropdown items with clean typography and comfortable spacing
   const productItems = [
-    { href: '/speech-coach', label: 'Speech Coach (3-Min Drills)', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
-    { href: '/interview', label: 'AI Mock Interviewer', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
+    { href: '/speech-coach', label: 'Speech Coach', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
+    { href: '/interview', label: 'Mock Interview', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/presentation', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
-    { href: '/challenge', label: '20-Day Placement Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
-    { href: user ? '/trainer' : '/signup?role=trainer', label: 'Academy & Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
+    { href: '/challenge', label: 'Daily Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
+    { href: user ? '/trainer' : '/signup?role=trainer', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
     { type: 'divider' },
-    { href: '/reports', label: 'Reports & Analytics', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
+    { href: '/reports', label: 'Reports', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
   ];
 
   return (

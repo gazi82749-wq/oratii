@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">1. Information We Collect</h2>
             <div className="space-y-3 text-slate-700 font-medium">
-              <p><strong>a. Audio & Vocal Telemetry:</strong> When you use our Speech Coach, AI Job Interview Studio, or 20-Day Challenge, microphone audio is processed in real-time to evaluate WPM pacing, filler word density, vocal tone, and posture telemetry.</p>
+              <p><strong>a. Audio & Vocal Telemetry:</strong> When you use our Speech Coach, Mock Interview Studio, or Daily Challenge, microphone audio is processed in real-time to evaluate WPM pacing, filler word density, vocal tone, and posture telemetry.</p>
               <p><strong>b. Presentation Slides & Resume Documents:</strong> Uploaded PowerPoint (PPTX), PDF decks, or Resume/CV documents are parsed solely to produce slide density scores, extract resume context, and generate simulated STAR method technical questions.</p>
               <p><strong>c. Account & Authentication Data:</strong> Full name, email address, and secure auth tokens collected during sign-up to manage your 5 free trial credits and account preferences.</p>
               <p><strong>d. Payment & Transaction Records:</strong> Credit top-up transactions are processed through encrypted payment gateway partners (such as Razorpay). Oratii does not store credit card numbers or banking passwords on our servers.</p>

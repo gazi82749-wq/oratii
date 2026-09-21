@@ -6,7 +6,7 @@ import { Mic, Video, Briefcase, CheckCircle2 } from 'lucide-react';
 const modules = [
   { id: 'presentation', label: 'Presentation Practice', icon: Video },
   { id: 'speech', label: 'Speech Coach', icon: Mic },
-  { id: 'interview', label: 'AI Mock Interviewer', icon: Briefcase }
+  { id: 'interview', label: 'Mock Interview', icon: Briefcase }
 ];
 
 export default function HeroShowcase() {

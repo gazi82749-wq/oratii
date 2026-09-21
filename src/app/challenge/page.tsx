@@ -79,7 +79,7 @@ const renderChallengeBadgeIcon = (day: number) => {
   }
 };
 
-// 20 Custom Badge Definitions for the 20-Day Campus Placement & Viva Defense Bootcamp
+// 20 Custom Badge Definitions for the Daily Campus Placement & Viva Defense Bootcamp
 const CHALLENGE_BADGES = [
   { day: 1, name: 'Campus Initiator', iconName: 'rocket', desc: 'Delivered crisp 90s professional introduction' },
   { day: 2, name: 'Architecture Defender', iconName: 'laptop', desc: 'Defended major engineering project stack & flow' },
@@ -100,7 +100,7 @@ const CHALLENGE_BADGES = [
   { day: 17, name: 'Global Debate Master', iconName: 'landmark', desc: 'Mastered abstract IELTS Part 3 discussion' },
   { day: 18, name: 'Placement Finalist', iconName: 'trophy', desc: 'Delivered compelling "Why Hire Me" pitch' },
   { day: 19, name: 'Stress Test Survivor', iconName: 'flame', desc: 'Withstood high-intensity hostile cross-exam' },
-  { day: 20, name: 'Placement & Viva Champion', iconName: 'award', desc: 'Completed full 20-Day Capstone Simulation' },
+  { day: 20, name: 'Placement & Viva Champion', iconName: 'award', desc: 'Completed full Daily Capstone Simulation' },
 ];
 
 export default function ChallengePage() {
@@ -149,7 +149,7 @@ export default function ChallengePage() {
     return (
       <div className="w-full max-w-4xl mx-auto py-16 flex flex-col items-center justify-center">
         <div className="w-10 h-10 border-4 border-indigo-200 border-t-[#F2A93B] rounded-full animate-spin mb-4"></div>
-        <p className="text-xs font-extrabold text-slate-500">Loading 20-Day Challenge...</p>
+        <p className="text-xs font-extrabold text-slate-500">Loading Daily Challenge...</p>
       </div>
     );
   }
@@ -163,7 +163,7 @@ export default function ChallengePage() {
     : 1;
 
   const handleStartTask = async () => {
-    // 1. Check Auth (20-Day Challenge is FREE for all signed-in users)
+    // 1. Check Auth (Daily Challenge is FREE for all signed-in users)
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user) {
@@ -225,10 +225,10 @@ export default function ChallengePage() {
       <div className="w-full bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative">
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-3 shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> 20-Day Placement &amp; Viva Bootcamp
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Daily Bootcamp
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight mb-1">
-            20-Day Campus Placement &amp; Viva Bootcamp
+            Daily Bootcamp
           </h1>
           <p className="text-xs sm:text-sm font-normal text-slate-600 max-w-xl">
             Eliminate &ldquo;matlab&rdquo; &amp; &ldquo;basically&rdquo; filler habits, master STAR method interviews for campus placement drives, and pass university project vivas without freezing.
@@ -486,7 +486,7 @@ export default function ChallengePage() {
             onClick={handleOpenResetModal}
             className="self-start px-6 py-3 bg-white text-slate-900 hover:bg-indigo-100 font-extrabold text-xs rounded-xl transition-all flex items-center gap-2 cursor-pointer"
           >
-            <RotateCcw size={14} /> Start New 20-Day Cycle
+            <RotateCcw size={14} /> Start New Daily Cycle
           </button>
         </div>
       )}
@@ -496,7 +496,7 @@ export default function ChallengePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100 pb-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              20-Day Badges & Certificates
+              Daily Badges & Certificates
             </h2>
             <p className="text-xs font-medium text-slate-500 mt-0.5">
               Each completed day unlocks its official badge and downloadable Oratii Certificate.
@@ -664,7 +664,7 @@ export default function ChallengePage() {
             <div>
               <h3 className="text-lg font-extrabold text-slate-900">Reset Challenge to Day 1?</h3>
               <p className="text-xs font-medium text-slate-600 mt-1.5 leading-relaxed">
-                Are you sure you want to reset your 20-Day Challenge progress? All 20 daily task statuses, streak counts, and milestones will be reset back to Day 1.
+                Are you sure you want to reset your Daily Challenge progress? All 20 daily task statuses, streak counts, and milestones will be reset back to Day 1.
               </p>
             </div>
 
@@ -703,8 +703,8 @@ export default function ChallengePage() {
         />
       )}
 
-      <GuestAuthModal isOpen={isGuestAuthModalOpen} onClose={() => setIsGuestAuthModalOpen(false)} featureName="20-Day Challenge" />
-      <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={1} currentBalance={creditBalance} featureName="20-Day Challenge" />
+      <GuestAuthModal isOpen={isGuestAuthModalOpen} onClose={() => setIsGuestAuthModalOpen(false)} featureName="Daily Challenge" />
+      <InsufficientCreditsModal isOpen={isCreditModalOpen} onClose={() => setIsCreditModalOpen(false)} requiredCredits={1} currentBalance={creditBalance} featureName="Daily Challenge" />
       </div>
       <Footer />
     </div>

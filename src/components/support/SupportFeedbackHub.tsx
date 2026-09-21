@@ -68,7 +68,7 @@ const DEFAULT_TICKETS: TicketItem[] = [
     messages: [
       {
         sender: 'user',
-        message: 'I accidentally clicked Block on microphone permissions and now Chrome will not ask again when launching 3-min Drills.',
+        message: 'I accidentally clicked Block on microphone permissions and now Chrome will not ask again when launching Speech Coach.',
         timestamp: new Date(Date.now() - 3600000 * 4).toISOString()
       },
       {
@@ -153,7 +153,7 @@ const FAQS = [
 const CATEGORIES = [
   { id: 'Speech Coach', label: 'Speech Coach & Mic', icon: Mic, color: 'text-rose-500 bg-rose-50 border-rose-200' },
   { id: 'Presentation Practice', label: 'Presentation Practice', icon: FileText, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-  { id: 'Mock Interview', label: 'AI Mock Interview', icon: Briefcase, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { id: 'Mock Interview', label: 'Mock Interview', icon: Briefcase, color: 'text-amber-600 bg-amber-50 border-amber-200' },
   { id: 'Viva Defense', label: 'Academic Viva Defense', icon: Video, color: 'text-purple-600 bg-purple-50 border-purple-200' },
   { id: 'Billing & Credits', label: 'Billing & Credit Packs', icon: CreditCard, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'Account & Other', label: 'Account & Settings', icon: Settings, color: 'text-slate-600 bg-slate-50 border-slate-200' }
@@ -607,7 +607,7 @@ export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportF
                     {[
                       'Speech Coach',
                       'Slide Analyzer',
-                      'AI Mock Interview',
+                      'Mock Interview',
                       'Viva Defense',
                       'Pricing & Credits',
                       'Website & Design',

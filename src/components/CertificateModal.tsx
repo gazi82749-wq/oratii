@@ -132,7 +132,7 @@ export default function CertificateModal({
               {/* Program Wording */}
               <div className="max-w-2xl mx-auto space-y-4">
                 <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
-                  For successfully mastering <span className="font-extrabold text-amber-400">Day {dayNumber || 1}</span> of the intensive <span className="font-extrabold text-white">20-Day Public Speaking & Presentation Challenge</span>, achieving verified top-tier vocal clarity and speech performance.
+                  For successfully mastering <span className="font-extrabold text-amber-400">Day {dayNumber || 1}</span> of the intensive <span className="font-extrabold text-white">Daily Public Speaking & Presentation Challenge</span>, achieving verified top-tier vocal clarity and speech performance.
                 </p>
 
                 {/* Bento Grid Verified Metrics Block */}

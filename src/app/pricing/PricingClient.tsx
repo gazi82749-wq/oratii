@@ -305,7 +305,7 @@ export default function PricingClient() {
                   University Placement Cells & Sales Academies
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-                  Manage student cohorts, assign 20-Day Placement Bootcamps, track filler word reduction metrics across batches, and access institutional volume discounts.
+                  Manage student cohorts, assign Daily Bootcamps, track filler word reduction metrics across batches, and access institutional volume discounts.
                 </p>
               </div>
 

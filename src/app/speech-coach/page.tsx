@@ -878,7 +878,7 @@ export default function SpeechCoach() {
             ))}
           </div>
 
-          {/* Challenge Banner if launched from 20-Day Challenge */}
+          {/* Challenge Banner if launched from Daily Challenge */}
           {challengeDay && (
             <div className="bg-[#0F1426] text-white rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg border border-slate-800 mb-4">
               <div className="flex items-center gap-3 font-semibold text-sm">
