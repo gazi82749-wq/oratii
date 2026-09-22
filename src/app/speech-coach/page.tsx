@@ -5,13 +5,16 @@ import { saveSession } from '../../lib/storage';
 import { processSessionCompletion } from '../../lib/gamification';
 import { groupFillerWords } from '../../lib/constants';
 import { completeChallengeDay } from '../../lib/challenge';
+import dynamic from 'next/dynamic';
 import XPToast from '../../components/XPToast';
-import TrialSignupPrompt from '../../components/TrialSignupPrompt';
-import GuestAuthModal from '../../components/GuestAuthModal';
-import InsufficientCreditsModal from '../../components/InsufficientCreditsModal';
-import ConfidenceGraph, { ScoreRing } from '../../components/ConfidenceGraph';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
+
+const TrialSignupPrompt = dynamic(() => import('../../components/TrialSignupPrompt'), { ssr: false });
+const GuestAuthModal = dynamic(() => import('../../components/GuestAuthModal'), { ssr: false });
+const InsufficientCreditsModal = dynamic(() => import('../../components/InsufficientCreditsModal'), { ssr: false });
+const ConfidenceGraph = dynamic(() => import('../../components/ConfidenceGraph'), { ssr: false });
+const ScoreRing = dynamic(() => import('../../components/ConfidenceGraph').then(mod => mod.ScoreRing), { ssr: false });
 import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } from '../../lib/scoringRubric';
 import {
   Mic, FileText, Upload, Sparkles, X, CheckCircle2, RotateCcw, Award, Zap, Globe,

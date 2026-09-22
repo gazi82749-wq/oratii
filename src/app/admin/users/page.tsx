@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Filter, ChevronLeft, ChevronRight, MoreHorizontal, Eye, Ban, Trash2, Crown, ArrowDownCircle, ShieldCheck, Download } from 'lucide-react';
@@ -41,12 +41,38 @@ export default function AllUsersPage() {
   const [page, setPage] = useState(1);
   const [actionMenu, setActionMenu] = useState<string | null>(null);
 
-  const fetchUsers = async () => {
+  const [totalCount, setTotalCount] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  // Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); // Reset page on new search
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
-    const { data: dbProfiles } = await supabase
+    
+    let query = supabase
       .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
+
+    if (debouncedSearch) {
+      query = query.ilike('email', `%${debouncedSearch}%`);
+    }
+
+    if (planFilter !== 'all') {
+      query = query.eq('current_plan', planFilter);
+    }
+    // Status filter is complex since it's derived, for now we handle active/banned if role is present
+    // if (statusFilter === 'banned') query = query.eq('role', 'banned'); 
+
+    const { data: dbProfiles, count } = await query;
 
     if (dbProfiles) {
       const mapped: AdminUser[] = dbProfiles.map((p: any) => ({
@@ -64,13 +90,14 @@ export default function AllUsersPage() {
         vivaSessions: 0,
       }));
       setUsersList(mapped);
+      if (count !== null) setTotalCount(count);
     }
     setLoading(false);
-  };
+  }, [page, debouncedSearch, planFilter, statusFilter]);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const handleUpdatePlan = async (userId: string, newPlan: UserPlan) => {
     await supabase.from('profiles').update({ current_plan: newPlan }).eq('id', userId);
@@ -86,17 +113,10 @@ export default function AllUsersPage() {
   };
 
 
-  const filtered = useMemo(() => {
-    return usersList.filter((u) => {
-      const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || u.status === statusFilter;
-      const matchesPlan = planFilter === 'all' || u.plan === planFilter;
-      return matchesSearch && matchesStatus && matchesPlan;
-    });
-  }, [usersList, search, statusFilter, planFilter]);
-
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  // filtered and paginated logic is now handled server-side, 
+  // so we just use usersList directly for rendering.
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const paginated = usersList;
 
   return (
     <div className="space-y-6">
@@ -108,7 +128,7 @@ export default function AllUsersPage() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => exportToCSV('oratii_users', filtered.map(u => ({
+            onClick={() => exportToCSV('oratii_users', usersList.map(u => ({
               ID: u.id,
               Name: u.name,
               Email: u.email,
@@ -122,7 +142,7 @@ export default function AllUsersPage() {
             <Download size={14} /> Export CSV
           </button>
           <div className="text-sm text-slate-500 dark:text-slate-400">
-            <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> users
+            <span className="font-semibold text-slate-900 dark:text-white">{totalCount}</span> users
           </div>
         </div>
       </div>
@@ -135,7 +155,7 @@ export default function AllUsersPage() {
             type="text"
             placeholder="Search by name or email..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-indigo-200 dark:border-slate-800 rounded-lg text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
           />
         </div>
@@ -280,7 +300,7 @@ export default function AllUsersPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-3 border-t border-indigo-100 dark:border-slate-800">
             <div className="text-[12px] text-slate-500 dark:text-slate-400">
-              Showing {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+              Showing {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, totalCount)} of {totalCount}
             </div>
             <div className="flex items-center gap-1">
               <button

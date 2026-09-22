@@ -50,6 +50,7 @@ export default function Reports() {
   const [history, setHistory] = useState<any[]>([]);
   const [filter, setFilter] = useState('all'); 
   const [loaded, setLoaded] = useState(false);
+  const [page, setPage] = useState(1);
   const [exportingSessionId, setExportingSessionId] = useState<string | null>(null);
   const [copiedSessionId, setCopiedSessionId] = useState<string | null>(null);
   const [isCloudSynced, setIsCloudSynced] = useState(false);
@@ -136,6 +137,15 @@ export default function Reports() {
   }, [exportingSessionId]);
 
   const filteredHistory = filter === 'all' ? history : history.filter(h => h.type === filter);
+  
+  const ITEMS_PER_PAGE = 5;
+  const totalPages = Math.ceil(filteredHistory.length / ITEMS_PER_PAGE);
+  const paginatedHistory = filteredHistory.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
 
   const renderModuleIcon = (type: string) => {
     switch (type) {
@@ -414,7 +424,7 @@ export default function Reports() {
               <span>Recorded videos are saved locally via IndexedDB. Export to MP4 or clear browser data anytime to free space.</span>
             </div>
           </div>
-          {filteredHistory.map((session, i) => (
+          {paginatedHistory.map((session, i) => (
             <div key={i} className={`bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col md:flex-row gap-6 items-start md:items-center shadow-xs hover:shadow-md transition-all break-inside-avoid accent-stripe`} style={{'--color-brand-from': {'speech':'#10b981','presentation':'#3b82f6','viva':'#e11d48','interview':'#f59e0b','jury':'#fa7c42'}[session.type] || '#94a3b8', '--color-brand-to': {'speech':'#34d399','presentation':'#60a5fa','viva':'#fb7185','interview':'#fbbf24','jury':'#818cf8'}[session.type] || '#cbd5e1'} as React.CSSProperties}>
               
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-slate-50 border border-slate-200/70 flex-shrink-0 shadow-xs">
@@ -530,6 +540,31 @@ export default function Reports() {
               </div>
             </div>
           ))}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-4 mt-6 border-t border-slate-200">
+              <span className="text-sm text-slate-500 font-medium">
+                Showing {(page - 1) * ITEMS_PER_PAGE + 1} to {Math.min(page * ITEMS_PER_PAGE, filteredHistory.length)} of {filteredHistory.length} sessions
+              </span>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs transition-colors"
+                >
+                  Previous
+                </button>
+                <button 
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
       </div>
