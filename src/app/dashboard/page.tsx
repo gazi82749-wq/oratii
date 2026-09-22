@@ -116,7 +116,8 @@ export default function ProfessionalDashboard() {
   const [scoreTrend, setScoreTrend] = useState<number[]>([]);
   const [settings, setSettingsState] = useState({ notifications: true, theme: 'light' });
 
-  // Modals state
+  // Modals & Role state
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSetPasswordModalOpen, setIsSetPasswordModalOpen] = useState(false);
   const [editName, setEditName] = useState('');
@@ -169,7 +170,7 @@ export default function ProfessionalDashboard() {
         try {
           const { data: dbProfile } = await supabase
             .from('profiles')
-            .select('full_name, email, avatar_url')
+            .select('full_name, email, avatar_url, role')
             .eq('id', activeUser.id)
             .maybeSingle();
 
@@ -177,6 +178,7 @@ export default function ProfessionalDashboard() {
             if (dbProfile.full_name) fullName = dbProfile.full_name;
             if (dbProfile.email) userEmail = dbProfile.email;
             if (dbProfile.avatar_url) userAvatar = dbProfile.avatar_url;
+            if (dbProfile.role) setUserRole(dbProfile.role);
           }
         } catch (profileErr) {
           console.warn('[Dashboard] Supabase profile fetch notice:', profileErr);
