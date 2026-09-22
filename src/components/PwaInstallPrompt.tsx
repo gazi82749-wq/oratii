@@ -91,27 +91,12 @@ export default function PwaInstallPrompt() {
     };
     window.addEventListener('open-pwa-install', handleOpenCustomInstall);
 
-    // 4. Auto-show floating install prompt after 600ms if not in standalone, not session dismissed, AND NOT mobile
-    let timer: NodeJS.Timeout;
-    let autoDismissTimer: NodeJS.Timeout;
 
-    if (!isSessionDismissed && !isMobileDevice) {
-      timer = setTimeout(() => {
-        setShowPrompt(true);
-
-        // Auto-dismiss after 12 seconds if no action taken
-        autoDismissTimer = setTimeout(() => {
-          setShowPrompt(false);
-        }, 12000);
-      }, 600);
-    }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('open-pwa-install', handleOpenCustomInstall);
-      if (timer) clearTimeout(timer);
-      if (autoDismissTimer) clearTimeout(autoDismissTimer);
     };
   }, [deferredPrompt]);
 
