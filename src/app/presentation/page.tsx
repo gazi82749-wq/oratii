@@ -181,9 +181,24 @@ function PresentationPracticeContent() {
             slideImages={slideImages}
             slideTextContent={extractedSlideTexts}
             onCancel={() => setIsPracticeMode(false)}
-            onComplete={() => {
-              // We don't close practice mode here because the local results dashboard 
-              // is rendered INSIDE PresentationPractice when complete.
+            onComplete={(analysisData: any) => {
+              // 1. Close practice mode overlay
+              setIsPracticeMode(false);
+              
+              // 2. Save session to local storage & Supabase DB via storage lib
+              const sessionRecord = saveSession('presentation', {
+                id: analysisData.id,
+                fileName: file?.name || 'Presentation Deck',
+                scores: analysisData.scores,
+                telemetry: analysisData.telemetry,
+                slideEventLog: analysisData.slideEventLog,
+                verbatimSlideFlags: analysisData.verbatimSlideFlags,
+                extemporeScore: analysisData.extemporeScore,
+                elapsedSeconds: analysisData.elapsedSeconds
+              });
+
+              // 3. Standard Navigation to the dedicated reports URL!
+              router.push(`/reports/${sessionRecord.id}`);
             }}
           />
         </div>,

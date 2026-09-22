@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { saveSession } from "@/lib/storage";
 import { createPortal } from "react-dom";
 import {
   Mic,
@@ -89,6 +90,7 @@ export const HIGH_STAKES_ROLE_PRESETS = [
 export default function ChatGPTInterviewStudio({
   onCancel,
 }: ChatGPTInterviewStudioProps) {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState<"setup" | "interview" | "results">("setup");
   const [roleTitle, setRoleTitle] = useState(
@@ -613,79 +615,83 @@ export default function ChatGPTInterviewStudio({
         }),
       });
 
+      let finalScores = { technical: 82, communication: 85, starAlignment: 80, relevance: 88, overall: 84 };
+      let finalStrengths: string[] = [`Domain alignment for ${roleTitle}`];
+      let finalWeaknesses: string[] = ["Provide deeper technical details on project trade-offs"];
+      let finalSuggestions: string[] = ["Use STAR framework for situational questions"];
+      let finalWhatToCut: string[] = ["Avoid rambling into non-technical hobbies during technical rounds."];
+      let finalModelAnswer = "Frame answers around: Situation, Task, Action taken, and Quantified Result.";
+
       const data = await res.json();
       if (data.status === "success" && data.data) {
         const evalData = data.data;
 
         if (evalData.scores) {
+          finalScores = evalData.scores;
           setScores(evalData.scores);
         }
 
         if (evalData.strengths && evalData.strengths.length > 0) {
+          finalStrengths = evalData.strengths;
           setStrengths(evalData.strengths);
         }
 
         if (evalData.weaknesses && evalData.weaknesses.length > 0) {
+          finalWeaknesses = evalData.weaknesses;
           setWeaknesses(evalData.weaknesses);
         }
 
         if (evalData.suggestions && evalData.suggestions.length > 0) {
+          finalSuggestions = evalData.suggestions;
           setAiSuggestions(evalData.suggestions);
         }
 
         if (evalData.whatToCut && evalData.whatToCut.length > 0) {
+          finalWhatToCut = evalData.whatToCut;
           setWhatToCut(evalData.whatToCut);
         }
 
         if (evalData.betterWayToSayIt) {
+          finalModelAnswer = evalData.betterWayToSayIt;
           setModelAnswer(evalData.betterWayToSayIt);
         }
       } else {
         console.warn("AI evaluation API notice:", data.error || data.message);
-        setScores({
-          technical: 75,
-          communication: 78,
-          starAlignment: 72,
-          relevance: 80,
-          overall: 76,
-        });
-        setStrengths([
-          `Demonstrated baseline technical domain knowledge for ${roleTitle}`,
-        ]);
-        setWeaknesses([
-          "Detail specific engineering trade-offs and quantitative results",
-        ]);
-        setAiSuggestions([
-          "Structure your answer using Situation, Task, Action, and Result (STAR)",
-        ]);
-        setWhatToCut([
-          'Remove verbal hesitation markers ("um", "like", "basically")',
-        ]);
-        setModelAnswer(
-          `"In my candidate response, I presented the core project requirements. To achieve maximum impact, I focused on structural clarity and key performance metrics."`,
-        );
+        finalScores = { technical: 75, communication: 78, starAlignment: 72, relevance: 80, overall: 76 };
+        setScores(finalScores);
       }
+
+      const sessionRecord = saveSession("interview", {
+        roleTitle,
+        difficultyLevel,
+        scores: finalScores,
+        strengths: finalStrengths,
+        weaknesses: finalWeaknesses,
+        suggestions: finalSuggestions,
+        whatToCut: finalWhatToCut,
+        modelAnswer: finalModelAnswer,
+        chatHistory
+      });
+
+      setIsLoading(false);
+      router.push(`/reports/${sessionRecord.id}`);
+      return;
     } catch (err) {
       console.warn("Generating dynamic evaluation report notice:", err);
-      setScores({
-        technical: 82,
-        communication: 85,
-        starAlignment: 80,
-        relevance: 88,
-        overall: 84,
+      const fallbackScores = { technical: 82, communication: 85, starAlignment: 80, relevance: 88, overall: 84 };
+      const sessionRecord = saveSession("interview", {
+        roleTitle,
+        difficultyLevel,
+        scores: fallbackScores,
+        strengths: [`Domain alignment for ${roleTitle}`],
+        weaknesses: ["Provide deeper technical details on project trade-offs"],
+        suggestions: ["Use STAR framework for situational questions"],
+        whatToCut: ["Avoid rambling into non-technical hobbies during technical rounds."],
+        modelAnswer: "Frame answers around: Situation, Task, Action taken, and Quantified Result.",
+        chatHistory
       });
-      setStrengths([`Domain alignment for ${roleTitle}`]);
-      setWeaknesses(["Provide deeper technical details on project trade-offs"]);
-      setAiSuggestions(["Use STAR framework for situational questions"]);
-      setWhatToCut([
-        "Avoid rambling into non-technical hobbies during technical rounds.",
-      ]);
-      setModelAnswer(
-        "Frame answers around: Situation, Task, Action taken, and Quantified Result.",
-      );
-    } finally {
       setIsLoading(false);
-      setStep("results");
+      router.push(`/reports/${sessionRecord.id}`);
     }
   };
 

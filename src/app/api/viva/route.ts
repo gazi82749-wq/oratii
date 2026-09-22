@@ -2,38 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkAndDecrementUsage } from '../../../lib/billing';
-import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest) {
+export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
   let creditConsumed = false;
   let userIdForRefund: string | null = null;
   let idempotencyKey = '';
+  const userId = user.id;
 
   try {
-    // Rate limiting
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
-    if (!rateResult.allowed) {
-      return NextResponse.json({
-        error: "Too Many Requests",
-        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
-      }, { status: 429 });
-    }
-
-    // Mandatory authentication
-    let userId: string | null = null;
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7).trim();
-      try {
-        const { data: { user } } = await supabase.auth.getUser(token);
-        if (user) userId = user.id;
-      } catch (e) { /* ignore */ }
-    }
-
     const {
       chatHistory,
       currentAnswer,
@@ -47,11 +27,6 @@ export async function POST(request: NextRequest) {
       documentContext = '', // Extracted resume/CV or question paper text
       mode = 'text' // 'text' | 'voice'
     } = await request.json();
-
-    if (!userId) userId = bodyUserId || request.headers.get('x-user-id');
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required. Please sign in to use Viva Defense.", authRequired: true }, { status: 401 });
-    }
 
     // Extract topic name or candidate role FIRST to use in hash
     let topicName = (bodyTopic || '').trim();
@@ -425,7 +400,7 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
     }
 
   } catch (error: any) {
-    console.error('Viva Simulator Error:', error);
+    console.error("[Viva Route] Fatal Error:", error);
     if (typeof creditConsumed !== 'undefined' && creditConsumed && userIdForRefund) {
       console.warn(`[Viva] AI completely failed after deduction. Initiating atomic refund for ${userIdForRefund}...`);
       const { refundUsage } = await import('../../../lib/billing');
@@ -436,4 +411,4 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
       { status: 500 }
     );
   }
-}
+});

@@ -2,38 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkAndDecrementUsage } from '../../../lib/billing';
-import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
+import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest) {
+export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
   try {
-    // 1. Rate Limiting
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
-    if (!rateResult.allowed) {
-      return NextResponse.json({
-        error: "Too Many Requests",
-        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
-      }, { status: 429 });
-    }
-
-    // 2. Authentication Check
-    let userId: string | null = null;
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7).trim();
-      try {
-        const { data: { user } } = await supabase.auth.getUser(token);
-        if (user) userId = user.id;
-      } catch (e) { /* ignore */ }
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required for AI interview evaluation." }, { status: 401 });
-    }
-
+    const userId = user.id;
     // 3. Parse Request Payload
     const {
       transcript = '',
@@ -216,10 +192,10 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error: any) {
-    console.error('Interview Evaluation Endpoint Error:', error);
+    console.error("Interview Evaluation Error:", error);
     return NextResponse.json(
-      { error: 'Evaluation failed', details: error?.message || 'Unknown error' },
+      { error: "Failed to evaluate interview", details: error?.message || 'Unknown error' },
       { status: 500 }
     );
   }
-}
+});

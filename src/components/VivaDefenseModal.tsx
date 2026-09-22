@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import {
   ShieldAlert, Award, Sparkles, Send, Mic, HelpCircle, CheckCircle,
@@ -28,6 +29,7 @@ export default function VivaDefenseModal({
   presentationTitle = 'Presentation & Slide Defense',
   slideAnalysisData = null
 }: VivaDefenseModalProps) {
+  const router = useRouter();
   const [phase, setPhase] = useState<'setup' | 'viva' | 'results'>('setup');
   const [mode, setMode] = useState<'text' | 'voice'>('text');
   const [examinerTone, setExaminerTone] = useState<'friendly' | 'hostile'>('friendly');
@@ -257,13 +259,17 @@ export default function VivaDefenseModal({
 
         if (nextCount >= 5) {
           // Final Viva Evaluation reached
-          setPhase('results');
-          saveSession('viva', {
+          const sessionRecord = saveSession('viva', {
             topic: presentationTitle || 'Viva Defense',
             mode,
-            scores: scoreObj
+            scores: scoreObj,
+            allScores,
+            chatHistory: newHistoryWithExaminer,
+            feedback: vivaPayload.feedbackToPreviousAnswer || vivaPayload.feedback
           });
           processSessionCompletion('viva', { overall: scoreObj.overall });
+          onClose();
+          router.push(`/reports/${sessionRecord.id}`);
         } else {
           speakText(nextQ);
         }

@@ -497,14 +497,26 @@ export default function SpeechCoach() {
         ieltsBand: finalIelts
       }));
 
-      saveSession('speech', {
-        duration: 120,
+      const sessionRecord = saveSession('speech', {
+        duration: duration || 120,
         scores: { overall: finalOverallScore, fillerCount: fillerCount },
         strengths: finalStrengths,
         weaknesses: finalWeaknesses,
         suggestions: finalSuggestions,
         feedback: finalFeedback,
-        transcript: data.transcript || ''
+        transcript: data.transcript || '',
+        wpm,
+        totalFillers: fillerCount,
+        topFillers: mappedFillers,
+        rubric: auditedRubric,
+        paceData: data.analysis?.paceData || [],
+        tone: finalTone,
+        timeMarkers: finalTimeMarkers,
+        cefrBand: finalCefr,
+        cefrTitle: auditedRubric.benchmark.cefrTitle,
+        ieltsBand: finalIelts,
+        ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
+        situation
       });
       const gamificationResult = processSessionCompletion('speech', { overall: finalOverallScore, fillerCount: fillerCount });
       setXpEvents(gamificationResult.events);
@@ -517,8 +529,8 @@ export default function SpeechCoach() {
       }
 
       setIsDeepLoading(false);
-      // Show trial prompt after a successful analysis
-      setTimeout(() => setShowTrialPrompt(true), 2500);
+      // Standard URL navigation to dedicated dynamic report page
+      router.push(`/reports/${sessionRecord.id}`);
 
     } catch (err) {
       console.error(err);

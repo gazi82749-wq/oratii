@@ -2,50 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkAndDecrementUsage } from '../../../lib/billing';
+import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
-import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest) {
+export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
   try {
-    // Rate limiting
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.ip || 'unknown';
-    const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
-    if (!rateResult.allowed) {
-      return NextResponse.json({
-        error: "Too Many Requests",
-        message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
-      }, { status: 429 });
-    }
-
-    // Mandatory authentication
-    let userId: string | null = null;
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7).trim();
-      const { data: { user } } = await supabase.auth.getUser(token);
-      if (user) {
-        userId = user.id;
-      }
-    }
-
+    const userId = user.id;
     const body = await request.json();
     const { 
       slideTextContent, 
       timedTranscript, 
       slideEventLog, 
       hasVideo = false, 
-      bodyData = null,
-      userId: bodyUserId
+      bodyData = null
     } = body;
-
-    if (!userId && bodyUserId) {
-      userId = bodyUserId;
-    }
-    if (!userId) {
-      return NextResponse.json({ error: "Authentication required. Please sign in to use Presentation Mode.", authRequired: true }, { status: 401 });
-    }
 
     // Enforce server-side billing limits
     const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
@@ -152,10 +124,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error("Presentation Mode Analysis Error:", error);
-    return NextResponse.json({ 
-      error: "Combined analysis failed", 
-      details: error.message 
-    }, { status: 500 });
+    console.error('Presentation Mode Analysis Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to analyze presentation', details: error?.message || 'Unknown error' },
+      { status: 500 }
+    );
   }
-}
+});

@@ -63,65 +63,13 @@ export async function middleware(req: NextRequest) {
 
   // 1. Guard /admin routes
   if (pathname.startsWith('/admin')) {
-    if (pathname === '/admin/login') {
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.role === 'admin') {
-          return NextResponse.redirect(new URL('/admin', req.url));
-        }
-      }
-      return res;
-    }
-
-    if (!user) {
-      return NextResponse.redirect(new URL('/admin/login', req.url));
-    }
-
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (error || !profile || profile.role !== 'admin') {
-      return NextResponse.redirect(new URL('/admin/login?unauthorized=true', req.url));
-    }
+    if (pathname === '/admin/login') return res;
+    if (!user) return NextResponse.redirect(new URL('/admin/login', req.url));
   }
 
-  // 2. Guard /trainer routes (Strict RBAC: Trainers & Admins only)
+  // 2. Guard /trainer routes
   if (pathname.startsWith('/trainer')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/login?redirectedFrom=' + pathname, req.url));
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    // If a student account accesses /trainer, redirect to /trainer/onboarding to activate Educator Studio
-    if (profile?.role !== 'trainer' && profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
-    }
-
-    // For trainers accessing /trainer (not onboarding), check if institute onboarding is complete
-    if (pathname !== '/trainer/onboarding') {
-      const { data: academy } = await supabase
-        .from('academies')
-        .select('id')
-        .eq('owner_id', user.id)
-        .maybeSingle();
-
-      if (!academy) {
-        return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
-      }
-    }
+    if (!user) return NextResponse.redirect(new URL('/login?redirectedFrom=' + pathname, req.url));
   }
 
   // 3. Guard private user routes (/dashboard, /profile, /account)
@@ -135,27 +83,6 @@ export async function middleware(req: NextRequest) {
       const loginUrl = new URL('/login', req.url);
       loginUrl.searchParams.set('redirectedFrom', pathname);
       return NextResponse.redirect(loginUrl);
-    }
-
-    // If logged in user is a trainer without an academy, enforce onboarding
-    if (user && pathname.startsWith('/dashboard')) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (profile?.role === 'trainer') {
-        const { data: academy } = await supabase
-          .from('academies')
-          .select('id')
-          .eq('owner_id', user.id)
-          .maybeSingle();
-
-        if (!academy) {
-          return NextResponse.redirect(new URL('/trainer/onboarding', req.url));
-        }
-      }
     }
   }
 
