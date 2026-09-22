@@ -9,7 +9,7 @@ export const CREDIT_COSTS = {
 export const CREDIT_PACKAGES = [
   {
     id: 'free_starter',
-    name: 'Starter / Free Trial',
+    name: 'Starter',
     badge: 'Zero Risk',
     price: 0,
     credits: 5,
@@ -27,7 +27,7 @@ export const CREDIT_PACKAGES = [
   },
   {
     id: 'interview_sprint',
-    name: 'Interview Sprint',
+    name: 'Pro',
     badge: 'Most Popular',
     price: 149,
     credits: 40,
@@ -45,7 +45,7 @@ export const CREDIT_PACKAGES = [
   },
   {
     id: 'season_pass',
-    name: 'Placement Season Pass',
+    name: 'Premium',
     badge: 'Maximum Value',
     price: 499,
     credits: 200,
