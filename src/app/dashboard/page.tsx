@@ -392,7 +392,7 @@ export default function ProfessionalDashboard() {
       {/* Landing Page Ambient Background Lighting */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85vw] h-[500px] bg-gradient-to-b from-indigo-100/40 via-amber-100/25 to-transparent blur-[140px] pointer-events-none -z-10 rounded-full" />
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 flex-1">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 flex-1">
       
       {/* Push Notification Opt-In (non-intrusive, shows on 2nd+ visit) */}
       <NotificationPrompt />
