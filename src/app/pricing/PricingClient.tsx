@@ -155,13 +155,7 @@ export default function PricingClient() {
             Buy credits once, use them whenever you present. Zero monthly subscriptions, zero hidden charges.
           </p>
 
-          {/* Cost Anchoring Comparison Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-950 text-xs font-extrabold mb-6 shadow-2xs">
-            <span className="text-amber-600">💡</span>
-            <span>Human Coaching: <strong>₹3,000 / hr</strong></span>
-            <span className="text-amber-400">•</span>
-            <span className="text-amber-900">Oratii AI Drills: <strong>From ₹2.49 / drill</strong></span>
-          </div>
+
 
           {/* User Credit Balance Display */}
           {userCredits !== null && (
