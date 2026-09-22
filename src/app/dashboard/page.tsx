@@ -651,15 +651,9 @@ export default function ProfessionalDashboard() {
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => router.push('/presentation')}
-                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 active:scale-[0.98]"
                 >
-                  <FileText size={14} /> Presentation Practice
-                </button>
-                <button
-                  onClick={() => router.push('/presentation?mode=practice')}
-                  className="px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-[#1E1B4B] font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5 border border-amber-300"
-                >
-                  <Tv size={14} /> Launch Live Practice
+                  <FileText size={15} /> Presentation Practice
                 </button>
               </div>
             </div>

@@ -606,7 +606,7 @@ export default function ReportPage() {
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
             onClick={() => {
-              if (type === 'presentation') router.push('/presentation?mode=practice');
+              if (type === 'presentation') router.push('/presentation');
               else if (type === 'speech') router.push('/speech-coach');
               else if (type === 'viva') router.push('/presentation');
               else router.push('/interview');
