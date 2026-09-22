@@ -389,16 +389,20 @@ export default function ProfessionalDashboard() {
 
   return (
     <div className="w-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans relative min-h-screen">
-      <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-8 space-y-8 flex-1">
+      {/* Landing Page Ambient Background Lighting */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85vw] h-[500px] bg-gradient-to-b from-indigo-100/40 via-amber-100/25 to-transparent blur-[140px] pointer-events-none -z-10 rounded-full" />
+
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8 flex-1">
       
       {/* Push Notification Opt-In (non-intrusive, shows on 2nd+ visit) */}
       <NotificationPrompt />
 
-      {/* 1. HERO PROFILE CARD (Executive Brand Palette) */}
-      <div className="relative bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* 1. HERO PROFILE CARD (Landing Page Executive Palette) */}
+      <div className="relative bg-[#0F1426] text-white rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
-        {/* Subtle Warm Backdrop Accent */}
-        <div className="absolute -top-12 -right-12 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none"></div>
+        {/* Soft Warm Radial Backdrop Glow */}
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#F2A93B]/15 blur-3xl rounded-full pointer-events-none"></div>
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none"></div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 z-10">
           {profile.avatar ? (
@@ -406,10 +410,10 @@ export default function ProfessionalDashboard() {
             <img
               src={profile.avatar}
               alt={profile.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-[#F2A93B] shadow-lg shrink-0"
+              className="w-18 h-18 sm:w-22 sm:h-22 rounded-2xl object-cover border-2 border-[#F2A93B] shadow-xl shrink-0"
             />
           ) : (
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#F2A93B] text-[#0F1426] font-extrabold text-2xl sm:text-3xl flex items-center justify-center shadow-md shrink-0 border border-amber-300">
+            <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-2xl bg-[#F2A93B] text-[#0F1426] font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg shrink-0 border-2 border-amber-300">
               {getInitials(profile.name)}
             </div>
           )}
