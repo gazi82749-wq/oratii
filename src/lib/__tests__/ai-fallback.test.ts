@@ -35,7 +35,7 @@ describe('AI Fallback Waterfall', () => {
 
   it('PASS: Aborts waterfall on 401/403 (Non-transient errors)', async () => {
     const error = new Error('Non-transient error 401: Unauthorized');
-    (error as any).isNonTransient = true; // Simulating the property added by fetchWithRetry
+    (error as any).status = 401; // Simulating the status added by fetchWithRetry
     (fetchWithRetry as jest.Mock).mockRejectedValueOnce(error);
 
     await expect(generateAIContent({ systemPrompt: 'Sys', userPrompt: 'User' }))

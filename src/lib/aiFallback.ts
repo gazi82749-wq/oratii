@@ -47,7 +47,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 1️⃣ GROQ (1st Priority for Text & Vision requests)
   if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
-    const groqModels = ["groq/compound-mini"];
+    const groqModels = ["llama3-8b-8192"];
 
     for (const model of groqModels) {
       try {
@@ -60,7 +60,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
-        if (err.isNonTransient) throw err;
+        if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
         errors.push(`Groq (${model}): ${err.message}`);
@@ -83,7 +83,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
       const res = await callGemini(options);
       if (res) return res;
     } catch (err: any) {
-      if (err.isNonTransient) throw err;
+      if (err.status === 401 || err.status === 403) throw err;
 
       console.warn("[AIFallback] Gemini failed or rate-limited. Falling back to OpenRouter...", err.message);
       errors.push(`Gemini: ${err.message}`);
@@ -111,7 +111,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
-        if (err.isNonTransient) throw err;
+        if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] OpenRouter model ${model} failed:`, err.message);
         errors.push(`OpenRouter (${model}): ${err.message}`);
@@ -136,7 +136,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
-        if (err.isNonTransient) throw err;
+        if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
         errors.push(`Cerebras (${model}): ${err.message}`);
@@ -239,7 +239,7 @@ async function callOpenAICompatible({
       if (text) return text;
     }
   } catch (err: any) {
-    if (err.isNonTransient) throw err;
+    if (err.status === 401 || err.status === 403) throw err;
     console.warn(`[AIFallback] json_object format attempt failed for ${model}, retrying standard request...`, err.message);
   }
 
@@ -328,7 +328,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) return text;
     } catch (err: any) {
-      if (err.isNonTransient) throw err;
+      if (err.status === 401 || err.status === 403) throw err;
       lastError = err;
       console.warn(`[AIFallback] Gemini model ${model} failed, trying next Gemini model...`, err.message);
     }
