@@ -180,7 +180,7 @@ export default function SidebarLayout({ children }) {
 
       {/* Unified Navbar */}
       <nav className={`${isHomePage ? 'fixed top-0' : 'sticky top-0'} w-full z-50 glass-nav print:hidden transition-all duration-300 pt-[env(safe-area-inset-top,0px)]`}>
-        <div className={`${isHomePage ? 'max-w-7xl' : 'max-w-6xl'} mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           {/* Logo */}
           <div className="flex items-center group shrink-0 cursor-default">
             <Logo className="text-slate-900 text-2xl" />
@@ -397,7 +397,7 @@ export default function SidebarLayout({ children }) {
         className={`flex-1 w-full relative z-10 page-enter flex flex-col ${
           isHomePage || ['/pricing', '/about', '/support', '/feedback', '/refund-policy', '/privacy', '/terms', '/security', '/challenge', '/trainer', '/reports', '/dashboard', '/dashboard/billing'].includes(pathname)
             ? 'pb-0'
-            : 'max-w-6xl mx-auto px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 pb-24 md:pb-6'
+            : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 md:py-5 pb-24 md:pb-6'
         }`}
       >
         {children}
