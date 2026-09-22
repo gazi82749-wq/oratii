@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { supabase } from '../../../lib/supabaseClient';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
@@ -60,8 +61,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing slide text content or transcript." }, { status: 400 });
     }
 
+    const baseAdminPrompt = await getDynamicPrompt('presentation_mode', 'You are an expert executive communication coach and presentation evaluator.');
+
     const systemPrompt = `
-      You are an expert executive communication coach and presentation evaluator.
+      ${baseAdminPrompt}
       You are evaluating a live practice presentation where the user spoke while presenting a slide deck.
 
       INPUT DATA PROVIDED:

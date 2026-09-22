@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
-import { checkAndDecrementUsage } from '../../../lib/billing';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
+import { checkAndDecrementUsage, refundUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -91,9 +92,11 @@ export async function POST(request: NextRequest) {
 
       const numWpm = Number(wpm) || 0;
     const numFillers = Number(totalFillers) || 0;
+    
+    const baseAdminPrompt = await getDynamicPrompt('speech_coach', 'You are an accredited Senior Speech & Communication Evaluator and IELTS/CEFR Speaking Assessor.');
 
     const tonePrompt = `
-      You are an accredited Senior Speech & Communication Evaluator and IELTS/CEFR Speaking Assessor.
+      ${baseAdminPrompt}
       You analyze real speech data and provide transparent, mathematically anchored feedback.
 
       SPEECH CONTEXT: "${situation}"

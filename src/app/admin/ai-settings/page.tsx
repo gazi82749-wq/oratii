@@ -35,7 +35,25 @@ export default function AISettingsPage() {
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(4096);
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [warningThreshold, setWarningThreshold] = useState(80); // Alert when usage >= 80%
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data, error } = await supabase.from('ai_settings').select('*');
+      if (!error && data && data.length > 0) {
+        data.forEach(setting => {
+          if (setting.feature_key === 'speech_coach') setSpeechPrompt(setting.prompt_text);
+          else if (setting.feature_key === 'ppt_analyzer') setPptPrompt(setting.prompt_text);
+          else if (setting.feature_key === 'viva_voce') setVivaPrompt(setting.prompt_text);
+          else if (setting.feature_key === 'interview_evaluator') setInterviewPrompt(setting.prompt_text);
+          else if (setting.feature_key === 'presentation_mode') setPresentationPrompt(setting.prompt_text);
+          else if (setting.feature_key === 'body_language') setBodyLanguagePrompt(setting.prompt_text);
+        });
+      }
+    }
+    fetchSettings();
+  }, []);
 
   const [aiModels, setAiModels] = useState<AIModelUsage[]>([
     { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', provider: 'Google AI', dailyUsed: 0, dailyLimit: 500, rpmLimit: 15, status: 'healthy', tier: 'Primary Multimodal' },
@@ -115,9 +133,32 @@ export default function AISettingsPage() {
     );
   };
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    setIsSaving(true);
+    
+    // Prepare the rows to upsert
+    const updates = [
+      { feature_key: 'speech_coach', prompt_text: speechPrompt },
+      { feature_key: 'ppt_analyzer', prompt_text: pptPrompt },
+      { feature_key: 'viva_voce', prompt_text: vivaPrompt },
+      { feature_key: 'interview_evaluator', prompt_text: interviewPrompt },
+      { feature_key: 'presentation_mode', prompt_text: presentationPrompt },
+      { feature_key: 'body_language', prompt_text: bodyLanguagePrompt }
+    ];
+
+    const { error } = await supabase
+      .from('ai_settings')
+      .upsert(updates, { onConflict: 'feature_key' });
+
+    setIsSaving(false);
+    
+    if (!error) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } else {
+      console.error("Failed to save AI settings:", error);
+      alert("Failed to save settings. Make sure the database migration was run.");
+    }
   };
 
   return (
@@ -130,13 +171,14 @@ export default function AISettingsPage() {
         </div>
         <button
           onClick={handleSave}
+          disabled={isSaving}
           className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold transition-all shadow-sm ${
             saved
               ? 'bg-emerald-600 text-white'
-              : 'bg-[#1B2140] hover:shadow-glow text-white'
+              : 'bg-[#1B2140] hover:shadow-glow text-white disabled:opacity-50'
           }`}
         >
-          <Save size={14} /> {saved ? 'Saved!' : 'Save Changes'}
+          <Save size={14} /> {isSaving ? 'Saving...' : saved ? 'Saved!' : 'Save Changes'}
         </button>
       </div>
 
@@ -276,13 +318,6 @@ export default function AISettingsPage() {
           <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Bot size={18} className="text-[#F2A93B]" /> System Prompts Configuration
           </h2>
-        </div>
-        
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
-          <ShieldAlert size={16} className="mt-0.5 shrink-0" />
-          <p>
-            <strong>Note:</strong> These prompts are currently <em>UI Placeholders</em>. The live website's API routes use highly optimized, hardcoded system prompts to ensure maximum performance and safety. Changing these text boxes will not affect live user analysis unless wired up via a database migration.
-          </p>
         </div>
 
         {/* Speech Coach Prompt */}

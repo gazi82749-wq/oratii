@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -66,8 +67,11 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(redisCache);
       }
 
+    const baseAdminPrompt = await getDynamicPrompt('body_language', 'You are a friendly body language coach — like a senior student who\'s been through dozens of presentations and knows what good stage presence looks like.');
+
     const systemPrompt = `
-      You are a friendly body language coach — like a senior student who's been through dozens of presentations and knows what good stage presence looks like. You're looking at snapshots from a student's presentation video.
+      ${baseAdminPrompt}
+      You're looking at snapshots from a student's presentation video.
 
       YOUR COACHING RULES:
       1. Talk to them directly — say "you", not "the presenter". Be warm and encouraging but honest.

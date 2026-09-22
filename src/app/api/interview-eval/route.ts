@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
+import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -77,8 +79,10 @@ export async function POST(request: NextRequest) {
       }
 
     // 4. Construct AI Prompt for Dynamic Interview Evaluation
+    const baseAdminPrompt = await getDynamicPrompt('interview_evaluator', 'You are an expert Executive Hiring Manager and Senior Recruiter');
+
     const systemPrompt = `
-      You are an expert Executive Hiring Manager and Senior Recruiter evaluating a mock job interview for the position: "${roleTitle}" (Level: ${difficultyLevel}).
+      ${baseAdminPrompt} evaluating a mock job interview for the position: "${roleTitle}" (Level: ${difficultyLevel}).
       
       Your goal is to provide deep, authentic, non-generic, mathematically anchored feedback based SOLELY on what the candidate actually said in their transcript.
 

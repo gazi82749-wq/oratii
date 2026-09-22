@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkAndDecrementUsage } from '../../../lib/billing';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
@@ -301,9 +302,10 @@ Example Hinglish Question Formats:
 - "Is methodology ko use karne ka main reason kya tha, aur real-world me yeh kaise kaam karega?"
 CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for nextQuestion or feedback when Hinglish is selected. You MUST write in natural, friendly Roman Hinglish!`
       : `CRITICAL LANGUAGE INSTRUCTION: Generate all nextQuestions, feedbackToPreviousAnswer, and tips in clear, natural English.`;
+    const baseAdminPrompt = await getDynamicPrompt('viva_voce', 'You are an expert Viva university examiner conducting an official defense session for the candidate');
 
     const systemPrompt = `
-      You are an expert Viva university examiner conducting an official defense session for the candidate on topic: "${topicName}".
+      ${baseAdminPrompt} on topic: "${topicName}".
 
       ${languageInstruction}
 

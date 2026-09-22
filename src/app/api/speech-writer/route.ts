@@ -1,6 +1,7 @@
 // src/app/api/speech-writer/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
+import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
 import { checkRateLimit, AI_RATE_LIMIT } from '../../../lib/rateLimit';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -69,8 +70,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(redisCache);
       }
 
+    const baseAdminPrompt = await getDynamicPrompt('speech_coach', 'You are an elite, highly adaptable speechwriter.');
+
     const systemPrompt = `
-      You are an elite, highly adaptable speechwriter.
+      ${baseAdminPrompt}
       Write a compelling 150-200 word speech on the requested topic.
 
       CRITICAL INSTRUCTIONS:
