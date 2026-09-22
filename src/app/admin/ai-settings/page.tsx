@@ -1,13 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bot, Mic, FileText, Video, Save, RotateCcw, AlertTriangle, Cpu, Zap, Activity, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Bot, Mic, FileText, Video, Save, RotateCcw, AlertTriangle, Cpu, Zap, Activity, CheckCircle2, ShieldAlert, MonitorPlay, UserCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
 const defaultPrompts = {
   speech: `You are an elite Executive Speech Coach. Analyze the timed transcript, pacing (WPM), and filler word density. Provide an objective, constructive qualitative evaluation without sugarcoating. Calculate an honest toneScore (0-100), identify genuine weaknesses and strengths, provide actionable coaching exercises, and output timestamped feedback markers.`,
   ppt: `You are a professional presentation analyst. Evaluate the uploaded PowerPoint presentation for content quality, visual design, slide structure, and engagement potential. Provide scores from 0-100 for content, delivery readiness, and engagement.`,
   viva: `You are a knowledgeable examiner conducting a viva voce examination. Ask relevant, progressively challenging questions about the given subject. Evaluate the student's answers for correctness, depth, and clarity.`,
+  interview: `You are a strict, professional hiring manager conducting a technical or behavioral interview. Ask targeted questions, evaluate responses strictly, and provide actionable feedback on candidate performance.`,
+  presentationMode: `You are a live presentation evaluator. Observe the real-time transcript and delivery. Provide immediate, concise feedback on clarity, engagement, and structure.`,
+  bodyLanguage: `You are an expert non-verbal communication coach. Analyze the user's posture, eye contact, and gestures. Provide specific advice to improve stage presence and confidence.`
 };
 
 interface AIModelUsage {
@@ -25,6 +28,9 @@ export default function AISettingsPage() {
   const [speechPrompt, setSpeechPrompt] = useState(defaultPrompts.speech);
   const [pptPrompt, setPptPrompt] = useState(defaultPrompts.ppt);
   const [vivaPrompt, setVivaPrompt] = useState(defaultPrompts.viva);
+  const [interviewPrompt, setInterviewPrompt] = useState(defaultPrompts.interview);
+  const [presentationPrompt, setPresentationPrompt] = useState(defaultPrompts.presentationMode);
+  const [bodyLanguagePrompt, setBodyLanguagePrompt] = useState(defaultPrompts.bodyLanguage);
   const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(4096);
@@ -52,20 +58,29 @@ export default function AISettingsPage() {
         .select('*', { count: 'exact', head: true })
         .gte('created_at', isoToday);
 
-      const { count: vivaToday } = await supabase
+      const { data: sessionsToday } = await supabase
         .from('sessions')
-        .select('*', { count: 'exact', head: true })
+        .select('session_type')
         .gte('created_at', isoToday);
 
+      const sessionCounts = (sessionsToday || []).reduce((acc: any, curr: any) => {
+        acc[curr.session_type] = (acc[curr.session_type] || 0) + 1;
+        return acc;
+      }, {});
+
       const realPptCount = pptToday || 0;
-      const realVivaCount = vivaToday || 0;
+      const speechCount = sessionCounts['speech'] || 0;
+      const interviewCount = sessionCounts['interview'] || 0;
+      const vivaCount = sessionCounts['viva'] || 0;
+      const presentationCount = sessionCounts['presentation'] || 0;
+      const bodyLanguageCount = sessionCounts['body_language'] || 0;
 
       setAiModels((prev) =>
         prev.map((m) => {
           let used = 0;
-          if (m.id === 'gemini-2.5-flash') used = realPptCount * 2 + realVivaCount;
-          if (m.id === 'cerebras-llama3.3') used = realVivaCount * 2;
-          if (m.id === 'groq-llama3.3') used = realPptCount;
+          if (m.id === 'gemini-2.5-flash') used = (realPptCount * 2) + presentationCount + bodyLanguageCount;
+          if (m.id === 'cerebras-llama3.3') used = (vivaCount * 2) + interviewCount;
+          if (m.id === 'groq-llama3.3') used = speechCount;
 
           const percentage = m.dailyLimit > 0 ? Math.round((used / m.dailyLimit) * 100) : 0;
           let status: 'healthy' | 'warning' | 'exhausted' = 'healthy';
@@ -257,9 +272,18 @@ export default function AISettingsPage() {
 
       {/* System Prompts */}
       <div className="space-y-4 pt-4">
-        <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Bot size={18} className="text-[#F2A93B]" /> System Prompts Configuration
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Bot size={18} className="text-[#F2A93B]" /> System Prompts Configuration
+          </h2>
+        </div>
+        
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
+          <ShieldAlert size={16} className="mt-0.5 shrink-0" />
+          <p>
+            <strong>Note:</strong> These prompts are currently <em>UI Placeholders</em>. The live website's API routes use highly optimized, hardcoded system prompts to ensure maximum performance and safety. Changing these text boxes will not affect live user analysis unless wired up via a database migration.
+          </p>
+        </div>
 
         {/* Speech Coach Prompt */}
         <div className="stripe-top bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-5" style={{'--stripe-color':'#3b82f6','--stripe-color-to':'#60a5fa'} as React.CSSProperties}>
@@ -310,6 +334,60 @@ export default function AISettingsPage() {
           <textarea
             value={vivaPrompt}
             onChange={(e) => setVivaPrompt(e.target.value)}
+            rows={4}
+            className="w-full px-3 py-2 bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded-lg text-[13px] text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono leading-relaxed"
+          />
+        </div>
+
+        {/* Interview Evaluator Prompt */}
+        <div className="stripe-top bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-5" style={{'--stripe-color':'#8b5cf6','--stripe-color-to':'#a78bfa'} as React.CSSProperties}>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-[13px] font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <Activity size={14} className="text-purple-500" /> Interview Evaluator Prompt
+            </label>
+            <button onClick={() => setInterviewPrompt(defaultPrompts.interview)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-indigo-300 flex items-center gap-1 transition-colors">
+              <RotateCcw size={10} /> Reset
+            </button>
+          </div>
+          <textarea
+            value={interviewPrompt}
+            onChange={(e) => setInterviewPrompt(e.target.value)}
+            rows={4}
+            className="w-full px-3 py-2 bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded-lg text-[13px] text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono leading-relaxed"
+          />
+        </div>
+
+        {/* Presentation Mode Prompt */}
+        <div className="stripe-top bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-5" style={{'--stripe-color':'#10b981','--stripe-color-to':'#34d399'} as React.CSSProperties}>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-[13px] font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <MonitorPlay size={14} className="text-emerald-500" /> Presentation Mode Prompt
+            </label>
+            <button onClick={() => setPresentationPrompt(defaultPrompts.presentationMode)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-indigo-300 flex items-center gap-1 transition-colors">
+              <RotateCcw size={10} /> Reset
+            </button>
+          </div>
+          <textarea
+            value={presentationPrompt}
+            onChange={(e) => setPresentationPrompt(e.target.value)}
+            rows={4}
+            className="w-full px-3 py-2 bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded-lg text-[13px] text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono leading-relaxed"
+          />
+        </div>
+
+        {/* Body Language Prompt */}
+        <div className="stripe-top bg-white dark:bg-slate-900 rounded-xl border border-indigo-200 dark:border-slate-800 p-5" style={{'--stripe-color':'#f43f5e','--stripe-color-to':'#fb7185'} as React.CSSProperties}>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-[13px] font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <UserCheck size={14} className="text-rose-500" /> Body Language & Posture Prompt
+            </label>
+            <button onClick={() => setBodyLanguagePrompt(defaultPrompts.bodyLanguage)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-indigo-300 flex items-center gap-1 transition-colors">
+              <RotateCcw size={10} /> Reset
+            </button>
+          </div>
+          <textarea
+            value={bodyLanguagePrompt}
+            onChange={(e) => setBodyLanguagePrompt(e.target.value)}
             rows={4}
             className="w-full px-3 py-2 bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 rounded-lg text-[13px] text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono leading-relaxed"
           />
