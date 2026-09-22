@@ -49,6 +49,9 @@ export default function PwaInstallPrompt() {
     const isIosDevice = /iphone|ipad|ipod/i.test(ua);
     setIsIos(isIosDevice);
 
+    // Detect mobile devices (Android, iOS, etc)
+    const isMobileDevice = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+
     // Clear legacy localStorage lock so prompt is never permanently blocked
     localStorage.removeItem('oratii_pwa_prompt_dismissed');
 
@@ -58,7 +61,8 @@ export default function PwaInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      if (!isSessionDismissed) {
+      // DO NOT show the popup on mobile devices based on user request
+      if (!isSessionDismissed && !isMobileDevice) {
         setShowPrompt(true);
       }
     };
@@ -87,11 +91,11 @@ export default function PwaInstallPrompt() {
     };
     window.addEventListener('open-pwa-install', handleOpenCustomInstall);
 
-    // 4. Auto-show floating install prompt after 600ms if not in standalone & not session dismissed
+    // 4. Auto-show floating install prompt after 600ms if not in standalone, not session dismissed, AND NOT mobile
     let timer: NodeJS.Timeout;
     let autoDismissTimer: NodeJS.Timeout;
 
-    if (!isSessionDismissed) {
+    if (!isSessionDismissed && !isMobileDevice) {
       timer = setTimeout(() => {
         setShowPrompt(true);
 
