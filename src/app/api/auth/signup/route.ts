@@ -5,8 +5,6 @@ import { checkRateLimit, AUTH_RATE_LIMIT } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
-const DEFAULT_URL = 'https://vzbxhxlrmshmtgiocqkh.supabase.co';
-const DEFAULT_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6YnhoeGxybXNobXRnaW9jcWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMDc2NDksImV4cCI6MjA5NjY4MzY0OX0.Ac7OU5VwtKvvdCmIxvzyuilWJYmLz7-qrLq8DVD_x2U';
 
 export async function POST(req: NextRequest) {
   // 1. Rate limit by IP
@@ -58,8 +56,8 @@ export async function POST(req: NextRequest) {
 
   // 4. Create user via Supabase server client (sets cookies on response)
   const cookieStore = cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_ANON_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
