@@ -31,7 +31,6 @@ export default function PricingClient() {
   const [userCredits, setUserCredits] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
-  const [showAllSachetsModal, setShowAllSachetsModal] = useState(false);
   const [selectedPack, setSelectedPack] = useState<any>(null);
   const [adminUpiId, setAdminUpiId] = useState('Oratii@upi');
   const [copiedUpi, setCopiedUpi] = useState(false);
@@ -98,7 +97,7 @@ export default function PricingClient() {
   const upiAmount = selectedPack?.price || 299;
   const upiString = encodeURIComponent(`upi://pay?pa=${adminUpiId}&pn=Oratii AI&am=${upiAmount}&cu=INR`);
 
-  const mainPackages = CREDIT_PACKAGES.filter(p => ['free_starter', 'sachet_25', 'value_50'].includes(p.id));
+  const mainPackages = CREDIT_PACKAGES;
 
   const faqs = [
     {
@@ -161,7 +160,7 @@ export default function PricingClient() {
             <span className="text-amber-600">💡</span>
             <span>Human Coaching: <strong>₹3,000 / hr</strong></span>
             <span className="text-amber-400">•</span>
-            <span className="text-amber-900">Oratii AI Drills: <strong>From ₹3.96 / drill</strong></span>
+            <span className="text-amber-900">Oratii AI Drills: <strong>From ₹2.49 / drill</strong></span>
           </div>
 
           {/* User Credit Balance Display */}
@@ -279,17 +278,6 @@ export default function PricingClient() {
                 </div>
               );
             })}
-          </div>
-
-          {/* Quick Trigger for All Sachets / Bulk Packs */}
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => setShowAllSachetsModal(true)}
-              className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-950 bg-white border border-slate-200/90 px-4 py-2 rounded-xl shadow-2xs transition-all hover:bg-slate-50 cursor-pointer"
-            >
-              <span>Need smaller ₹49 top-ups or Institute Bulk Packs (₹1,499)?</span>
-              <span className="text-amber-600 font-extrabold underline">View All Packs</span>
-            </button>
           </div>
 
           {/* B2B & Institutional Trainer Licensing Showcase */}
@@ -476,67 +464,6 @@ export default function PricingClient() {
         </div>
       )}
 
-      {/* View All Sachets & Bulk Packs Modal */}
-      {showAllSachetsModal && (
-        <div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full relative shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => setShowAllSachetsModal(false)}
-              className="absolute top-4 right-4 p-2 bg-slate-100 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-full transition-colors cursor-pointer"
-              aria-label="Close modal"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="text-center mb-6">
-              <div className="ui-badge-pill mb-2">
-                <Coins size={14} className="text-[#F2A93B]" />
-                <span>All Credit Sachets & Bulk Pools</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-950">Choose Your Credit Sachet</h3>
-              <p className="text-slate-600 text-xs sm:text-sm mt-1">Instant activation for UPI, Cards, and NetBanking</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {CREDIT_PACKAGES.map((pack) => (
-                <div key={pack.id} className="ui-card p-5 flex flex-col justify-between hover:border-amber-400 transition-all">
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-slate-950 text-base">{pack.name}</span>
-                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
-                        {pack.badge}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500 mb-3 leading-relaxed">{pack.subtitle}</p>
-                    <div className="text-2xl font-black text-slate-950 mb-3">
-                      {pack.price === 0 ? 'Free' : `₹${pack.price}`}
-                      <span className="text-xs text-slate-400 font-medium ml-1">({pack.credits} Credits)</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowAllSachetsModal(false);
-                      handlePurchase(pack);
-                    }}
-                    className="w-full py-2.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold rounded-xl text-xs transition-all cursor-pointer"
-                  >
-                    {pack.cta}
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center pt-3 border-t border-slate-100">
-              <button
-                onClick={() => setShowAllSachetsModal(false)}
-                className="px-5 py-2.5 bg-slate-100 text-slate-800 font-bold rounded-xl text-xs hover:bg-slate-200 transition-colors cursor-pointer"
-              >
-                Close Window
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </ModernBackgroundAnimation>
   );
 }
