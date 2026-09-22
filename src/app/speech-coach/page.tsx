@@ -19,7 +19,7 @@ import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } fr
 import {
   Mic, FileText, Upload, Sparkles, X, CheckCircle2, RotateCcw, Award, Zap, Globe,
   Target, AlertCircle, Check, HelpCircle, Volume2, Square, Play, Pause, BookOpen,
-  Edit3, Copy, Shield, GraduationCap, Scale, BarChart3, ArrowRight, Flame, Timer
+  Edit3, Copy, Shield, GraduationCap, Scale, BarChart3, ArrowRight, Flame, Timer, AlertTriangle
 } from 'lucide-react';
 
 const MAX_FREE_RECORDING_SECONDS = 180; // 3-Minute Free Drill Cap
@@ -207,6 +207,8 @@ export default function SpeechCoach() {
 
   // --- Topic Speech section state (new) ---
   const [topicInput, setTopicInput] = useState('');
+  const [topicTone, setTopicTone] = useState('Professional & Inspiring');
+  const [topicAudience, setTopicAudience] = useState('General Public');
   const [topicLoading, setTopicLoading] = useState(false);
   const [generatedSpeech, setGeneratedSpeech] = useState(null);
   const [originalSpeech, setOriginalSpeech] = useState(null);
@@ -767,7 +769,11 @@ export default function SpeechCoach() {
       const res = await fetch('/api/speech-writer', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ topic: topicInput.trim() }),
+        body: JSON.stringify({ 
+          topic: topicInput.trim(),
+          tone: topicTone,
+          audience: topicAudience
+        }),
       });
 
       const data = await res.json();
@@ -1170,8 +1176,43 @@ export default function SpeechCoach() {
                       </button>
                     </div>
 
+                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                      <div className="flex-1">
+                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Audience / Context</label>
+                        <select
+                          value={topicAudience}
+                          onChange={(e) => setTopicAudience(e.target.value)}
+                          disabled={topicLoading}
+                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all cursor-pointer"
+                        >
+                          <option value="General Public">General Public / Public Speaking</option>
+                          <option value="HR Interview">HR Interview / Hiring Manager</option>
+                          <option value="Technical Viva Defense">Technical Viva / Project Defense</option>
+                          <option value="Corporate / Executive">Corporate / Executive Leadership</option>
+                          <option value="Academic / Classroom">Academic / Classroom Teacher</option>
+                        </select>
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Speech Tone</label>
+                        <select
+                          value={topicTone}
+                          onChange={(e) => setTopicTone(e.target.value)}
+                          disabled={topicLoading}
+                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all cursor-pointer"
+                        >
+                          <option value="Professional & Inspiring">Professional & Inspiring</option>
+                          <option value="Strict, Concise, & Technical">Strict, Concise, & Technical</option>
+                          <option value="Friendly & Conversational">Friendly & Conversational</option>
+                          <option value="Persuasive & Confident">Persuasive & Confident</option>
+                          <option value="Formal & Academic">Formal & Academic</option>
+                        </select>
+                      </div>
+                    </div>
+
                     {topicError && (
-                      <p className="mt-3 text-sm text-red-500 font-medium flex items-center gap-1.5"><AlertCircle size={14} className="shrink-0" /> {topicError}</p>
+                      <p className="mt-3 text-sm font-bold text-rose-500 flex items-center justify-center gap-1.5">
+                        <AlertTriangle size={14} /> {topicError}
+                      </p>
                     )}
 
                     <div className="mt-6">
