@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { checkRateLimit, AI_RATE_LIMIT } from './lib/rateLimit';
 
 export async function middleware(req: NextRequest) {
   let res = NextResponse.next({
@@ -31,6 +32,34 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = req.nextUrl.pathname;
+
+  // 0. Guard API Routes with Rate Limiting (Anti-Spam / DDoS)
+  if (pathname.startsWith('/api/')) {
+    // Only rate limit AI analysis / heavy processing routes
+    const isAiRoute = [
+      '/api/viva',
+      '/api/speech-writer',
+      '/api/speech-analyzer-deep',
+      '/api/interview-eval',
+      '/api/analyze-presentation-mode',
+      '/api/analyze-body-language',
+      '/api/coach-chat'
+    ].some(route => pathname.startsWith(route));
+
+    if (isAiRoute) {
+      // Use standard header for IP extraction in Vercel
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+      
+      const { allowed } = await checkRateLimit(ip, AI_RATE_LIMIT);
+      
+      if (!allowed) {
+        return new NextResponse(
+          JSON.stringify({ error: "Too many requests. Please wait 10 minutes before trying again." }),
+          { status: 429, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+  }
 
   // 1. Guard /admin routes
   if (pathname.startsWith('/admin')) {
@@ -140,5 +169,6 @@ export const config = {
     '/dashboard/:path*',
     '/profile/:path*',
     '/account/:path*',
+    '/api/:path*'
   ],
 };

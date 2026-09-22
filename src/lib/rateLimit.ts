@@ -78,7 +78,7 @@ function fallbackRateLimit(key: string, config: RateLimitConfig): RateLimitResul
 
 // Pre-configured rate limiters
 export const AUTH_RATE_LIMIT: RateLimitConfig = { maxAttempts: 5, windowMs: 15 * 60 * 1000 };
-export const AI_RATE_LIMIT: RateLimitConfig = { maxAttempts: 10, windowMs: 60 * 1000 };
+export const AI_RATE_LIMIT: RateLimitConfig = { maxAttempts: 10, windowMs: 10 * 60 * 1000 };
 export const CONVERT_RATE_LIMIT: RateLimitConfig = { maxAttempts: 3, windowMs: 60 * 1000 };
 
 // Create a single Upstash Ratelimit instance factory
