@@ -323,7 +323,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY missing");
 
-  const geminiModels = ['gemini-1.5-flash', 'gemini-2.0-flash'];
+  const geminiModels = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.5-pro'];
   let lastError = null;
 
   for (const model of geminiModels) {
