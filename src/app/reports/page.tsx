@@ -296,7 +296,9 @@ export default function Reports() {
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mb-2">
             Reports &amp; Analytics
           </h1>
-          <p className="text-slate-600 font-normal max-w-xl">Review your past session performance, track AI feedback trends, and generate executive PDF summaries.</p>
+          <p className="text-slate-600 font-normal max-w-xl">
+            Review your past session performance, listen to audio/video recordings, track AI feedback trends, and generate executive PDF summaries.
+          </p>
         </div>
 
         <div className="flex items-center gap-4">
@@ -323,6 +325,26 @@ export default function Reports() {
             <option value="viva">AI VIVA</option>
           </select>
         </div>
+      </div>
+
+      {/* 🔒 7-Day Privacy Retention Policy Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 rounded-2xl text-white border border-indigo-900/50 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0 text-amber-400 font-bold">
+            🔒
+          </div>
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+              7-Day Privacy Retention Guarantee
+            </h4>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Session reports and audio/video preview recordings are automatically stored for <strong>7 days</strong> to ensure data privacy and optimal performance. Export detailed PDF reports to save permanent copies.
+            </p>
+          </div>
+        </div>
+        <span className="px-3 py-1 bg-indigo-900/80 border border-indigo-700 text-indigo-200 rounded-lg text-xs font-mono font-bold shrink-0 self-start sm:self-center">
+          Auto-Purge Expired Data
+        </span>
       </div>
 
       {/* Performance Trajectory Line Chart */}

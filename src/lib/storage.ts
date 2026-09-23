@@ -102,17 +102,41 @@ async function syncSession(type: string, score: number, sessionData: any = null)
   }
 }
 
-// ─── Session History ───
+// ─── Session History (7-Day Privacy Retention Policy) ───
+const RETENTION_PERIOD_MS = 7 * 24 * 60 * 60 * 1000; // 7 Days in milliseconds
+
+export function isSessionExpired(timestamp: string | number): boolean {
+  if (!timestamp) return false;
+  const time = typeof timestamp === 'string' ? new Date(timestamp).getTime() : timestamp;
+  if (isNaN(time)) return false;
+  return Date.now() - time > RETENTION_PERIOD_MS;
+}
+
+export function purgeExpiredHistory(): void {
+  if (typeof window === 'undefined') return;
+  const sessions = getJSON(KEYS.SESSIONS, []);
+  if (!Array.isArray(sessions) || sessions.length === 0) return;
+
+  const validSessions = sessions.filter(s => !isSessionExpired(s.timestamp));
+  if (validSessions.length !== sessions.length) {
+    setJSON(KEYS.SESSIONS, validSessions);
+  }
+}
+
 export function saveSession(type: string, data: Record<string, any>) {
+  // Purge expired records before adding new session
+  purgeExpiredHistory();
+
   const sessions = getJSON(KEYS.SESSIONS, []);
   const session = {
     id: `session-${Date.now()}`,
     type, // 'speech' | 'presentation' | 'viva' | 'interview' | 'jury' | 'challenge'
     timestamp: new Date().toISOString(),
+    retentionExpiresAt: new Date(Date.now() + RETENTION_PERIOD_MS).toISOString(),
     ...data
   };
   sessions.unshift(session); // newest first
-  // Keep last 100 sessions
+  // Keep maximum 100 recent sessions within retention window
   if (sessions.length > 100) sessions.length = 100;
   setJSON(KEYS.SESSIONS, sessions);
   
@@ -128,10 +152,13 @@ export async function fetchCloudHistory(type: string | null = null) {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return null;
 
+    const sevenDaysAgoISO = new Date(Date.now() - RETENTION_PERIOD_MS).toISOString();
+
     let query = supabase
       .from('sessions')
       .select('*')
       .eq('user_id', session.user.id)
+      .gte('created_at', sevenDaysAgoISO)
       .order('created_at', { ascending: false });
 
     if (type && type !== 'all') {
@@ -144,16 +171,19 @@ export async function fetchCloudHistory(type: string | null = null) {
       return null;
     }
 
-    return data.map((item: any) => {
-      const payload = item.session_data || {};
-      return {
-        id: item.id || `session-${item.created_at}`,
-        type: item.session_type,
-        timestamp: item.created_at,
-        scores: payload.scores || { overall: item.score || 0 },
-        ...payload
-      };
-    });
+    return data
+      .filter((item: any) => !isSessionExpired(item.created_at))
+      .map((item: any) => {
+        const payload = item.session_data || {};
+        return {
+          id: item.id || `session-${item.created_at}`,
+          type: item.session_type,
+          timestamp: item.created_at,
+          retentionExpiresAt: new Date(new Date(item.created_at).getTime() + RETENTION_PERIOD_MS).toISOString(),
+          scores: payload.scores || { overall: item.score || 0 },
+          ...payload
+        };
+      });
   } catch (error) {
     console.error('Failed to fetch cloud history from Supabase:', error);
     return null;
@@ -161,9 +191,11 @@ export async function fetchCloudHistory(type: string | null = null) {
 }
 
 export function getHistory(type: string | null = null) {
+  purgeExpiredHistory();
   const sessions = getJSON(KEYS.SESSIONS, []);
-  if (!type) return sessions;
-  return sessions.filter(s => s.type === type);
+  const validSessions = sessions.filter(s => !isSessionExpired(s.timestamp));
+  if (!type || type === 'all') return validSessions;
+  return validSessions.filter(s => s.type === type);
 }
 
 export function getRecentSessions(count: number = 5) {

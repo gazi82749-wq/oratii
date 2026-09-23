@@ -133,6 +133,8 @@ const organizationSchema = {
   logo: `${siteUrl}/favicon.ico`,
 };
 
+import GlobalErrorLogger from "../components/GlobalErrorLogger";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable} ${spaceGrotesk.variable} ${caveat.variable}`}>
@@ -148,6 +150,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`font-sans bg-[#fafafa] text-slate-900 antialiased`}>
+        <GlobalErrorLogger />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-slate-900 focus:font-bold focus:shadow-xl focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:w-auto focus:h-auto focus:overflow-visible focus:clip-auto"

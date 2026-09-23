@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
-import { Lock, ShieldCheck } from 'lucide-react';
+import { Lock, ShieldCheck, Mail, FileText, Cpu, Server, CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Oratii voice & data privacy policy guarantee. Your speech recordings and presentation decks are never sold or used to train public AI models.',
+  description: 'Oratii Privacy Policy. Learn how we protect your vocal recordings, presentation decks, and personal data under DPDP, IT Act 2000, and GDPR.',
   openGraph: {
     title: 'Privacy Policy | Oratii AI Speech Coach',
     description: 'Learn how Oratii protects your voice recordings, presentation slides, and account privacy.',
@@ -26,69 +26,98 @@ export default function PrivacyPolicyPage() {
             Privacy Policy
           </h1>
           <p className="text-sm text-slate-500 font-normal">
-            Last Updated: August 2026 • Effective Immediately
+            Last Updated: September 2026 • Effective Immediately
           </p>
         </div>
 
-        {/* Content Sections */}
+        {/* Core Guarantee Card */}
         <div className="space-y-8 text-sm sm:text-base leading-relaxed mb-16">
-          
           <section className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-sm relative">
             <h2 className="text-lg font-extrabold text-slate-900 mb-2 flex items-center gap-2">
-              <ShieldCheck size={20} className="text-[#0F1426]" /> Our Core Privacy Promise
+              <ShieldCheck size={20} className="text-emerald-600" /> Our Core Privacy Commitment
             </h2>
-            <p className="text-slate-700 font-normal">
-              At <strong>Oratii</strong>, we understand that your speech recordings, presentation slides, and practice responses contain valuable ideas. Your voice recordings and uploaded decks are processed strictly for generating real-time coaching feedback and <strong>are never sold, leased, or used to train public third-party AI models</strong>.
+            <p className="text-slate-700 font-normal leading-relaxed">
+              At <strong>Oratii</strong> (&quot;Platform&quot;, &quot;We&quot;, &quot;Us&quot;), your trust is our top priority. Your audio speech recordings, presentation slides, resume documents, and viva responses contain your valuable intellectual property. We process your data strictly to generate real-time coaching feedback and telemetry. <strong>Your voice recordings, transcripts, and uploaded slides are never sold, rented, leased, or used to train public third-party AI models.</strong>
             </p>
           </section>
 
+          {/* Section 1 */}
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">1. Information We Collect</h2>
             <div className="space-y-3 text-slate-700 font-medium">
-              <p><strong>a. Audio & Vocal Telemetry:</strong> When you use our Speech Coach, Mock Interview Studio, or Daily Challenge, microphone audio is processed in real-time to evaluate WPM pacing, filler word density, vocal tone, and posture telemetry.</p>
-              <p><strong>b. Presentation Slides & Resume Documents:</strong> Uploaded PowerPoint (PPTX), PDF decks, or Resume/CV documents are parsed solely to produce slide density scores, extract resume context, and generate simulated STAR method technical questions.</p>
-              <p><strong>c. Account & Authentication Data:</strong> Full name, email address, and secure auth tokens collected during sign-up to manage your 5 free trial credits and account preferences.</p>
-              <p><strong>d. Payment & Transaction Records:</strong> Credit top-up transactions are processed through encrypted payment gateway partners (such as Razorpay). Oratii does not store credit card numbers or banking passwords on our servers.</p>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-black text-slate-950 mb-3">2. How We Use Your Data</h2>
-            <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
-              <li>To provide instant speech analysis, pacing graphs, and filler word reports.</li>
-              <li>To generate customized Viva Defense questions from your presentation slides.</li>
-              <li>To manage your free trial limits, subscription status, and XP gamification progress.</li>
-              <li>To maintain platform security, prevent abuse, and deliver technical support.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-black text-slate-950 mb-3">3. Data Security & Storage</h2>
-            <p className="text-slate-700 font-medium">
-              All data transmissions are encrypted using SSL/TLS protocol. Speech recordings processed in memory are automatically purged after transcript generation unless explicitly saved to your personal session storage or Supabase profile.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-black text-slate-950 mb-3">4. Third-Party Integrations</h2>
-            <p className="text-slate-700 font-medium">
-              We integrate with trusted AI API providers (such as OpenAI and Groq) strictly to compute transcript analysis under zero-retention Enterprise Privacy Agreements.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-black text-slate-950 mb-3">5. User Rights & Contact</h2>
-            <p className="text-slate-700 font-medium mb-4">
-              Under applicable global privacy regulations (including GDPR and CCPA), you have the right to access, rectify, or delete your personal data.
-            </p>
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 text-slate-900">
-              <p className="font-extrabold text-sm mb-1">Have questions about your privacy?</p>
-              <p className="text-xs text-slate-600 font-medium">
-                Contact our privacy compliance officer at <a href="mailto:privacy@oratii.app" className="font-bold underline text-[#151930]">privacy@oratii.app</a> or reach out through our <Link href="/support" className="font-bold underline text-[#151930]">Support Page</Link>.
+              <p>
+                <strong>a. Speech &amp; Vocal Telemetry Data:</strong> When you record your voice during speech practice, viva defense, or mock interview sessions, audio streams are transcribed and evaluated in real-time to compute words-per-minute (WPM) pacing, filler word density, vocal pitch, and acoustic metrics.
+              </p>
+              <p>
+                <strong>b. Presentation Decks &amp; Documents:</strong> Uploaded PowerPoint files (.pptx), PDF slide decks, and resume documents are processed solely to extract slide text, calculate slide density metrics, and construct viva defense questions.
+              </p>
+              <p>
+                <strong>c. On-Device Camera Telemetry:</strong> Body posture, gaze alignment, and eye contact telemetry are calculated locally on your device using WebAssembly (WASM) computer vision models. <strong>No raw camera video is ever uploaded or recorded on our servers.</strong>
+              </p>
+              <p>
+                <strong>d. Account Information:</strong> Your full name, email address, authentication credentials, and user preferences collected during registration via Supabase Auth.
+              </p>
+              <p>
+                <strong>e. Payment &amp; Billing Data:</strong> Online payments are processed through PCI-DSS certified payment gateway partners (including Razorpay). Oratii does not store card numbers, CVVs, or banking passwords on our servers. We store transaction IDs, amount paid, and credit allocation status.
               </p>
             </div>
           </section>
 
+          {/* Section 2 */}
+          <section>
+            <h2 className="text-xl font-black text-slate-950 mb-3">2. How We Use Your Data</h2>
+            <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
+              <li>To evaluate vocal pacing, filler word frequency, posture, and STAR method interview delivery.</li>
+              <li>To generate customized viva defense questions and slide density heatmaps.</li>
+              <li>To manage your credit balance, subscription status, and XP gamification progress.</li>
+              <li>To enforce rate limits, prevent platform abuse, and maintain platform security.</li>
+              <li>To send essential transactional notifications, billing receipts, and account updates.</li>
+            </ul>
+          </section>
+
+          {/* Section 3 */}
+          <section>
+            <h2 className="text-xl font-black text-slate-950 mb-3">3. Zero-Retention Third-Party AI API Processing</h2>
+            <p className="text-slate-700 font-medium leading-relaxed">
+              Oratii utilizes enterprise API endpoints (such as Deepgram for speech-to-text, and Groq, Gemini, and OpenRouter for natural language evaluation). All third-party processing operates under <strong>zero-data-retention agreements</strong>. Your prompt content and speech transcripts are processed transiently in memory to return feedback and are deleted immediately thereafter.
+            </p>
+          </section>
+
+          {/* Section 4 */}
+          <section>
+            <h2 className="text-xl font-black text-slate-950 mb-3">4. Legal Compliance (DPDP Act, IT Act, GDPR &amp; CCPA)</h2>
+            <p className="text-slate-700 font-medium leading-relaxed mb-3">
+              We comply with the Indian Digital Personal Data Protection (DPDP) Act 2023, Information Technology Act 2000, EU GDPR, and California CCPA guidelines:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
+              <li><strong>Right to Access &amp; Portability:</strong> You can view all your session analytics and reports at any time from your account dashboard.</li>
+              <li><strong>Right to Erasure (Data Deletion):</strong> You may request full deletion of your account and session history by emailing <a href="mailto:privacy@oratii.in" className="font-bold underline text-indigo-700">privacy@oratii.in</a>. All associated records will be purged within 14 business days.</li>
+              <li><strong>No Data Selling:</strong> We do not sell or rent personal information to third-party data brokers or advertisers under any circumstances.</li>
+            </ul>
+          </section>
+
+          {/* Section 5 */}
+          <section>
+            <h2 className="text-xl font-black text-slate-950 mb-3">5. Data Security</h2>
+            <p className="text-slate-700 font-medium leading-relaxed">
+              All communications between your client browser and Oratii servers are encrypted using 256-bit SSL/TLS protocol. Data stored in our database (Supabase) is protected with strict Row Level Security (RLS) policies ensuring users can only access their own data.
+            </p>
+          </section>
+
+          {/* Section 6 */}
+          <section>
+            <h2 className="text-xl font-black text-slate-950 mb-3">6. Privacy Policy Contact</h2>
+            <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-6 text-slate-900">
+              <p className="font-extrabold text-sm mb-1">Grievance &amp; Privacy Officer Contact</p>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed mb-3">
+                For questions, data deletion requests, or privacy concerns under applicable privacy laws, please contact our privacy compliance team:
+              </p>
+              <div className="text-xs font-medium space-y-1 text-slate-700">
+                <p><strong>Email:</strong> <a href="mailto:privacy@oratii.in" className="font-bold underline text-indigo-700">privacy@oratii.in</a> / <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a></p>
+                <p><strong>Website Support:</strong> <Link href="/support" className="font-bold underline text-indigo-700">Oratii Support Center</Link></p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
       <Footer />

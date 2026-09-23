@@ -1,5 +1,6 @@
 // src/lib/aiFallback.ts
 import { fetchWithRetry } from './fetchWithRetry';
+import { logSystemEvent } from './logger';
 
 export interface AIContentOptions {
   systemPrompt: string;
@@ -60,6 +61,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        logSystemEvent({
+          severity: 'warning',
+          category: 'AI Provider',
+          message: `Groq AI Model Failure (${model}): ${err.message}`,
+          source: `Groq (${model})`,
+          details: err.stack || err.message,
+        });
+
         if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
@@ -68,6 +77,13 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
           console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
           groqQuotaExhaustedTime = Date.now();
+          logSystemEvent({
+            severity: 'error',
+            category: 'AI Provider',
+            message: `Groq quota exhausted or rate-limited for ${model}`,
+            source: `Groq Circuit Breaker`,
+            details: err.message,
+          });
         }
       }
     }
@@ -83,6 +99,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
       const res = await callGemini(options);
       if (res) return res;
     } catch (err: any) {
+      logSystemEvent({
+        severity: 'warning',
+        category: 'AI Provider',
+        message: `Gemini AI Provider Failure: ${err.message}`,
+        source: 'Gemini API',
+        details: err.stack || err.message,
+      });
+
       if (err.status === 401 || err.status === 403) throw err;
 
       console.warn("[AIFallback] Gemini failed or rate-limited. Falling back to OpenRouter...", err.message);
@@ -111,6 +135,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        logSystemEvent({
+          severity: 'warning',
+          category: 'AI Provider',
+          message: `OpenRouter AI Model Failure (${model}): ${err.message}`,
+          source: `OpenRouter (${model})`,
+          details: err.stack || err.message,
+        });
+
         if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] OpenRouter model ${model} failed:`, err.message);
@@ -136,6 +168,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         });
         if (res) return res;
       } catch (err: any) {
+        logSystemEvent({
+          severity: 'warning',
+          category: 'AI Provider',
+          message: `Cerebras AI Model Failure (${model}): ${err.message}`,
+          source: `Cerebras (${model})`,
+          details: err.stack || err.message,
+        });
+
         if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
@@ -144,6 +184,13 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('payment_required') || err.message?.includes('quota') || err.message?.includes('rate')) {
           console.warn("[AIFallback] Cerebras quota exhausted. Circuit breaker activated for 5 minutes.");
           cerebrasQuotaExhaustedTime = Date.now();
+          logSystemEvent({
+            severity: 'error',
+            category: 'AI Provider',
+            message: `Cerebras quota exhausted for model ${model}`,
+            source: `Cerebras Circuit Breaker`,
+            details: err.message,
+          });
           break;
         }
       }
@@ -159,7 +206,14 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // Structured Fallback JSON if all providers fail
   console.error(`[AIFallback] All AI providers failed or were disabled:\n${errors.join('\n')}`);
-  
+  logSystemEvent({
+    severity: 'critical',
+    category: 'AI Service Failure',
+    message: 'All AI Providers Failed - Offline Fallback Triggered',
+    source: 'AIFallback Waterfall',
+    details: errors.join('\n'),
+  });
+
   return JSON.stringify({
     overallScore: 75,
     tone: "Calm & Clear",

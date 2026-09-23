@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from './supabaseClient';
 import { checkRateLimit, AI_RATE_LIMIT } from './rateLimit';
+import { logSystemEvent } from './logger';
 
 // Types for Supabase User
 import { User } from '@supabase/supabase-js';
@@ -12,12 +13,21 @@ type RouteHandler = (
 
 export function withAuthAndRateLimit(handler: RouteHandler) {
   return async (req: NextRequest): Promise<NextResponse> => {
+    const pathname = req.nextUrl?.pathname || req.url || 'API Route';
     try {
       // 1. Rate limiting by IP
       const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'unknown';
       const rateResult = await checkRateLimit(`ai:${ip}`, AI_RATE_LIMIT);
       
       if (!rateResult.allowed) {
+        logSystemEvent({
+          severity: 'warning',
+          category: 'API Rate Limit',
+          message: `Rate limit hit on ${pathname} by IP ${ip}`,
+          source: pathname,
+          details: `Retry after ${rateResult.retryAfterSeconds}s`,
+        });
+
         return NextResponse.json({
           error: "Too Many Requests",
           message: `Please wait ${rateResult.retryAfterSeconds} seconds before trying again.`
@@ -39,14 +49,11 @@ export function withAuthAndRateLimit(handler: RouteHandler) {
       }
 
       // Fallback: Check if the user is passing it via body in the first pass
-      // Some existing routes do this: userId = bodyUserId || request.headers.get('x-user-id');
       if (!user) {
         const headerUserId = req.headers.get('x-user-id');
         if (headerUserId) {
           user = { id: headerUserId } as User;
         } else {
-          // If still no user, we might need to clone the request to parse the JSON
-          // safely without consuming the body stream for the actual handler.
           const clonedReq = req.clone();
           try {
             const body = await clonedReq.json();
@@ -54,12 +61,20 @@ export function withAuthAndRateLimit(handler: RouteHandler) {
               user = { id: body.userId } as User;
             }
           } catch (e) {
-            // Body might be empty or invalid JSON, which is fine
+            // Body might be empty or invalid JSON
           }
         }
       }
 
       if (!user) {
+        logSystemEvent({
+          severity: 'info',
+          category: 'Auth',
+          message: `Unauthenticated request attempt to ${pathname}`,
+          source: pathname,
+          details: `IP: ${ip}`,
+        });
+
         return NextResponse.json(
           { error: "Authentication required. Please sign in.", authRequired: true },
           { status: 401 }
@@ -70,6 +85,14 @@ export function withAuthAndRateLimit(handler: RouteHandler) {
       return await handler(req, { user, ip });
     } catch (error: any) {
       console.error('[API Wrapper Error]', error);
+      logSystemEvent({
+        severity: 'critical',
+        category: 'API Route',
+        message: `API Handler Error (500) on ${pathname}: ${error.message || 'Unknown Exception'}`,
+        source: pathname,
+        details: error.stack || error.message || String(error),
+      });
+
       return NextResponse.json(
         { error: "Internal Server Error", message: error.message },
         { status: 500 }

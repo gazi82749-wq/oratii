@@ -66,9 +66,28 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function loadDashboardData() {
-      // 1. Fetch User Stats
-      const { count: usersCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-      const { count: premiumCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).neq('current_plan', 'free');
+      // 1. Fetch User Stats via Admin API route (bypassing client RLS)
+      let usersCount = 0;
+      let premiumCount = 0;
+      let feed: any[] = [];
+
+      try {
+        const userRes = await fetch('/api/admin/users?limit=5');
+        const userJson = await userRes.json();
+        if (userJson && userJson.users) {
+          usersCount = userJson.total || userJson.users.length;
+          premiumCount = userJson.users.filter((u: any) => u.current_plan && u.current_plan !== 'free').length;
+          feed = userJson.users.map((p: any) => ({
+            id: p.id,
+            userName: p.full_name || p.email || 'Platform User',
+            message: p.role === 'admin' ? 'signed in as Administrator' : 'registered on Oratii platform',
+            type: 'registration',
+            timestamp: p.updated_at || p.created_at || new Date().toISOString(),
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to fetch admin dashboard user stats:', err);
+      }
       
       // 2. Fetch Module Counts
       const { count: reportsCount } = await supabase.from('analysis_reports').select('*', { count: 'exact', head: true });
@@ -106,25 +125,7 @@ export default function AdminDashboard() {
         ]);
       }
 
-      // 3. Fetch Recent Activity Feed from Profiles & Reports
-      const { data: recentProfiles } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (recentProfiles && recentProfiles.length > 0) {
-        const feed = recentProfiles.map((p: any) => ({
-          id: p.id,
-          userName: p.full_name || p.email || 'Platform User',
-          message: p.role === 'admin' ? 'signed in as Administrator' : 'registered on Oratii platform',
-          type: 'registration',
-          timestamp: p.updated_at || p.created_at || new Date().toISOString(),
-        }));
-        setLiveActivity(feed);
-      } else {
-        setLiveActivity([]);
-      }
+      setLiveActivity(feed);
     }
 
     loadDashboardData();

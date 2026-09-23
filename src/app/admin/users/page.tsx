@@ -55,59 +55,62 @@ export default function AllUsersPage() {
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    
-    let query = supabase
-      .from('profiles')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE - 1);
+    try {
+      const url = new URL('/api/admin/users', window.location.origin);
+      url.searchParams.set('page', page.toString());
+      url.searchParams.set('limit', ITEMS_PER_PAGE.toString());
+      if (debouncedSearch) url.searchParams.set('search', debouncedSearch);
+      if (planFilter !== 'all') url.searchParams.set('plan', planFilter);
 
-    if (debouncedSearch) {
-      query = query.ilike('email', `%${debouncedSearch}%`);
+      const res = await fetch(url.toString());
+      const json = await res.json();
+
+      if (json && json.users) {
+        const mapped: AdminUser[] = json.users.map((p: any) => ({
+          id: p.id,
+          name: p.full_name || (p.email ? p.email.split('@')[0] : 'User'),
+          email: p.email || 'no-email@domain.com',
+          avatar: p.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.id}`,
+          registeredAt: p.created_at || new Date().toISOString(),
+          lastActive: p.updated_at || p.created_at || new Date().toISOString(),
+          plan: (p.current_plan as UserPlan) || 'free',
+          status: (p.role === 'admin' ? 'active' : 'active') as UserStatus,
+          totalAnalyses: p.xp ? Math.floor(p.xp / 10) : 0,
+          speechAnalyses: 0,
+          pptAnalyses: 0,
+          vivaSessions: 0,
+        }));
+        setUsersList(mapped);
+        setTotalCount(json.total || 0);
+      }
+    } catch (err) {
+      console.error('Failed to fetch admin users:', err);
+    } finally {
+      setLoading(false);
     }
-
-    if (planFilter !== 'all') {
-      query = query.eq('current_plan', planFilter);
-    }
-    // Status filter is complex since it's derived, for now we handle active/banned if role is present
-    // if (statusFilter === 'banned') query = query.eq('role', 'banned'); 
-
-    const { data: dbProfiles, count } = await query;
-
-    if (dbProfiles) {
-      const mapped: AdminUser[] = dbProfiles.map((p: any) => ({
-        id: p.id,
-        name: p.email ? p.email.split('@')[0] : 'User',
-        email: p.email || 'no-email@domain.com',
-        avatar: p.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.id}`,
-        registeredAt: p.created_at || new Date().toISOString(),
-        lastActive: p.created_at || new Date().toISOString(),
-        plan: (p.current_plan as UserPlan) || 'free',
-        status: (p.role === 'admin' ? 'active' : 'active') as UserStatus,
-        totalAnalyses: p.xp ? Math.floor(p.xp / 10) : 0,
-        speechAnalyses: 0,
-        pptAnalyses: 0,
-        vivaSessions: 0,
-      }));
-      setUsersList(mapped);
-      if (count !== null) setTotalCount(count);
-    }
-    setLoading(false);
-  }, [page, debouncedSearch, planFilter, statusFilter]);
+  }, [page, debouncedSearch, planFilter]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
   const handleUpdatePlan = async (userId: string, newPlan: UserPlan) => {
-    await supabase.from('profiles').update({ current_plan: newPlan }).eq('id', userId);
+    await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, action: 'update_plan', plan: newPlan }),
+    });
     fetchUsers();
     setActionMenu(null);
   };
 
   const handleToggleAdmin = async (userId: string, currentRole: string) => {
     const nextRole = currentRole === 'admin' ? 'user' : 'admin';
-    await supabase.from('profiles').update({ role: nextRole }).eq('id', userId);
+    await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, action: 'update_role', role: nextRole }),
+    });
     fetchUsers();
     setActionMenu(null);
   };
@@ -274,10 +277,14 @@ export default function AllUsersPage() {
                           <button 
                             className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-50 dark:hover:bg-emerald-500/10 cursor-pointer" 
                             onClick={async () => {
-                              await supabase.from('profiles').update({ credits: 100 }).eq('id', user.id);
+                              await fetch('/api/admin/users', {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ userId: user.id, action: 'add_credits', credits: 100 }),
+                              });
                               fetchUsers();
                               setActionMenu(null);
-                              alert(`Granted 100 VIP Credits to ${user.email}!`);
+                              alert(`Granted +100 VIP Credits to ${user.email}!`);
                             }}
                           >
                             <ShieldCheck size={14} className="text-emerald-500" /> Grant +100 Free Credits

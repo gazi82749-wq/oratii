@@ -1,13 +1,12 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { getHistory, fetchCloudHistory } from '@/lib/storage';
 import { getVideoBlob } from '@/lib/videoStorage';
-import { Video, Camera, RotateCcw, Check, FileText } from 'lucide-react';
+import { Video, Camera, RotateCcw, Check, FileText, Clock, ShieldCheck } from 'lucide-react';
 import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
 import VivaDefenseModal from '@/components/VivaDefenseModal';
+import MediaPreviewPlayer, { MediaPreviewPlayerRef } from '@/components/MediaPreviewPlayer';
 
 export default function ReportPage() {
   const params = useParams();
@@ -18,6 +17,8 @@ export default function ReportPage() {
   const [sessionData, setSessionData] = useState<any>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [isVivaModalOpen, setIsVivaModalOpen] = useState(false);
+
+  const playerRef = useRef<MediaPreviewPlayerRef>(null);
 
   useEffect(() => {
     async function loadReport() {
@@ -42,7 +43,6 @@ export default function ReportPage() {
   }, [id]);
 
   useEffect(() => {
-    // Attempt to load video blob from IndexedDB (local storage for videos)
     let activeUrl: string | null = null;
     getVideoBlob(id).then(blob => {
       if (blob) {
@@ -54,6 +54,12 @@ export default function ReportPage() {
       if (activeUrl) URL.revokeObjectURL(activeUrl);
     };
   }, [id]);
+
+  const handleTimestampClick = (seconds: number) => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(seconds);
+    }
+  };
 
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60).toString().padStart(2, '0');
@@ -72,8 +78,9 @@ export default function ReportPage() {
   if (!sessionData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
-        <h2 className="text-2xl font-bold mb-4">Report Not Found</h2>
-        <button onClick={() => router.push('/dashboard')} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">Return to Dashboard</button>
+        <h2 className="text-2xl font-bold mb-4">Report Not Found or Expired</h2>
+        <p className="text-sm text-slate-500 mb-6">Session reports are stored for 7 days under our Privacy Retention Policy.</p>
+        <button onClick={() => router.push('/reports')} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">Return to Reports</button>
       </div>
     );
   }
@@ -121,13 +128,20 @@ export default function ReportPage() {
         {/* Universal Top Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-extrabold uppercase tracking-wider mb-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 
-              {type === 'presentation' && '100% On-Device Edge Processing • Zero API Cost'}
-              {type === 'speech' && 'Speech Clarity & Vocal Modulation Analysis'}
-              {type === 'viva' && 'AI Academic Committee Defense Evaluation'}
-              {type === 'interview' && 'Mock Interview & STAR Method Audit'}
+            <div className="flex items-center gap-2 flex-wrap mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-extrabold uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 
+                {type === 'presentation' && 'On-Device Edge Telemetry • 7-Day Storage'}
+                {type === 'speech' && 'Speech Modulation Analysis • 7-Day Storage'}
+                {type === 'viva' && 'AI Viva Academic Evaluation • 7-Day Storage'}
+                {type === 'interview' && 'STAR Method Evaluation • 7-Day Storage'}
+              </span>
+
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-900/60 border border-indigo-700/60 text-indigo-300 text-[10px] font-mono font-semibold">
+                🔒 7-Day Privacy Retention Window
+              </span>
             </div>
+
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
               {type === 'presentation' && <><Video size={26} className="text-amber-400" /> Live Practice Performance Results</>}
               {type === 'speech' && <><Video size={26} className="text-amber-400" /> Speech Coaching Analysis Report</>}
@@ -135,7 +149,7 @@ export default function ReportPage() {
               {type === 'interview' && <><FileText size={26} className="text-emerald-400" /> Mock Interview Evaluation Report</>}
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">
-              {type === 'presentation' && <>Local video preview & AI delivery telemetry for <strong>{fileName}</strong></>}
+              {type === 'presentation' && <>Media preview & AI delivery telemetry for <strong>{fileName}</strong></>}
               {type === 'speech' && <>Pacing, filler count, CEFR/IELTS benchmark & feedback for <strong>{fileName || 'Speech Session'}</strong></>}
               {type === 'viva' && <>Academic examiner committee Q&A evaluation for <strong>{topic}</strong></>}
               {type === 'interview' && <>STAR method evaluation & domain benchmarking for <strong>{roleTitle}</strong></>}
@@ -143,25 +157,21 @@ export default function ReportPage() {
           </div>
 
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/reports')}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all cursor-pointer shrink-0"
           >
-            ← Return to Dashboard
+            ← Back to All Reports
           </button>
         </div>
 
-        {/* Video Preview (if recorded/uploaded for Presentation or Speech) */}
-        {videoUrl && (
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold text-slate-400 px-1">
-              <span className="flex items-center gap-2 text-indigo-400 uppercase tracking-wider text-[11px] font-black">
-                <Camera size={14} /> Recorded Video Preview (Processed Locally)
-              </span>
-              {elapsedSeconds > 0 && <span>Duration: {formatTimer(elapsedSeconds)}</span>}
-            </div>
-            <video controls src={videoUrl} className="w-full max-h-[360px] rounded-xl bg-black object-contain border border-slate-800/80 shadow-inner" />
-          </div>
-        )}
+        {/* Universal Interactive Media Preview Player */}
+        <MediaPreviewPlayer
+          ref={playerRef}
+          sessionId={id}
+          initialMediaUrl={videoUrl}
+          mediaType={type === 'presentation' ? 'video' : 'audio'}
+          title={`${fileName || topic || roleTitle} Performance Media Preview`}
+        />
 
         {/* --- PRESENTATION MODULE SPECIFIC METRICS --- */}
         {type === 'presentation' && (
@@ -299,9 +309,13 @@ export default function ReportPage() {
                         </span>
                         <span className="font-bold text-slate-200">Slide {log.slideNumber} Covered</span>
                       </div>
-                      <span className="font-mono text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/40">
-                        ⏱ {log.time}
-                      </span>
+                      <button
+                        onClick={() => handleTimestampClick(typeof log.timestamp === 'number' ? log.timestamp : parseFloat(log.time || '0'))}
+                        className="font-mono text-amber-400 font-bold bg-amber-950/60 hover:bg-amber-900/80 px-2.5 py-1 rounded border border-amber-800/40 transition-colors flex items-center gap-1 cursor-pointer"
+                        title="Click to jump media player to this timestamp"
+                      >
+                        ⏱ {log.time || `${log.timestamp || 0}s`}
+                      </button>
                     </div>
                   ))}
                 </div>
