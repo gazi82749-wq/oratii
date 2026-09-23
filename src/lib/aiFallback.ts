@@ -48,7 +48,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 1️⃣ GROQ (1st Priority for Text & Vision requests)
   if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
-    const groqModels = ["llama3-8b-8192"];
+    const groqModels = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"];
 
     for (const model of groqModels) {
       try {
@@ -331,7 +331,7 @@ async function callGemini(options: AIContentOptions): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY missing");
 
-  const geminiModels = ['gemini-3.6-flash', 'gemini-3.7-flash'];
+  const geminiModels = ['gemini-1.5-flash', 'gemini-2.0-flash'];
   let lastError = null;
 
   for (const model of geminiModels) {
