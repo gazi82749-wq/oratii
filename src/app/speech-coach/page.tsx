@@ -438,10 +438,6 @@ export default function SpeechCoach() {
         trustGuarantee: auditedRubric.trustGuarantee
       };
       
-      setResults(initialResults);
-      setIsLoading(false);
-      setIsDeepLoading(true);
-
       // Phase 2: Deep Analysis (no media file needed, only metadata)
       const deepFormData = new FormData();
       deepFormData.append('wpm', String(wpm));
@@ -484,19 +480,6 @@ export default function SpeechCoach() {
       } catch (err) {
         console.error("Deep analysis failed:", err);
       }
-
-      setResults(prev => ({
-        ...prev,
-        overallScore: finalOverallScore,
-        feedback: finalFeedback,
-        strengths: finalStrengths,
-        weaknesses: finalWeaknesses,
-        suggestions: finalSuggestions,
-        tone: finalTone,
-        timeMarkers: finalTimeMarkers,
-        cefrBand: finalCefr,
-        ieltsBand: finalIelts
-      }));
 
       const sessionRecord = saveSession('speech', {
         duration: duration || 120,
