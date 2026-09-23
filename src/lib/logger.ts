@@ -1,5 +1,4 @@
-// src/lib/logger.ts
-import { supabase } from './supabaseClient';
+import { getServiceSupabase, supabase } from './supabaseClient';
 
 export type LogSeverity = 'info' | 'warning' | 'error' | 'critical';
 
@@ -45,8 +44,9 @@ export async function logSystemEvent(options: LogOptions): Promise<void> {
   }
 
   try {
-    if (supabase && typeof supabase.from === 'function') {
-      const table = supabase.from('system_logs');
+    const db = typeof window === 'undefined' ? getServiceSupabase() : supabase;
+    if (db && typeof db.from === 'function') {
+      const table = db.from('system_logs');
       if (table && typeof table.insert === 'function') {
         const { error } = await table.insert([
           {

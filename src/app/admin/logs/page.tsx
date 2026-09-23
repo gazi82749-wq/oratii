@@ -60,14 +60,11 @@ export default function SystemLogsPage() {
 
   const fetchLogs = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('system_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(200);
+      const res = await fetch('/api/admin/log');
+      const json = await res.json();
 
-      if (!error && data) {
-        const mapped = data.map((l: any) => ({
+      if (json && json.logs) {
+        const mapped = json.logs.map((l: any) => ({
           id: l.id,
           timestamp: l.created_at || new Date().toISOString(),
           severity: (l.severity as LogSeverity) || 'info',
