@@ -69,18 +69,16 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
           details: err.stack || err.message,
         });
 
-        if (err.status === 401 || err.status === 403) throw err;
-
         console.warn(`[AIFallback] Groq model ${model} failed:`, err.message);
         errors.push(`Groq (${model}): ${err.message}`);
 
-        if (err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
-          console.warn(`[AIFallback] Groq model ${model} rate limited or exhausted.`);
+        if (err.message?.includes('401') || err.message?.includes('403') || err.message?.includes('402') || err.message?.includes('429') || err.message?.includes('quota') || err.message?.includes('rate_limit_exceeded')) {
+          console.warn(`[AIFallback] Groq model ${model} auth error or rate-limited. Activating circuit breaker.`);
           groqQuotaExhaustedTime = Date.now();
           logSystemEvent({
             severity: 'error',
             category: 'AI Provider',
-            message: `Groq quota exhausted or rate-limited for ${model}`,
+            message: `Groq quota exhausted or auth issue for ${model}`,
             source: `Groq Circuit Breaker`,
             details: err.message,
           });
@@ -106,8 +104,6 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
         source: 'Gemini API',
         details: err.stack || err.message,
       });
-
-      if (err.status === 401 || err.status === 403) throw err;
 
       console.warn("[AIFallback] Gemini failed or rate-limited. Falling back to OpenRouter...", err.message);
       errors.push(`Gemini: ${err.message}`);
@@ -143,8 +139,6 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
           details: err.stack || err.message,
         });
 
-        if (err.status === 401 || err.status === 403) throw err;
-
         console.warn(`[AIFallback] OpenRouter model ${model} failed:`, err.message);
         errors.push(`OpenRouter (${model}): ${err.message}`);
       }
@@ -175,8 +169,6 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
           source: `Cerebras (${model})`,
           details: err.stack || err.message,
         });
-
-        if (err.status === 401 || err.status === 403) throw err;
 
         console.warn(`[AIFallback] Cerebras model ${model} failed:`, err.message);
         errors.push(`Cerebras (${model}): ${err.message}`);
