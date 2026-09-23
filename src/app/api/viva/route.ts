@@ -117,10 +117,10 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       if (currentQuestionIndex === 1) {
         targetStage = 'icebreaker';
         stageInstructions = `
-          STAGE 1: ICEBREAKER & TECH STACK DISCOVERY (Turn 1)
+          STAGE 1: CANDIDATE INTRODUCTION (Turn 1)
           - Role: You are a Hiring Manager interviewing the candidate for "${topicName}".
           - Task: Greet the candidate warmly and ask them to introduce themselves: "Welcome! To get started, please introduce yourself, your educational background, primary technical skills or tools you are most comfortable with, and key projects you have built."
-          - Format: Warm, encouraging opening question asking for candidate's primary tech stack.
+          - Format: Warm opening question (1-2 sentences).
           - Set "currentStage": "icebreaker"
           - Set "stageLabel": "Round 1: Candidate Intro & Skill Discovery"
           - Set "answerFormatHint": "Introduce yourself and state your primary technical stack, tools, and key projects."
@@ -128,23 +128,22 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       } else if (currentQuestionIndex === 2) {
         targetStage = 'specialization';
         stageInstructions = `
-          STAGE 2: DECLARED TECH STACK & SPECIALIZATION (Turn 2)
+          STAGE 2: DECLARED TECH STACK & PROJECT MOTIVATION (Turn 2)
           - DYNAMIC TECH STACK DIRECTIVE (MANDATORY):
-            1. Parse the candidate's Turn 1 answer and resume for the exact programming languages, frameworks, databases, or domain tools they explicitly claimed knowledge in (e.g. Python, React, Java, Node.js, SQL, Excel).
-            2. Formulate your follow-up question STRICTLY grounded in the technologies/tools they explicitly mentioned!
-            3. Ask why they chose this specific tech stack and how they applied it in their projects.
-            4. DO NOT ask about unmentioned or random frameworks outside their declared knowledge!
+            1. Parse the candidate's Turn 1 answer for their name and declared tech stack (e.g., React, Supabase, Python, Java, SQL).
+            2. Start with a warm human acknowledgment: e.g. "Great to meet you, [Name]! I see you've worked with [Tech Stack]."
+            3. Ask ONE short, conversational follow-up question (MAX 1-2 SENTENCES, under 30 words) asking what problem their project solved OR why they chose this specific tech stack.
+            4. CRITICAL: DO NOT dump multi-part questions or parenthetical lists (e.g. NEVER ask about architecture, features, database queries, and challenges all in one question)!
           - Set "currentStage": "specialization"
           - Set "stageLabel": "Round 2: Declared Tech Stack & Motivation"
-          - Set "answerFormatHint": "Explain your choice of tech stack, core strengths, and passion."
+          - Set "answerFormatHint": "Explain what your project does and why you chose your tech stack."
         `;
       } else if (currentQuestionIndex === 3) {
         targetStage = 'technical_discussion';
         if (isBpoOrVoice) {
           stageInstructions = `
             STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn 3)
-            - Pose a practical customer service situation: handling an upset caller, de-escalating an SLA delay, or displaying active listening.
-            - DO NOT ask any software programming questions.
+            - Pose ONE practical customer service situation (1-2 short sentences max): handling an upset caller or de-escalating an SLA delay.
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: Customer De-escalation & Voice Drill"
             - Set "answerFormatHint": "Demonstrate empathy, clarity, and your problem-solving steps."
@@ -152,8 +151,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
         } else if (isIelts) {
           stageInstructions = `
             STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn 3)
-            - Ask a Part 2 / Part 3 IELTS prompt tailored to "${topicName}" testing vocabulary range and structured opinion expression.
-            - DO NOT ask technical programming questions.
+            - Ask ONE Part 2/3 IELTS prompt (1-2 sentences max) tailored to "${topicName}".
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: IELTS Cue Card & Abstract Probe"
             - Set "answerFormatHint": "Express your opinion clearly with varied vocabulary and smooth transitions."
@@ -161,26 +159,27 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
         } else if (isMba) {
           stageInstructions = `
             STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn 3)
-            - Pose a practical business scenario or trade-off question testing logical market estimation or strategic decision-making.
+            - Pose ONE business trade-off question (1-2 sentences max) testing strategic reasoning.
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: Business Case & Strategic Reasoning"
             - Set "answerFormatHint": "Structure your analysis using a clear business framework."
           `;
         } else if (isFresher) {
           stageInstructions = `
-            STAGE 3: TAILORED TECH CONCEPT & PROJECT CHECK (Turn 3)
-            - Candidate is a CAMPUS FRESHER. Keep questions fair and grounded strictly in the candidate's declared tech stack!
-            - Pick a specific tool or language they mentioned (e.g. React or Python or SQL) and ask how they used it in their project, or ask a practical fundamental concept check.
-            - DO NOT ask unmentioned technologies, complex database internals, or high-load architecture questions!
+            STAGE 3: TAILORED TECH CONCEPT & FEATURE CHECK (Turn 3)
+            - Candidate is a CAMPUS FRESHER. Keep questions fair and conversational!
+            - Pick ONE specific tool or feature mentioned in their declared tech stack (e.g. React state/props, or Supabase database fetching).
+            - Ask ONE focused question (MAX 1-2 SENTENCES, under 30 words) on how they implemented it or a bug they solved.
+            - DO NOT ask complex system architecture or high-load database internals!
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Declared Tech Project Discussion"
-            - Set "answerFormatHint": "Explain how you used your declared tech stack in your project."
+            - Set "stageLabel": "Round 3: Declared Tech Feature Check"
+            - Set "answerFormatHint": "Explain how you implemented this feature in your project."
           `;
         } else {
           stageInstructions = `
             STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn 3)
-            - Candidate is a PLACEMENT PRO. Pick a technical claim or architecture choice from their declared tech stack.
-            - Ask an unscripted technical question probing trade-offs, scalability, or resolving edge-case bugs within their domain.
+            - Pick ONE technical trade-off or implementation detail from their declared tech stack.
+            - Ask ONE focused technical question (MAX 1-2 SENTENCES, under 30 words).
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: Deep Technical Discussion"
             - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
@@ -190,8 +189,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
         targetStage = 'behavioral_star';
         stageInstructions = `
           STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn 4 - Final Round)
-          - Ask a situational behavioral question (e.g. working under deadline pressure, resolving team conflict, or learning from a past mistake).
-          - Evaluate their answer using the STAR framework (Situation, Task, Action, Result).
+          - Ask ONE situational behavioral question (1-2 short sentences max) about working under deadline pressure, teamwork, or solving a tough technical bug.
           - Set "currentStage": "behavioral_star"
           - Set "stageLabel": "Round 4: Behavioral & STAR Challenge (Final Round)"
           - Set "answerFormatHint": "Structure your answer using Situation, Task, Action, and Result."
@@ -279,6 +277,12 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
 
       ${documentInstruction}
 
+      REAL-WORLD HUMAN INTERVIEWER DIRECTIVE (100% MANDATORY):
+      1. ONE CONCISE QUESTION ONLY: Every question asked MUST be 1 to 2 short sentences maximum (under 30 words total).
+      2. NO MULTI-PART QUESTION DUMPS: NEVER ask 3 or 4 things at once! DO NOT combine architecture, features, database queries, and challenges into a single question block!
+      3. NO PARENTHETICAL CHECKLISTS: NEVER output parenthetical lists like "(such as components, hooks, or routing)" or "(authentication, queries, updates)". Real interviewers talk like humans!
+      4. NATURAL ACKNOWLEDGMENT: Start every follow-up question by acknowledging the candidate's name or declared tech stack (e.g. "Great to meet you, Ghazi! Since you worked with React and Supabase...").
+
       PROGRESSION CURVE RULES:
       ${stageInstructions}
 
@@ -287,7 +291,7 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
       - IF TURN 1 (Session Start / Question 1): Candidate has NOT answered yet. Greet candidate warmly with a standard opening question ("Welcome! To get started, please introduce yourself, your educational background, primary technical skills, and key projects."). DO NOT say "Let's try that again"!
       - IF TURN > 1 AND the candidate provided a 1-word, non-committal, lazy, or evasive response (such as "yes", "no", "ok", "yep", "sure", "idk", "maybe", or fewer than 4 words without technical content):
         1. CONFRONT THEM IMMEDIATELY IN "feedbackToPreviousAnswer": Act like a real, serious interviewer calling them out firmly. Example: "Simply answering 'yes' is not acceptable in a real job interview. It gives me zero technical or professional information to evaluate."
-        2. INCLUDE CONFRONTATION + RE-PROMPT IN "nextQuestion": Formulate "nextQuestion" as a full human interviewer response that starts with the confrontation before re-asking the question! Example: "That's just a 'yes'! In a real interview, a one-word answer gives me zero information to evaluate. Let's try that again: Please tell me about your degree, primary programming languages, and a key project."
+        2. INCLUDE CONFRONTATION + RE-PROMPT IN "nextQuestion": Formulate "nextQuestion" as a short, direct human response (MAX 2 SENTENCES) that starts with the confrontation before re-asking the question! Example: "That's just a 'yes'! In a real interview, a one-word answer gives me zero information to evaluate. Let's try that again: Please introduce yourself, your degree, primary tech stack, and a key project."
         3. ASSIGN VERY LOW SCORES: Set scores strictly between 15 and 25 for accuracy, reasoning, and clarity/confidence.
 
       FEEDBACK RULES:
