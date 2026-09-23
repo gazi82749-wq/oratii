@@ -494,6 +494,16 @@ export default function ChatGPTInterviewStudio({
     ];
     setChatHistory(updatedHistory);
 
+    const candidateAnswersCount = updatedHistory.filter(
+      (item) => item.role === "candidate" && item.text
+    ).length;
+
+    // Standard interview caps at 4 rounds
+    if (candidateAnswersCount >= 4) {
+      await finishInterview(updatedHistory);
+      return;
+    }
+
     try {
       const {
         data: { session },
@@ -523,11 +533,12 @@ export default function ChatGPTInterviewStudio({
       const payload = data.data || data.viva;
       if (data.status === "success" && payload) {
         const nextQ = payload.nextQuestion;
+        const nextRoundNum = Math.min(4, currentRound + 1);
         setCurrentQuestion(nextQ);
-        setCurrentRound((prev) => prev + 1);
+        setCurrentRound(nextRoundNum);
         setStageLabel(
           payload.stageLabel ||
-            `Round ${currentRound + 1}: Deep Technical Discussion`,
+            `Round ${nextRoundNum}: Deep Technical Discussion`,
         );
         setAnswerFormatHint(
           payload.answerFormatHint ||
@@ -553,10 +564,11 @@ export default function ChatGPTInterviewStudio({
     }
   };
 
-  const finishInterview = async () => {
+  const finishInterview = async (customHistory?: any[]) => {
     setIsLoading(true);
+    const historyToUse = Array.isArray(customHistory) ? customHistory : chatHistory;
     try {
-      const candidateAnswers = chatHistory
+      const candidateAnswers = historyToUse
         .filter((item) => item.role === "candidate" && item.text)
         .map((item) => item.text);
 
@@ -595,7 +607,7 @@ export default function ChatGPTInterviewStudio({
         authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       }
 
-      const transcriptSummary = chatHistory
+      const transcriptSummary = historyToUse
         .map((item) => {
           if (item.question) return `Interviewer: ${item.question}`;
           if (item.text) return `Candidate: ${item.text}`;
@@ -670,7 +682,7 @@ export default function ChatGPTInterviewStudio({
         suggestions: finalSuggestions,
         whatToCut: finalWhatToCut,
         modelAnswer: finalModelAnswer,
-        chatHistory
+        chatHistory: historyToUse
       });
 
       setIsLoading(false);
@@ -1234,7 +1246,7 @@ export default function ChatGPTInterviewStudio({
               Round {currentRound} of 4
             </span>
             <button
-              onClick={finishInterview}
+              onClick={() => finishInterview()}
               disabled={isLoading}
               className="text-sm text-amber-400 hover:text-amber-300 font-black underline cursor-pointer"
             >

@@ -138,11 +138,11 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           - Set "stageLabel": "Round 2: Declared Tech Stack & Motivation"
           - Set "answerFormatHint": "Explain your choice of tech stack, core strengths, and passion."
         `;
-      } else if (currentQuestionIndex <= 4) {
+      } else if (currentQuestionIndex === 3) {
         targetStage = 'technical_discussion';
         if (isBpoOrVoice) {
           stageInstructions = `
-            STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn ${currentQuestionIndex})
+            STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn 3)
             - Pose a practical customer service situation: handling an upset caller, de-escalating an SLA delay, or displaying active listening.
             - DO NOT ask any software programming questions.
             - Set "currentStage": "technical_discussion"
@@ -151,7 +151,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           `;
         } else if (isIelts) {
           stageInstructions = `
-            STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn ${currentQuestionIndex})
+            STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn 3)
             - Ask a Part 2 / Part 3 IELTS prompt tailored to "${topicName}" testing vocabulary range and structured opinion expression.
             - DO NOT ask technical programming questions.
             - Set "currentStage": "technical_discussion"
@@ -160,7 +160,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           `;
         } else if (isMba) {
           stageInstructions = `
-            STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn ${currentQuestionIndex})
+            STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn 3)
             - Pose a practical business scenario or trade-off question testing logical market estimation or strategic decision-making.
             - Set "currentStage": "technical_discussion"
             - Set "stageLabel": "Round 3: Business Case & Strategic Reasoning"
@@ -168,7 +168,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           `;
         } else if (isFresher) {
           stageInstructions = `
-            STAGE 3: TAILORED TECH CONCEPT & PROJECT CHECK (Turn ${currentQuestionIndex})
+            STAGE 3: TAILORED TECH CONCEPT & PROJECT CHECK (Turn 3)
             - Candidate is a CAMPUS FRESHER. Keep questions fair and grounded strictly in the candidate's declared tech stack!
             - Pick a specific tool or language they mentioned (e.g. React or Python or SQL) and ask how they used it in their project, or ask a practical fundamental concept check.
             - DO NOT ask unmentioned technologies, complex database internals, or high-load architecture questions!
@@ -178,7 +178,7 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
           `;
         } else {
           stageInstructions = `
-            STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn ${currentQuestionIndex})
+            STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn 3)
             - Candidate is a PLACEMENT PRO. Pick a technical claim or architecture choice from their declared tech stack.
             - Ask an unscripted technical question probing trade-offs, scalability, or resolving edge-case bugs within their domain.
             - Set "currentStage": "technical_discussion"
@@ -186,26 +186,15 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
             - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
           `;
         }
-      } else if (currentQuestionIndex === 4) {
+      } else {
         targetStage = 'behavioral_star';
         stageInstructions = `
-          STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn 4)
+          STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn 4 - Final Round)
           - Ask a situational behavioral question (e.g. working under deadline pressure, resolving team conflict, or learning from a past mistake).
           - Evaluate their answer using the STAR framework (Situation, Task, Action, Result).
           - Set "currentStage": "behavioral_star"
-          - Set "stageLabel": "Round 4: Behavioral & STAR Challenge"
+          - Set "stageLabel": "Round 4: Behavioral & STAR Challenge (Final Round)"
           - Set "answerFormatHint": "Structure your answer using Situation, Task, Action, and Result."
-        `;
-      } else {
-        targetStage = 'executive_fit';
-        stageInstructions = `
-          STAGE 5: EXECUTIVE CULTURE FIT & CAREER VISION (Turn ${currentQuestionIndex})
-          - Role: You are a Hiring Director / HR Lead conducting the final round.
-          - Ask a high-level executive or culture-fit question (e.g. "Where do you see yourself evolving professionally in the next 3 years?", "How do you handle critical feedback from a senior lead?", or "What attracts you most to our engineering culture?").
-          - Format: Professional, warm closing interview question.
-          - Set "currentStage": "executive_fit"
-          - Set "stageLabel": "Round 5: Executive Culture Fit & Career Vision"
-          - Set "answerFormatHint": "Share your long-term career vision, adaptability, and cultural alignment."
         `;
       }
     } else {
@@ -293,18 +282,24 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
       PROGRESSION CURVE RULES:
       ${stageInstructions}
 
+      EVASIVE / ONE-WORD CANDIDATE ANSWER DIRECTIVE (HUMAN INTERVIEWER DIRECTIVE):
+      - Check the candidate's latest response.
+      - If the candidate provided a 1-word, non-committal, lazy, or evasive response (such as "yes", "no", "ok", "yep", "sure", "idk", "maybe", or fewer than 4 words without actual technical/domain content):
+        1. CONFRONT THEM IMMEDIATELY IN "feedbackToPreviousAnswer": Act like a real, serious interviewer. Call them out directly and explain why a 1-word answer fails an interview. Example: "Simply answering 'yes' is not acceptable in a real job interview. It gives me zero technical or professional information to evaluate."
+        2. RE-ASK / REFRAME THE QUESTION IN "nextQuestion": DO NOT passively move to a new topic! Insist that they actually answer the question properly with full details. Example: "Let's try that again. Please tell me specifically about your degree, key programming skills, and a project you have built."
+        3. ASSIGN VERY LOW SCORES: Give a score strictly between 15 and 25 for accuracy, reasoning, and clarity/confidence.
+
       FEEDBACK RULES:
       1. Ask ONE clear question at a time. Never ask multiple questions at once.
       2. Ground every question strictly in "${topicName}" and any provided slides.
       3. If the student previously answered:
          - Give specific, constructive feedback FIRST before introducing the next question.
-         - If in Level 1 (Basic) and the student gave an overly long response, kindly remind them that examiners appreciate sharp 1-word or 1-sentence conciseness.
          - Good answer? Praise their clarity, then point out 1 nuanced detail they can add.
          - Weak answer? Explain clearly what a top-scoring response looks like.
       4. Tips should be actionable, high-value advice for viva candidates.
       RIGOROUS ACADEMIC SCORING DIRECTIVE (MANDATORY FOR TRUST):
       - DO NOT default to the 80-85 range! Every score must reflect the actual quality of the candidate's latest answer.
-      - Insufficient / Evasive / 1-3 word answers ("yes", "idk", "maybe"): Score strictly between 15 and 35. Explain what is missing.
+      - Insufficient / Evasive / 1-3 word answers ("yes", "idk", "maybe"): Score strictly between 15 and 25. Explain what is missing.
       - Superficial / Partially correct answers: Score between 45 and 65.
       - Competent, clear, accurate answers: Score between 70 and 82.
       - Outstanding, detailed answers with trade-offs / examples: Score between 85 and 96.
