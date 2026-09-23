@@ -150,7 +150,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 4️⃣ CEREBRAS (4th Priority for Text-Only requests)
   if (!options.images?.length && !options.isPdf && process.env.CEREBRAS_API_KEY && !disabled.has('cerebras') && !isCerebrasQuotaExhausted()) {
-    const cerebrasModels = ["llama3.3-70b", "llama3.1-8b"];
+    const cerebrasModels = ["gpt-oss-120b", "qwen-3.8-27b"];
     for (const model of cerebrasModels) {
       try {
         console.log(`[AIFallback] 4th Priority: Attempting Cerebras API (${model})...`);
