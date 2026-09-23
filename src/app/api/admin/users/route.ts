@@ -61,14 +61,42 @@ export async function PATCH(req: NextRequest) {
     if (action === 'update_plan') {
       const { error } = await serviceDb.from('profiles').update({ current_plan: plan }).eq('id', userId);
       if (error) throw error;
+      
+      // Also sync usage_limits plan if applicable
+      const addedLimit = plan === 'pro' ? 500 : plan === 'enterprise' ? 5000 : 20;
+      await serviceDb.from('usage_limits').upsert({
+        user_id: userId,
+        speech_analysis_count: addedLimit,
+        ppt_analysis_count: addedLimit,
+        viva_sessions_count: addedLimit,
+      }, { onConflict: 'user_id' });
+
     } else if (action === 'update_role') {
       const { error } = await serviceDb.from('profiles').update({ role }).eq('id', userId);
       if (error) throw error;
     } else if (action === 'add_credits') {
+      const added = credits || 100;
       const { data: profile } = await serviceDb.from('profiles').select('credits').eq('id', userId).single();
       const currentCredits = profile?.credits || 0;
-      const { error } = await serviceDb.from('profiles').update({ credits: currentCredits + (credits || 100) }).eq('id', userId);
+      const { error } = await serviceDb.from('profiles').update({ credits: currentCredits + added }).eq('id', userId);
       if (error) throw error;
+
+      // Update usage_limits table as well
+      const { data: usage } = await serviceDb.from('usage_limits').select('*').eq('user_id', userId).single();
+      if (usage) {
+        await serviceDb.from('usage_limits').update({
+          speech_analysis_count: (usage.speech_analysis_count || 0) + added,
+          ppt_analysis_count: (usage.ppt_analysis_count || 0) + added,
+          viva_sessions_count: (usage.viva_sessions_count || 0) + added,
+        }).eq('user_id', userId);
+      } else {
+        await serviceDb.from('usage_limits').insert({
+          user_id: userId,
+          speech_analysis_count: added,
+          ppt_analysis_count: added,
+          viva_sessions_count: added,
+        });
+      }
     }
 
     return NextResponse.json({ success: true });

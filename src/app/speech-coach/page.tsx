@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveSession } from '../../lib/storage';
+import { saveMediaBlob } from '../../lib/videoStorage';
 import { processSessionCompletion } from '../../lib/gamification';
 import { groupFillerWords } from '../../lib/constants';
 import { completeChallengeDay } from '../../lib/challenge';
@@ -518,6 +519,10 @@ export default function SpeechCoach() {
         ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
         situation
       });
+
+      if (mediaFile) {
+        saveMediaBlob(sessionRecord.id, mediaFile, 'audio');
+      }
       const gamificationResult = processSessionCompletion('speech', { overall: finalOverallScore, fillerCount: fillerCount });
       setXpEvents(gamificationResult.events);
 

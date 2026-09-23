@@ -36,6 +36,7 @@ export default function Footer() {
             <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Company</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/about" className="hover:text-amber-400 transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-amber-400 transition-colors">Contact Us</Link></li>
               <li><Link href="/signup?role=trainer" className="text-amber-400 font-bold hover:text-amber-300 transition-colors flex items-center gap-1.5"><GraduationCap size={15} /> For Institutes & Trainers</Link></li>
               <li><Link href="/feedback" className="hover:text-amber-400 transition-colors">Feedback & Support</Link></li>
               <li><Link href="/dashboard" className="hover:text-amber-400 transition-colors">Dashboard</Link></li>
