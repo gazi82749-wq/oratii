@@ -284,10 +284,11 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
 
       EVASIVE / ONE-WORD CANDIDATE ANSWER DIRECTIVE (HUMAN INTERVIEWER DIRECTIVE):
       - Check the candidate's latest response.
-      - If the candidate provided a 1-word, non-committal, lazy, or evasive response (such as "yes", "no", "ok", "yep", "sure", "idk", "maybe", or fewer than 4 words without actual technical/domain content):
-        1. CONFRONT THEM IMMEDIATELY IN "feedbackToPreviousAnswer": Act like a real, serious interviewer. Call them out directly and explain why a 1-word answer fails an interview. Example: "Simply answering 'yes' is not acceptable in a real job interview. It gives me zero technical or professional information to evaluate."
-        2. RE-ASK / REFRAME THE QUESTION IN "nextQuestion": DO NOT passively move to a new topic! Insist that they actually answer the question properly with full details. Example: "Let's try that again. Please tell me specifically about your degree, key programming skills, and a project you have built."
-        3. ASSIGN VERY LOW SCORES: Give a score strictly between 15 and 25 for accuracy, reasoning, and clarity/confidence.
+      - IF TURN 1 (Session Start / Question 1): Candidate has NOT answered yet. Greet candidate warmly with a standard opening question ("Welcome! To get started, please introduce yourself, your educational background, primary technical skills, and key projects."). DO NOT say "Let's try that again"!
+      - IF TURN > 1 AND the candidate provided a 1-word, non-committal, lazy, or evasive response (such as "yes", "no", "ok", "yep", "sure", "idk", "maybe", or fewer than 4 words without technical content):
+        1. CONFRONT THEM IMMEDIATELY IN "feedbackToPreviousAnswer": Act like a real, serious interviewer calling them out firmly. Example: "Simply answering 'yes' is not acceptable in a real job interview. It gives me zero technical or professional information to evaluate."
+        2. INCLUDE CONFRONTATION + RE-PROMPT IN "nextQuestion": Formulate "nextQuestion" as a full human interviewer response that starts with the confrontation before re-asking the question! Example: "That's just a 'yes'! In a real interview, a one-word answer gives me zero information to evaluate. Let's try that again: Please tell me about your degree, primary programming languages, and a key project."
+        3. ASSIGN VERY LOW SCORES: Set scores strictly between 15 and 25 for accuracy, reasoning, and clarity/confidence.
 
       FEEDBACK RULES:
       1. Ask ONE clear question at a time. Never ask multiple questions at once.
@@ -331,23 +332,28 @@ CRITICAL DIRECTIVE: Under NO circumstances should you output pure English for ne
     // Defensive Input Truncation: Prevent token exhaustion & cost inflation attacks
     const sanitizedAnswer = typeof currentAnswer === 'string' ? currentAnswer.slice(0, 2000).trim() : '';
 
-    let userPrompt = `Start or continue the Viva Voce defense session for topic: "${topicName.slice(0, 200)}".`;
-    if (chatHistory && Array.isArray(chatHistory) && chatHistory.length > 0) {
-      // Keep only recent 8 turns max to protect context window & latency
-      const recentHistory = chatHistory.slice(-8);
-      const condensedHistory = recentHistory
-        .map((h: any) => {
-          if (h.role === 'examiner' && h.question) return `Host Question: ${String(h.question).slice(0, 400)}`;
-          if (h.role === 'candidate' && h.text) return `Candidate Answer: ${String(h.text).slice(0, 1000)}`;
-          if (h.question && h.question.startsWith('Provide Context:')) return String(h.question).slice(0, 1000);
-          return null;
-        })
-        .filter(Boolean)
-        .join('\n');
-      userPrompt += `\n\nViva History Summary:\n${condensedHistory}`;
-    }
-    if (sanitizedAnswer) {
-      userPrompt += `\n\nLatest Candidate Answer: ${sanitizedAnswer}`;
+    let userPrompt = '';
+    if (currentQuestionIndex === 1) {
+      userPrompt = `Initialize Turn 1 of the mock job interview session for role: "${topicName.slice(0, 200)}".
+Candidate is ready to begin. Greet them warmly and ask them to introduce themselves, state their degree/educational background, primary programming languages/tools, and key projects. DO NOT evaluate any answer yet.`;
+    } else {
+      userPrompt = `Continue the Viva Voce defense session for topic: "${topicName.slice(0, 200)}". (Turn ${currentQuestionIndex})`;
+      if (chatHistory && Array.isArray(chatHistory) && chatHistory.length > 0) {
+        const recentHistory = chatHistory.slice(-8);
+        const condensedHistory = recentHistory
+          .map((h: any) => {
+            if (h.role === 'examiner' && h.question) return `Host Question: ${String(h.question).slice(0, 400)}`;
+            if (h.role === 'candidate' && h.text) return `Candidate Answer: ${String(h.text).slice(0, 1000)}`;
+            if (h.question && h.question.startsWith('Provide Context:')) return String(h.question).slice(0, 1000);
+            return null;
+          })
+          .filter(Boolean)
+          .join('\n');
+        userPrompt += `\n\nViva History Summary:\n${condensedHistory}`;
+      }
+      if (sanitizedAnswer) {
+        userPrompt += `\n\nLatest Candidate Answer: ${sanitizedAnswer}`;
+      }
     }
 
     const aiTextResponse = await generateAIContent({

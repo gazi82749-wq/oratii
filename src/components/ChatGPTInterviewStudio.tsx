@@ -555,7 +555,10 @@ export default function ChatGPTInterviewStudio({
           },
         ]);
 
-        speakText(nextQ);
+        const fullSpeech = payload.feedbackToPreviousAnswer
+          ? `${payload.feedbackToPreviousAnswer} ${nextQ}`
+          : nextQ;
+        speakText(fullSpeech);
       }
     } catch (err) {
       console.error("Error submitting answer:", err);
@@ -1178,13 +1181,23 @@ export default function ChatGPTInterviewStudio({
             {chatHistory.map((item, idx) => (
               <div key={idx} className="space-y-1.5">
                 {item.question && (
-                  <div className="flex items-start space-x-3 text-slate-100 p-4 rounded-xl bg-[#0B0E27] border border-slate-700 shadow-sm">
-                    <span className="font-extrabold text-amber-400 shrink-0 text-sm">
-                      Interviewer:
-                    </span>
-                    <p className="leading-relaxed font-medium text-sm sm:text-base">
-                      {item.question}
-                    </p>
+                  <div className="flex flex-col space-y-2.5 text-slate-100 p-4 rounded-xl bg-[#0B0E27] border border-slate-700 shadow-sm">
+                    {item.feedback && (
+                      <div className="bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3 rounded-lg text-xs font-medium space-y-1">
+                        <span className="font-black text-amber-400 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                          <Sparkles size={12} className="text-amber-400" /> Live Interviewer Feedback:
+                        </span>
+                        <p className="leading-relaxed text-slate-200">{item.feedback}</p>
+                      </div>
+                    )}
+                    <div className="flex items-start space-x-3">
+                      <span className="font-extrabold text-amber-400 shrink-0 text-sm">
+                        Interviewer:
+                      </span>
+                      <p className="leading-relaxed font-medium text-sm sm:text-base">
+                        {item.question}
+                      </p>
+                    </div>
                   </div>
                 )}
                 {item.text && (
