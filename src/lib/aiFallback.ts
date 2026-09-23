@@ -283,8 +283,9 @@ async function callOpenAICompatible({
         },
         body: JSON.stringify({ ...bodyPayload, response_format: { type: "json_object" } })
       },
-      1,
-      400
+      1,     // retries
+      300,   // delay
+      10000  // tight 10s timeout to prevent user waiting
     );
 
     if (response.ok) {
@@ -309,7 +310,8 @@ async function callOpenAICompatible({
       body: JSON.stringify(bodyPayload)
     },
     1,
-    500
+    300,
+    10000 // tight 10s timeout
   );
 
   if (!response.ok) {
@@ -370,7 +372,8 @@ async function callGemini(options: AIContentOptions): Promise<string> {
           })
         },
         1,
-        500
+        300,
+        10000 // tight 10s timeout
       );
 
       if (!response.ok) {

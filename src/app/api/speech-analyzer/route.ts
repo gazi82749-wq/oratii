@@ -113,20 +113,21 @@ export async function POST(request: NextRequest) {
         isAnonymousTrial = true;
       }
 
-    // Send to Deepgram REST API with retry (45s timeout for audio processing)
+    // Send to Deepgram REST API with retry (20s timeout for audio processing)
+    // Using application/octet-stream allows Deepgram's autodetector to process all formats (MP3, WAV, M4A, AAC, FLAC, WEBM)
     const response = await fetchWithRetry(
       deepgramUrl,
       {
         method: 'POST',
         headers: {
           'Authorization': `Token ${apiKey}`,
-          'Content-Type': audioFile.type || 'audio/wav',
+          'Content-Type': 'application/octet-stream',
         },
         body: buffer
       },
       2,     // maxRetries
-      1000,  // baseDelayMs
-      45000  // timeoutMs: 45 seconds
+      500,   // baseDelayMs
+      20000  // timeoutMs: 20 seconds max
     );
 
     if (!response.ok) {
