@@ -481,6 +481,29 @@ export default function SpeechCoach() {
         console.error("Deep analysis failed:", err);
       }
 
+      setResults({
+        overallScore: finalOverallScore,
+        wpm: wpm,
+        targetWpm: '130 - 155',
+        fillers: mappedFillers,
+        totalFillers: fillerCount,
+        transcript: data.transcript || "No transcript detected.",
+        feedback: finalFeedback,
+        strengths: finalStrengths,
+        weaknesses: finalWeaknesses,
+        suggestions: finalSuggestions,
+        tone: finalTone,
+        timeMarkers: finalTimeMarkers,
+        paceData: data.analysis?.paceData || [],
+        duration: duration,
+        rubric: auditedRubric,
+        cefrBand: finalCefr,
+        cefrTitle: auditedRubric.benchmark.cefrTitle,
+        ieltsBand: finalIelts,
+        ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
+        trustGuarantee: auditedRubric.trustGuarantee
+      });
+
       const sessionRecord = saveSession('speech', {
         duration: duration || 120,
         scores: { overall: finalOverallScore, fillerCount: fillerCount },
@@ -516,9 +539,8 @@ export default function SpeechCoach() {
         });
       }
 
+      setIsLoading(false);
       setIsDeepLoading(false);
-      // Standard URL navigation to dedicated dynamic report page
-      router.push(`/reports/${sessionRecord.id}`);
 
     } catch (err) {
       console.error(err);
