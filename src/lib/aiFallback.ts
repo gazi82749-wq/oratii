@@ -48,7 +48,7 @@ export async function generateAIContent(options: AIContentOptions): Promise<stri
 
   // 1️⃣ GROQ (1st Priority for Text & Vision requests)
   if (!options.isPdf && process.env.GROQ_API_KEY && !disabled.has('groq') && !isGroqQuotaExhausted()) {
-    const groqModels = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"];
+    const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"];
 
     for (const model of groqModels) {
       try {
