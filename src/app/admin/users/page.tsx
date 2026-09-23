@@ -43,6 +43,7 @@ export default function AllUsersPage() {
 
   const [totalCount, setTotalCount] = useState(0);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [isServiceRoleActive, setIsServiceRoleActive] = useState<boolean | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -72,16 +73,17 @@ export default function AllUsersPage() {
           email: p.email || 'no-email@domain.com',
           avatar: p.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.id}`,
           registeredAt: p.created_at || new Date().toISOString(),
-          lastActive: p.updated_at || p.created_at || new Date().toISOString(),
+          lastActive: p.last_active || p.updated_at || p.created_at || new Date().toISOString(),
           plan: (p.current_plan as UserPlan) || 'free',
           status: (p.role === 'admin' ? 'active' : 'active') as UserStatus,
-          totalAnalyses: p.xp ? Math.floor(p.xp / 10) : 0,
+          totalAnalyses: p.analyses_count || (p.xp ? Math.floor(p.xp / 10) : 0),
           speechAnalyses: 0,
           pptAnalyses: 0,
           vivaSessions: 0,
         }));
         setUsersList(mapped);
         setTotalCount(json.total || 0);
+        setIsServiceRoleActive(json.isServiceRoleActive ?? false);
       }
     } catch (err) {
       console.error('Failed to fetch admin users:', err);
@@ -149,6 +151,19 @@ export default function AllUsersPage() {
           </div>
         </div>
       </div>
+
+      {isServiceRoleActive === false && (
+        <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-700 dark:text-amber-400 text-xs flex items-start gap-3 shadow-xs">
+          <Crown className="w-5 h-5 flex-shrink-0 text-amber-500 mt-0.5" />
+          <div>
+            <p className="font-semibold text-amber-800 dark:text-amber-300">RLS Restricted Mode (Showing 1 user)</p>
+            <p className="mt-0.5 opacity-90">
+              `SUPABASE_SERVICE_ROLE_KEY` is not set on Vercel environment variables. Supabase Row-Level Security (RLS) is currently preventing the browser client from fetching all registered users from `auth.users`.
+            </p>
+            <p className="mt-1 font-medium underline">To show all registered users: Add `SUPABASE_SERVICE_ROLE_KEY` in Vercel Project Settings → Environment Variables.</p>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
