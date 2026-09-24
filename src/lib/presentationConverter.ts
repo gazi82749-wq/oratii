@@ -65,25 +65,25 @@ export async function convertPresentation(file: File) {
       try {
         const page = await pdf.getPage(i);
       
-      // 1. Render slide page to high-quality image on a hidden canvas (scale 1.0 is fast and crisp for thumbnails)
-      const viewport = page.getViewport({ scale: 1.0 });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+        // 1. Render slide page to high-quality image on a hidden canvas (scale 1.0 is fast and crisp for thumbnails)
+        const viewport = page.getViewport({ scale: 1.0 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport
-      };
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
 
-      await page.render(renderContext).promise;
-      const base64Image = canvas.toDataURL('image/jpeg', 0.75); // fast optimized jpeg thumbnail
+        await page.render(renderContext).promise;
+        base64Image = canvas.toDataURL('image/jpeg', 0.75); // fast optimized jpeg thumbnail
 
-      // 2. Extract text content from the page
-      const textContent = await page.getTextContent();
-      const textItems = textContent.items.map((item: any) => item.str);
-      extractedText = textItems.join(' ').replace(/\s+/g, ' ').trim();
+        // 2. Extract text content from the page
+        const textContent = await page.getTextContent();
+        const textItems = textContent.items.map((item: any) => item.str);
+        extractedText = textItems.join(' ').replace(/\s+/g, ' ').trim();
 
       } catch (err: any) {
         console.warn(`Failed to render slide ${i}:`, err);

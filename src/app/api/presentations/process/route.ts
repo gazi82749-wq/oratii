@@ -39,16 +39,23 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
     const host = request.headers.get('host') || 'localhost:3000';
     const protocol = host.includes('localhost') ? 'http' : 'https';
     
-    // We do NOT await this fetch to allow it to run asynchronously as a new request
-    fetch(`${protocol}://${host}/api/presentations/worker`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Secure internal invocation using explicit secret
-        'x-worker-secret': process.env.WORKER_SECRET
-      },
-      body: JSON.stringify({ path, presentationId, userId: user.id })
-    }).catch(err => console.error("Worker fetch failed:", err));
+    // We MUST await this fetch on Vercel/serverless environments, otherwise the container freezes
+    // and the request is never actually sent. We set a 15s timeout to prevent blocking forever.
+    try {
+      await fetch(`${protocol}://${host}/api/presentations/worker`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Secure internal invocation using explicit secret
+          'x-worker-secret': process.env.WORKER_SECRET
+        },
+        body: JSON.stringify({ path, presentationId, userId: user.id }),
+        // @ts-ignore
+        signal: AbortSignal.timeout(15000) 
+      });
+    } catch (err) {
+      console.warn("Worker fetch warning (might still be processing):", err);
+    }
 
     return NextResponse.json({
       status: 'processing',
