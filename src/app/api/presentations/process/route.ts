@@ -16,8 +16,19 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
       return NextResponse.json({ error: 'Unauthorized path access' }, { status: 403 });
     }
 
+    const { checkCache, setCache } = await import('@/lib/idempotency');
+    const existingJob: any = await checkCache(`job:${presentationId}`);
+    
+    if (existingJob && existingJob.status === 'processing') {
+      const startedAt = existingJob.startedAt || 0;
+      const ageMs = Date.now() - startedAt;
+      if (ageMs < 5 * 60 * 1000) { // 5 minutes
+        return NextResponse.json({ error: 'Job is already processing' }, { status: 429 });
+      }
+    }
+
     // Set initial job status in Redis
-    await setCache(`job:${presentationId}`, { status: 'processing', ownerId: user.id }, 3600);
+    await setCache(`job:${presentationId}`, { status: 'processing', ownerId: user.id, startedAt: Date.now() }, 3600);
 
     // Fire and forget worker call
     const host = request.headers.get('host') || 'localhost:3000';
