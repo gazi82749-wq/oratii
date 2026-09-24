@@ -405,7 +405,7 @@ export default function HomeClient() {
           <div className="py-1 text-center">
             <FadeUp>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
-                &quot;Finally, present like you're already confident.&quot;
+                &quot;Finally, present like you&apos;re already confident.&quot;
               </div>
             </FadeUp>
           </div>
