@@ -352,38 +352,38 @@ export default function HomeClient() {
                   </div>
 
                   <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-left">
-                    Improvement is built one day at a time.
+                    Speak Every Day.
                   </h2>
 
                   <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-left">
-                    Build a consistent daily speaking habit with targeted practice prompts and streak rewards.
+                    Build a simple daily habit to improve your confidence. No heavy drills, just a new simple prompt every day.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
                     <FadeUp delay={100}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Daily 2-Min Prompts
+                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Simple Prompts
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Bite-sized daily speaking habits and prompt challenges</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Basic, low-pressure prompts like describing nature or yourself.</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Streak Rewards
+                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Streak Tracking
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Level progression, streak badges &amp; +120 XP bonuses</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Watch your daily active streak grow with consistency.</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-emerald-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Daily Path
+                          <CheckCircle2 size={16} className="text-emerald-600 sm:w-4 sm:h-4" /> Just 60 Seconds
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Structured Daily communication improvement roadmap</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Only takes a minute each day to start building your confidence.</p>
                       </div>
                     </FadeUp>
                   </div>

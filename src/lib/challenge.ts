@@ -61,7 +61,7 @@ export function getInitialChallengeState(): ChallengeState {
 
   return {
     current_day: 1,
-    streak_count: getStreak() || 0,
+    streak_count: 0,
     freeze_tokens_remaining: 2,
     sessions_completed: 0,
     days_status: initialDays,
@@ -83,11 +83,8 @@ export function getChallengeState(): ChallengeState {
       parsed = JSON.parse(raw);
     }
 
-    // Sync streak with main gamification engine
-    const mainStreak = getStreak() || 0;
-    if (mainStreak > parsed.streak_count) {
-      parsed.streak_count = mainStreak;
-    }
+    // We no longer sync with the global mainStreak so it doesn't auto-complete challenge days
+    // when a user does a mock interview instead.
 
     let isModified = false;
     const effectiveStreak = Math.min(20, Math.max(parsed.streak_count, parsed.days_status.filter(d => d.status === 'done').length));
