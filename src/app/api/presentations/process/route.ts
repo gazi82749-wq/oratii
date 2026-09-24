@@ -36,7 +36,7 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
     }
 
     // Execute worker logic directly in this process to avoid Vercel serverless networking drops
-    const { processPresentationFile } = await import('@/app/api/presentations/worker/route');
+    const { processPresentationFile } = await import('@/lib/presentationWorker');
     
     // We intentionally don't await this so it runs asynchronously, BUT in Next.js Serverless 
     // we need to use waitUntil if available, or just await it if we want to guarantee execution.
