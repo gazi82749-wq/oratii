@@ -319,7 +319,7 @@ export default function Reports() {
             onChange={(e) => setFilter(e.target.value)}
             className="bg-white border border-slate-200 rounded-xl px-4 py-2 font-bold text-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0F1426] cursor-pointer transition-all text-xs uppercase"
           >
-            <option value="all">ALL MODULES</option>
+            <option value="all">ALL REPORTS</option>
             <option value="speech">SPEECH COACH</option>
             <option value="presentation" disabled>PRESENTATION PRACTICE (SOON)</option>
             <option value="viva">AI VIVA</option>

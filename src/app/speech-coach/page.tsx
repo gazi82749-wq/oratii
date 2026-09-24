@@ -884,7 +884,7 @@ export default function SpeechCoach() {
           {/* Header Title */}
           <div className="mb-3 text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Speech Coach AI Module
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Speech Coach AI
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-1 flex items-center gap-2">
               <Mic size={24} className="text-[#F2A93B]" /> Speech Coach

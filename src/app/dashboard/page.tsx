@@ -572,7 +572,7 @@ export default function ProfessionalDashboard() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Sparkles size={20} className="text-indigo-600" /> AI Practice Modules & Presentation Studio
+            <Sparkles size={20} className="text-indigo-600" /> AI Practice & Presentation Studio
           </h2>
         </div>
 
@@ -623,11 +623,10 @@ export default function ProfessionalDashboard() {
               )}
 
               {/* Card Footer CTA */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600 group-hover:text-indigo-700">
+              <div className="pt-3.5 border-t border-slate-100 flex items-center text-xs font-bold text-indigo-600 group-hover:text-indigo-700">
                 <span className="flex items-center gap-1">
                   Launch Studio <ChevronRight size={14} />
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">Module {m.num}</span>
               </div>
             </div>
           ))}

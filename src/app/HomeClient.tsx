@@ -204,8 +204,6 @@ export default function HomeClient() {
 
                 <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-100/80 border border-teal-300 text-teal-900 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
-                    <span>01</span>
-                    <span className="text-teal-400">•</span>
                     <span>Speech Coach</span>
                   </div>
 
@@ -268,85 +266,9 @@ export default function HomeClient() {
             </FadeUp>
           </div>
 
-          {/* FEATURE 02 — PRESENTATION PRACTICE (ANIMATED BG GLOW) */}
-          <div id="feature-presentation" className="scroll-mt-28 w-full">
-            <FadeInRight>
-              <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-amber-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
-                {/* Slow pulsing background aura */}
-                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-2" />
-                <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-orange-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
-
-                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
-                    <span>02</span>
-                    <span className="text-amber-400">•</span>
-                    <span>Presentation Practice &amp; Viva Defense</span>
-                    <span className="bg-amber-950 text-amber-50 px-1.5 py-0.5 rounded text-[10px]">Soon</span>
-                  </div>
-
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
-                    Present like you&apos;re already confident.
-                  </h2>
-
-                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
-                    Practice your presentation and thesis defense while Oratii observes your delivery, pacing, examiner Q&amp;A defense, and slide density.
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
-                    <FadeUp delay={100}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Slide Canvas HUD
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
-                      </div>
-                    </FadeUp>
-
-                    <FadeUp delay={200}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Viva Panel Simulation
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Academic thesis defense &amp; examiner push-back audit</p>
-                      </div>
-                    </FadeUp>
-
-                    <FadeUp delay={300}>
-                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
-                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Webcam PIP Feed
-                        </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
-                      </div>
-                    </FadeUp>
-                  </div>
-
-                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
-                    <Link
-                      href="#"
-                      onClick={(e) => e.preventDefault()}
-                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426]/70 hover:bg-[#0F1426]/70 text-white/80 font-bold text-sm sm:text-base rounded-xl transition-all cursor-not-allowed shadow-sm opacity-80"
-                    >
-                      Practice Presentation (Soon) <ArrowRight size={18} className="text-[#F2A93B]/70" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </FadeInRight>
-          </div>
-
-          {/* TRANSITION BRIDGE 2 */}
-          <div className="py-1 text-center">
-            <FadeUp>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
-                &quot;Now practice the presentation itself.&quot;
-              </div>
-            </FadeUp>
-          </div>
-
-          {/* FEATURE 03 — AI VOICE INTERVIEWER (ANIMATED BG GLOW) */}
+{/* FEATURE 03 — AI VOICE INTERVIEWER (ANIMATED BG GLOW) */}
           <div id="feature-interview" className="scroll-mt-28 w-full">
-            <FadeInLeft>
+            <FadeInRight>
               <div className="bg-gradient-to-br from-indigo-50/80 via-blue-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-indigo-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-left w-full group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-3" />
@@ -354,8 +276,6 @@ export default function HomeClient() {
 
                 <div className="w-full flex flex-col items-center md:items-start space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:mx-0">
-                    <span>03</span>
-                    <span className="text-indigo-400">•</span>
                     <span>AI Voice Interviewer</span>
                   </div>
 
@@ -406,21 +326,21 @@ export default function HomeClient() {
                   </div>
                 </div>
               </div>
-            </FadeInLeft>
+            </FadeInRight>
           </div>
 
-          {/* TRANSITION BRIDGE 3 (FOR INTERVIEW) */}
+          {/* TRANSITION BRIDGE 2 */}
           <div className="py-1 text-center">
             <FadeUp>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
-                &quot;Then prepare for unscripted interview probes.&quot;
+                &quot;Improvement is built one day at a time.&quot;
               </div>
             </FadeUp>
           </div>
 
-          {/* FEATURE 04 — Daily Challenge (ANIMATED BG GLOW) */}
+{/* FEATURE 04 — Daily Challenge (ANIMATED BG GLOW) */}
           <div id="feature-challenge" className="scroll-mt-28 w-full">
-            <FadeInRight>
+            <FadeInLeft>
               <div className="bg-gradient-to-bl from-emerald-50/80 via-teal-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-emerald-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
                 {/* Slow pulsing background aura */}
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
@@ -428,8 +348,6 @@ export default function HomeClient() {
 
                 <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
-                    <span>04</span>
-                    <span className="text-emerald-400">•</span>
                     <span>Habit Building</span>
                   </div>
 
@@ -476,6 +394,80 @@ export default function HomeClient() {
                       className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
                     >
                       Join Daily Challenge <ArrowRight size={18} className="text-[#F2A93B]" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </FadeInLeft>
+          </div>
+
+          {/* TRANSITION BRIDGE 3 */}
+          <div className="py-1 text-center">
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-slate-100 border border-slate-200 text-[11px] sm:text-xs font-extrabold text-slate-500 italic">
+                &quot;Finally, present like you're already confident.&quot;
+              </div>
+            </FadeUp>
+          </div>
+
+{/* FEATURE 02 — PRESENTATION PRACTICE (ANIMATED BG GLOW) */}
+          <div id="feature-presentation" className="scroll-mt-28 w-full">
+            <FadeInRight>
+              <div className="bg-gradient-to-bl from-amber-50/80 via-orange-50/40 to-[#F8FAFC] rounded-2xl sm:rounded-[36px] border border-amber-200/80 p-5 sm:p-10 md:p-16 shadow-xs hover:shadow-md transition-all duration-500 relative overflow-hidden text-center md:text-right w-full flex flex-col items-center md:items-end group">
+                {/* Slow pulsing background aura */}
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-400/25 rounded-full blur-3xl pointer-events-none animate-float-blob-2" />
+                <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-orange-300/20 rounded-full blur-3xl pointer-events-none animate-float-blob-1" />
+
+                <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
+                    <span>Presentation Practice &amp; Viva Defense</span>
+                    <span className="bg-amber-950 text-amber-50 px-1.5 py-0.5 rounded text-[10px]">Soon</span>
+                  </div>
+
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
+                    Present like you&apos;re already confident.
+                  </h2>
+
+                  <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
+                    Practice your presentation and thesis defense while Oratii observes your delivery, pacing, examiner Q&amp;A defense, and slide density.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
+                    <FadeUp delay={100}>
+                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
+                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Slide Canvas HUD
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Real-time slide timing and visual density telemetry</p>
+                      </div>
+                    </FadeUp>
+
+                    <FadeUp delay={200}>
+                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
+                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Viva Panel Simulation
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Academic thesis defense &amp; examiner push-back audit</p>
+                      </div>
+                    </FadeUp>
+
+                    <FadeUp delay={300}>
+                      <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-amber-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
+                        <div className="flex items-center gap-2 text-amber-800 font-extrabold text-sm sm:text-base">
+                          <CheckCircle2 size={16} className="text-amber-600 sm:w-4 sm:h-4" /> Webcam PIP Feed
+                        </div>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Live presenter video feed &amp; eye contact analysis</p>
+                      </div>
+                    </FadeUp>
+                  </div>
+
+                  <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
+                    <Link
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426]/70 hover:bg-[#0F1426]/70 text-white/80 font-bold text-sm sm:text-base rounded-xl transition-all cursor-not-allowed shadow-sm opacity-80"
+                    >
+                      Practice Presentation (Soon) <ArrowRight size={18} className="text-[#F2A93B]/70" />
                     </Link>
                   </div>
                 </div>

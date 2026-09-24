@@ -236,7 +236,7 @@ function PresentationPracticeContent() {
     <div className="w-full flex flex-col gap-8 animate-fade-in text-slate-900 relative">
       <div className="mb-4 text-left">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Presentation Module
+          <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Presentation Studio
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2 flex items-center gap-2.5">
           <Video size={28} className="text-[#F2A93B]" /> Presentation Practice
