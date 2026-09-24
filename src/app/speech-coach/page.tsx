@@ -226,13 +226,14 @@ export default function SpeechCoach() {
 
   const startRecordingTimer = () => {
     if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+    const maxTime = challengeDay ? 60 : MAX_FREE_RECORDING_SECONDS;
     recordingTimerRef.current = setInterval(() => {
       setRecordingSeconds((prev) => {
-        if (prev + 1 >= MAX_FREE_RECORDING_SECONDS) {
+        if (prev + 1 >= maxTime) {
           if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
           stopRecording();
           setShowTimeLimitNotice(true);
-          return MAX_FREE_RECORDING_SECONDS;
+          return maxTime;
         }
         return prev + 1;
       });
@@ -1027,11 +1028,12 @@ export default function SpeechCoach() {
 
                         <div className="flex items-center gap-3 w-full pt-1">
                           <button
-                            onClick={() => { setMediaFile(null); setMediaUrl(''); }}
-                            className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs"
-                            title="Remove audio and select or record a new file"
+                            onClick={() => { setMediaFile(null); setMediaUrl(''); setRecordingSeconds(0); setShowTimeLimitNotice(false); }}
+                            className="px-4 py-3 bg-white hover:bg-slate-100 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-300 transition-all cursor-pointer shrink-0 shadow-2xs flex items-center gap-1.5"
+                            title="Re-record to match within 60 seconds"
                           >
-                            Change File
+                            <RotateCcw size={14} className="text-[#F2A93B]" />
+                            <span>{challengeDay ? 'Repeat / Re-record (60s)' : 'Change File'}</span>
                           </button>
                           
                           <button
@@ -1079,28 +1081,28 @@ export default function SpeechCoach() {
                             {isRecording ? (isPaused ? 'Recording Paused' : 'Recording in Progress...') : 'Click Mic to Start Recording'}
                           </p>
 
-                          {/* 3-Minute Free Practice Drill Cap HUD */}
+                          {/* Recording Progress HUD with 60s Daily Challenge Cap */}
                           {isRecording && (
                             <div className="w-full max-w-xs flex flex-col items-center mt-2.5">
                               <div className="flex items-center justify-between w-full text-xs font-bold px-1 mb-1">
-                                <span className={recordingSeconds > 150 ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
+                                <span className={recordingSeconds > (challengeDay ? 50 : 150) ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
                                   {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
                                 </span>
                                 <span className="text-[11px] font-semibold text-slate-400">
-                                  03:00 Max (Free Drill)
+                                  {challengeDay ? '01:00 Max (Daily Challenge)' : '03:00 Max (Free Drill)'}
                                 </span>
                               </div>
                               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                                 <div 
                                   className={`h-full transition-all duration-500 rounded-full ${
-                                    recordingSeconds > 150 ? 'bg-rose-500' : recordingSeconds > 100 ? 'bg-amber-500' : 'bg-gradient-to-r from-indigo-500 to-violet-600'
+                                    recordingSeconds > (challengeDay ? 50 : 150) ? 'bg-rose-500' : recordingSeconds > (challengeDay ? 35 : 100) ? 'bg-amber-500' : 'bg-gradient-to-r from-indigo-500 to-violet-600'
                                   }`}
-                                  style={{ width: `${Math.min(100, (recordingSeconds / MAX_FREE_RECORDING_SECONDS) * 100)}%` }}
+                                  style={{ width: `${Math.min(100, (recordingSeconds / (challengeDay ? 60 : MAX_FREE_RECORDING_SECONDS)) * 100)}%` }}
                                 />
                               </div>
-                              {recordingSeconds >= 165 && (
+                              {recordingSeconds >= (challengeDay ? 50 : 165) && (
                                 <p className="text-[10px] font-bold text-rose-500 mt-1 animate-pulse">
-                                  Approaching 3-min practice cap
+                                  {challengeDay ? 'Approaching 60-second limit' : 'Approaching 3-min practice cap'}
                                 </p>
                               )}
                             </div>
@@ -1109,7 +1111,11 @@ export default function SpeechCoach() {
                           {showTimeLimitNotice && (
                             <div className="mt-3.5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-semibold flex items-center gap-2 max-w-md text-center">
                               <Zap size={14} className="text-amber-600 shrink-0" />
-                              <span>3-Minute Free Practice Drill Limit reached! Your audio was saved and is ready for AI analysis.</span>
+                              <span>
+                                {challengeDay 
+                                  ? '60-Second Daily Challenge limit reached! Recording stopped automatically and is ready for AI analysis.' 
+                                  : '3-Minute Free Practice Drill Limit reached! Your audio was saved and is ready for AI analysis.'}
+                              </span>
                             </div>
                           )}
                           
@@ -1542,6 +1548,16 @@ export default function SpeechCoach() {
               <p className="text-slate-500 font-medium">Here is your detailed breakdown.</p>
             </div>
             <div className="flex items-center gap-3">
+              {challengeDay && (
+                <button
+                  onClick={() => { reset(); if (section === 'topic') handleTopicReset(); setRecordingSeconds(0); setShowTimeLimitNotice(false); }}
+                  disabled={isDeepLoading}
+                  className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-[#0F1426] text-xs font-extrabold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <RotateCcw size={15} />
+                  <span>Repeat Challenge (60s)</span>
+                </button>
+              )}
               <button onClick={() => { reset(); if (section === 'topic') handleTopicReset(); }} disabled={isDeepLoading} className="px-5 py-2.5 bg-white border border-indigo-200 rounded-xl text-slate-900 text-sm font-bold shadow-sm hover:bg-indigo-50 transition-all disabled:opacity-50">
                 Start New Session
               </button>
