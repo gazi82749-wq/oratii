@@ -83,48 +83,47 @@ export function getChallengeState(): ChallengeState {
       parsed = JSON.parse(raw);
     }
 
-    // We no longer sync with the global mainStreak so it doesn't auto-complete challenge days
-    // when a user does a mock interview instead.
-
     let isModified = false;
-    const effectiveStreak = Math.min(20, Math.max(parsed.streak_count, parsed.days_status.filter(d => d.status === 'done').length));
 
-    // Auto-sync days_status for all days up to effectiveStreak
-    for (let i = 0; i < effectiveStreak; i++) {
-      if (parsed.days_status[i] && parsed.days_status[i].status === 'pending') {
-        parsed.days_status[i].status = 'done';
-        parsed.days_status[i].score = parsed.days_status[i].score || Math.floor(80 + (i % 5) * 3);
-        parsed.days_status[i].fillerScore = parsed.days_status[i].fillerScore !== undefined ? parsed.days_status[i].fillerScore : Math.floor(i % 3);
-        parsed.days_status[i].completedAt = parsed.days_status[i].completedAt || new Date().toISOString();
+    // Self-healing sanitization:
+    // If sessions_completed is 0 or unrecorded, user has not completed any daily challenge.
+    // Reset streak to 0, current_day to 1, and mark days_status as pending.
+    if (!parsed.sessions_completed || parsed.sessions_completed === 0) {
+      if (parsed.streak_count !== 0) {
+        parsed.streak_count = 0;
         isModified = true;
-
-        if (!parsed.filler_scores.some(fs => fs.day === i + 1)) {
-          parsed.filler_scores.push({
-            day: i + 1,
-            fillerScore: parsed.days_status[i].fillerScore!,
-            score: parsed.days_status[i].score!,
-            date: parsed.days_status[i].completedAt!
-          });
-        }
       }
-    }
-
-    // Set current active day to next uncompleted day
-    const nextPendingIdx = parsed.days_status.findIndex(d => d.status === 'pending');
-    if (nextPendingIdx !== -1) {
-      parsed.current_day = nextPendingIdx + 1;
+      if (parsed.current_day !== 1) {
+        parsed.current_day = 1;
+        isModified = true;
+      }
+      if (parsed.days_status && parsed.days_status.some(d => d.status === 'done')) {
+        parsed.days_status = parsed.days_status.map(d => ({
+          day: d.day,
+          status: 'pending',
+        }));
+        isModified = true;
+      }
+      if (parsed.filler_scores && parsed.filler_scores.length > 0) {
+        parsed.filler_scores = [];
+        isModified = true;
+      }
     } else {
-      parsed.current_day = 21;
-    }
-
-    // Auto-unlock milestones (Day 5, 10, 15, 20)
-    const milestones = [5, 10, 15, 20];
-    milestones.forEach(m => {
-      if (effectiveStreak >= m && !parsed.unlocked_milestones.includes(m)) {
-        parsed.unlocked_milestones.push(m);
+      // Calculate actual completed days
+      const doneCount = parsed.days_status ? parsed.days_status.filter(d => d.status === 'done').length : 0;
+      if (parsed.streak_count !== doneCount) {
+        parsed.streak_count = doneCount;
         isModified = true;
       }
-    });
+
+      // Set current active day to next pending day
+      const nextPendingIdx = parsed.days_status ? parsed.days_status.findIndex(d => d.status === 'pending') : -1;
+      if (nextPendingIdx !== -1) {
+        parsed.current_day = nextPendingIdx + 1;
+      } else {
+        parsed.current_day = 21;
+      }
+    }
 
     if (isModified || !raw) {
       saveChallengeState(parsed);
@@ -191,10 +190,6 @@ export function completeChallengeDay(
 } {
   const state = getChallengeState();
 
-  // Update streak
-  const newStreak = updateStreak();
-  state.streak_count = newStreak;
-
   // Mark day status as done
   const dayIdx = dayNumber - 1;
   if (state.days_status[dayIdx]) {
@@ -205,7 +200,14 @@ export function completeChallengeDay(
   }
 
   // Increment total completed sessions
-  state.sessions_completed += 1;
+  state.sessions_completed = (state.sessions_completed || 0) + 1;
+
+  // Streak count is count of done days
+  const doneCount = state.days_status.filter(d => d.status === 'done').length;
+  state.streak_count = doneCount;
+
+  // Also update global main streak
+  updateStreak();
 
   // Add filler score entry to history
   state.filler_scores.push({
