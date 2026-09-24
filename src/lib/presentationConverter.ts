@@ -49,13 +49,21 @@ export async function convertPresentation(file: File) {
     const pdfjsLib = await loadPdfJs() as any;
     const arrayBuffer = await (file.slice ? file.slice(0) : file).arrayBuffer();
     
-    // Load the document using the typed array
-    const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+    // Load the document using the typed array with CMap support for complex fonts
+    const loadingTask = pdfjsLib.getDocument({ 
+      data: new Uint8Array(arrayBuffer),
+      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true
+    });
     const pdf = await loadingTask.promise;
     const numPages = pdf.numPages;
     const slidePromises = Array.from({ length: numPages }, async (_, index) => {
       const i = index + 1;
-      const page = await pdf.getPage(i);
+      let extractedText = '';
+      let base64Image = '';
+      
+      try {
+        const page = await pdf.getPage(i);
       
       // 1. Render slide page to high-quality image on a hidden canvas (scale 1.0 is fast and crisp for thumbnails)
       const viewport = page.getViewport({ scale: 1.0 });
@@ -75,7 +83,13 @@ export async function convertPresentation(file: File) {
       // 2. Extract text content from the page
       const textContent = await page.getTextContent();
       const textItems = textContent.items.map((item: any) => item.str);
-      const extractedText = textItems.join(' ').replace(/\s+/g, ' ').trim();
+      extractedText = textItems.join(' ').replace(/\s+/g, ' ').trim();
+
+      } catch (err: any) {
+        console.warn(`Failed to render slide ${i}:`, err);
+        // Fallback if rendering fails for a specific slide
+        base64Image = ''; 
+      }
 
       return {
         slideNumber: i,
