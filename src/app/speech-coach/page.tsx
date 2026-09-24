@@ -361,7 +361,26 @@ export default function SpeechCoach() {
       }
     }
 
-    setIsLoading(true);
+    // Immediately open Results View with Skeleton Loader state (0ms latency!)
+    setIsLoading(false);
+    setIsDeepLoading(true);
+    setResults({
+      isAnalyzing: true,
+      overallScore: 0,
+      wpm: 0,
+      targetWpm: '130 - 155',
+      fillers: [],
+      totalFillers: 0,
+      transcript: "",
+      feedback: "Generating deep AI insights...",
+      strengths: [],
+      weaknesses: [],
+      suggestions: [],
+      tone: "Analyzing...",
+      timeMarkers: [],
+      paceData: [],
+      duration: recordingSeconds || 60,
+    });
     
     try {
       const formData = new FormData();
@@ -405,6 +424,7 @@ export default function SpeechCoach() {
           message: `We detected only ${totalWords} words (${Math.round(duration)}s). An authentic, reliable assessment requires at least 15-20 seconds of continuous speaking. Please re-record and share a full thought.`
         });
         setIsLoading(false);
+        setIsDeepLoading(false);
         return;
       }
 
@@ -416,14 +436,16 @@ export default function SpeechCoach() {
       // Deterministic Academic Rubric
       const auditedRubric: AuditedSpeechRubric = data.analysis?.rubric || generateAuditedSpeechRubric(wpm, fillerCount, duration, transcript);
 
-      const initialResults = {
+      // Instantly populate transcript, WPM, fillers, pace graph, and rubric!
+      setResults({
+        isAnalyzing: false,
         overallScore: auditedRubric.overallScore,
         wpm: wpm,
         targetWpm: '130 - 155',
         fillers: mappedFillers,
         totalFillers: fillerCount,
         transcript: data.transcript || "No transcript detected.",
-        feedback: "Generating deep insights...",
+        feedback: "Generating AI feedback & coaching recommendations...",
         strengths: [],
         weaknesses: [],
         suggestions: [],
@@ -437,7 +459,7 @@ export default function SpeechCoach() {
         ieltsBand: auditedRubric.benchmark.ieltsBand,
         ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
         trustGuarantee: auditedRubric.trustGuarantee
-      };
+      });
       
       // Phase 2: Deep Analysis (no media file needed, only metadata)
       const deepFormData = new FormData();
@@ -1814,9 +1836,18 @@ export default function SpeechCoach() {
                 </button>
               </div>
             </div>
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 text-sm md:text-base font-medium text-slate-800 leading-relaxed italic">
-              &quot;{results.transcript || "No transcript detected."}&quot;
-            </div>
+            {results.isAnalyzing ? (
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-2.5 animate-pulse">
+                <div className="h-4 bg-slate-200/90 rounded-md w-5/6"></div>
+                <div className="h-4 bg-slate-200/90 rounded-md w-3/4"></div>
+                <div className="h-4 bg-slate-200/90 rounded-md w-2/3"></div>
+                <p className="text-xs font-bold text-indigo-600 pt-1">Transcribing speech audio & extracting filler words...</p>
+              </div>
+            ) : (
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 text-sm md:text-base font-medium text-slate-800 leading-relaxed italic">
+                &quot;{results.transcript || "No transcript detected."}&quot;
+              </div>
+            )}
           </div>
 
           <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm">
