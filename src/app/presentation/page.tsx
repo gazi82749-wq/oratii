@@ -104,16 +104,43 @@ function PresentationPracticeContent() {
       authHeaders['x-user-id'] = session.user.id;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-    if (session?.user?.id) formData.append('userId', session.user.id);
+    const textExtractionPromise = (async () => {
+      try {
+        const initRes = await fetch('/api/presentations/upload-init', {
+          method: 'POST',
+          headers: { ...authHeaders, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size })
+        }).then(r => r.json());
 
-    // 1. Server-side text extraction (for PPTX notes and reliable parsing)
-    const textExtractionPromise = fetch('/api/analyze-slides', {
-      method: 'POST',
-      headers: authHeaders,
-      body: formData
-    }).then(r => r.json()).catch(() => ({ status: 'error' }));
+        if (initRes.error) return { status: 'error', error: initRes.error };
+
+        await fetch(initRes.uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file
+        });
+
+        const processRes = await fetch('/api/presentations/process', {
+          method: 'POST',
+          headers: { ...authHeaders, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: initRes.path, presentationId: initRes.presentationId })
+        }).then(r => r.json());
+
+        if (processRes.error) return { status: 'error', error: processRes.error };
+
+        while (true) {
+          const statusRes = await fetch(`/api/presentations/status?id=${initRes.presentationId}`, { headers: authHeaders }).then(r => r.json());
+          if (statusRes.status === 'completed') {
+            return { status: 'success', slideTextContent: statusRes.slideTextContent, fileBase64: statusRes.fileBase64, isPdf: statusRes.isPdf };
+          } else if (statusRes.status === 'failed') {
+            return { status: 'error', error: statusRes.error };
+          }
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      } catch (e: any) {
+        return { status: 'error', error: e.message } as any;
+      }
+    })() as Promise<any>;
 
     // 2. Client-side image rendering (PDF.js)
     const imageRenderingPromise = file.type?.startsWith('video/')
