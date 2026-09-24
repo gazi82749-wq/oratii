@@ -75,13 +75,7 @@ async function parsePptx(buffer: Buffer) {
   return slideTexts;
 }
 
-// In-memory cache to guarantee instant 100% deterministic identical results for repeated uploads
-interface SlideCacheEntry {
-  analysisResult: any;
-  slideTextContent: any;
-  timestamp: number;
-}
-const inMemorySlideCache = new Map<string, SlideCacheEntry>();
+
 
 export async function POST(request: NextRequest) {
 
@@ -137,6 +131,11 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "File missing!" }, { status: 400 });
       }
 
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json({ error: "File too large. Maximum size is 10MB." }, { status: 413 });
+      }
+
       const arrayBuffer = await file.arrayBuffer();
       fileBuffer = Buffer.from(arrayBuffer);
 
@@ -190,16 +189,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const memoryCached = inMemorySlideCache.get(fileHash);
-      if (memoryCached && (Date.now() - memoryCached.timestamp) < CACHE_TTL_HOURS * 3600 * 1000) {
-        console.log(`[AnalyzeSlides] ⚡ In-Memory Cache HIT for ${fileHash.slice(0, 8)}`);
-        await releaseLock(idempotencyKey);
-        return NextResponse.json({
-          status: "success",
-          slideTextContent: memoryCached.slideTextContent,
-          cached: true
-        });
-      }
+
 
       const redisCache = await checkCache<{text: any}>(`cache:${idempotencyKey}`);
       if (redisCache) {
@@ -212,17 +202,7 @@ export async function POST(request: NextRequest) {
          });
       }
 
-    // ── 5. Cache in Memory ──
-    if (inMemorySlideCache.size > 500) {
-      const oldestKey = inMemorySlideCache.keys().next().value;
-      if (oldestKey) inMemorySlideCache.delete(oldestKey);
-    }
 
-    inMemorySlideCache.set(fileHash, {
-      analysisResult: null,
-      slideTextContent,
-      timestamp: Date.now()
-    });
     
     try {
       await setCache(`cache:${idempotencyKey}`, { text: slideTextContent });

@@ -51,7 +51,13 @@ export const initializePayment = async (
   }
 
   const orderId = data.orderId || `order_test_${Date.now()}`;
-  const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_TU7Ip53rh64x5A';
+  const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+  
+  if (!razorpayKey) {
+    console.error('Razorpay key is not configured.');
+    alert('Payment configuration is missing. Please contact support.');
+    return;
+  }
 
   // 2. Launch Official Razorpay Checkout Popup
   if (res && (window as any).Razorpay) {
