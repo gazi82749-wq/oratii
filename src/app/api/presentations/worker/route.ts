@@ -87,9 +87,23 @@ export async function POST(request: NextRequest) {
   let presentationId = '';
   let userId = '';
   try {
-    const secret = request.headers.get('x-worker-secret');
-    const expectedSecret = process.env.WORKER_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!expectedSecret || secret !== expectedSecret) {
+    const secret = request.headers.get('x-worker-secret') || '';
+    const expectedSecret = process.env.WORKER_SECRET;
+    
+    if (!expectedSecret) {
+      console.error('CRITICAL: WORKER_SECRET is not configured.');
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
+    // Constant-time comparison
+    let isMatch = secret.length === expectedSecret.length;
+    for (let i = 0; i < expectedSecret.length; i++) {
+      if (secret[i] !== expectedSecret[i]) {
+        isMatch = false;
+      }
+    }
+    
+    if (!isMatch) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

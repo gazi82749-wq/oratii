@@ -30,6 +30,11 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
     // Set initial job status in Redis
     await setCache(`job:${presentationId}`, { status: 'processing', ownerId: user.id, startedAt: Date.now() }, 3600);
 
+    if (!process.env.WORKER_SECRET) {
+      console.error('CRITICAL: WORKER_SECRET is not configured.');
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
     // Fire and forget worker call
     const host = request.headers.get('host') || 'localhost:3000';
     const protocol = host.includes('localhost') ? 'http' : 'https';
@@ -39,8 +44,8 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Secure internal invocation using explicit secret or fallback to service role key
-        'x-worker-secret': process.env.WORKER_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+        // Secure internal invocation using explicit secret
+        'x-worker-secret': process.env.WORKER_SECRET
       },
       body: JSON.stringify({ path, presentationId, userId: user.id })
     }).catch(err => console.error("Worker fetch failed:", err));
