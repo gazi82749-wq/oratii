@@ -31,7 +31,10 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
     const cleanFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
     const storagePath = `${user.id}/${presentationId}/${cleanFilename}`;
 
-    const { data, error } = await supabase.storage
+    const { getServiceSupabase } = await import('@/lib/supabaseClient');
+    const serviceSupabase = getServiceSupabase();
+
+    const { data, error } = await serviceSupabase.storage
       .from('presentations')
       .createSignedUploadUrl(storagePath);
 

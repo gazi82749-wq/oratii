@@ -116,8 +116,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing path or presentationId' }, { status: 400 });
     }
 
-    // Download from Supabase
-    const { data, error } = await supabase.storage.from('presentations').download(path);
+    // Download from Supabase using Service Role to bypass RLS since worker is headless
+    const { getServiceSupabase } = await import('@/lib/supabaseClient');
+    const serviceSupabase = getServiceSupabase();
+    const { data, error } = await serviceSupabase.storage.from('presentations').download(path);
     if (error || !data) {
       await setCache(`job:${presentationId}`, { status: 'failed', error: 'Could not download file.', ownerId: userId }, 3600);
       return NextResponse.json({ error: 'Download failed' }, { status: 500 });
