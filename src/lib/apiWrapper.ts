@@ -48,22 +48,13 @@ export function withAuthAndRateLimit(handler: RouteHandler) {
         }
       }
 
-      // Fallback: Check if the user is passing it via body in the first pass
       if (!user) {
-        const headerUserId = req.headers.get('x-user-id');
-        if (headerUserId) {
-          user = { id: headerUserId } as User;
-        } else {
-          const clonedReq = req.clone();
-          try {
-            const body = await clonedReq.json();
-            if (body.userId) {
-              user = { id: body.userId } as User;
-            }
-          } catch (e) {
-            // Body might be empty or invalid JSON
-          }
-        }
+        // We also check if Next.js cookies have a session since some components rely on the browser cookie
+        // rather than the Bearer token directly.
+        try {
+          const { data } = await supabase.auth.getUser();
+          user = data?.user || null;
+        } catch(e) {}
       }
 
       if (!user) {
