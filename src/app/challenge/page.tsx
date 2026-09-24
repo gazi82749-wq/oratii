@@ -86,7 +86,7 @@ export default function ChallengePage() {
           
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100/80 border border-indigo-200 text-indigo-900 text-[11px] font-black uppercase tracking-widest shadow-2xs mb-6 relative z-10">
             <CheckCircle2 size={14} className="text-indigo-600" />
-            <span>Today's Prompt (Day {state.current_day})</span>
+            <span>Today&apos;s Prompt (Day {state.current_day})</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mb-3 relative z-10 max-w-2xl">
