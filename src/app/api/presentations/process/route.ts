@@ -35,30 +35,16 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
       return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
     }
 
-    // Fire and forget worker call
-    const host = request.headers.get('host') || 'localhost:3000';
-    const protocol = host.includes('localhost') ? 'http' : 'https';
+    // Execute worker logic directly in this process to avoid Vercel serverless networking drops
+    const { processPresentationFile } = await import('@/app/api/presentations/worker/route');
     
-    // We MUST await this fetch on Vercel/serverless environments, otherwise the container freezes
-    // and the request is never actually sent. We set a 15s timeout to prevent blocking forever.
-    try {
-      await fetch(`${protocol}://${host}/api/presentations/worker`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Secure internal invocation using explicit secret
-          'x-worker-secret': process.env.WORKER_SECRET
-        },
-        body: JSON.stringify({ path, presentationId, userId: user.id }),
-        // @ts-ignore
-        signal: AbortSignal.timeout(15000) 
-      });
-    } catch (err) {
-      console.warn("Worker fetch warning (might still be processing):", err);
-    }
+    // We intentionally don't await this so it runs asynchronously, BUT in Next.js Serverless 
+    // we need to use waitUntil if available, or just await it if we want to guarantee execution.
+    // Since Vercel hobby allows up to 60s, and this is fast, we will await it.
+    await processPresentationFile({ path, presentationId, userId: user.id });
 
     return NextResponse.json({
-      status: 'processing',
+      status: 'completed', // Since we await it, it's instantly completed
       presentationId
     });
 

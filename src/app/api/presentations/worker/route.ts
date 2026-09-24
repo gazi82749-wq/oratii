@@ -95,7 +95,71 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
     }
 
-    // Constant-time comparison
+export async function processPresentationFile({ path, presentationId, userId }: { path: string, presentationId: string, userId: string }) {
+    // Download from Supabase using Service Role to bypass RLS since worker is headless
+    const { getServiceSupabase } = await import('@/lib/supabaseClient');
+    const serviceSupabase = getServiceSupabase();
+    const { data, error } = await serviceSupabase.storage.from('presentations').download(path);
+    if (error || !data) {
+      await setCache(`job:${presentationId}`, { status: 'failed', error: 'Could not download file.', ownerId: userId }, 3600);
+      throw new Error('Download failed');
+    }
+
+    if (data.size > 15 * 1024 * 1024) {
+      await setCache(`job:${presentationId}`, { status: 'failed', error: 'File exceeds maximum allowed size for processing.', ownerId: userId }, 3600);
+      throw new Error('File too large');
+    }
+
+    const arrayBuffer = await data.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Magic Bytes Validation
+    const hexSignature = buffer.toString('hex', 0, 4).toUpperCase();
+    let isPdf = false;
+    let isPpt = false;
+
+    if (hexSignature.startsWith('25504446')) { // %PDF
+      isPdf = true;
+    } else if (hexSignature.startsWith('504B0304')) { // PK zip format (pptx)
+      isPpt = true;
+    } else if (hexSignature.startsWith('D0CF11E0')) { // OLE format (older ppt)
+      isPpt = true;
+    } else {
+      await setCache(`job:${presentationId}`, { status: 'failed', error: 'Invalid file signature. Not a valid PDF or PPT.', ownerId: userId }, 3600);
+      throw new Error('Invalid file format');
+    }
+
+    let slideTextContent;
+    if (isPdf) {
+      slideTextContent = await parsePdf(buffer);
+    } else {
+      slideTextContent = await parsePptx(buffer);
+    }
+
+    // Success
+    await setCache(`job:${presentationId}`, { 
+      status: 'completed',
+      ownerId: userId,
+      slideTextContent,
+      fileBase64: isPdf ? buffer.toString('base64') : null,
+      isPdf
+    }, 86400);
+
+    return true;
+}
+
+export async function POST(request: NextRequest) {
+  let presentationId = '';
+  let userId = '';
+  try {
+    const secret = request.headers.get('x-worker-secret') || '';
+    const expectedSecret = process.env.WORKER_SECRET;
+    
+    if (!expectedSecret) {
+      console.error('CRITICAL: WORKER_SECRET is not configured.');
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
     let isMatch = secret.length === expectedSecret.length;
     for (let i = 0; i < expectedSecret.length; i++) {
       if (secret[i] !== expectedSecret[i]) {
@@ -116,54 +180,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing path or presentationId' }, { status: 400 });
     }
 
-    // Download from Supabase using Service Role to bypass RLS since worker is headless
-    const { getServiceSupabase } = await import('@/lib/supabaseClient');
-    const serviceSupabase = getServiceSupabase();
-    const { data, error } = await serviceSupabase.storage.from('presentations').download(path);
-    if (error || !data) {
-      await setCache(`job:${presentationId}`, { status: 'failed', error: 'Could not download file.', ownerId: userId }, 3600);
-      return NextResponse.json({ error: 'Download failed' }, { status: 500 });
-    }
-
-    if (data.size > 15 * 1024 * 1024) {
-      await setCache(`job:${presentationId}`, { status: 'failed', error: 'File exceeds maximum allowed size for processing.', ownerId: userId }, 3600);
-      return NextResponse.json({ error: 'File too large' }, { status: 413 });
-    }
-
-    const arrayBuffer = await data.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Magic Bytes Validation
-    const hexSignature = buffer.toString('hex', 0, 4).toUpperCase();
-    let isPdf = false;
-    let isPpt = false;
-
-    if (hexSignature.startsWith('25504446')) { // %PDF
-      isPdf = true;
-    } else if (hexSignature.startsWith('504B0304')) { // PK zip format (pptx)
-      isPpt = true;
-    } else if (hexSignature.startsWith('D0CF11E0')) { // OLE format (older ppt)
-      isPpt = true;
-    } else {
-      await setCache(`job:${presentationId}`, { status: 'failed', error: 'Invalid file signature. Not a valid PDF or PPT.', ownerId: userId }, 3600);
-      return NextResponse.json({ error: 'Invalid file format' }, { status: 400 });
-    }
-
-    let slideTextContent;
-    if (isPdf) {
-      slideTextContent = await parsePdf(buffer);
-    } else {
-      slideTextContent = await parsePptx(buffer);
-    }
-
-    // Success
-    await setCache(`job:${presentationId}`, { 
-      status: 'completed',
-      ownerId: userId,
-      slideTextContent,
-      fileBase64: isPdf ? buffer.toString('base64') : null,
-      isPdf
-    }, 86400);
+    await processPresentationFile({ path, presentationId, userId });
 
     return NextResponse.json({ success: true });
 
