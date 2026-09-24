@@ -322,10 +322,11 @@ export default function HomeClient() {
 
                   <div className="pt-2 sm:pt-4 w-full sm:w-auto flex justify-center md:justify-end">
                     <Link
-                      href="/presentation"
-                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm sm:text-base rounded-xl transition-all cursor-pointer shadow-sm group-hover:scale-[1.02]"
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426]/70 hover:bg-[#0F1426]/70 text-white/80 font-bold text-sm sm:text-base rounded-xl transition-all cursor-not-allowed shadow-sm opacity-80"
                     >
-                      Practice Presentation <ArrowRight size={18} className="text-[#F2A93B]" />
+                      Practice Presentation (Soon) <ArrowRight size={18} className="text-[#F2A93B]/70" />
                     </Link>
                   </div>
                 </div>

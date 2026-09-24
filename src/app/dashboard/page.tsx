@@ -358,10 +358,11 @@ export default function ProfessionalDashboard() {
       desc: 'Upload PowerPoint/PDF decks to practice presenting live with WASM Edge HUD, webcam feedback, and optional AI viva defense.',
       href: '/presentation',
       icon: <FileText size={22} className="text-white" />,
-      badge: 'Rehearsal, HUD & Viva',
-      gradient: 'from-indigo-600 to-purple-600',
+      badge: 'Coming Soon',
+      gradient: 'from-indigo-600 to-purple-600 opacity-60',
       badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      features: ['Real-time WPM & Gaze Vector', 'In-built Committee Defense']
+      features: ['Real-time WPM & Gaze Vector', 'In-built Committee Defense'],
+      isComingSoon: true
     },
     {
       num: '04',
@@ -579,8 +580,10 @@ export default function ProfessionalDashboard() {
           {coreModules.map((m, idx) => (
             <div
               key={idx}
-              onClick={() => router.push(m.href)}
-              className="group bg-white border border-slate-200/90 hover:border-indigo-400 rounded-3xl p-6 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden flex flex-col justify-between gap-5 transform hover:-translate-y-1"
+              onClick={() => {
+                if (!m.isComingSoon) router.push(m.href);
+              }}
+              className={`group bg-white border border-slate-200/90 hover:border-indigo-400 rounded-3xl p-6 transition-all duration-300 shadow-sm hover:shadow-xl relative overflow-hidden flex flex-col justify-between gap-5 transform hover:-translate-y-1 ${m.isComingSoon ? 'opacity-60 cursor-not-allowed grayscale-[0.2]' : 'cursor-pointer'}`}
             >
               {/* Card Top Header */}
               <div className="flex items-start justify-between gap-4">
@@ -650,10 +653,10 @@ export default function ProfessionalDashboard() {
               <span className="text-xs text-slate-600 font-semibold">Ready to analyze or practice your presentation?</span>
               <div className="flex items-center gap-2 flex-wrap">
                 <button
-                  onClick={() => router.push('/presentation')}
-                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 active:scale-[0.98]"
+                  disabled
+                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-slate-400 to-slate-500 text-white font-extrabold text-xs shadow-md transition-all cursor-not-allowed flex items-center gap-2 opacity-60"
                 >
-                  <FileText size={15} /> Presentation Practice
+                  <FileText size={15} /> Presentation Practice (Soon)
                 </button>
               </div>
             </div>
