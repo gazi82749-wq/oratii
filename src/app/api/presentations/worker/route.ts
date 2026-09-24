@@ -83,18 +83,6 @@ async function parsePptx(buffer: Buffer) {
   return slideTexts;
 }
 
-export async function POST(request: NextRequest) {
-  let presentationId = '';
-  let userId = '';
-  try {
-    const secret = request.headers.get('x-worker-secret') || '';
-    const expectedSecret = process.env.WORKER_SECRET;
-    
-    if (!expectedSecret) {
-      console.error('CRITICAL: WORKER_SECRET is not configured.');
-      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
-    }
-
 export async function processPresentationFile({ path, presentationId, userId }: { path: string, presentationId: string, userId: string }) {
     // Download from Supabase using Service Role to bypass RLS since worker is headless
     const { getServiceSupabase } = await import('@/lib/supabaseClient');
