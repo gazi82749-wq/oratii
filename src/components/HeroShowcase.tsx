@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Mic, Video, Briefcase, CheckCircle2 } from 'lucide-react';
 
 const modules = [
-  { id: 'presentation', label: 'Presentation Practice', icon: Video },
+  { id: 'presentation', label: 'Presentation Practice', icon: Video, isComingSoon: true },
   { id: 'speech', label: 'Speech Coach', icon: Mic },
   { id: 'interview', label: 'Mock Interview', icon: Briefcase }
 ];
@@ -65,7 +65,10 @@ export default function HeroShowcase() {
                   }`}
                 >
                   <Icon size={12} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
-                  <span className="hidden sm:inline">{m.label}</span>
+                  <span className="hidden sm:inline flex items-center gap-1.5">
+                    {m.label}
+                    {m.isComingSoon && <span className="text-[8px] bg-slate-200/50 text-slate-500 px-1 py-0.5 rounded uppercase tracking-widest hidden lg:inline-block">Soon</span>}
+                  </span>
                 </button>
               );
             })}

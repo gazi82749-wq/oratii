@@ -117,7 +117,7 @@ export default function SidebarLayout({ children }) {
     { href: '/', label: 'Home', icon: <Home size={17} /> },
     { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
-    { href: '/presentation', label: 'Presentation Practice', icon: <FileText size={17} /> },
+    { href: '#', label: 'Presentation Practice', icon: <FileText size={17} />, isComingSoon: true },
     { 
       href: user ? '/trainer' : '/signup?role=trainer', 
       label: 'Trainer Hub', 
@@ -161,7 +161,7 @@ export default function SidebarLayout({ children }) {
   const productItems = [
     { href: '/speech-coach', label: 'Speech Coach', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
     { href: '/interview', label: 'Mock Interview', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
-    { href: '/presentation', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium' },
+    { href: '#', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium', isComingSoon: true },
     { href: '/challenge', label: 'Daily Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
     { href: user ? '/trainer' : '/signup?role=trainer', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
     { type: 'divider' },
@@ -207,15 +207,20 @@ export default function SidebarLayout({ children }) {
                       key={i} 
                       href={item.href} 
                       onClick={(e) => {
+                        if (item.isComingSoon) {
+                          e.preventDefault();
+                          return;
+                        }
                         if (item.isTrainer) {
                           handleTrainerLinkClick(e);
                         } else {
                           setActiveDropdown(null);
                         }
                       }} 
-                      className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''}`}
+                      className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${item.isComingSoon ? 'opacity-60 cursor-default hover:bg-transparent' : ''}`}
                     >
-                      {item.label}
+                      <span className="flex items-center gap-2">{item.label}</span>
+                      {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>}
                     </Link>
                   );
                 })}
@@ -357,8 +362,20 @@ export default function SidebarLayout({ children }) {
             <div className="flex flex-col gap-1.5 pt-3 border-t border-indigo-100">
               <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest px-2 mb-1">Products</span>
               {productItems.filter(item => !item.type).map((item, i) => (
-                <Link key={i} href={item.href} className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center gap-3 rounded-xl hover:bg-indigo-50 active:bg-indigo-100 transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''}`}>
-                  {item.icon} {item.label}
+                <Link 
+                  key={i} 
+                  href={item.href} 
+                  onClick={(e) => {
+                    if (item.isComingSoon) {
+                      e.preventDefault();
+                      return;
+                    }
+                    if (item.isTrainer) handleTrainerLinkClick(e);
+                  }}
+                  className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center justify-between rounded-xl hover:bg-indigo-50 active:bg-indigo-100 transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''} ${item.isComingSoon ? 'opacity-60 cursor-default hover:bg-transparent' : ''}`}
+                >
+                  <span className="flex items-center gap-3">{item.icon} {item.label}</span>
+                  {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>}
                 </Link>
               ))}
             </div>

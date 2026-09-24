@@ -25,7 +25,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech Coach</Link></li>
               <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview</Link></li>
-              <li><Link href="/presentation" className="hover:text-amber-400 transition-colors">Presentation Practice</Link></li>
+              <li><Link href="#" className="hover:text-amber-400 transition-colors opacity-70">Presentation Practice <span className="text-[9px] bg-slate-800 text-slate-400 px-1 py-0.5 rounded ml-1">SOON</span></Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
               <li><Link href="/reports" className="hover:text-amber-400 transition-colors">Reports</Link></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>
