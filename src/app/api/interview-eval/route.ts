@@ -25,6 +25,11 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
       }, { status: 400 });
     }
 
+    // Validate payload size to prevent resource exhaustion
+    if (transcript.length > 250000 || resumeText.length > 50000) {
+      return NextResponse.json({ error: "Input text exceeds maximum allowed length" }, { status: 413 });
+    }
+
     // ── Idempotency Check ──
     const crypto = await import('crypto');
     const promptVersion = 'v1_interview_eval';

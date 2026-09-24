@@ -22,6 +22,13 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
       bodyData = null
     } = body;
 
+    // Validate payload size to prevent resource exhaustion
+    const maxTextLength = 250000; // ~50k words max
+    if (JSON.stringify(slideTextContent || []).length > maxTextLength || 
+        (timedTranscript && timedTranscript.length > maxTextLength)) {
+      return NextResponse.json({ error: "Payload exceeds maximum allowed length" }, { status: 413 });
+    }
+
     const crypto = await import('crypto');
     const promptVersion = 'v1_presentation_mode';
     const hashString = `${JSON.stringify(slideTextContent || [])}|${timedTranscript || ''}|${hasVideo}|${promptVersion}`;

@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
     }
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 100);
     const search = (searchParams.get('search') || '').toLowerCase();
     const plan = searchParams.get('plan') || 'all';
 
