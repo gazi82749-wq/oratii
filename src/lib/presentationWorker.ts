@@ -120,13 +120,15 @@ export async function processPresentationFile({ path, presentationId, userId }: 
     }
 
     // Success
-    await setCache(`job:${presentationId}`, { 
+    const resultObj = { 
       status: 'completed',
       ownerId: userId,
       slideTextContent,
       fileBase64: isPdf ? buffer.toString('base64') : null,
       isPdf
-    }, 86400);
+    };
+    
+    await setCache(`job:${presentationId}`, resultObj, 86400);
 
-    return true;
+    return resultObj;
 }

@@ -41,11 +41,14 @@ export const POST = withAuthAndRateLimit(async (request, { user }) => {
     // We intentionally don't await this so it runs asynchronously, BUT in Next.js Serverless 
     // we need to use waitUntil if available, or just await it if we want to guarantee execution.
     // Since Vercel hobby allows up to 60s, and this is fast, we will await it.
-    await processPresentationFile({ path, presentationId, userId: user.id });
+    const resultObj = await processPresentationFile({ path, presentationId, userId: user.id });
 
     return NextResponse.json({
-      status: 'completed', // Since we await it, it's instantly completed
-      presentationId
+      status: 'completed',
+      presentationId,
+      slideTextContent: resultObj.slideTextContent,
+      fileBase64: resultObj.fileBase64,
+      isPdf: resultObj.isPdf
     });
 
   } catch (error: any) {

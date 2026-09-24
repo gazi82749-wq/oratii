@@ -128,20 +128,16 @@ function PresentationPracticeContent() {
 
         if (processRes.error) return { status: 'error', error: processRes.error };
 
-        let pollCount = 0;
-        const startTime = Date.now();
-        while (Date.now() - startTime < 300000) { // 5 minutes max
-          const statusRes = await fetch(`/api/presentations/status?id=${initRes.presentationId}`, { headers: authHeaders }).then(r => r.json());
-          if (statusRes.status === 'completed') {
-            return { status: 'success', slideTextContent: statusRes.slideTextContent, fileBase64: statusRes.fileBase64, isPdf: statusRes.isPdf };
-          } else if (statusRes.status === 'failed') {
-            return { status: 'error', error: statusRes.error };
-          }
-          pollCount++;
-          const delay = Math.min(2000 + (pollCount * 500), 5000); // 2s to 5s max
-          await new Promise(r => setTimeout(r, delay));
+        if (processRes.status === 'completed' && processRes.slideTextContent) {
+          return { 
+            status: 'success', 
+            slideTextContent: processRes.slideTextContent, 
+            fileBase64: processRes.fileBase64, 
+            isPdf: processRes.isPdf 
+          };
         }
-        return { status: 'error', error: 'Processing timed out after 5 minutes.' };
+        
+        return { status: 'error', error: 'Processing failed silently.' };
       } catch (e: any) {
         return { status: 'error', error: e.message } as any;
       }
