@@ -116,8 +116,7 @@ export default function ChallengePage() {
       <GuestAuthModal
         isOpen={isGuestAuthModalOpen}
         onClose={() => setIsGuestAuthModalOpen(false)}
-        title="Sign In to Save Streaks"
-        message="Create a free account to track your daily practice streak and unlock detailed performance analytics."
+        featureName="Daily Challenge"
       />
       <Footer />
     </div>
