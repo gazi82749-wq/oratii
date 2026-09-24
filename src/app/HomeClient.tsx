@@ -25,10 +25,10 @@ export default function HomeClient() {
   const [activeAudienceTab, setActiveAudienceTab] = useState<'students' | 'professionals' | 'jobseekers'>('students');
 
   const heroPhrases = [
-    { action: 'Ace your', target: 'presentations & viva.', highlightBg: 'bg-[#FEF7ED] text-[#D98200] border-[#F2A93B]/40' },
-    { action: 'Crush your', target: 'voice mock interviews.', highlightBg: 'bg-amber-50 text-amber-800 border-amber-200' },
+    { action: 'Crush your', target: 'voice mock interviews.', highlightBg: 'bg-[#FEF7ED] text-[#D98200] border-[#F2A93B]/40' },
+    { action: 'Build your', target: 'daily speech habit.', highlightBg: 'bg-amber-50 text-amber-800 border-amber-200' },
     { action: 'Eliminate', target: 'filler words & pauses.', highlightBg: 'bg-rose-50 text-rose-700 border-rose-200' },
-    { action: 'Master your', target: 'public speaking habits.', highlightBg: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+    { action: 'Master your', target: 'public speaking skills.', highlightBg: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
   ];
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -127,7 +127,7 @@ export default function HomeClient() {
 
             <FadeUp delay={200}>
               <p className="text-slate-600 text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-lg mb-8 text-center lg:text-left">
-                Practice speaking, presentations, interviews and viva sessions with real-time AI feedback.
+                Practice speaking, voice mock interviews, and daily speech habits with real-time AI feedback.
               </p>
             </FadeUp>
 
