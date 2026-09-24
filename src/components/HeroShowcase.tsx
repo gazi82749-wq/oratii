@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Mic, Video, Briefcase, CheckCircle2 } from 'lucide-react';
 
 const modules = [
-  { id: 'presentation', label: 'Presentation Practice', icon: Video, isComingSoon: true },
   { id: 'speech', label: 'Speech Coach', icon: Mic },
-  { id: 'interview', label: 'Mock Interview', icon: Briefcase }
+  { id: 'interview', label: 'Mock Interview', icon: Briefcase },
+  { id: 'presentation', label: 'Presentation Practice', icon: Video, isComingSoon: true }
 ];
 
 export default function HeroShowcase() {
