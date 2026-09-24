@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
+import { checkAndDecrementUsage, refundUsage } from '../../../lib/billing';
 import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -9,6 +10,9 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+  let idempotencyKey = '';
   try {
     const body = await request.json();
     const { topic, tone = 'Professional', audience = 'General Public' } = body;
@@ -26,7 +30,7 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
     const promptVersion = 'v2_speech_writer';
     const hashString = `${topic.trim()}|${tone}|${audience}|${promptVersion}`;
     const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
-    const idempotencyKey = `speech-writer:${user.id}:${fileHash}`;
+    idempotencyKey = `speech-writer:${user.id}:${fileHash}`;
     
     const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
     
@@ -49,6 +53,18 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
         await releaseLock(idempotencyKey);
         return NextResponse.json(redisCache);
       }
+
+      const usageCheck = await checkAndDecrementUsage(user.id, 'speech_analysis_count');
+      if (!usageCheck.allowed) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+      creditConsumed = true;
+      userIdForRefund = user.id;
 
     const baseAdminPrompt = await getDynamicPrompt('speech_coach', 'You are an elite, highly adaptable speechwriter.');
 
@@ -127,6 +143,10 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
 
   } catch (error: any) {
     console.error('Speech Writer Error:', error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[SpeechWriter] AI failed. Refunding credit for ${userIdForRefund}`);
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json(
       { error: 'Failed to generate speech', details: error?.message || 'Unknown error' },
       { status: 500 }

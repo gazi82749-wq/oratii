@@ -140,14 +140,22 @@ export async function POST(request: NextRequest) {
       fileBuffer = Buffer.from(arrayBuffer);
 
       try {
-        if (file.name.toLowerCase().endsWith('.pdf')) {
+        const fileName = file.name.toLowerCase();
+        const fileType = file.type;
+        
+        const isPdfExt = fileName.endsWith('.pdf');
+        const isPptExt = fileName.endsWith('.pptx') || fileName.endsWith('.ppt');
+        const isPdfMime = fileType === 'application/pdf';
+        const isPptMime = fileType === 'application/vnd.ms-powerpoint' || fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+
+        if ((isPdfExt && isPdfMime) || (isPdfExt && !fileType)) {
           slideTextContent = await parsePdf(fileBuffer);
           fileBase64 = fileBuffer.toString('base64');
           isPdf = true;
-        } else if (file.name.toLowerCase().endsWith('.pptx') || file.name.toLowerCase().endsWith('.ppt')) {
+        } else if ((isPptExt && isPptMime) || (isPptExt && !fileType)) {
           slideTextContent = await parsePptx(arrayBuffer);
         } else {
-          return NextResponse.json({ error: "Unsupported file type!" }, { status: 400 });
+          return NextResponse.json({ error: "Unsupported or invalid file type detected! Ensure it is a valid PDF or PPTX." }, { status: 400 });
         }
       } catch (parseError) {
         console.error("Error parsing file:", parseError);

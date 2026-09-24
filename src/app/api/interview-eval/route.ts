@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
-import { checkAndDecrementUsage } from '../../../lib/billing';
+import { checkAndDecrementUsage, refundUsage } from '../../../lib/billing';
 import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
 
@@ -54,10 +54,24 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
         return NextResponse.json(redisCache);
       }
 
-    // 4. Construct AI Prompt for Dynamic Interview Evaluation
-    const baseAdminPrompt = await getDynamicPrompt('interview_evaluator', 'You are an expert Executive Hiring Manager and Senior Recruiter');
+      // 4. Deduct Credits
+      const usageCheck = await checkAndDecrementUsage(userId, 'viva_sessions_count');
+      if (!usageCheck.allowed) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+      
+      let creditConsumed = true;
 
-    const systemPrompt = `
+      try {
+        // 5. Construct AI Prompt for Dynamic Interview Evaluation
+        const baseAdminPrompt = await getDynamicPrompt('interview_evaluator', 'You are an expert Executive Hiring Manager and Senior Recruiter');
+
+        const systemPrompt = `
       ${baseAdminPrompt} evaluating a mock job interview for the position: "${roleTitle}" (Level: ${difficultyLevel}).
       
       Your goal is to provide deep, authentic, non-generic, mathematically anchored feedback based SOLELY on what the candidate actually said in their transcript.
@@ -187,6 +201,13 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
 
     return NextResponse.json(responseData);
 
+      } catch (aiError) {
+        if (creditConsumed) {
+          console.warn(`[InterviewEval] AI failed. Refunding credit for ${userId}`);
+          await refundUsage(userId, 1);
+        }
+        throw aiError;
+      }
     } finally {
       await releaseLock(idempotencyKey);
     }

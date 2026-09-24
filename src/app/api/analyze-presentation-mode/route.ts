@@ -8,6 +8,9 @@ import { supabase } from '../../../lib/supabaseClient';
 export const dynamic = 'force-dynamic';
 
 export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
+  let idempotencyKey = '';
   try {
     const userId = user.id;
     const body = await request.json();
@@ -19,15 +22,40 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
       bodyData = null
     } = body;
 
+    const crypto = await import('crypto');
+    const promptVersion = 'v1_presentation_mode';
+    const hashString = `${JSON.stringify(slideTextContent || [])}|${timedTranscript || ''}|${hasVideo}|${promptVersion}`;
+    const fileHash = crypto.createHash('sha256').update(hashString).digest('hex');
+    idempotencyKey = `presentation-mode:${userId}:${fileHash}`;
+    
+    const { acquireLock, releaseLock, checkCache, setCache } = await import('../../../lib/idempotency');
+    
+    const fastCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (fastCache) return NextResponse.json(fastCache);
+
+    const isLocked = await acquireLock(idempotencyKey);
+    if (!isLocked) {
+      return NextResponse.json({ error: "Request is already processing. Please wait a moment." }, { status: 429 });
+    }
+
+    const redisCache = await checkCache<any>(`cache:${idempotencyKey}`);
+    if (redisCache) {
+      await releaseLock(idempotencyKey);
+      return NextResponse.json(redisCache);
+    }
+
     // Enforce server-side billing limits
     const usageCheck = await checkAndDecrementUsage(userId, 'ppt_analysis_count');
     if (!usageCheck.allowed) {
+      await releaseLock(idempotencyKey);
       return NextResponse.json({
         error: "Credits Exhausted",
         message: "You've used all your credits. Purchase more credits to continue.",
         creditExhausted: true
       }, { status: 403 });
     }
+    creditConsumed = true;
+    userIdForRefund = userId;
 
     if (!slideTextContent || !timedTranscript) {
       return NextResponse.json({ error: "Missing slide text content or transcript." }, { status: 400 });
@@ -118,16 +146,32 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
 
     const parsedAnalysis = JSON.parse(jsonMatch[0]);
 
-    return NextResponse.json({
+    const responseData = {
       status: "success",
       data: parsedAnalysis
-    });
+    };
+    
+    try {
+      await setCache(`cache:${idempotencyKey}`, responseData, 86400);
+    } catch(e) {}
+
+    return NextResponse.json(responseData);
 
   } catch (error: any) {
     console.error('Presentation Mode Analysis Error:', error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[AnalyzePresentation] AI failed. Refunding credit for ${userIdForRefund}`);
+      const { refundUsage } = await import('../../../lib/billing');
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json(
       { error: 'Failed to analyze presentation', details: error?.message || 'Unknown error' },
       { status: 500 }
     );
+  } finally {
+    if (idempotencyKey) {
+      const { releaseLock } = await import('../../../lib/idempotency');
+      await releaseLock(idempotencyKey);
+    }
   }
 });

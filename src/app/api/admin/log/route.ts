@@ -1,10 +1,39 @@
 // src/app/api/admin/log/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase } from '@/lib/supabaseClient';
+import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
 import { logSystemEvent, LogSeverity } from '@/lib/logger';
+
+async function verifyAdminCaller(request: Request) {
+  let user;
+
+  const authHeader = request.headers.get('authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    const { data: { user: authUser } } = await supabase.auth.getUser(token);
+    user = authUser;
+  } else {
+    const { data: { user: cookieUser } } = await supabase.auth.getUser();
+    user = cookieUser;
+  }
+
+  if (!user) return false;
+
+  const serviceClient = getServiceSupabase();
+  const { data: profile } = await serviceClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  return profile?.role === 'admin';
+}
 
 export async function GET(req: NextRequest) {
   try {
+    const isAdmin = await verifyAdminCaller(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+    }
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '100', 10);
     const category = searchParams.get('category');
@@ -38,10 +67,15 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // We allow standard POST for client logs, but simulate_test should be admin only.
     const body = await req.json();
 
     // Check for test/simulation trigger from admin
     if (body.action === 'simulate_test') {
+      const isAdmin = await verifyAdminCaller(req);
+      if (!isAdmin) {
+        return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+      }
       const type = body.type || 'ai_failure';
       
       if (type === 'ai_failure') {
@@ -103,6 +137,10 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const isAdmin = await verifyAdminCaller(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+    }
     const serviceDb = getServiceSupabase();
     const { error } = await serviceDb.from('system_logs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     if (error) {

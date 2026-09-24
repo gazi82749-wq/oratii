@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchWithRetry } from '../../../lib/fetchWithRetry';
 import { generateAIContent } from '../../../lib/aiFallback';
 import { getDynamicPrompt } from '../../../lib/getDynamicPrompt';
+import { checkAndDecrementUsage, refundUsage } from '../../../lib/billing';
 import { withAuthAndRateLimit } from '../../../lib/apiWrapper';
 import { supabase } from '../../../lib/supabaseClient';
 
 export const dynamic = 'force-dynamic';
 
 export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
+  let creditConsumed = false;
+  let userIdForRefund: string | null = null;
   try {
 
     const { frames } = await request.json();
@@ -47,6 +50,19 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
         await releaseLock(idempotencyKey);
         return NextResponse.json(redisCache);
       }
+
+      // Deduct Credits
+      const usageCheck = await checkAndDecrementUsage(user.id, 'ppt_analysis_count');
+      if (!usageCheck.allowed) {
+        await releaseLock(idempotencyKey);
+        return NextResponse.json({
+          error: "Credits Exhausted",
+          message: "You've used all your credits. Purchase more credits to continue.",
+          creditExhausted: true
+        }, { status: 403 });
+      }
+      creditConsumed = true;
+      userIdForRefund = user.id;
 
     const baseAdminPrompt = await getDynamicPrompt('body_language', 'You are a friendly body language coach — like a senior student who\'s been through dozens of presentations and knows what good stage presence looks like.');
 
@@ -124,6 +140,10 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
 
   } catch (error: any) {
     console.error("Body Language API Error:", error);
+    if (creditConsumed && userIdForRefund) {
+      console.warn(`[AnalyzeBodyLanguage] AI failed. Refunding credit for ${userIdForRefund}`);
+      await refundUsage(userIdForRefund, 1);
+    }
     return NextResponse.json(
       { error: "Failed to analyze body language", details: error?.message || 'Unknown error' },
       { status: 500 }

@@ -1,9 +1,37 @@
-// src/app/api/admin/users/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceSupabase } from '@/lib/supabaseClient';
+import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+
+async function verifyAdminCaller(request: Request) {
+  let user;
+
+  const authHeader = request.headers.get('authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    const { data: { user: authUser } } = await supabase.auth.getUser(token);
+    user = authUser;
+  } else {
+    const { data: { user: cookieUser } } = await supabase.auth.getUser();
+    user = cookieUser;
+  }
+
+  if (!user) return false;
+
+  const serviceClient = getServiceSupabase();
+  const { data: profile } = await serviceClient
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  return profile?.role === 'admin';
+}
 
 export async function GET(req: NextRequest) {
   try {
+    const isAdmin = await verifyAdminCaller(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+    }
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
@@ -97,6 +125,10 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const isAdmin = await verifyAdminCaller(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized: Admin privileges required.' }, { status: 403 });
+    }
     const body = await req.json();
     const { userId, action, plan, role, credits } = body;
 
