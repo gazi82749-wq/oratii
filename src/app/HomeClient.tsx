@@ -281,6 +281,7 @@ export default function HomeClient() {
                     <span>02</span>
                     <span className="text-amber-400">•</span>
                     <span>Presentation Practice &amp; Viva Defense</span>
+                    <span className="bg-amber-950 text-amber-50 px-1.5 py-0.5 rounded text-[10px]">Soon</span>
                   </div>
 
                   <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">

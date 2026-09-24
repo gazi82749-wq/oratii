@@ -321,7 +321,7 @@ export default function Reports() {
           >
             <option value="all">ALL MODULES</option>
             <option value="speech">SPEECH COACH</option>
-            <option value="presentation">PRESENTATION PRACTICE</option>
+            <option value="presentation" disabled>PRESENTATION PRACTICE (SOON)</option>
             <option value="viva">AI VIVA</option>
           </select>
         </div>

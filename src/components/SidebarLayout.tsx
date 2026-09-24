@@ -161,8 +161,8 @@ export default function SidebarLayout({ children }) {
   const productItems = [
     { href: '/speech-coach', label: 'Speech Coach', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
     { href: '/interview', label: 'Mock Interview', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
-    { href: '#', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium', isComingSoon: true },
     { href: '/challenge', label: 'Daily Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
+    { href: '#', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium', isComingSoon: true },
     { href: user ? '/trainer' : '/signup?role=trainer', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
     { type: 'divider' },
     { href: '/reports', label: 'Reports', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
