@@ -806,32 +806,72 @@ export default function ChatGPTInterviewStudio({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="md:col-span-2 relative">
-                <input
-                  type="text"
-                  value={roleTitle}
+              {/* Preset Dropdown + Custom Role Input Field */}
+              <div className="md:col-span-2 flex flex-col sm:flex-row items-center gap-2">
+                {/* Select Dropdown of Quick Presets */}
+                <select
+                  value={selectedPresetId}
                   onChange={(e) => {
-                    setRoleTitle(e.target.value);
-                    setSelectedPresetId("custom");
+                    const val = e.target.value;
+                    setSelectedPresetId(val);
+                    if (val !== "custom") {
+                      const preset = HIGH_STAKES_ROLE_PRESETS.find(
+                        (p) => p.id === val
+                      );
+                      if (preset) setRoleTitle(preset.title);
+                    }
                   }}
-                  placeholder="e.g. Software Engineer, BPO Customer Voice, Data Analyst, IELTS..."
-                  className="w-full bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 font-bold shadow-2xs pr-8"
-                />
-                {roleTitle && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRoleTitle("");
+                  className="w-full sm:w-auto bg-white border border-slate-200 text-slate-800 text-xs font-extrabold rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 shadow-2xs cursor-pointer shrink-0 transition-all"
+                >
+                  <option value="custom">✏️ Custom Role (Type Manually)</option>
+                  {HIGH_STAKES_ROLE_PRESETS.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.id === "campus_tech"
+                        ? "🎓 Top Tech MNC Placement"
+                        : p.id === "sde1"
+                          ? "💻 Software Engineer (SDE-1)"
+                          : p.id === "data_analyst"
+                            ? "📊 Data Analyst & BI"
+                            : p.id === "ielts_speaking"
+                              ? "🌐 IELTS Speaking Mock"
+                              : p.id === "mba_consulting"
+                                ? "📈 MBA / Consulting Case"
+                                : p.id === "bpo_customer"
+                                  ? "🎧 BPO / Customer Voice"
+                                  : p.title}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Editable Role Title Input */}
+                <div className="relative w-full flex-1">
+                  <input
+                    type="text"
+                    value={roleTitle}
+                    onChange={(e) => {
+                      setRoleTitle(e.target.value);
                       setSelectedPresetId("custom");
                     }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                    title="Clear input"
-                  >
-                    <X size={14} />
-                  </button>
-                )}
+                    placeholder="Type or edit job role (e.g. SDE, Data Analyst)..."
+                    className="w-full bg-white border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-indigo-600/30 focus:border-indigo-600 font-bold shadow-2xs pr-8"
+                  />
+                  {roleTitle && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRoleTitle("");
+                        setSelectedPresetId("custom");
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      title="Clear role input"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
 
+              {/* Voice Toggle Button */}
               <div className="md:col-span-1">
                 <button
                   type="button"
@@ -850,93 +890,6 @@ export default function ChatGPTInterviewStudio({
                   <span>{voiceEnabled ? "Voice Aloud ON" : "Voice Muted"}</span>
                 </button>
               </div>
-            </div>
-
-            {/* Quick Preset Chips Bar */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pt-1 pb-0.5 scrollbar-none">
-              <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider shrink-0 mr-1">
-                Quick Presets:
-              </span>
-              {HIGH_STAKES_ROLE_PRESETS.map((p) => {
-                const isSelected = selectedPresetId === p.id;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedPresetId(p.id);
-                      setRoleTitle(p.title);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 active:scale-95 ${
-                      isSelected
-                        ? "bg-[#0F1426] text-white shadow-xs border border-[#0F1426]"
-                        : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/90"
-                    }`}
-                  >
-                    {p.id === "sde1" && (
-                      <Code2
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-blue-600"
-                        }
-                      />
-                    )}
-                    {p.id === "bpo_customer" && (
-                      <Headphones
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-rose-600"
-                        }
-                      />
-                    )}
-                    {p.id === "campus_tech" && (
-                      <GraduationCap
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-indigo-600"
-                        }
-                      />
-                    )}
-                    {p.id === "data_analyst" && (
-                      <BarChart3
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-emerald-600"
-                        }
-                      />
-                    )}
-                    {p.id === "mba_consulting" && (
-                      <LineChart
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-amber-600"
-                        }
-                      />
-                    )}
-                    {p.id === "ielts_speaking" && (
-                      <Globe
-                        size={13}
-                        className={
-                          isSelected ? "text-amber-400" : "text-purple-600"
-                        }
-                      />
-                    )}
-                    <span>
-                      {p.id === "sde1"
-                        ? "SDE / Tech"
-                        : p.id === "bpo_customer"
-                          ? "BPO / Customer Voice"
-                          : p.id === "campus_tech"
-                            ? "Campus Placement"
-                            : p.id === "data_analyst"
-                              ? "Data Analyst"
-                              : p.id === "mba_consulting"
-                                ? "MBA Case"
-                                : "IELTS Speaking"}
-                    </span>
-                  </button>
-                );
-              })}
             </div>
           </div>
 
