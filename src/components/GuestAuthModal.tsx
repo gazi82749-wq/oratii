@@ -40,11 +40,11 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[99999] overflow-y-auto bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 animate-fade-in font-sans"
       onClick={onClose}
     >
       <div
-        className="bg-white border border-slate-200 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden relative animate-scale-up text-slate-900 p-6 sm:p-8"
+        className="bg-white border border-slate-200 rounded-3xl shadow-2xl max-w-md w-full relative animate-scale-up text-slate-900 p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -112,6 +113,15 @@ export default function BatchDetailPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [batchId]);
+
+  useEffect(() => {
+    if (showNewAssignment) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [showNewAssignment]);
 
   const copyWhatsAppLink = () => {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.app';
@@ -513,9 +523,15 @@ export default function BatchDetailPage() {
       )}
 
       {/* ─── Modal: New Assignment ─── */}
-      {showNewAssignment && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+      {showNewAssignment && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 z-[99999] overflow-y-auto bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 animate-fade-in font-sans"
+          onClick={() => setShowNewAssignment(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5 animate-scale-up text-slate-900 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="text-base font-black text-slate-900">Assign New Practice Drill</h3>
@@ -523,7 +539,7 @@ export default function BatchDetailPage() {
               </div>
               <button
                 onClick={() => setShowNewAssignment(false)}
-                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100"
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 cursor-pointer"
               >
                 ✕
               </button>
@@ -602,21 +618,22 @@ export default function BatchDetailPage() {
                 <button
                   type="button"
                   onClick={() => setShowNewAssignment(false)}
-                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingAssign}
-                  className="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-200 disabled:opacity-50"
+                  className="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-200 disabled:opacity-50 cursor-pointer"
                 >
                   {submittingAssign ? 'Assigning...' : 'Publish Drill'}
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
