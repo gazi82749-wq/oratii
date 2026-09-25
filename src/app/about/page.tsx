@@ -17,6 +17,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import Footer from '@/components/Footer';
+import AboutCta from '@/components/AboutCta';
 
 export const metadata: Metadata = {
   title: 'About Us | Oratii Speech & Placement Lab',
@@ -310,20 +311,7 @@ export default function AboutUsPage() {
             Join thousands of candidates, students, and speech coaches who use Oratii to master vocal pacing and interview readiness.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all cursor-pointer transform hover:-translate-y-0.5"
-            >
-              Get 5 Free Welcome Credits <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/pricing"
-              className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm uppercase tracking-wider border border-slate-200 shadow-sm transition-all"
-            >
-              View Credit Plans
-            </Link>
-          </div>
+          <AboutCta />
         </section>
       </main>
 
