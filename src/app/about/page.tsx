@@ -13,75 +13,76 @@ import {
   Target,
   Zap,
   Award,
-  Flame
+  Flame,
+  CheckCircle2
 } from 'lucide-react';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'About Us | Oratii AI Speech & Placement Lab',
-  description: 'Learn why we built Oratii — the next-generation AI speech coach, mock interview lab, and educator studio empowering every speaker to lead the room.',
+  title: 'About Us | Oratii Speech & Placement Lab',
+  description: 'Learn why we built Oratii — the next-generation speech coach, mock interview lab, and educator studio empowering every speaker to lead the room.',
 };
 
 export default function AboutUsPage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between selection:bg-[#F2A93B]/30">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between selection:bg-indigo-500/20">
       <main className="flex-1 w-full">
-        {/* ── 1. Hero Section ── */}
-        <section className="relative bg-[#0F1426] text-white py-16 sm:py-24 px-4 sm:px-8 overflow-hidden border-b border-slate-800">
-          {/* Ambient Lighting & Decorative Grid */}
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-10 w-80 h-80 bg-indigo-600/15 blur-3xl rounded-full pointer-events-none" />
+        {/* ── 1. Hero Section (Light Theme) ── */}
+        <section className="relative bg-gradient-to-b from-indigo-50/80 via-slate-50 to-[#F8FAFC] py-16 sm:py-24 px-4 sm:px-8 border-b border-indigo-100/60 overflow-hidden">
+          {/* Subtle Ambient Lighting */}
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-200/40 blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-10 w-80 h-80 bg-amber-200/40 blur-3xl rounded-full pointer-events-none" />
           
           <div className="max-w-6xl mx-auto relative z-10 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#F2A93B] text-xs font-black uppercase tracking-widest backdrop-blur-md shadow-sm">
-              <Sparkles size={14} className="text-[#F2A93B] animate-pulse" />
-              <span>About Oratii AI</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-indigo-100 text-indigo-700 text-xs font-black uppercase tracking-widest shadow-2xs">
+              <Sparkles size={14} className="text-indigo-600 animate-pulse" />
+              <span>About Oratii</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] max-w-4xl mx-auto">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] max-w-4xl mx-auto text-slate-950">
               Empowering every speaker to <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F2A93B] via-amber-300 to-amber-500">
+              <span className="text-indigo-600">
                 master their message &amp; lead the room.
               </span>
             </h1>
 
-            <p className="text-slate-300 text-sm sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-              We built Oratii because public speaking, job interviews, and presentations shouldn&apos;t be intimidating. True vocal confidence comes from objective, data-driven AI practice.
+            <p className="text-slate-600 text-sm sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
+              We built Oratii because public speaking, job interviews, and presentations shouldn&apos;t be intimidating. True vocal confidence comes from objective, data-driven practice.
             </p>
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/speech-coach"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-[#F2A93B]/20 transition-all cursor-pointer transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all cursor-pointer transform hover:-translate-y-0.5"
               >
                 <Mic size={16} />
                 Try Free Speech Drills
               </Link>
               <Link
                 href="/trainer"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm uppercase tracking-wider border border-white/15 transition-all backdrop-blur-md"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm uppercase tracking-wider border border-slate-200 shadow-sm transition-all"
               >
-                <GraduationCap size={16} className="text-[#F2A93B]" />
+                <GraduationCap size={16} className="text-indigo-600" />
                 Explore Educator Studio
               </Link>
             </div>
 
-            {/* Platform Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-12 max-w-4xl mx-auto border-t border-slate-800/80">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-white">140 WPM</div>
+            {/* Platform Stats Row (Clean White Cards) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-12 max-w-4xl mx-auto border-t border-indigo-100/80">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
+                <div className="text-2xl sm:text-3xl font-black text-slate-900">140 WPM</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ideal Pacing Target</div>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-[#F2A93B]">STAR</div>
+              <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
+                <div className="text-2xl sm:text-3xl font-black text-amber-600">STAR</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Interview Framework</div>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-emerald-400">7-Day</div>
+              <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
+                <div className="text-2xl sm:text-3xl font-black text-emerald-600">7-Day</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Privacy Guarantee</div>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-indigo-400">₹0 Free</div>
+              <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
+                <div className="text-2xl sm:text-3xl font-black text-indigo-600">₹0 Free</div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Trainer Hub Setup</div>
               </div>
             </div>
@@ -97,7 +98,7 @@ export default function AboutUsPage() {
                 <Target size={13} className="text-indigo-600" /> Our Origin Story
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-                Why we created Oratii AI.
+                Why we created Oratii.
               </h2>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-medium">
                 Traditional public speaking and placement coaching is often expensive, subjective, and hard to schedule. Most candidates rely on rewatching painful video recordings or receiving vague advice like &quot;be more confident&quot;.
@@ -153,8 +154,8 @@ export default function AboutUsPage() {
         <section className="bg-slate-100/70 py-16 sm:py-20 px-4 sm:px-8 border-y border-slate-200/80">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-3 max-w-2xl mx-auto">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-[#F2A93B] text-xs font-black uppercase tracking-wider">
-                <Sparkles size={13} className="text-[#F2A93B]" /> Oratii Platform Features
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-black uppercase tracking-wider">
+                <Sparkles size={13} className="text-indigo-600" /> Oratii Platform Features
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
                 An all-in-one speaking &amp; placement lab.
@@ -244,51 +245,51 @@ export default function AboutUsPage() {
           </div>
         </section>
 
-        {/* ── 4. Values & Security Standards ── */}
+        {/* ── 4. Values & Security Standards (Light Theme Card) ── */}
         <section className="py-16 sm:py-20 px-4 sm:px-8 max-w-6xl mx-auto">
-          <div className="bg-[#0F1426] text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-800 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />
+          <div className="bg-gradient-to-br from-white via-indigo-50/40 to-white rounded-3xl p-8 sm:p-12 shadow-xl border border-indigo-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-200/30 blur-3xl rounded-full pointer-events-none" />
 
             <div className="space-y-8 relative z-10">
               <div className="max-w-2xl space-y-3">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 text-[10px] font-bold uppercase tracking-wider">
                   Our Engineering Commitments
                 </span>
-                <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+                <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
                   Built on Trust, Privacy &amp; Data Security.
                 </h2>
-                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium">
+                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
                   We treat speaker data with maximum security. Your vocal recordings and text transcripts are handled strictly under automated privacy rules.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-slate-800">
-                <div className="space-y-2">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 text-emerald-400 flex items-center justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-indigo-100">
+                <div className="bg-white p-5 rounded-2xl border border-indigo-100/80 shadow-2xs space-y-2">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <Lock size={20} />
                   </div>
-                  <h4 className="text-sm font-bold text-white">7-Day Retention Guarantee</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  <h4 className="text-sm font-bold text-slate-900">7-Day Retention Guarantee</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
                     Audio recordings and temporary transcript telemetry are automatically purged after 7 days.
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 text-[#F2A93B] flex items-center justify-center">
+                <div className="bg-white p-5 rounded-2xl border border-indigo-100/80 shadow-2xs space-y-2">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
                     <ShieldCheck size={20} />
                   </div>
-                  <h4 className="text-sm font-bold text-white">No Public Data Selling</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  <h4 className="text-sm font-bold text-slate-900">No Public Data Selling</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
                     We never sell user speech samples or personal interview data to third-party ad brokers.
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 text-indigo-400 flex items-center justify-center">
+                <div className="bg-white p-5 rounded-2xl border border-indigo-100/80 shadow-2xs space-y-2">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                     <Award size={20} />
                   </div>
-                  <h4 className="text-sm font-bold text-white">Instant Credit Protection</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  <h4 className="text-sm font-bold text-slate-900">Instant Credit Protection</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
                     If any network or speech processing error occurs during a drill, your credits are retained automatically.
                   </p>
                 </div>
@@ -297,7 +298,7 @@ export default function AboutUsPage() {
           </div>
         </section>
 
-        {/* ── 5. Bottom Call to Action Banner ── */}
+        {/* ── 5. Bottom Call to Action Banner (Light Theme) ── */}
         <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-4xl mx-auto text-center space-y-6">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-950 text-xs font-black uppercase tracking-wider">
             <Trophy size={14} className="text-amber-600" /> Start Practicing Today
@@ -306,15 +307,15 @@ export default function AboutUsPage() {
             Ready to find your voice &amp; speak with confidence?
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto font-medium leading-relaxed">
-            Join thousands of candidates, students, and speech coaches who use Oratii AI to master vocal pacing and interview readiness.
+            Join thousands of candidates, students, and speech coaches who use Oratii to master vocal pacing and interview readiness.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-[#0F1426] hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-xl transition-all cursor-pointer transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all cursor-pointer transform hover:-translate-y-0.5"
             >
-              Get 5 Free Welcome Credits <ArrowRight size={16} className="text-[#F2A93B]" />
+              Get 5 Free Welcome Credits <ArrowRight size={16} />
             </Link>
             <Link
               href="/pricing"
