@@ -13,13 +13,15 @@ export default function HeroShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
+  const activeModulesCount = modules.filter(m => !m.isComingSoon).length;
+
   const cycleNext = useCallback(() => {
     setIsFading(true);
     setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % modules.length);
+      setActiveIndex((prev) => (prev + 1) % activeModulesCount);
       setIsFading(false);
     }, 350);
-  }, []);
+  }, [activeModulesCount]);
 
   useEffect(() => {
     const timer = setInterval(cycleNext, 4500);
@@ -52,22 +54,26 @@ export default function HeroShowcase() {
                 <button
                   key={m.id}
                   onClick={() => {
+                    if (m.isComingSoon) return;
                     setIsFading(true);
                     setTimeout(() => {
                       setActiveIndex(i);
                       setIsFading(false);
                     }, 200);
                   }}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-extrabold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#0F1426] text-[#F2A93B] shadow-xs'
-                      : 'text-slate-500 hover:text-slate-900'
+                  disabled={m.isComingSoon}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-extrabold transition-all ${
+                    m.isComingSoon
+                      ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none text-slate-400'
+                      : isActive
+                      ? 'bg-[#0F1426] text-[#F2A93B] shadow-xs cursor-pointer'
+                      : 'text-slate-500 hover:text-slate-900 cursor-pointer'
                   }`}
                 >
                   <Icon size={12} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
                   <span className="hidden sm:inline flex items-center gap-1.5">
                     {m.label}
-                    {m.isComingSoon && <span className="text-[8px] bg-slate-200/50 text-slate-500 px-1 py-0.5 rounded uppercase tracking-widest hidden lg:inline-block">Soon</span>}
+                    {m.isComingSoon && <span className="text-[8px] bg-slate-200/50 text-slate-400 px-1 py-0.5 rounded uppercase tracking-widest hidden lg:inline-block">Soon</span>}
                   </span>
                 </button>
               );

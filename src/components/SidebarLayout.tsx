@@ -217,10 +217,10 @@ export default function SidebarLayout({ children }) {
                           setActiveDropdown(null);
                         }
                       }} 
-                      className={`px-4 py-2.5 hover:bg-slate-50 hover:text-slate-950 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${item.isComingSoon ? 'opacity-60 cursor-default hover:bg-transparent' : ''}`}
+                      className={`px-4 py-2.5 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${item.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-slate-50 hover:text-slate-950'}`}
                     >
                       <span className="flex items-center gap-2">{item.label}</span>
-                      {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>}
+                      {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded border border-slate-200/50">Soon</span>}
                     </Link>
                   );
                 })}
@@ -372,10 +372,10 @@ export default function SidebarLayout({ children }) {
                     }
                     if (item.isTrainer) handleTrainerLinkClick(e);
                   }}
-                  className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center justify-between rounded-xl hover:bg-indigo-50 active:bg-indigo-100 transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''} ${item.isComingSoon ? 'opacity-60 cursor-default hover:bg-transparent' : ''}`}
+                  className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center justify-between rounded-xl transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''} ${item.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-indigo-50 active:bg-indigo-100'}`}
                 >
                   <span className="flex items-center gap-3">{item.icon} {item.label}</span>
-                  {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded">Soon</span>}
+                  {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-400 px-1.5 py-0.5 rounded">Soon</span>}
                 </Link>
               ))}
             </div>

@@ -555,7 +555,7 @@ export default function BatchDetailPage() {
                 >
                   <option value="speech">Speech Coach (Fluency & Pacing)</option>
                   <option value="interview">Mock Interview (STAR Method)</option>
-                  <option value="presentation_viva">Presentation Practice & Viva Defense</option>
+                  <option value="presentation_viva" disabled className="text-slate-400 opacity-50 blur-[0.5px] cursor-not-allowed">Presentation Practice & Viva Defense (Soon)</option>
                 </select>
               </div>
 

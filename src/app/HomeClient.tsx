@@ -465,7 +465,7 @@ export default function HomeClient() {
                     <Link
                       href="#"
                       onClick={(e) => e.preventDefault()}
-                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426]/70 hover:bg-[#0F1426]/70 text-white/80 font-bold text-sm sm:text-base rounded-xl transition-all cursor-not-allowed shadow-sm opacity-80"
+                      className="inline-flex items-center justify-center w-full sm:w-auto gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-[#0F1426]/70 text-white/70 font-bold text-sm sm:text-base rounded-xl transition-all cursor-not-allowed shadow-sm opacity-50 blur-[0.5px] pointer-events-none select-none"
                     >
                       Practice Presentation (Soon) <ArrowRight size={18} className="text-[#F2A93B]/70" />
                     </Link>

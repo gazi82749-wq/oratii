@@ -583,7 +583,7 @@ export default function ProfessionalDashboard() {
               onClick={() => {
                 if (!m.isComingSoon) router.push(m.href);
               }}
-              className={`group bg-white border border-slate-200/90 hover:border-indigo-400 rounded-3xl p-6 transition-all duration-300 shadow-sm hover:shadow-xl relative overflow-hidden flex flex-col justify-between gap-5 transform hover:-translate-y-1 ${m.isComingSoon ? 'opacity-60 cursor-not-allowed grayscale-[0.2]' : 'cursor-pointer'}`}
+              className={`group bg-white border border-slate-200/90 rounded-3xl p-6 transition-all duration-300 shadow-sm relative overflow-hidden flex flex-col justify-between gap-5 ${m.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none grayscale-[0.3]' : 'hover:border-indigo-400 hover:shadow-xl transform hover:-translate-y-1 cursor-pointer'}`}
             >
               {/* Card Top Header */}
               <div className="flex items-start justify-between gap-4">

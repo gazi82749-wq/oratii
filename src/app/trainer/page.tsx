@@ -210,7 +210,7 @@ export default function TrainerDashboardPage() {
   const copyWhatsAppLink = (code: string, batchName: string) => {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.app';
     const link = `${origin}/join/${code}`;
-    const text = `📢 *${academy?.name || 'Our Academy'}* speaking & viva practice batch is now live on Oratii AI!\n\n👉 Join our official class here: ${link}\n\nJoin with your phone to start practicing your speaking drills!`;
+    const text = `📢 *${academy?.name || 'Our Academy'}* speaking practice batch is now live on Oratii AI!\n\n👉 Join our official class here: ${link}\n\nJoin with your phone to start practicing your speaking drills!`;
 
     navigator.clipboard.writeText(text);
     setCopiedCode(code);
@@ -564,10 +564,10 @@ export default function TrainerDashboardPage() {
                   onChange={(e) => setNewBatchTrack(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-slate-900 bg-white"
                 >
-                  <option value="all">All Tracks (Speech, Interview & Viva)</option>
+                  <option value="all">All Active Tracks (Speech & Interview)</option>
                   <option value="speech">Speech Delivery & Fluency Track</option>
                   <option value="interview">Campus Placement & Mock Interview Track</option>
-                  <option value="presentation_viva">Presentation Practice & Viva Track</option>
+                  <option value="presentation_viva" disabled className="text-slate-400 opacity-50 blur-[0.5px] cursor-not-allowed">Presentation Practice & Viva Track (Soon)</option>
                 </select>
               </div>
 

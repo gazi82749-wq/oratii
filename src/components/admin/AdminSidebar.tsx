@@ -108,7 +108,9 @@ export default function AdminSidebar({ mobileOpen = false, onCloseMobile }: Admi
 
   const linkClasses = (href: string) =>
     `flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-150 ${
-      isActive(href)
+      href === '#'
+        ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none text-slate-400'
+        : isActive(href)
         ? 'bg-indigo-900 text-white font-semibold shadow-xs dark:bg-indigo-600 dark:text-white'
         : 'text-slate-600 hover:bg-indigo-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-indigo-200'
     }`;
