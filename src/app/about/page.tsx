@@ -56,7 +56,7 @@ export default function AboutUsPage() {
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all cursor-pointer transform hover:-translate-y-0.5"
               >
                 <Mic size={16} />
-                Try Free Speech Drills
+                Try Speech Drills
               </Link>
               <Link
                 href="/trainer"
