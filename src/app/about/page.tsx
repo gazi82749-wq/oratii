@@ -78,8 +78,8 @@ export default function AboutUsPage() {
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Interview Framework</div>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-emerald-600">7-Day</div>
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Privacy Guarantee</div>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-600">100%</div>
+                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Privacy &amp; Security</div>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs text-center space-y-1">
                 <div className="text-2xl sm:text-3xl font-black text-indigo-600">₹0 Free</div>
@@ -268,9 +268,9 @@ export default function AboutUsPage() {
                   <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <Lock size={20} />
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900">7-Day Retention Guarantee</h4>
+                  <h4 className="text-sm font-bold text-slate-900">100% Privacy Guarantee</h4>
                   <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                    Audio recordings and temporary transcript telemetry are automatically purged after 7 days.
+                    Your vocal recordings and personal practice transcripts are strictly confidential with automated security &amp; data cleanup.
                   </p>
                 </div>
 
