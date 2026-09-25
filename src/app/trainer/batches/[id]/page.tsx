@@ -560,19 +560,76 @@ export default function BatchDetailPage() {
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Module Track
+                  Module Track *
                 </label>
-                <select
-                  value={assignTrack}
-                  onChange={(e) => setAssignTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium text-slate-900 bg-white"
-                >
-                  <option value="speech">Speech Coach (Fluency & Pacing)</option>
-                  <option value="interview">Mock Interview (STAR Method)</option>
-                  <option value="presentation_viva" disabled className="text-slate-400 opacity-50 blur-[0.5px] cursor-not-allowed">Presentation Practice & Viva Defense (Soon)</option>
-                </select>
+                <div className="grid grid-cols-1 gap-2.5">
+                  {/* Option 1: Speech Coach */}
+                  <button
+                    type="button"
+                    onClick={() => setAssignTrack('speech')}
+                    className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                      assignTrack === 'speech'
+                        ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-500/20 text-indigo-950 font-bold'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                        <Mic size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Speech Coach (Fluency &amp; Pacing)</div>
+                        <div className="text-[11px] text-slate-500 font-normal">Audio drills, filler detection &amp; WPM analysis</div>
+                      </div>
+                    </div>
+                    {assignTrack === 'speech' && <Check size={16} className="text-indigo-600" />}
+                  </button>
+
+                  {/* Option 2: Mock Interview */}
+                  <button
+                    type="button"
+                    onClick={() => setAssignTrack('interview')}
+                    className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                      assignTrack === 'interview'
+                        ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-500/20 text-indigo-950 font-bold'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                        <Briefcase size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Mock Interview (STAR Method)</div>
+                        <div className="text-[11px] text-slate-500 font-normal">Behavioral &amp; technical interview simulations</div>
+                      </div>
+                    </div>
+                    {assignTrack === 'interview' && <Check size={16} className="text-indigo-600" />}
+                  </button>
+
+                  {/* Option 3: Presentation Practice & Viva Defense (SOON) */}
+                  <div
+                    aria-disabled="true"
+                    className="p-3 rounded-2xl border border-slate-200/80 bg-slate-100/60 text-slate-400 flex items-center justify-between opacity-50 blur-[0.4px] pointer-events-none cursor-not-allowed select-none"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                        <Tv size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                          Presentation Practice &amp; Viva Defense
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-normal">Slide telemetry &amp; committee pushback</div>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-wider bg-slate-200 text-slate-500 px-2 py-0.5 rounded border border-slate-300">
+                      SOON
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div>
