@@ -1559,6 +1559,121 @@ export default function SpeechCoach() {
             Try Again
           </button>
         </div>
+      ) : results.isAnalyzing ? (
+        /* ── DEDICATED SKELETON LOADING VIEW (Zero Dummy Data Flash) ── */
+        <div className="animate-fade-in flex flex-col gap-6">
+          {/* Skeleton Header with Active Processing Status */}
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
+                <span>AI Vocal Telemetry Engine Active</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                Analyzing Speech &amp; Audio Telemetry...
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                Transcribing voice audio, measuring WPM pacing, and detecting filler words in real time.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold text-slate-600">
+              <div className="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Processing...</span>
+            </div>
+          </div>
+
+          {/* Interactive Audio Player Preview (Allows user to play audio during processing) */}
+          {mediaUrl && (
+            <div className="bg-slate-900 rounded-2xl p-5 shadow-md flex flex-col gap-3 w-full text-white">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span>Audio Preview (Interactive During Analysis)</span>
+                </span>
+                <span className="text-xs font-semibold text-slate-400">
+                  {results.duration ? `${Math.floor(results.duration / 60)}m ${Math.floor(results.duration % 60)}s` : ''}
+                </span>
+              </div>
+              <audio ref={audioRef} controls src={mediaUrl} className="w-full h-11 rounded-xl" />
+            </div>
+          )}
+
+          {/* Skeleton Metric Score Rings Bar (3 Pulsing Cards - No Dummy Numbers) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="space-y-1">
+                <div className="h-4 w-48 bg-slate-200 rounded animate-pulse"></div>
+                <div className="h-3 w-64 bg-slate-100 rounded animate-pulse"></div>
+              </div>
+              <div className="h-6 w-24 bg-slate-200 rounded-full animate-pulse"></div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center justify-center gap-3 animate-pulse">
+                  <div className="w-16 h-16 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin"></div>
+                  <div className="h-3 w-20 bg-slate-200 rounded"></div>
+                  <div className="h-2 w-14 bg-slate-100 rounded"></div>
+                </div>
+              ))}
+            </div>
+
+            {/* Skeleton Metric Pills */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2 animate-pulse">
+                  <div className="h-2.5 w-16 bg-slate-200 rounded"></div>
+                  <div className="h-5 w-24 bg-slate-300 rounded"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Skeleton Transcript Box */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <FileText size={18} className="text-indigo-600" />
+                <span className="text-sm font-black text-slate-900 uppercase tracking-wider">Speech Transcript</span>
+              </div>
+              <span className="text-xs font-bold text-indigo-600 flex items-center gap-1.5 animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-indigo-600"></span> Transcribing speech audio...
+              </span>
+            </div>
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-3 animate-pulse">
+              <div className="h-4 bg-slate-200 rounded w-11/12"></div>
+              <div className="h-4 bg-slate-200 rounded w-4/5"></div>
+              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+              <div className="h-4 bg-slate-200 rounded w-2/3"></div>
+            </div>
+          </div>
+
+          {/* Skeleton Pacing Timeline Chart Box */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Speaking Pace &amp; WPM Energy Timeline</span>
+              <span className="text-xs text-slate-400 font-medium">Computing graph points...</span>
+            </div>
+            <div className="h-48 bg-gradient-to-b from-indigo-50/60 to-slate-50 rounded-xl border border-slate-200 flex flex-col items-center justify-center gap-2 animate-pulse">
+              <BarChart3 size={32} className="text-indigo-400 opacity-60 animate-bounce" />
+              <p className="text-xs font-extrabold text-slate-600">Generating realtime WPM pacing timeline graph...</p>
+            </div>
+          </div>
+
+          {/* Skeleton Strengths & Weaknesses Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border border-slate-200/80 border-t-4 border-t-emerald-500 rounded-2xl p-6 shadow-sm space-y-3 animate-pulse">
+              <div className="h-4 w-32 bg-slate-200 rounded"></div>
+              <div className="h-3 w-full bg-slate-100 rounded"></div>
+              <div className="h-3 w-5/6 bg-slate-100 rounded"></div>
+            </div>
+            <div className="bg-white border border-slate-200/80 border-t-4 border-t-rose-500 rounded-2xl p-6 shadow-sm space-y-3 animate-pulse">
+              <div className="h-4 w-32 bg-slate-200 rounded"></div>
+              <div className="h-3 w-full bg-slate-100 rounded"></div>
+              <div className="h-3 w-4/5 bg-slate-100 rounded"></div>
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="animate-fade-in-up flex flex-col gap-8">
           <div className="flex items-center justify-between">
@@ -1988,7 +2103,7 @@ export default function SpeechCoach() {
                 {/* Rounded Score Gauge Rings Bar */}
                 <div className="grid grid-cols-3 gap-3 bg-gradient-to-r from-indigo-50/60 via-slate-50 to-amber-50/40 p-4 rounded-2xl border border-indigo-100/80 shadow-2xs">
                   <ScoreRing 
-                    value={parseInt(results.overallScore) || 85} 
+                    value={parseInt(results.overallScore) || 0} 
                     max={100} 
                     size={76} 
                     strokeWidth={8} 
@@ -1997,7 +2112,7 @@ export default function SpeechCoach() {
                     unit="%" 
                   />
                   <ScoreRing 
-                    value={results.wpm || 140} 
+                    value={results.wpm || 0} 
                     max={200} 
                     size={76} 
                     strokeWidth={8} 
