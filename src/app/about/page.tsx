@@ -48,7 +48,7 @@ export default function AboutUsPage() {
             </h1>
 
             <p className="text-slate-600 text-sm sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-              We built Oratii because public speaking, job interviews, and presentations shouldn&apos;t be intimidating. True vocal confidence comes from objective, data-driven practice.
+              We built Oratii because public speaking and job interviews shouldn&apos;t be intimidating. True vocal confidence comes from objective, data-driven practice.
             </p>
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
@@ -111,7 +111,7 @@ export default function AboutUsPage() {
               <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/70 text-amber-950 text-xs sm:text-sm font-semibold flex items-start gap-3">
                 <Zap size={18} className="text-amber-600 shrink-0 mt-0.5" />
                 <span>
-                  <strong>Our Goal:</strong> Eliminate speaking anxiety through real-time feedback on pacing, filler words, WPM telemetry, and structured Q&amp;A defense.
+                  <strong>Our Goal:</strong> Eliminate speaking anxiety through real-time feedback on pacing, filler words, WPM telemetry, and structured interview preparation.
                 </span>
               </div>
             </div>
@@ -308,7 +308,7 @@ export default function AboutUsPage() {
             Ready to find your voice &amp; speak with confidence?
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto font-medium leading-relaxed">
-            Built for candidates, students, and speech coaches who want to master vocal pacing, presentation delivery, and interview readiness.
+            Built for candidates, students, and speech coaches who want to master vocal pacing, speech clarity, and interview readiness.
           </p>
 
           <AboutCta />
