@@ -308,7 +308,7 @@ export default function AboutUsPage() {
             Ready to find your voice &amp; speak with confidence?
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto font-medium leading-relaxed">
-            Join thousands of candidates, students, and speech coaches who use Oratii to master vocal pacing and interview readiness.
+            Built for candidates, students, and speech coaches who want to master vocal pacing, presentation delivery, and interview readiness.
           </p>
 
           <AboutCta />
