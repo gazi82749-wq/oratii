@@ -650,20 +650,77 @@ export default function HomeClient() {
                 <div className="space-y-4 sm:space-y-6">
                   <div className="flex items-center gap-2.5 sm:gap-3 text-[#0F1426]">
                     <GraduationCap size={24} className="text-[#F2A93B] sm:w-7 sm:h-7" />
-                    <h3 className="text-xl sm:text-2xl font-black">For Students &amp; Researchers</h3>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black">For Students &amp; Researchers</h3>
+                      <p className="text-slate-500 text-xs font-semibold">Tailored practice for academic success, exams &amp; campus placements.</p>
+                    </div>
                   </div>
-                  <p className="text-slate-600 text-sm sm:text-base font-medium leading-relaxed">
-                    Prepare for high-stakes academic oral exams, class speeches, debates, and competitive placement interviews.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🎓 Oral Exams &amp; Debates
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
+                    {/* Card 1 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-teal-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">🎓</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 bg-teal-100/80 border border-teal-300 px-2 py-0.5 rounded-full">
+                            Speech Coach
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Oral Exams &amp; Speeches</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Master your speaking pace, tone, and vocal clarity under exam pressure.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/speech-coach"
+                        className="mt-4 text-xs font-extrabold text-teal-700 hover:text-teal-900 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Try Speech Coach <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🗣️ Public Speaking &amp; Speeches
+
+                    {/* Card 2 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-indigo-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">🚀</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-900 bg-indigo-100/80 border border-indigo-300 px-2 py-0.5 rounded-full">
+                            Voice Interviewer
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Campus Placements</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Rehearse structured responses for technical &amp; campus HR interview rounds.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/interview"
+                        className="mt-4 text-xs font-extrabold text-indigo-800 hover:text-indigo-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Start Mock Interview <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🚀 Campus Interviews
+
+                    {/* Card 3 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-emerald-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">🔥</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-900 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded-full">
+                            Daily Habit
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Daily Speech Practice</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Build daily confidence with low-pressure 60-second prompts.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/challenge"
+                        className="mt-4 text-xs font-extrabold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Join Daily Challenge <ArrowRight size={13} />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -673,20 +730,77 @@ export default function HomeClient() {
                 <div className="space-y-4 sm:space-y-6">
                   <div className="flex items-center gap-2.5 sm:gap-3 text-[#0F1426]">
                     <Briefcase size={24} className="text-[#F2A93B] sm:w-7 sm:h-7" />
-                    <h3 className="text-xl sm:text-2xl font-black">For Professionals &amp; Leaders</h3>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black">For Professionals &amp; Leaders</h3>
+                      <p className="text-slate-500 text-xs font-semibold">Clear, executive communication for high-impact meetings &amp; pitches.</p>
+                    </div>
                   </div>
-                  <p className="text-slate-600 text-sm sm:text-base font-medium leading-relaxed">
-                    Deliver convincing pitches, executive updates, product demos, and crisp meeting communication.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      💼 Executive Speeches &amp; Pitches
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
+                    {/* Card 1 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-teal-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">💼</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 bg-teal-100/80 border border-teal-300 px-2 py-0.5 rounded-full">
+                            Speech Coach
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Executive Speeches</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Eliminate filler words and keep pace steady at 130-150 WPM.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/speech-coach"
+                        className="mt-4 text-xs font-extrabold text-teal-700 hover:text-teal-900 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Practice Pitch <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🤝 Client Meetings
+
+                    {/* Card 2 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-indigo-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">🤝</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-900 bg-indigo-100/80 border border-indigo-300 px-2 py-0.5 rounded-full">
+                            Voice Interviewer
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Client &amp; Board Q&amp;A</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Rehearse handling unexpected questions and executive pushback.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/interview"
+                        className="mt-4 text-xs font-extrabold text-indigo-800 hover:text-indigo-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Practice Q&amp;A Probes <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      📢 Team Alignment
+
+                    {/* Card 3 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-emerald-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">📢</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-900 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded-full">
+                            Daily Habit
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Team Alignment Drills</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Maintain daily vocal clarity with quick 1-minute speech exercises.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/challenge"
+                        className="mt-4 text-xs font-extrabold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Daily Warmup <ArrowRight size={13} />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -696,20 +810,77 @@ export default function HomeClient() {
                 <div className="space-y-4 sm:space-y-6">
                   <div className="flex items-center gap-2.5 sm:gap-3 text-[#0F1426]">
                     <Trophy size={24} className="text-[#F2A93B] sm:w-7 sm:h-7" />
-                    <h3 className="text-xl sm:text-2xl font-black">For Job Seekers &amp; Candidates</h3>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black">For Job Seekers &amp; Candidates</h3>
+                      <p className="text-slate-500 text-xs font-semibold">Acknowledge interview pressure with realistic AI voice mock practice.</p>
+                    </div>
                   </div>
-                  <p className="text-slate-600 text-sm sm:text-base font-medium leading-relaxed">
-                    Eliminate hesitation during behavioral HR rounds, technical system architecture deep dives, and self-introductions.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🎯 Behavioral HR Probes
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
+                    {/* Card 1 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-indigo-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">🎯</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-900 bg-indigo-100/80 border border-indigo-300 px-2 py-0.5 rounded-full">
+                            Voice Interviewer
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Behavioral HR Probes</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Audit your response structure using the STAR method with score telemetry.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/interview"
+                        className="mt-4 text-xs font-extrabold text-indigo-800 hover:text-indigo-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Start HR Mock <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      ⚡ Technical Deep Dives
+
+                    {/* Card 2 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-indigo-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">⚡</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-900 bg-indigo-100/80 border border-indigo-300 px-2 py-0.5 rounded-full">
+                            Voice Interviewer
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">Technical Deep Dives</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Practice detailed architecture &amp; technical explanations fluently.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/interview"
+                        className="mt-4 text-xs font-extrabold text-indigo-800 hover:text-indigo-950 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Start Tech Mock <ArrowRight size={13} />
+                      </Link>
                     </div>
-                    <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      ✨ 2-Min Elevator Pitch
+
+                    {/* Card 3 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200/80 hover:border-teal-200/90 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">✨</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-700 bg-teal-100/80 border border-teal-300 px-2 py-0.5 rounded-full">
+                            Speech Coach
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#0F1426]">2-Min Elevator Pitch</h4>
+                        <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                          Perfect your self-introduction with live WPM &amp; filler word tracking.
+                        </p>
+                      </div>
+                      <Link 
+                        href="/speech-coach"
+                        className="mt-4 text-xs font-extrabold text-teal-700 hover:text-teal-900 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform"
+                      >
+                        Practice Pitch <ArrowRight size={13} />
+                      </Link>
                     </div>
                   </div>
                 </div>
