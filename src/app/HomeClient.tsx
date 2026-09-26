@@ -154,7 +154,7 @@ export default function HomeClient() {
             <FadeUp delay={300}>
               <div className="flex items-center justify-center lg:justify-start gap-2 pt-6 text-xs font-semibold text-slate-500">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Real-time voice &amp; slide feedback • No app installation required</span>
+                <span>Real-time voice &amp; speech feedback • No app installation required</span>
               </div>
             </FadeUp>
           </div>
@@ -508,7 +508,7 @@ export default function HomeClient() {
                   <ul className="space-y-3 sm:space-y-4 text-xs sm:text-sm font-bold text-slate-700">
                     <li className="flex items-center gap-2.5 sm:gap-3 text-rose-700">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs shrink-0">✕</span>
-                      <span>145 WPM (Speeding through slides)</span>
+                      <span>145 WPM (Speaking too fast when nervous)</span>
                     </li>
                     <li className="flex items-center gap-2.5 sm:gap-3 text-rose-700">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs shrink-0">✕</span>
@@ -516,7 +516,7 @@ export default function HomeClient() {
                     </li>
                     <li className="flex items-center gap-2.5 sm:gap-3 text-rose-700">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-black text-xs shrink-0">✕</span>
-                      <span>Unclear response structure in Q&amp;A</span>
+                      <span>Unclear response structure in interviews</span>
                     </li>
                   </ul>
                 </div>
@@ -531,7 +531,7 @@ export default function HomeClient() {
                   <ul className="space-y-3 sm:space-y-4 text-xs sm:text-sm font-semibold text-slate-200">
                     <li className="flex items-center gap-2.5 sm:gap-3">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs shrink-0">💡</span>
-                      <span>Slow down on slide 3 explanations</span>
+                      <span>Slow down &amp; pace key explanations</span>
                     </li>
                     <li className="flex items-center gap-2.5 sm:gap-3">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F2A93B]/20 text-[#F2A93B] flex items-center justify-center font-black text-xs shrink-0">💡</span>
@@ -562,7 +562,7 @@ export default function HomeClient() {
                     </li>
                     <li className="flex items-center gap-2.5 sm:gap-3 text-emerald-700">
                       <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs shrink-0">✓</span>
-                      <span>Confident explanation under defense pressure</span>
+                      <span>Confident, structured answers under pressure</span>
                     </li>
                   </ul>
                 </div>
@@ -586,8 +586,8 @@ export default function HomeClient() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-left">
             {[
-              { num: "01", title: "Choose What to Practice", desc: "Select speech coach, presentation studio, voice interview probes, or daily habit challenges." },
-              { num: "02", title: "Practice Out Loud", desc: "Speak into your mic with live webcam telemetry and slide HUD support." },
+              { num: "01", title: "Choose What to Practice", desc: "Select speech coach, voice mock interviews, or daily habit challenges." },
+              { num: "02", title: "Practice Out Loud", desc: "Speak into your mic with real-time AI voice feedback and structure telemetry." },
               { num: "03", title: "Get Real-time Feedback", desc: "See exact WPM, filler word timestamps, structure feedback, and clarity scores." },
               { num: "04", title: "Improve", desc: "Refine your delivery and track your Daily habit streak." }
             ].map((step, idx) => (
@@ -653,14 +653,14 @@ export default function HomeClient() {
                     <h3 className="text-xl sm:text-2xl font-black">For Students &amp; Researchers</h3>
                   </div>
                   <p className="text-slate-600 text-sm sm:text-base font-medium leading-relaxed">
-                    Prepare for high-stakes academic evaluations, thesis defenses, class presentations, and competitive placement interviews.
+                    Prepare for high-stakes academic oral exams, class speeches, debates, and competitive placement interviews.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
                     <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      🎓 Viva &amp; Thesis Defense
+                      🎓 Oral Exams &amp; Debates
                     </div>
                     <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      📊 Class Presentations
+                      🗣️ Public Speaking &amp; Speeches
                     </div>
                     <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
                       🚀 Campus Interviews
@@ -676,11 +676,11 @@ export default function HomeClient() {
                     <h3 className="text-xl sm:text-2xl font-black">For Professionals &amp; Leaders</h3>
                   </div>
                   <p className="text-slate-600 text-sm sm:text-base font-medium leading-relaxed">
-                    Deliver convincing client presentations, executive board pitch decks, product demos, and crisp meeting updates.
+                    Deliver convincing pitches, executive updates, product demos, and crisp meeting communication.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4">
                     <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
-                      💼 Executive Pitch Decks
+                      💼 Executive Speeches &amp; Pitches
                     </div>
                     <div className="p-3 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-800">
                       🤝 Client Meetings
