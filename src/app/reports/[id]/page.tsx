@@ -8,6 +8,7 @@ import { Video, Camera, RotateCcw, Check, FileText, Clock, ShieldCheck } from 'l
 import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
 import VivaDefenseModal from '@/components/VivaDefenseModal';
 import MediaPreviewPlayer, { MediaPreviewPlayerRef } from '@/components/MediaPreviewPlayer';
+import InterviewPrepBreakCard from '@/components/InterviewPrepBreakCard';
 
 export default function ReportPage() {
   const params = useParams();
@@ -547,6 +548,15 @@ export default function ReportPage() {
                 unit="%" 
               />
             </div>
+
+            {/* 3-Round Mock Series Preparation Break & 40-Min Timer Card */}
+            <InterviewPrepBreakCard 
+              sessionId={id}
+              roleTitle={roleTitle}
+              mockSeriesRound={sessionData.mockSeriesRound || 1}
+              weaknesses={weaknesses}
+              suggestions={suggestions}
+            />
 
             {/* Strengths & Weaknesses */}
             {(strengths.length > 0 || weaknesses.length > 0) && (

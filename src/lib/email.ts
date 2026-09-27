@@ -180,3 +180,33 @@ export async function sendWeeklyDigestEmail(toEmail: string, userName: string, s
   }
 }
 
+export async function sendInterviewPrepReminderEmail(
+  toEmail: string,
+  userName: string,
+  roleTitle: string,
+  nextRoundTitle: string,
+  weaknesses: string[]
+) {
+  const siteUrl = getSiteUrl();
+  const weaknessListHtml = weaknesses && weaknesses.length > 0
+    ? `<ul style="margin: 8px 0; padding-left: 20px; color: #DC2626;">` + weaknesses.map(w => `<li style="margin-bottom: 4px;"><strong>${w}</strong></li>`).join('') + `</ul>`
+    : `<p style="color: #475569;">Review your key project concepts and STAR framework before starting.</p>`;
+
+  await sendEmail(
+    toEmail,
+    `⏰ Time's Up! Start ${nextRoundTitle} for ${roleTitle}`,
+    `Your 40-Minute Preparation Window is Complete!`,
+    `<p>Hi ${userName || 'Candidate'},</p>
+     <p>Your 40-minute preparation break for <strong>${roleTitle}</strong> has completed. It's time to jump into <strong>${nextRoundTitle}</strong>!</p>
+     <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 12px; padding: 16px; margin: 16px 0;">
+       <h4 style="margin: 0 0 8px 0; color: #991B1B; font-size: 14px; text-transform: uppercase;">Key Weaknesses to Fix in Round 2:</h4>
+       ${weaknessListHtml}
+     </div>
+     <p>Click below to enter the live interview studio and start your next round now!</p>`,
+    `🚀 Start ${nextRoundTitle} Now`,
+    `${siteUrl}/interview?round=2&role=${encodeURIComponent(roleTitle)}`,
+    '#4f46e5'
+  );
+}
+
+

@@ -117,81 +117,89 @@ CRITICAL DIRECTIVE: You MUST reference specific projects, technical skills, job 
       if (currentQuestionIndex === 1) {
         targetStage = 'icebreaker';
         stageInstructions = `
-          STAGE 1: CANDIDATE INTRODUCTION (Turn 1)
+          STAGE 1: CANDIDATE INTRODUCTION (Turn 1 of 5)
           - Role: You are a Hiring Manager interviewing the candidate for "${topicName}".
           - Task: Greet the candidate warmly and ask them to introduce themselves: "Welcome! To get started, please introduce yourself, your educational background, primary technical skills or tools you are most comfortable with, and key projects you have built."
           - Format: Warm opening question (1-2 sentences).
           - Set "currentStage": "icebreaker"
-          - Set "stageLabel": "Round 1: Candidate Intro & Skill Discovery"
+          - Set "stageLabel": "Question 1 of 5: Candidate Intro & Background"
           - Set "answerFormatHint": "Introduce yourself and state your primary technical stack, tools, and key projects."
         `;
       } else if (currentQuestionIndex === 2) {
         targetStage = 'specialization';
         stageInstructions = `
-          STAGE 2: DECLARED TECH STACK & PROJECT MOTIVATION (Turn 2)
+          STAGE 2: DECLARED TECH STACK & PROJECT MOTIVATION (Turn 2 of 5)
           - DYNAMIC TECH STACK DIRECTIVE (MANDATORY):
             1. Parse the candidate's Turn 1 answer for their name and declared tech stack (e.g., React, Supabase, Python, Java, SQL).
             2. Start with a warm human acknowledgment: e.g. "Great to meet you, [Name]! I see you've worked with [Tech Stack]."
             3. Ask ONE short, conversational follow-up question (MAX 1-2 SENTENCES, under 30 words) asking what problem their project solved OR why they chose this specific tech stack.
-            4. CRITICAL: DO NOT dump multi-part questions or parenthetical lists (e.g. NEVER ask about architecture, features, database queries, and challenges all in one question)!
+            4. CRITICAL: DO NOT dump multi-part questions or parenthetical lists!
           - Set "currentStage": "specialization"
-          - Set "stageLabel": "Round 2: Declared Tech Stack & Motivation"
+          - Set "stageLabel": "Question 2 of 5: Declared Tech Stack & Motivation"
           - Set "answerFormatHint": "Explain what your project does and why you chose your tech stack."
         `;
       } else if (currentQuestionIndex === 3) {
         targetStage = 'technical_discussion';
         if (isBpoOrVoice) {
           stageInstructions = `
-            STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn 3)
+            STAGE 3: CUSTOMER HANDLING & VOICE DRILL (Turn 3 of 5)
             - Pose ONE practical customer service situation (1-2 short sentences max): handling an upset caller or de-escalating an SLA delay.
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Customer De-escalation & Voice Drill"
+            - Set "stageLabel": "Question 3 of 5: Customer De-escalation & Voice Drill"
             - Set "answerFormatHint": "Demonstrate empathy, clarity, and your problem-solving steps."
           `;
         } else if (isIelts) {
           stageInstructions = `
-            STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn 3)
+            STAGE 3: IELTS CUE CARD & ABSTRACT DISCUSSION (Turn 3 of 5)
             - Ask ONE Part 2/3 IELTS prompt (1-2 sentences max) tailored to "${topicName}".
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: IELTS Cue Card & Abstract Probe"
+            - Set "stageLabel": "Question 3 of 5: IELTS Cue Card & Abstract Probe"
             - Set "answerFormatHint": "Express your opinion clearly with varied vocabulary and smooth transitions."
           `;
         } else if (isMba) {
           stageInstructions = `
-            STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn 3)
+            STAGE 3: CASE STUDY & BUSINESS FRAMEWORK (Turn 3 of 5)
             - Pose ONE business trade-off question (1-2 sentences max) testing strategic reasoning.
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Business Case & Strategic Reasoning"
+            - Set "stageLabel": "Question 3 of 5: Business Case & Strategic Reasoning"
             - Set "answerFormatHint": "Structure your analysis using a clear business framework."
           `;
         } else if (isFresher) {
           stageInstructions = `
-            STAGE 3: TAILORED TECH CONCEPT & FEATURE CHECK (Turn 3)
+            STAGE 3: TAILORED TECH CONCEPT & FEATURE CHECK (Turn 3 of 5)
             - Candidate is a CAMPUS FRESHER. Keep questions fair and conversational!
             - Pick ONE specific tool or feature mentioned in their declared tech stack (e.g. React state/props, or Supabase database fetching).
             - Ask ONE focused question (MAX 1-2 SENTENCES, under 30 words) on how they implemented it or a bug they solved.
-            - DO NOT ask complex system architecture or high-load database internals!
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Declared Tech Feature Check"
+            - Set "stageLabel": "Question 3 of 5: Declared Tech Feature Check"
             - Set "answerFormatHint": "Explain how you implemented this feature in your project."
           `;
         } else {
           stageInstructions = `
-            STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn 3)
+            STAGE 3: TECHNICAL & PRACTICAL DEEP-DIVE (Turn 3 of 5)
             - Pick ONE technical trade-off or implementation detail from their declared tech stack.
             - Ask ONE focused technical question (MAX 1-2 SENTENCES, under 30 words).
             - Set "currentStage": "technical_discussion"
-            - Set "stageLabel": "Round 3: Deep Technical Discussion"
+            - Set "stageLabel": "Question 3 of 5: Deep Technical Discussion"
             - Set "answerFormatHint": "Discuss your technical solution, trade-offs, and architecture."
           `;
         }
+      } else if (currentQuestionIndex === 4) {
+        targetStage = 'system_design';
+        stageInstructions = `
+          STAGE 4: EDGE CASES & SYSTEM TRADE-OFFS (Turn 4 of 5)
+          - Ask ONE question (MAX 1-2 SENTENCES) on how they handle error states, edge cases, or performance bottlenecks in their project or code.
+          - Set "currentStage": "system_design"
+          - Set "stageLabel": "Question 4 of 5: Edge Cases & Performance Bottlenecks"
+          - Set "answerFormatHint": "Explain how you optimize performance and handle unexpected failure states."
+        `;
       } else {
         targetStage = 'behavioral_star';
         stageInstructions = `
-          STAGE 4: BEHAVIORAL & STAR METHOD PROBE (Turn 4 - Final Round)
-          - Ask ONE situational behavioral question (1-2 short sentences max) about working under deadline pressure, teamwork, or solving a tough technical bug.
+          STAGE 5: BEHAVIORAL & STAR METHOD PROBE (Turn 5 of 5 - Final Question)
+          - Ask ONE situational behavioral question (1-2 short sentences max) about working under deadline pressure, teamwork, or solving a tough bug.
           - Set "currentStage": "behavioral_star"
-          - Set "stageLabel": "Round 4: Behavioral & STAR Challenge (Final Round)"
+          - Set "stageLabel": "Question 5 of 5: Behavioral & STAR Challenge (Final Question)"
           - Set "answerFormatHint": "Structure your answer using Situation, Task, Action, and Result."
         `;
       }

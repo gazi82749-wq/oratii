@@ -105,11 +105,13 @@ export default function ChatGPTInterviewStudio({
   const [examinerTone, setExaminerTone] = useState<
     "friendly" | "strict" | "star"
   >("friendly");
+  const [mockSeriesRound, setMockSeriesRound] = useState<1 | 2 | 3>(1);
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const searchParams = useSearchParams();
   const roleQuery = searchParams?.get("role");
+  const roundQuery = searchParams?.get("round");
 
   // Map URL aliases (e.g. ?role=sde) to preset IDs
   const ROLE_ALIASES: Record<string, string> = {
@@ -130,6 +132,19 @@ export default function ChatGPTInterviewStudio({
   };
 
   useEffect(() => {
+    if (roundQuery === "2") {
+      setMockSeriesRound(2);
+      setExaminerTone("strict");
+    } else if (roundQuery === "3") {
+      setMockSeriesRound(3);
+      setExaminerTone("star");
+    } else if (roundQuery === "1") {
+      setMockSeriesRound(1);
+      setExaminerTone("friendly");
+    }
+  }, [roundQuery]);
+
+  useEffect(() => {
     if (!roleQuery) return;
     const presetId = ROLE_ALIASES[roleQuery.toLowerCase()];
     if (presetId) {
@@ -145,7 +160,7 @@ export default function ChatGPTInterviewStudio({
   const [isAiSpeaking, setIsAiSpeaking] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
   const [stageLabel, setStageLabel] = useState(
-    "Round 1: Candidate Introduction",
+    "Question 1 of 5: Candidate Introduction",
   );
   const [answerFormatHint, setAnswerFormatHint] = useState(
     "Give a 1-2 minute overview of your background & key skills.",
@@ -498,8 +513,8 @@ export default function ChatGPTInterviewStudio({
       (item) => item.role === "candidate" && item.text
     ).length;
 
-    // Standard interview caps at 4 rounds
-    if (candidateAnswersCount >= 4) {
+    // Standard interview caps at 5 questions per round
+    if (candidateAnswersCount >= 5) {
       await finishInterview(updatedHistory);
       return;
     }
@@ -533,12 +548,12 @@ export default function ChatGPTInterviewStudio({
       const payload = data.data || data.viva;
       if (data.status === "success" && payload) {
         const nextQ = payload.nextQuestion;
-        const nextRoundNum = Math.min(4, currentRound + 1);
+        const nextRoundNum = Math.min(5, currentRound + 1);
         setCurrentQuestion(nextQ);
         setCurrentRound(nextRoundNum);
         setStageLabel(
           payload.stageLabel ||
-            `Round ${nextRoundNum}: Deep Technical Discussion`,
+            `Question ${nextRoundNum} of 5: Interview Q&A`,
         );
         setAnswerFormatHint(
           payload.answerFormatHint ||
@@ -679,6 +694,14 @@ export default function ChatGPTInterviewStudio({
       const sessionRecord = saveSession("interview", {
         roleTitle,
         difficultyLevel,
+        mockSeriesRound,
+        examinerTone,
+        nextRoundNumber: mockSeriesRound < 3 ? mockSeriesRound + 1 : null,
+        nextRoundTitle: mockSeriesRound === 1 
+          ? "Round 2: Technical Panel" 
+          : mockSeriesRound === 2 
+            ? "Round 3: STAR Method Behavioral Round" 
+            : "3-Round Mock Series Completed",
         scores: finalScores,
         strengths: finalStrengths,
         weaknesses: finalWeaknesses,
@@ -697,6 +720,14 @@ export default function ChatGPTInterviewStudio({
       const sessionRecord = saveSession("interview", {
         roleTitle,
         difficultyLevel,
+        mockSeriesRound,
+        examinerTone,
+        nextRoundNumber: mockSeriesRound < 3 ? mockSeriesRound + 1 : null,
+        nextRoundTitle: mockSeriesRound === 1 
+          ? "Round 2: Technical Panel" 
+          : mockSeriesRound === 2 
+            ? "Round 3: STAR Method Behavioral Round" 
+            : "3-Round Mock Series Completed",
         scores: fallbackScores,
         strengths: [`Domain alignment for ${roleTitle}`],
         weaknesses: ["Provide deeper technical details on project trade-offs"],
@@ -752,39 +783,51 @@ export default function ChatGPTInterviewStudio({
           </p>
         </div>
 
-        {/* Mode Selector Navbar Pills (Matching Speech Coach) */}
-        <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/80 shrink-0">
+        {/* Mode Selector Navbar Pills with 3-Round Series Tracker */}
+        <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/80 shrink-0 gap-1">
           <button
             type="button"
-            onClick={() => setExaminerTone("friendly")}
-            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            onClick={() => {
+              setExaminerTone("friendly");
+              setMockSeriesRound(1);
+            }}
+            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
               examinerTone === "friendly"
-                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
-                : "text-slate-500 hover:text-slate-900"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 bg-white/60"
             }`}
           >
+            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
             Standard Mock
           </button>
           <button
             type="button"
-            onClick={() => setExaminerTone("strict")}
-            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            onClick={() => {
+              setExaminerTone("strict");
+              setMockSeriesRound(2);
+            }}
+            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
               examinerTone === "strict"
-                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
-                : "text-slate-500 hover:text-slate-900"
+                ? "bg-purple-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 bg-white/60"
             }`}
           >
-            Technical Panel
+            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">2</span>
+            Technical Round
           </button>
           <button
             type="button"
-            onClick={() => setExaminerTone("star")}
-            className={`px-3.5 py-2 text-xs font-black transition-all rounded-lg cursor-pointer ${
+            onClick={() => {
+              setExaminerTone("star");
+              setMockSeriesRound(3);
+            }}
+            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
               examinerTone === "star"
-                ? "bg-white text-slate-950 shadow-xs border border-slate-200"
-                : "text-slate-500 hover:text-slate-900"
+                ? "bg-amber-600 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 bg-white/60"
             }`}
           >
+            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">3</span>
             STAR Method
           </button>
         </div>
