@@ -175,6 +175,7 @@ export default function ChatGPTInterviewStudio({
   const [isPaused, setIsPaused] = useState(false);
   const [showRetryConfirmModal, setShowRetryConfirmModal] = useState(false);
   const lastSpokenTextRef = useRef<string>("");
+  const speechCharIndexRef = useRef<number>(0);
 
   const togglePause = () => {
     if (isPaused) {
@@ -183,9 +184,20 @@ export default function ChatGPTInterviewStudio({
         try { recognitionRef.current.start(); } catch (e) {}
         startListeningTimer();
       }
-      // Re-read current question aloud completely on resume if voice is enabled
-      if (voiceEnabled && (lastSpokenTextRef.current || currentQuestion)) {
-        speakText(lastSpokenTextRef.current || currentQuestion);
+      // Resume speech aloud from exact paused location
+      if (voiceEnabled && typeof window !== "undefined" && "speechSynthesis" in window) {
+        if (window.speechSynthesis.paused) {
+          try {
+            window.speechSynthesis.resume();
+            setIsAiSpeaking(true);
+          } catch (e) {
+            const targetText = lastSpokenTextRef.current || currentQuestion;
+            if (targetText) speakText(targetText, speechCharIndexRef.current);
+          }
+        } else {
+          const targetText = lastSpokenTextRef.current || currentQuestion;
+          if (targetText) speakText(targetText, speechCharIndexRef.current);
+        }
       }
     } else {
       setIsPaused(true);
@@ -193,7 +205,11 @@ export default function ChatGPTInterviewStudio({
         try { recognitionRef.current.stop(); } catch (e) {}
       }
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        try { window.speechSynthesis.cancel(); } catch (e) {}
+        if (window.speechSynthesis.speaking) {
+          try { window.speechSynthesis.pause(); } catch (e) {
+            try { window.speechSynthesis.cancel(); } catch (err) {}
+          }
+        }
       }
       setIsAiSpeaking(false);
       if (speakingTimerRef.current) {
@@ -448,7 +464,7 @@ export default function ChatGPTInterviewStudio({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isLoading]);
 
-  const speakText = (text: string) => {
+  const speakText = (text: string, startFromChar: number = 0) => {
     if (
       !voiceEnabled ||
       typeof window === "undefined" ||
@@ -457,13 +473,27 @@ export default function ChatGPTInterviewStudio({
       return;
     try {
       lastSpokenTextRef.current = text;
+      const textToSpeak = startFromChar > 0 && startFromChar < text.length ? text.slice(startFromChar) : text;
+      if (startFromChar === 0) speechCharIndexRef.current = 0;
+
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.rate = 0.95;
       utterance.pitch = 1.0;
       utterance.onstart = () => setIsAiSpeaking(true);
-      utterance.onend = () => setIsAiSpeaking(false);
-      utterance.onerror = () => setIsAiSpeaking(false);
+      utterance.onboundary = (event: any) => {
+        if (event.name === "word" || typeof event.charIndex === "number") {
+          speechCharIndexRef.current = startFromChar + (event.charIndex || 0);
+        }
+      };
+      utterance.onend = () => {
+        setIsAiSpeaking(false);
+        speechCharIndexRef.current = 0;
+      };
+      utterance.onerror = () => {
+        setIsAiSpeaking(false);
+        speechCharIndexRef.current = 0;
+      };
       window.speechSynthesis.speak(utterance);
     } catch (e) {
       console.warn("Speech synthesis failed:", e);
