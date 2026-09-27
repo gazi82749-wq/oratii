@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'Free Filler Word Counter Online | Oratii AI',
   description: 'Detect and count filler words ("um", "like", "basically", "you know") in real-time. Test your speech live with instant AI crutch-word telemetry.',
   keywords: ['filler word counter', 'detect filler words online', 'stop saying um', 'speech filler words detector', 'crutch word counter'],
+  alternates: {
+    canonical: 'https://oratii.in/tools/filler-word-counter',
+  },
   openGraph: {
     title: 'Free Filler Word Counter Online | Oratii AI',
     description: 'Detect and count filler words in your speech live. Eliminate "um", "like", and "basically".',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default function FillerWordCounterPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://oratii.in' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Tools', 'item': 'https://oratii.in/tools/filler-word-counter' },
+      { '@type': 'ListItem', 'position': 3, 'name': 'Filler Word Counter', 'item': 'https://oratii.in/tools/filler-word-counter' }
+    ]
+  };
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -40,6 +53,10 @@ export default function FillerWordCounterPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

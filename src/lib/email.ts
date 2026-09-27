@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii AI <onboarding@resend.dev>';
-const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.vercel.app';
+const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
 
 // Generic email sender to avoid template duplication
 async function sendEmail(to: string, subject: string, heading: string, body: string, ctaText: string, ctaUrl: string, ctaColor: string) {
@@ -84,7 +84,7 @@ export interface WeeklyDigestStats {
 }
 
 export async function sendWeeklyDigestEmail(toEmail: string, userName: string, stats: WeeklyDigestStats) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
   if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
     console.log(`[Email Skipped - No Resend Key] Weekly Digest to ${toEmail}`);
     return;

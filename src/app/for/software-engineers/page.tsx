@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'AI Voice Mock Interview Practice for Software Engineers | Oratii',
   description: 'Practice tech system architecture and behavioral HR mock interviews with real-time AI feedback. Audit your STAR framework structure, technical depth, and vocal clarity.',
   keywords: ['software engineer mock interview', 'ai tech interview practice', 'system design mock interview', 'star method interview audit', 'coding interview behavioral prep'],
+  alternates: {
+    canonical: 'https://oratii.in/for/software-engineers',
+  },
   openGraph: {
     title: 'AI Voice Mock Interview for Software Engineers | Oratii',
     description: 'Practice tech behavioral and architecture questions out loud with instant AI evaluation.',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default function SoftwareEngineersSeoPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://oratii.in' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'For', 'item': 'https://oratii.in/for/software-engineers' },
+      { '@type': 'ListItem', 'position': 3, 'name': 'Software Engineers', 'item': 'https://oratii.in/for/software-engineers' }
+    ]
+  };
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -40,6 +53,10 @@ export default function SoftwareEngineersSeoPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

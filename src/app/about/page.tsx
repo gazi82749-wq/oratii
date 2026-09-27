@@ -22,6 +22,14 @@ import AboutCta from '@/components/AboutCta';
 export const metadata: Metadata = {
   title: 'About Us | Oratii Speech & Placement Lab',
   description: 'Learn why we built Oratii — the next-generation speech coach, mock interview lab, and educator studio empowering every speaker to lead the room.',
+  alternates: {
+    canonical: 'https://oratii.in/about',
+  },
+  openGraph: {
+    title: 'About Us | Oratii Speech & Placement Lab',
+    description: 'Empowering every speaker to master their message and lead the room.',
+    url: 'https://oratii.in/about',
+  },
 };
 
 export default function AboutUsPage() {

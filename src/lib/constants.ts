@@ -1,7 +1,9 @@
 // src/lib/constants.ts
 // Central constants for all Oratii modules
 
-// â”€â”€â”€ Interview Categories (Module 1) â”€â”€â”€
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
+// ─── Interview Categories (Module 1) ───
 export const INTERVIEW_CATEGORIES = [
   {
     id: 'hr',

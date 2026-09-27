@@ -2,8 +2,16 @@ import { Metadata } from 'next';
 import PricingClient from './PricingClient';
 
 export const metadata: Metadata = {
-  title: 'Pricing & Credit Packs | Oratii AI Speech & Presentation Coach',
-  description: 'Simple pay-as-you-go credit packs for speech audio auditing, presentation practice, and AI Viva defense sessions. No subscriptions or hidden fees.',
+  title: 'Pricing & Credit Packs | Oratii AI Speech & Interview Coach',
+  description: 'Simple pay-as-you-go credit packs for speech audio auditing, daily habit drills, and voice mock interview sessions. No subscriptions or hidden fees.',
+  alternates: {
+    canonical: 'https://oratii.in/pricing',
+  },
+  openGraph: {
+    title: 'Pricing & Credit Packs | Oratii AI',
+    description: 'Simple pay-as-you-go credit packs for AI speech coaching and voice mock interviews.',
+    url: 'https://oratii.in/pricing',
+  },
 };
 
 const faqSchema = {
@@ -15,7 +23,7 @@ const faqSchema = {
       name: 'How do Oratii credits work?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Credits are simple: 1 Credit = 1 Speech Audio Analysis, 1 Credit = 1 Presentation Practice Session, and 2 Credits = 1 AI Viva Defense Q&A Session. You only pay for what you actually use.',
+        text: 'Credits are simple: 1 Credit = 1 Speech Audio Analysis, 1 Credit = 1 Voice Mock Interview, and 1 Credit = 1 Daily Challenge Drill. You only pay for what you actually use.',
       },
     },
     {

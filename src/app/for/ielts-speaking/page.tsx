@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'IELTS & CEFR Speaking Practice Online | Oratii AI',
   description: 'Practice IELTS speaking test topics with real-time AI band score feedback, WPM pacing telemetry, filler word detection, and vocal clarity audits.',
   keywords: ['ielts speaking practice online', 'ielts speaking ai band score', 'cefr speaking test online', 'english fluency practice', 'public speaking ielts'],
+  alternates: {
+    canonical: 'https://oratii.in/for/ielts-speaking',
+  },
   openGraph: {
     title: 'IELTS & CEFR Speaking Practice Online | Oratii AI',
     description: 'Get instant vocal feedback on IELTS speaking topics with live AI pacing and fluency telemetry.',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default function IeltsSpeakingSeoPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://oratii.in' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'For', 'item': 'https://oratii.in/for/ielts-speaking' },
+      { '@type': 'ListItem', 'position': 3, 'name': 'IELTS Speaking Practice', 'item': 'https://oratii.in/for/ielts-speaking' }
+    ]
+  };
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -40,6 +53,10 @@ export default function IeltsSpeakingSeoPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -114,6 +131,11 @@ export default function IeltsSpeakingSeoPage() {
                 Practice 1 to 2 minute continuous speech prompts with live audio feedback.
               </p>
             </div>
+          </div>
+
+          {/* Disclaimer Banner */}
+          <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 text-xs font-medium text-center max-w-3xl mx-auto">
+            <strong>Disclaimer:</strong> Oratii is an independent AI speech coaching tool designed for self-improvement and practice. Oratii is not affiliated with, endorsed by, or certified by IELTS, Cambridge Assessment English, IDP, or the British Council. All score estimates are provided strictly for practice guidance.
           </div>
         </section>
       </main>

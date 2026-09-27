@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://ppt-analyzer.vercel.app';
+  const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
   const emailRedirectTo = role === 'trainer'
     ? `${origin}/auth/callback?next=/trainer/onboarding&role=trainer`
     : `${origin}/dashboard`;

@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'Free Speech Speed & WPM Calculator Online | Oratii AI',
   description: 'Calculate your speaking speed in Words Per Minute (WPM) instantly. Test your mic live for free and get real-time feedback on your speech pacing.',
   keywords: ['speech wpm calculator', 'words per minute speaker', 'speaking speed test', 'how fast do I speak', 'speech pacing analyzer'],
+  alternates: {
+    canonical: 'https://oratii.in/tools/wpm-calculator',
+  },
   openGraph: {
     title: 'Free Speech Speed & WPM Calculator | Oratii AI',
     description: 'Calculate your speaking speed in Words Per Minute (WPM) live. Get instant feedback on your pacing.',
@@ -15,6 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default function WpmCalculatorPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://oratii.in' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Tools', 'item': 'https://oratii.in/tools/wpm-calculator' },
+      { '@type': 'ListItem', 'position': 3, 'name': 'Speech WPM Calculator', 'item': 'https://oratii.in/tools/wpm-calculator' }
+    ]
+  };
+
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -40,6 +53,10 @@ export default function WpmCalculatorPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
