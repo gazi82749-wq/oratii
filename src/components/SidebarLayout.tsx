@@ -187,10 +187,8 @@ export default function SidebarLayout({ children }) {
           </div>
           
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-5 lg:gap-7 ml-6 lg:ml-8 mr-auto">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8 ml-6 lg:ml-8 mr-auto">
             <Link href="/" className={navLinkClass('/')}>Home</Link>
-            <Link href="/interview" className={navLinkClass('/interview')}>Mock Interview</Link>
-            <Link href="/speech-coach" className={navLinkClass('/speech-coach')}>Speech Coach</Link>
             
             {/* Products Dropdown */}
             <div className="relative dropdown-container">
