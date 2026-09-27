@@ -113,16 +113,16 @@ export const viewport = {
 
 const softwareAppSchema = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Oratii',
-  operatingSystem: 'Web',
+  '@type': 'WebApplication',
+  name: 'Oratii | AI Speech & Interview Coach',
+  operatingSystem: 'Web, iOS, Android',
   applicationCategory: 'EducationalApplication',
   offers: {
     '@type': 'Offer',
     price: '0',
-    priceCurrency: 'INR',
+    priceCurrency: 'USD',
   },
-  description: 'AI-powered speech and presentation coach providing real-time feedback on vocal pacing, filler words, and presentation delivery.',
+  description: 'AI-powered speech, voice mock interview, and daily communication coach providing real-time feedback on vocal pacing, filler words, and answer structure.',
 };
 
 const organizationSchema = {
@@ -130,7 +130,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'Oratii',
   url: siteUrl,
-  logo: `${siteUrl}/favicon.ico`,
+  logo: `${siteUrl}/icon-512.png`,
 };
 
 import GlobalErrorLogger from "../components/GlobalErrorLogger";
