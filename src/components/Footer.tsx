@@ -16,7 +16,7 @@ export default function Footer() {
               <Logo className="text-white text-3xl" />
             </div>
             <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm mb-6 font-medium">
-              The AI-powered speech, presentation & job interview coach. Analyze vocal pacing, filler words, live presentations, and mock interviews in real-time.
+              The AI-powered speech, communication &amp; job interview coach. Analyze vocal pacing, filler words, daily speech habits, and mock interviews in real-time.
             </p>
           </div>
           

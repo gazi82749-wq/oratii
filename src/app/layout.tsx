@@ -30,18 +30,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     template: '%s | Oratii',
-    default: 'Oratii | AI Speech & Presentation Coach',
+    default: 'Oratii | AI Speech & Interview Coach',
   },
-  description: 'Get real-time AI feedback on your vocal pacing, presentation slides, and job interview delivery. Practice smarter, speak better.',
+  description: 'Get real-time AI feedback on your vocal pacing, filler words, daily speech habits, and job interview delivery. Practice smarter, speak better.',
   keywords: [
     'AI speech coach',
-    'presentation coach',
+    'voice mock interview',
     'mock interview practice',
     'public speaking AI',
     'vocal pacing analyzer',
-    'viva practice',
-    'presentation feedback',
-    'AI viva coach'
+    'daily speech habit',
+    'speech feedback',
+    'AI interview coach'
   ],
   authors: [{ name: 'Oratii' }],
   creator: 'Oratii',
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Oratii | AI Speech & Presentation Coach',
-    description: 'Get real-time AI feedback on your vocal pacing, presentation slides, and job interview delivery.',
+    title: 'Oratii | AI Speech & Interview Coach',
+    description: 'Get real-time AI feedback on your vocal pacing, filler words, daily speech habits, and job interview delivery.',
     url: siteUrl,
     siteName: 'Oratii',
     images: [
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
         url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: 'Oratii - AI Speech & Presentation Coach',
+        alt: 'Oratii - AI Speech & Interview Coach',
       },
     ],
     locale: 'en_US',
@@ -77,8 +77,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Oratii | AI Speech & Presentation Coach',
-    description: 'Get real-time AI feedback on your vocal pacing, presentation slides, and job interview delivery.',
+    title: 'Oratii | AI Speech & Interview Coach',
+    description: 'Get real-time AI feedback on your vocal pacing, filler words, daily speech habits, and job interview delivery.',
     images: [`${siteUrl}/og-image.png`],
   },
   icons: {
