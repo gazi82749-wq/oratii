@@ -233,38 +233,44 @@ function PresentationPracticeContent() {
         document.body
       )}
 
-    <div className="w-full flex flex-col gap-8 animate-fade-in text-slate-900 relative">
-      <div className="mb-4 text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Presentation Studio
+    <div className="w-full flex flex-col gap-6 animate-fade-in text-slate-900 relative font-sans pb-6">
+      {/* Header Banner matching Landing Page Presentation Section (Amber/Orange Theme) */}
+      <div className="mb-2 text-left bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-[#F8FAFC] border border-amber-200/80 p-5 sm:p-7 rounded-3xl relative overflow-hidden shadow-2xs">
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-amber-400/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-orange-300/15 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-950 text-[11px] font-black uppercase tracking-widest mb-3 shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse"></span> Slide &amp; Pitch Studio
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-[#0F1426] tracking-tight mb-1.5 flex items-center gap-2.5">
+            <Video size={28} className="text-amber-600" /> Presentation Practice &amp; Viva Defense
+          </h1>
+          <p className="text-xs sm:text-base text-slate-700 font-medium max-w-xl leading-relaxed">
+            Upload your PowerPoint (PPTX) or PDF deck. Present your slides while Oratii analyzes speech clarity, slide density telemetry, and examiner Q&amp;A defense.
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2 flex items-center gap-2.5">
-          <Video size={28} className="text-[#F2A93B]" /> Presentation Practice
-        </h1>
-        <p className="text-sm md:text-base text-slate-600 font-normal max-w-xl">
-          Upload your PowerPoint (PPTX) or PDF deck. Present your slides while our AI analyzes your speech clarity, pacing, and body language.
-        </p>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold flex items-center justify-between animate-fade-in">
+        <div className="mb-4 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold flex items-center justify-between animate-fade-in">
           <span className="flex items-center gap-2"><AlertCircle size={16} /> {error}</span>
           <button onClick={() => setError(null)} className="text-rose-500 hover:text-rose-700 font-bold ml-4 cursor-pointer" aria-label="Dismiss error"><X size={16} /></button>
         </div>
       )}
 
-      <div className="w-full dropzone-holographic p-6 sm:p-10 flex flex-col items-center relative">
+      <div className="w-full dropzone-holographic p-6 sm:p-10 flex flex-col items-center relative rounded-3xl border border-amber-200/70">
         <div className="glow-ambient-radial top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 space-y-6 animate-fade-in">
             <div className="relative">
-              <div className="absolute inset-0 bg-indigo-500/30 blur-xl rounded-full animate-pulse" />
-              <div className="w-16 h-16 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin relative z-10" />
+              <div className="absolute inset-0 bg-amber-500/30 blur-xl rounded-full animate-pulse" />
+              <div className="w-16 h-16 border-4 border-slate-200 border-t-amber-600 rounded-full animate-spin relative z-10" />
             </div>
             <div className="text-center space-y-1.5">
               <h3 className="text-lg font-extrabold text-slate-100">Processing Presentation</h3>
-              <p className="text-sm font-bold text-indigo-300 animate-pulse tracking-wide uppercase">Extracting slides and preparing AI telemetry...</p>
+              <p className="text-sm font-bold text-amber-300 animate-pulse tracking-wide uppercase">Extracting slides and preparing AI telemetry...</p>
             </div>
           </div>
         ) : isPresentationReady ? (
@@ -272,8 +278,8 @@ function PresentationPracticeContent() {
              <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
                 <CheckCircle2 size={40} />
              </div>
-             <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2 text-center">Presentation Ready</h2>
-             <p className="text-slate-600 font-medium mb-8 text-center px-4">
+             <h2 className="text-2xl font-black tracking-tight text-[#0F1426] mb-2 text-center">Presentation Ready</h2>
+             <p className="text-slate-700 font-medium mb-8 text-center px-4">
                 &quot;{file?.name}&quot; has been processed and is ready for practice.
              </p>
              
@@ -295,7 +301,7 @@ function PresentationPracticeContent() {
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-2xl p-8 sm:p-14 cursor-pointer transition-all flex flex-col items-center justify-center group ${
-                isDragActive ? 'border-indigo-400 bg-indigo-500/10' : 'border-indigo-500/30 bg-slate-950/60 hover:bg-indigo-950/40 hover:border-indigo-400/60'
+                isDragActive ? 'border-amber-500 bg-amber-500/10' : 'border-amber-500/40 bg-slate-950/70 hover:bg-slate-900 hover:border-amber-400/80 shadow-md'
               }`}
             >
               <input {...getInputProps()} />

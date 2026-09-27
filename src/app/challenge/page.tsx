@@ -49,64 +49,67 @@ export default function ChallengePage() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-transparent text-slate-900">
+    <div className="w-full min-h-screen flex flex-col bg-transparent text-slate-900 font-sans">
       <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col gap-8 animate-fade-in text-slate-900 pt-6 pb-16 px-4 sm:px-6">
       
-        {/* HEADER & STREAK */}
-        <div className="w-full bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-sm p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-3 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> Daily Habit
+        {/* HEADER & STREAK (Matching Emerald Habit Theme) */}
+        <div className="w-full bg-gradient-to-br from-emerald-50/90 via-teal-50/40 to-[#F8FAFC] border border-emerald-200/80 rounded-2xl sm:rounded-3xl shadow-xs p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden">
+          <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-teal-300/15 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-[11px] font-black uppercase tracking-widest mb-3 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span> Daily Habit Building
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight mb-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#0F1426] leading-tight mb-2">
               Speak Every Day.
             </h1>
-            <p className="text-sm font-medium text-slate-600 max-w-xl">
+            <p className="text-xs sm:text-base font-medium text-slate-700 max-w-xl leading-relaxed">
               Build a simple daily habit to improve your confidence. No heavy drills, just a new simple prompt every day.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 px-5 py-3 rounded-2xl shadow-2xs shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-[#F2A93B] text-[#0F1426] flex items-center justify-center shadow-2xs font-bold">
-              <Flame size={22} className="fill-[#0F1426]" />
+          <div className="flex items-center gap-3 bg-white/90 backdrop-blur-xs border border-emerald-200 px-5 py-3.5 rounded-2xl shadow-2xs shrink-0 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs font-bold">
+              <Flame size={22} className="fill-white" />
             </div>
             <div>
-              <div className="text-xl font-extrabold text-slate-900 leading-none">
+              <div className="text-xl font-black text-[#0F1426] leading-none">
                 {state.streak_count} <span className="text-xs font-bold text-slate-500">Days</span>
               </div>
-              <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Active Streak</span>
+              <span className="text-[11px] font-extrabold text-emerald-800 uppercase tracking-wider">Active Streak</span>
             </div>
           </div>
         </div>
 
-        {/* TODAY'S PROMPT */}
-        <div className="bg-gradient-to-br from-indigo-50/50 via-slate-50 to-white rounded-[32px] p-6 sm:p-10 border border-indigo-100 shadow-sm relative overflow-hidden flex flex-col items-center text-center">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-300/10 rounded-full blur-3xl pointer-events-none transform translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F2A93B]/10 rounded-full blur-3xl pointer-events-none transform -translate-x-1/2 translate-y-1/2" />
+        {/* TODAY'S PROMPT (Matching Emerald Theme) */}
+        <div className="bg-gradient-to-br from-emerald-50/70 via-teal-50/30 to-white rounded-[32px] p-6 sm:p-10 border border-emerald-200/80 shadow-sm relative overflow-hidden flex flex-col items-center text-center">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none transform translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-300/15 rounded-full blur-3xl pointer-events-none transform -translate-x-1/2 translate-y-1/2" />
           
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100/80 border border-indigo-200 text-indigo-900 text-[11px] font-black uppercase tracking-widest shadow-2xs mb-6 relative z-10">
-            <CheckCircle2 size={14} className="text-indigo-600" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-[11px] font-black uppercase tracking-widest shadow-2xs mb-6 relative z-10">
+            <CheckCircle2 size={14} className="text-emerald-600" />
             <span>Today&apos;s Prompt (Day {state.current_day})</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mb-3 relative z-10 max-w-2xl">
+          <h2 className="text-2xl sm:text-4xl font-black text-[#0F1426] mb-3 relative z-10 max-w-2xl tracking-tight">
             {todayTask.title}
           </h2>
           
-          <p className="text-slate-600 font-medium text-sm sm:text-base max-w-md mx-auto mb-8 relative z-10">
+          <p className="text-slate-700 font-medium text-sm sm:text-base max-w-md mx-auto mb-8 relative z-10 leading-relaxed">
             {todayTask.description}
           </p>
 
           <button
             onClick={handleStartTask}
-            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-xl shadow-indigo-900/20 hover:shadow-indigo-900/40 hover:-translate-y-1 transition-all group relative z-10"
+            className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base sm:text-lg rounded-2xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:-translate-y-0.5 transition-all group relative z-10 cursor-pointer"
           >
-            <Mic size={22} className="text-[#F2A93B] group-hover:scale-110 transition-transform" />
-            Practice Now
-            <ArrowRight size={20} className="text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            <Mic size={22} className="text-white group-hover:scale-110 transition-transform" />
+            <span>Practice Now</span>
+            <ArrowRight size={20} className="text-emerald-200 group-hover:text-white group-hover:translate-x-1 transition-all" />
           </button>
           
-          <p className="mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest relative z-10">
+          <p className="mt-4 text-xs font-black text-slate-500 uppercase tracking-widest relative z-10">
             Target: {todayTask.targetDuration}
           </p>
         </div>
