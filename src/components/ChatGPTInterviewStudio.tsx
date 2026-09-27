@@ -1348,17 +1348,22 @@ export default function ChatGPTInterviewStudio({
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
-            <span className="text-sm text-slate-400 font-extrabold">
-              Round {currentRound} of 4
+            <span className="text-xs sm:text-sm text-slate-300 font-extrabold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+              Question {currentRound} of 5 &bull; Round {mockSeriesRound} ({mockSeriesRound === 1 ? 'Standard Mock' : mockSeriesRound === 2 ? 'Technical Panel' : 'STAR Method'})
             </span>
             <button
               onClick={() => finishInterview()}
               disabled={isLoading}
-              className="text-sm text-amber-400 hover:text-amber-300 font-black underline cursor-pointer"
+              className="px-4 py-2 bg-amber-400/10 hover:bg-amber-400/20 text-amber-400 hover:text-amber-300 font-black text-xs rounded-xl border border-amber-500/30 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
-              {isLoading
-                ? "Generating Evaluation Report..."
-                : "Finish & Generate Real AI Report ➔"}
+              <span>
+                {isLoading
+                  ? "Generating Evaluation Report..."
+                  : currentRound >= 5
+                    ? `📊 Analyze Round ${mockSeriesRound} & View Weakness Report ➔`
+                    : `📊 Finish Round ${mockSeriesRound} & View Analysis ➔`}
+              </span>
             </button>
           </div>
         </div>
