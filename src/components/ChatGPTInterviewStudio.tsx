@@ -174,6 +174,7 @@ export default function ChatGPTInterviewStudio({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [showRetryConfirmModal, setShowRetryConfirmModal] = useState(false);
+  const lastSpokenTextRef = useRef<string>("");
 
   const togglePause = () => {
     if (isPaused) {
@@ -181,6 +182,10 @@ export default function ChatGPTInterviewStudio({
       if (isListening && recognitionRef.current) {
         try { recognitionRef.current.start(); } catch (e) {}
         startListeningTimer();
+      }
+      // Re-read current question aloud completely on resume if voice is enabled
+      if (voiceEnabled && (lastSpokenTextRef.current || currentQuestion)) {
+        speakText(lastSpokenTextRef.current || currentQuestion);
       }
     } else {
       setIsPaused(true);
@@ -190,6 +195,7 @@ export default function ChatGPTInterviewStudio({
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         try { window.speechSynthesis.cancel(); } catch (e) {}
       }
+      setIsAiSpeaking(false);
       if (speakingTimerRef.current) {
         clearInterval(speakingTimerRef.current);
         speakingTimerRef.current = null;
@@ -450,6 +456,7 @@ export default function ChatGPTInterviewStudio({
     )
       return;
     try {
+      lastSpokenTextRef.current = text;
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.95;
@@ -1230,6 +1237,19 @@ export default function ChatGPTInterviewStudio({
             <span className="text-[11px] text-slate-400 font-medium mt-1 text-center px-2">
               {answerFormatHint}
             </span>
+
+            {/* Replay Question Audio Button */}
+            {voiceEnabled && !isPaused && (
+              <button
+                type="button"
+                onClick={() => speakText(lastSpokenTextRef.current || currentQuestion)}
+                className="mt-2.5 px-3 py-1 bg-slate-800/90 hover:bg-slate-700 text-amber-300 font-bold text-[11px] rounded-lg border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Re-speak current question completely aloud"
+              >
+                <Volume2 size={13} className="text-amber-400" />
+                <span>Replay Question Audio</span>
+              </button>
+            )}
           </div>
 
           {/* Real-Time Pacing & Delivery Guidance */}
