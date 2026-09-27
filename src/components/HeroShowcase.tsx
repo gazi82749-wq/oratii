@@ -161,22 +161,22 @@ export default function HeroShowcase() {
             {current.id === 'interview' && (
               <div className="flex flex-col justify-between h-full">
                 <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                  <span className="text-xs font-bold text-indigo-900 uppercase tracking-widest">AI Interviewer Probe</span>
+                  <span className="text-xs font-bold text-indigo-900 uppercase tracking-widest">3-Round Mockup Campaign</span>
                   <span className="text-[10px] font-extrabold text-indigo-950 bg-indigo-100/90 border border-indigo-300 px-2.5 py-0.5 rounded-full">
-                    STAR Method Audit
+                    Standard ➔ Tech ➔ STAR
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm font-semibold text-slate-800 italic my-2">
-                  &quot;Tell me about a complex system architecture decision you made under deadline pressure.&quot;
+                  &quot;Welcome to Round 1! Introduce yourself, your background, and primary technical skills.&quot;
                 </p>
                 <div className="grid grid-cols-2 gap-2 text-[10px] pt-2 border-t border-slate-200">
                   <div className="bg-white p-2 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <span className="text-indigo-800 font-bold block">Structure — Strong</span>
-                    <span className="text-slate-500 font-medium">STAR method followed</span>
+                    <span className="text-indigo-800 font-bold block">3 Sequential Rounds</span>
+                    <span className="text-slate-500 font-medium">5 Questions per Round</span>
                   </div>
                   <div className="bg-white p-2 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <span className="text-amber-800 font-bold block">Score — 92%</span>
-                    <span className="text-slate-500 font-medium">High Technical Depth</span>
+                    <span className="text-amber-800 font-bold block">40-Min Prep Break</span>
+                    <span className="text-slate-500 font-medium">Weakness-Based Guide</span>
                   </div>
                 </div>
               </div>

@@ -276,42 +276,42 @@ export default function HomeClient() {
 
                 <div className="w-full flex flex-col items-center md:items-end space-y-4 sm:space-y-6 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-xs font-black uppercase tracking-widest shadow-2xs mx-auto md:ml-auto md:mr-0">
-                    <span>AI Voice Interviewer</span>
+                    <span>3-Round Mock Interview Campaign</span>
                   </div>
 
                   <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-tight max-w-4xl text-center md:text-right">
-                    Stop rehearsing predictable answers.
+                    Master placement drives in 3 sequential rounds.
                   </h2>
 
                   <p className="text-slate-700 text-sm sm:text-lg md:text-2xl font-medium leading-relaxed max-w-4xl text-center md:text-right">
-                    Practice conversations that don&apos;t follow a script. Get tested on unexpected questions and follow-ups.
+                    Standard HR Warmup &rarr; Technical Panel Deep-Dive &rarr; STAR Method Behavioral Probe. Complete with 40-minute prep breaks &amp; weakness feedback.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 pt-2 sm:pt-4 w-full text-left">
                     <FadeUp delay={100}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> Dynamic Q&amp;A Probes
+                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> 3 Sequential Rounds
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Adaptive behavioral and technical follow-ups</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">HR Warmup ➔ Tech Panel ➔ STAR Method</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={200}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> STAR Framework
+                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> 40-Min Prep Break Clock
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Situation, Task, Action, Result structure audit</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Weakness-based revision guides &amp; reminders</p>
                       </div>
                     </FadeUp>
 
                     <FadeUp delay={300}>
                       <div className="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-xs border border-indigo-200/70 shadow-2xs space-y-1 sm:space-y-1.5 h-full">
                         <div className="flex items-center gap-2 text-indigo-800 font-extrabold text-sm sm:text-base">
-                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> Specificity Score
+                          <CheckCircle2 size={16} className="text-indigo-600 sm:w-4 sm:h-4" /> 5 Questions Per Round
                         </div>
-                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Quantitative impact &amp; technical depth checks</p>
+                        <p className="text-xs text-slate-600 font-medium leading-relaxed">Deep AI feedback &amp; benchmark answers</p>
                       </div>
                     </FadeUp>
                   </div>
