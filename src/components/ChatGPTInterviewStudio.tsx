@@ -37,6 +37,7 @@ import {
   Flame,
   RefreshCw,
   Play,
+  Pause,
   Square,
   CheckCircle,
   Volume1,
@@ -171,6 +172,46 @@ export default function ChatGPTInterviewStudio({
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showRetryConfirmModal, setShowRetryConfirmModal] = useState(false);
+
+  const togglePause = () => {
+    if (isPaused) {
+      setIsPaused(false);
+      if (isListening && recognitionRef.current) {
+        try { recognitionRef.current.start(); } catch (e) {}
+        startListeningTimer();
+      }
+    } else {
+      setIsPaused(true);
+      if (isListening && recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      if (speakingTimerRef.current) {
+        clearInterval(speakingTimerRef.current);
+        speakingTimerRef.current = null;
+      }
+    }
+  };
+
+  const restartCurrentRound = async () => {
+    if (isListening && recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+    }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+    setIsListening(false);
+    setIsAiSpeaking(false);
+    setSpeakingSeconds(0);
+    setIsPaused(false);
+    setUserAnswerText("");
+    setChatHistory([]);
+    await startInterviewSession();
+  };
 
   const [scores, setScores] = useState({
     technical: 88,
@@ -1093,20 +1134,76 @@ export default function ChatGPTInterviewStudio({
       {/* STEP 2: INTERACTIVE VOICE INTERVIEW STAGE */}
       {step === "interview" && (
         <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
-          {/* Voice-First Header Ribbon */}
+          {/* Voice-First Header Ribbon with Pause & Fresh Start / Retry Controls */}
           <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-black uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Voice-First Practice Mode Active</span>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-black uppercase tracking-wider">
+                <span className={`w-2 h-2 rounded-full ${isPaused ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`}></span>
+                <span>{isPaused ? 'Interview Paused' : 'Voice-First Practice Mode Active'}</span>
+              </div>
             </div>
-            <span className="text-xs text-slate-500 font-extrabold">
-              Round {currentRound} of 5 • Speaking aloud builds 3x more
-              retention
-            </span>
+
+            <div className="flex items-center gap-2">
+              {/* Pause / Resume Button */}
+              <button
+                type="button"
+                onClick={togglePause}
+                className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                  isPaused
+                    ? 'bg-amber-400 text-[#151930] border-amber-500 hover:bg-amber-300'
+                    : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                }`}
+              >
+                {isPaused ? <Play size={13} /> : <Pause size={13} />}
+                <span>{isPaused ? 'Resume' : 'Pause'}</span>
+              </button>
+
+              {/* Fresh Start / Retry Button */}
+              <button
+                type="button"
+                onClick={() => setShowRetryConfirmModal(true)}
+                className="px-3 py-1 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                title="Fresh Start: Reset back to Question 1 of this round"
+              >
+                <RotateCcw size={13} className="text-amber-600" />
+                <span>Fresh Start / Retry</span>
+              </button>
+
+              <span className="text-xs text-slate-500 font-extrabold hidden sm:inline">
+                Round {mockSeriesRound} • Q{currentRound}/5
+              </span>
+            </div>
           </div>
 
           {/* AI Voice Visualizer Stage Card */}
           <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-[#151930] rounded-2xl border border-slate-800 text-white relative overflow-hidden shadow-2xl px-4">
+            {/* Paused Overlay Backdrop */}
+            {isPaused && (
+              <div className="absolute inset-0 bg-[#0B0E27]/90 backdrop-blur-xs flex flex-col items-center justify-center z-20 space-y-3 p-4 animate-fade-in">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center animate-pulse">
+                  <Pause size={24} />
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white">Interview Session Paused</h3>
+                <p className="text-xs text-slate-300 font-medium text-center max-w-sm">
+                  Take a break to structure your thought process. Click below when you are ready to continue speaking.
+                </p>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={togglePause}
+                    className="px-4 py-2 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-[#151930] font-black text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer hover:scale-105 transition-all"
+                  >
+                    <Play size={14} /> Resume Interview
+                  </button>
+                  <button
+                    onClick={() => setShowRetryConfirmModal(true)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <RotateCcw size={14} /> Fresh Start (Retry Round)
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div
               className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 ${
                 isAiSpeaking
@@ -1798,6 +1895,50 @@ export default function ChatGPTInterviewStudio({
                   className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                 >
                   Back to Full Report
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {/* Fresh Start / Retry Confirmation Modal */}
+      {showRetryConfirmModal && mounted &&
+        createPortal(
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in font-sans">
+            <div className="bg-[#151930] border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 text-white text-left shadow-2xl relative overflow-hidden">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/40">
+                  <RotateCcw size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white">Fresh Start / Retry Round?</h3>
+                  <p className="text-xs text-slate-400 font-medium">Reset current round back to Question 1</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                Want to restart this round fresh? Your question progress will reset to Question 1 of <strong>Round {mockSeriesRound}</strong> so you can give your absolute best response!
+              </p>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowRetryConfirmModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowRetryConfirmModal(false);
+                    restartCurrentRound();
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white text-xs font-black shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <RotateCcw size={14} />
+                  <span>Confirm Fresh Start</span>
                 </button>
               </div>
             </div>
