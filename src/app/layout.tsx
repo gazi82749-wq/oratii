@@ -115,7 +115,7 @@ const softwareAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Oratii | AI Speech & Interview Coach',
-  operatingSystem: 'Web, iOS, Android',
+  operatingSystem: 'Web',
   applicationCategory: 'EducationalApplication',
   offers: {
     '@type': 'Offer',

@@ -28,38 +28,11 @@ export default function IeltsSpeakingSeoPage() {
     ]
   };
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    'mainEntity': [
-      {
-        '@type': 'Question',
-        'name': 'How does Oratii measure IELTS speaking fluency and pacing?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Oratii analyzes your speech in real-time, calculating Words Per Minute (WPM), hesitation pauses, filler words, and vocal clarity against CEFR and IELTS Band criteria.'
-        }
-      },
-      {
-        '@type': 'Question',
-        'name': 'Can I practice 60-second speech prompts for IELTS Part 2 cue cards?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Yes! Oratii includes a Daily Challenge and Speech Coach module specifically designed for 60-120 second uninterrupted speaking practice.'
-        }
-      }
-    ]
-  };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <main className="flex-1 w-full">

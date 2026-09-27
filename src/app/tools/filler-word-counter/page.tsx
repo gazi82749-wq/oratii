@@ -28,38 +28,11 @@ export default function FillerWordCounterPage() {
     ]
   };
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    'mainEntity': [
-      {
-        '@type': 'Question',
-        'name': 'Why do speakers use filler words like "um" and "basically"?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Filler words are vocal crutches used while the brain formulates the next thought. Pausing silently instead of using filler words makes you sound significantly more confident and composed.'
-        }
-      },
-      {
-        '@type': 'Question',
-        'name': 'How does Oratii count filler words in real-time?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Oratii processes live microphone speech through continuous acoustic speech recognition, flagging filler words like "um", "uh", "basically", "like", and "you know" with timestamp telemetry.'
-        }
-      }
-    ]
-  };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <main className="flex-1 w-full">

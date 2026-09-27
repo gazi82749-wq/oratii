@@ -23,7 +23,7 @@ export default function JsonLd() {
     'name': 'Oratii | AI Speech & Interview Coach',
     'url': siteUrl,
     'applicationCategory': 'EducationalApplication',
-    'operatingSystem': 'Web, iOS, Android',
+    'operatingSystem': 'Web',
     'browserRequirements': 'Requires HTML5 audio/mic access',
     'description': 'Practice public speaking, voice mock interviews, and daily speech habits with instant AI feedback on pacing (WPM), filler words, and clarity.',
     'offers': {
@@ -31,13 +31,6 @@ export default function JsonLd() {
       'price': '0',
       'priceCurrency': 'USD',
       'availability': 'https://schema.org/InStock'
-    },
-    'aggregateRating': {
-      '@type': 'AggregateRating',
-      'ratingValue': '4.9',
-      'ratingCount': '1240',
-      'bestRating': '5',
-      'worstRating': '1'
     }
   };
 
@@ -46,11 +39,7 @@ export default function JsonLd() {
     '@type': 'Organization',
     'name': 'Oratii',
     'url': siteUrl,
-    'logo': `${siteUrl}/icon-512.png`,
-    'sameAs': [
-      'https://twitter.com/oratii_app',
-      'https://linkedin.com/company/oratii'
-    ]
+    'logo': `${siteUrl}/icon-512.png`
   };
 
   return (

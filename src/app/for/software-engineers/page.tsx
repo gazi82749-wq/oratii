@@ -28,38 +28,11 @@ export default function SoftwareEngineersSeoPage() {
     ]
   };
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    'mainEntity': [
-      {
-        '@type': 'Question',
-        'name': 'How does Oratii help software engineers in behavioral interview rounds?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Oratii evaluates your spoken answers against the STAR method (Situation, Task, Action, Result), scoring technical specificity, metrics provided, and vocal confidence.'
-        }
-      },
-      {
-        '@type': 'Question',
-        'name': 'Can I practice technical system architecture deep dives?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Yes! Oratii asks technical follow-up probes based on your role, evaluating your trade-off explanations, edge case handling, and architectural reasoning.'
-        }
-      }
-    ]
-  };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <main className="flex-1 w-full">

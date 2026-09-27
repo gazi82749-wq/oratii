@@ -28,38 +28,11 @@ export default function WpmCalculatorPage() {
     ]
   };
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    'mainEntity': [
-      {
-        '@type': 'Question',
-        'name': 'What is an optimal speaking speed in Words Per Minute (WPM)?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'The ideal speaking speed for public speeches and presentations is between 130 and 150 WPM. Speeches above 160 WPM sound rushed, while pacing under 110 WPM can cause listeners to lose focus.'
-        }
-      },
-      {
-        '@type': 'Question',
-        'name': 'How does the Oratii WPM Calculator measure speech pace?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Oratii uses Web Speech API and acoustic speech telemetry to count spoken words in real-time, dividing total word count by spoken duration to give instant WPM feedback.'
-        }
-      }
-    ]
-  };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <main className="flex-1 w-full">
