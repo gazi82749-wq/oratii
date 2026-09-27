@@ -9,8 +9,8 @@ export default function InterviewPage() {
     <div className="w-full flex flex-col gap-4 text-slate-900 animate-fade-in relative pb-6 font-sans">
       {/* Header Title */}
       <div className="mb-3 text-left">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-slate-800 text-[11px] font-bold uppercase tracking-wider mb-2 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#F2A93B]"></span> 3-Round Placement Campaign
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-950 text-[11px] font-black uppercase tracking-wider mb-2 shadow-2xs">
+          <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> 3-Round Placement Campaign
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-1">
           3-Round AI Mock Interview Campaign
