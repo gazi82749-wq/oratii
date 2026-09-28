@@ -322,7 +322,7 @@ export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportF
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       userName: ticketName || 'Speaker',
-      userEmail: ticketEmail || 'support@oratii.app',
+      userEmail: ticketEmail || 'support@oratii.in',
       systemInfo: includeDiagnostics ? diagnosticsInfo : undefined,
       messages: [
         {

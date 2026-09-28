@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 export default function ReferralCard() {
   const [userId, setUserId] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
-  const [origin, setOrigin] = useState<string>('https://oratii.app');
+  const [origin, setOrigin] = useState<string>('https://oratii.in');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

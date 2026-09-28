@@ -120,7 +120,7 @@ export default function SecurityEthicsPage() {
             <div>
               <p className="font-extrabold text-sm mb-1">Security or Ethics Question?</p>
               <p className="text-xs text-slate-600 font-medium">
-                Contact our security compliance team at <a href="mailto:security@oratii.app" className="font-bold underline text-indigo-700">security@oratii.app</a>
+                Contact our security compliance team at <a href="mailto:security@oratii.in" className="font-bold underline text-indigo-700">security@oratii.in</a>
               </p>
             </div>
             <Link

@@ -51,8 +51,8 @@ export async function GET(request: Request) {
     // Default fallback if table is not yet seeded
     const settings = data || {
       platform_name: 'Oratii',
-      contact_email: 'contact@oratii.app',
-      support_email: 'support@oratii.app',
+      contact_email: 'contact@oratii.in',
+      support_email: 'support@oratii.in',
       upi_id: 'oratii@upi',
       two_factor_enabled: true,
       session_timeout_minutes: 30,

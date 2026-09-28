@@ -218,7 +218,7 @@ export default function TrainerDashboardPage() {
   };
 
   const copyWhatsAppLink = (code: string, batchName: string) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.app';
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.in';
     const link = `${origin}/join/${code}`;
     const text = `📢 *${academy?.name || 'Our Academy'}* speaking practice batch is now live on Oratii AI!\n\n👉 Join our official class here: ${link}\n\nJoin with your phone to start practicing your speaking drills!`;
 

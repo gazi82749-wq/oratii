@@ -3,6 +3,16 @@ import { sendContactSupportNotificationEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
+// Sanitize user input to prevent HTML/script injection in email templates
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -24,10 +34,10 @@ export async function POST(request: NextRequest) {
     }
 
     await sendContactSupportNotificationEmail(
-      email,
-      name,
-      subject || 'General Support Inquiry',
-      message
+      email.trim(),
+      escapeHtml(name.trim()),
+      escapeHtml(subject || 'General Support Inquiry'),
+      escapeHtml(message.trim())
     );
 
     return NextResponse.json({
@@ -37,7 +47,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error in contact form submission route:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to submit contact form.' },
+      { error: 'Something went wrong. Please try again or email hello@oratii.in directly.' },
       { status: 500 }
     );
   }

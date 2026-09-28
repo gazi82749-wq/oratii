@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // Configure web-push with VAPID credentials
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
-const VAPID_CONTACT = process.env.VAPID_CONTACT_EMAIL || 'mailto:admin@oratii.app';
+const VAPID_CONTACT = process.env.VAPID_CONTACT_EMAIL || 'mailto:admin@oratii.in';
 const CRON_SECRET = process.env.CRON_SECRET;
 
 if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {

@@ -6,8 +6,8 @@ import { supabase } from '@/lib/supabaseClient';
 
 export default function SettingsPage() {
   const [platformName, setPlatformName] = useState('Oratii');
-  const [contactEmail, setContactEmail] = useState('contact@Oratii.app');
-  const [supportEmail, setSupportEmail] = useState('support@Oratii.app');
+  const [contactEmail, setContactEmail] = useState('contact@oratii.in');
+  const [supportEmail, setSupportEmail] = useState('support@oratii.in');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [sessionTimeout, setSessionTimeout] = useState(30);
   const [upiId, setUpiId] = useState('Oratii@upi');
@@ -23,8 +23,8 @@ export default function SettingsPage() {
         const data = await res.json();
         if (data?.settings) {
           setPlatformName(data.settings.platform_name || 'Oratii');
-          setContactEmail(data.settings.contact_email || 'contact@Oratii.app');
-          setSupportEmail(data.settings.support_email || 'support@Oratii.app');
+          setContactEmail(data.settings.contact_email || 'contact@oratii.in');
+          setSupportEmail(data.settings.support_email || 'support@oratii.in');
           setUpiId(data.settings.upi_id || 'Oratii@upi');
           setTwoFactorEnabled(data.settings.two_factor_enabled ?? true);
           setSessionTimeout(data.settings.session_timeout_minutes || 30);

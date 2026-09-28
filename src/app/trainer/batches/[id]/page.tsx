@@ -124,7 +124,7 @@ export default function BatchDetailPage() {
   }, [showNewAssignment]);
 
   const copyWhatsAppLink = () => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.app';
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://oratii.in';
     const link = `${origin}/join/${batch?.code}`;
     const text = `📢 *${batch?.academies?.name || 'Academy'}* Speaking Lab:\n\nJoin our official batch *${batch?.name}* on Oratii AI:\n👉 ${link}\n\nPractice your speaking drills before the next class!`;
 
