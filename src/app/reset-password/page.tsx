@@ -92,16 +92,6 @@ export default function ResetPassword() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans antialiased">
-      {/* Navbar */}
-      <nav className="w-full px-6 md:px-10 py-6 flex justify-between items-center max-w-6xl mx-auto">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-[#151930] text-[#F2A93B] flex items-center justify-center font-black text-lg shadow-sm">
-            O
-          </div>
-          <span className="text-xl font-black text-slate-900 tracking-tight">Oratii</span>
-        </Link>
-      </nav>
-
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4 md:p-6 w-full">
         <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xl shadow-slate-200/50">
