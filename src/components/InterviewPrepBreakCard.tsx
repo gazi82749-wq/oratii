@@ -68,7 +68,7 @@ export default function InterviewPrepBreakCard({
   }, [sessionId]);
 
   const triggerExpirationNotification = async () => {
-    // 1. Browser push notification
+    // Web Push notification only per product requirements
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
       try {
         new Notification(`⏰ Your ${nextRoundTitle} is Ready!`, {
@@ -79,25 +79,7 @@ export default function InterviewPrepBreakCard({
         console.warn('Push notification error:', e);
       }
     }
-
-    // 2. Email reminder trigger
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      await fetch('/api/interview/reminder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: session?.user?.email || null,
-          userName: session?.user?.user_metadata?.full_name || 'Candidate',
-          roleTitle,
-          nextRoundTitle,
-          weaknesses
-        })
-      });
-      setReminderStatus('sent');
-    } catch (err) {
-      console.warn('Failed to send reminder email:', err);
-    }
+    setReminderStatus('sent');
   };
 
   const handleEnableReminder = async () => {
@@ -109,22 +91,8 @@ export default function InterviewPrepBreakCard({
           setReminderStatus('enabled');
         }
       }
-
-      const { data: { session } } = await supabase.auth.getSession();
-      await fetch('/api/interview/reminder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: session?.user?.email || null,
-          userName: session?.user?.user_metadata?.full_name || 'Candidate',
-          roleTitle,
-          nextRoundTitle,
-          weaknesses
-        })
-      });
-      setReminderStatus('enabled');
     } catch (e) {
-      console.warn('Enable reminder notice:', e);
+      console.warn('Enable push notification notice:', e);
     } finally {
       setIsNotifying(false);
     }
@@ -182,7 +150,7 @@ export default function InterviewPrepBreakCard({
           }`}
         >
           <Bell size={14} className={reminderStatus === 'enabled' ? 'text-emerald-400' : 'text-amber-400'} />
-          <span>{reminderStatus === 'enabled' ? '🔔 Reminder Set (Push & Email)' : 'Set 40-Min Reminder'}</span>
+          <span>{reminderStatus === 'enabled' ? '🔔 Push Reminder Active' : 'Set 40-Min Push Reminder'}</span>
         </button>
       </div>
 

@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii AI <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii <hello@oratii.in>';
 const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
 
 // Generic email sender to avoid template duplication
@@ -14,6 +14,7 @@ async function sendEmail(to: string, subject: string, heading: string, body: str
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
+      replyTo: 'hello@oratii.in',
       subject,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
@@ -172,6 +173,7 @@ export async function sendWeeklyDigestEmail(toEmail: string, userName: string, s
     await resend.emails.send({
       from: FROM_EMAIL,
       to: toEmail,
+      replyTo: 'hello@oratii.in',
       subject: `📊 Your Weekly Speaking & Interview Report — ${stats.streakDays}-Day Streak!`,
       html: htmlContent,
     });
@@ -180,6 +182,53 @@ export async function sendWeeklyDigestEmail(toEmail: string, userName: string, s
   }
 }
 
+export async function sendContactSupportNotificationEmail(
+  fromEmail: string,
+  fromName: string,
+  subject: string,
+  message: string
+) {
+  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
+    console.log(`[Email Skipped - No Resend Key] Contact Form Notification from ${fromEmail}`);
+    return;
+  }
+
+  const htmlContent = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
+      <div style="background-color: #1B2140; padding: 24px; text-align: center;">
+        <h1 style="color: #FFFFFF; font-size: 22px; font-weight: 900; margin: 0;">
+          Orat<span style="color: #F2A93B;">ii</span> Support Inquiry
+        </h1>
+      </div>
+      <div style="padding: 24px;">
+        <p style="font-size: 14px; color: #475569; margin-top: 0;"><strong>From:</strong> ${fromName} (&lt;${fromEmail}&gt;)</p>
+        <p style="font-size: 14px; color: #475569;"><strong>Subject:</strong> ${subject}</p>
+        <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 16px 0;" />
+        <div style="font-size: 14px; color: #0F172A; line-height: 1.6; white-space: pre-wrap; background-color: #FFFFFF; padding: 16px; border-radius: 12px; border: 1px solid #E2E8F0;">${message}</div>
+        <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 16px 0;" />
+        <p style="font-size: 12px; color: #94A3B8; margin: 0; text-align: center;">
+          Sent via Oratii Contact Form • Direct reply will send email to ${fromEmail}
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: 'hello@oratii.in',
+      replyTo: fromEmail,
+      subject: `[Contact Form] ${subject} - from ${fromName}`,
+      html: htmlContent,
+    });
+  } catch (error) {
+    console.error(`Failed to send contact support email from ${fromEmail}:`, error);
+  }
+}
+
+/**
+ * @deprecated Break reminders are delivered via Browser Web Push notifications only per user requirements.
+ */
 export async function sendInterviewPrepReminderEmail(
   toEmail: string,
   userName: string,
@@ -187,26 +236,8 @@ export async function sendInterviewPrepReminderEmail(
   nextRoundTitle: string,
   weaknesses: string[]
 ) {
-  const siteUrl = getSiteUrl();
-  const weaknessListHtml = weaknesses && weaknesses.length > 0
-    ? `<ul style="margin: 8px 0; padding-left: 20px; color: #DC2626;">` + weaknesses.map(w => `<li style="margin-bottom: 4px;"><strong>${w}</strong></li>`).join('') + `</ul>`
-    : `<p style="color: #475569;">Review your key project concepts and STAR framework before starting.</p>`;
-
-  await sendEmail(
-    toEmail,
-    `⏰ Time's Up! Start ${nextRoundTitle} for ${roleTitle}`,
-    `Your 40-Minute Preparation Window is Complete!`,
-    `<p>Hi ${userName || 'Candidate'},</p>
-     <p>Your 40-minute preparation break for <strong>${roleTitle}</strong> has completed. It's time to jump into <strong>${nextRoundTitle}</strong>!</p>
-     <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 12px; padding: 16px; margin: 16px 0;">
-       <h4 style="margin: 0 0 8px 0; color: #991B1B; font-size: 14px; text-transform: uppercase;">Key Weaknesses to Fix in Round 2:</h4>
-       ${weaknessListHtml}
-     </div>
-     <p>Click below to enter the live interview studio and start your next round now!</p>`,
-    `🚀 Start ${nextRoundTitle} Now`,
-    `${siteUrl}/interview?round=2&role=${encodeURIComponent(roleTitle)}`,
-    '#4f46e5'
-  );
+  console.log(`[Prep Break Reminder] Skipped email to ${toEmail}. 40-min prep break reminders are push notification only.`);
 }
+
 
 

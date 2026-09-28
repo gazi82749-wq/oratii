@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import ContactForm from '@/components/ContactForm';
 import { Mail, MapPin, Phone, MessageSquare, Clock, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -67,69 +68,8 @@ export default function ContactPage() {
           </div>
 
           {/* Right Column: Interactive Inquiry Form */}
-          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-            <h2 className="text-xl font-extrabold text-slate-900 mb-2">Send Us a Direct Message</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mb-6">
-              Fill out the form below and our dedicated support team will get back to you immediately.
-            </p>
-
-            <form action="mailto:support@oratii.in" method="post" encType="text/plain" className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="John Doe"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="john@example.com"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Subject</label>
-                <select
-                  name="subject"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                >
-                  <option value="General Support">General Support Inquiry</option>
-                  <option value="Billing & Payments">Billing &amp; Payment Support</option>
-                  <option value="Refund Request">Refund Request</option>
-                  <option value="Enterprise / Institutional Batch">Enterprise / Campus Batch Inquiry</option>
-                  <option value="Technical Issue">Technical / AI Speech Issue</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Message</label>
-                <textarea
-                  name="message"
-                  rows={5}
-                  required
-                  placeholder="Describe your question or issue in detail..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full sm:w-auto px-8 py-3 bg-[#0F1426] hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                Send Support Request <ArrowRight size={14} />
-              </button>
-            </form>
+          <div className="lg:col-span-2">
+            <ContactForm />
           </div>
         </div>
 
