@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-indigo-950/20 to-transparent pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-14">
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-4">
               <Logo className="text-white text-3xl" />
@@ -24,20 +24,10 @@ export default function Footer() {
             <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Product</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech Coach</Link></li>
-              <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview</Link></li>
+              <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview Studio</Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
               <li><span className="opacity-50 blur-[0.3px] cursor-not-allowed pointer-events-none select-none text-slate-500 inline-flex items-center">Presentation Practice <span className="text-[9px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded ml-1 border border-slate-800">SOON</span></span></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Speech &amp; Practice Tools</h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
-              <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech WPM Pacing Calculator</Link></li>
-              <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Filler Word Detection Engine</Link></li>
-              <li><Link href="/interview?role=sde1" className="hover:text-amber-400 transition-colors">Software Engineer Mock Interview</Link></li>
-              <li><Link href="/interview?role=ielts" className="hover:text-amber-400 transition-colors">IELTS Speaking Exam Drill</Link></li>
             </ul>
           </div>
 
