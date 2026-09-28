@@ -39,7 +39,7 @@ export default function ContactForm() {
     } catch (err: any) {
       setStatusMessage({
         type: 'error',
-        text: err.message || 'An unexpected error occurred. Please try again or email hello@oratii.in directly.',
+        text: err.message || 'An unexpected error occurred. Please try again or email support@oratii.in directly.',
       });
     } finally {
       setIsLoading(false);

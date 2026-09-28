@@ -215,8 +215,8 @@ export async function sendContactSupportNotificationEmail(
 
   try {
     await resend.emails.send({
-      from: FROM_EMAIL,
-      to: 'hello@oratii.in',
+      from: 'Oratii Support <support@oratii.in>',
+      to: 'support@oratii.in',
       replyTo: fromEmail,
       subject: `[Contact Form] ${subject} - from ${fromName}`,
       html: htmlContent,
