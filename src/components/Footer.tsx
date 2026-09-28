@@ -32,12 +32,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Free Tools &amp; Guides</h4>
+            <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Speech &amp; Practice Tools</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
-              <li><Link href="/tools/wpm-calculator" className="hover:text-amber-400 transition-colors">Speech WPM Calculator</Link></li>
-              <li><Link href="/tools/filler-word-counter" className="hover:text-amber-400 transition-colors">Filler Word Counter</Link></li>
-              <li><Link href="/for/software-engineers" className="hover:text-amber-400 transition-colors">Software Engineer Practice</Link></li>
-              <li><Link href="/for/ielts-speaking" className="hover:text-amber-400 transition-colors">IELTS Speaking Practice</Link></li>
+              <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech WPM Pacing Calculator</Link></li>
+              <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Filler Word Detection Engine</Link></li>
+              <li><Link href="/interview?role=sde1" className="hover:text-amber-400 transition-colors">Software Engineer Mock Interview</Link></li>
+              <li><Link href="/interview?role=ielts" className="hover:text-amber-400 transition-colors">IELTS Speaking Exam Drill</Link></li>
             </ul>
           </div>
 

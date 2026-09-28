@@ -39,6 +39,10 @@ export const metadata: Metadata = {
     'mock interview practice',
     'public speaking AI',
     'vocal pacing analyzer',
+    'speech WPM calculator',
+    'filler word counter',
+    'IELTS speaking practice AI',
+    'software engineer mock interview',
     'daily speech habit',
     'speech feedback',
     'AI interview coach'

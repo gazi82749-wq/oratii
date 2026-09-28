@@ -29,34 +29,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
-    // Programmatic Tools Suite
-    {
-      url: `${baseUrl}/tools/wpm-calculator`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/tools/filler-word-counter`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-
-    // Programmatic Persona Pages
-    {
-      url: `${baseUrl}/for/software-engineers`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/for/ielts-speaking`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
