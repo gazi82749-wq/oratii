@@ -329,10 +329,41 @@ export default function TrainerDashboardPage() {
   const totalStudents = batches.reduce((acc, b) => acc + (b.studentCount || 0), 0);
   const totalSubmissions = batches.reduce((acc, b) => acc + (b.submissionCount || 0), 0);
 
-  // ─── Case 2: Registered Trainer Dashboard ───
+  // ─── Case 2: Registered Trainer Dashboard (Coming Soon Overlay) ───
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full">
-      <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full relative overflow-hidden">
+      {/* Prominent Coming Soon Hero Overlay */}
+      <div className="absolute inset-0 z-30 bg-slate-950/40 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-3xl p-8 sm:p-10 max-w-lg w-full shadow-2xl space-y-5 animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-100/90 text-indigo-700 flex items-center justify-center mx-auto shadow-sm">
+            <Building2 size={32} />
+          </div>
+
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-wider">
+            <Sparkles size={14} className="text-amber-500" /> Trainer &amp; Campus Portal • Launching Soon
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
+            Institutional Classrooms Coming Soon
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            Our university placement cell dashboard and batch analytics suite is undergoing final V1 polish. In the meantime, launch our AI Speech Coach for immediate vocal practice!
+          </p>
+
+          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => router.push('/speech-coach')}
+              className="w-full py-3.5 px-6 rounded-2xl bg-[#0F1426] hover:bg-slate-900 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Launch Speech Coach</span>
+              <ArrowRight size={15} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1 filter blur-[2px] opacity-50 pointer-events-none select-none">
       {/* Top Banner */}
       <div className="bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />

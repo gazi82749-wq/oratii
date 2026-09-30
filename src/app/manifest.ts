@@ -21,20 +21,6 @@ export default function manifest(): MetadataRoute.Manifest {
         url: '/speech-coach',
         icons: [{ src: '/icon-192.png', sizes: '192x192' }],
       },
-      {
-        name: 'Campus Mock Interview',
-        short_name: 'Interview',
-        description: 'Resume PDF & Voice AI Placement Round',
-        url: '/interview',
-        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
-      },
-      {
-        name: 'Presentation Practice',
-        short_name: 'Viva Studio',
-        description: 'Webcam Rehearsal & Academic Viva Defense',
-        url: '/presentation',
-        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
-      },
     ],
     icons: [
       {
