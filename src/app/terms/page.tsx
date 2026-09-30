@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">2. Description of Platform Services</h2>
             <p className="text-slate-700 font-medium leading-relaxed">
-              Oratii is an AI-powered public speaking, PowerPoint presentation analysis, mock job interview, and viva Q&amp;A practice software. Features include real-time vocal WPM pacing graphs, filler word detection in English and Hinglish, IELTS/CEFR speaking band evaluations, presentation slide density metrics, STAR method interview feedback, and on-device pose tracking.
+              Oratii is an AI-powered public speaking practice software. Features include real-time vocal WPM pacing graphs, filler word detection in English and Hinglish, IELTS/CEFR speaking band evaluations, and on-device pose tracking.
             </p>
           </section>
 
@@ -74,7 +74,7 @@ export default function TermsOfServicePage() {
             <h2 className="text-xl font-black text-slate-950 mb-3">5. Intellectual Property Rights</h2>
             <div className="space-y-3 text-slate-700 font-medium">
               <p>
-                <strong>a. User Content Ownership:</strong> You retain 100% full copyright and ownership of all presentation decks (.pptx, PDF), resume documents, vocal audio recordings, and text responses submitted to the Service.
+                <strong>a. User Content Ownership:</strong> You retain 100% full copyright and ownership of all vocal audio recordings and text responses submitted to the Service.
               </p>
               <p>
                 <strong>b. Platform Rights:</strong> Oratii retains all rights, title, trademarks, algorithms, source code, UI designs, and intellectual property in and to the platform and software.
@@ -88,7 +88,7 @@ export default function TermsOfServicePage() {
               <ShieldAlert size={20} className="text-amber-700" /> 6. AI Output &amp; Coaching Disclaimer
             </h2>
             <p className="text-amber-950 text-xs sm:text-sm font-medium leading-relaxed">
-              Oratii uses automated artificial intelligence models to provide speech, presentation, and interview feedback. All scores, WPM metrics, band ratings, and suggestions are provided <strong>strictly for educational, self-improvement, and practice guidance purposes</strong>. Oratii makes no guarantees regarding specific academic exam marks, university viva results, job interview selections, or corporate hiring decisions.
+              Oratii uses automated artificial intelligence models to provide speech feedback. All scores, WPM metrics, band ratings, and suggestions are provided <strong>strictly for educational, self-improvement, and practice guidance purposes</strong>. Oratii makes no guarantees regarding specific academic exam marks, university viva results, job interview selections, or corporate hiring decisions.
             </p>
           </section>
 

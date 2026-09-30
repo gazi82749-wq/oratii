@@ -5,10 +5,10 @@ import { Lock, ShieldCheck, Mail, FileText, Cpu, Server, CheckCircle2 } from 'lu
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Oratii Privacy Policy. Learn how we protect your vocal recordings, presentation decks, and personal data under DPDP, IT Act 2000, and GDPR.',
+  description: 'Oratii Privacy Policy. Learn how we protect your vocal recordings and personal data under DPDP, IT Act 2000, and GDPR.',
   openGraph: {
     title: 'Privacy Policy | Oratii AI Speech Coach',
-    description: 'Learn how Oratii protects your voice recordings, presentation slides, and account privacy.',
+    description: 'Learn how Oratii protects your voice recordings and account privacy.',
   },
 };
 
@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
               <ShieldCheck size={20} className="text-emerald-600" /> Our Core Privacy Commitment
             </h2>
             <p className="text-slate-700 font-normal leading-relaxed">
-              At <strong>Oratii</strong> (&quot;Platform&quot;, &quot;We&quot;, &quot;Us&quot;), your trust is our top priority. Your audio speech recordings, presentation slides, resume documents, and viva responses contain your valuable intellectual property. We process your data strictly to generate real-time coaching feedback and telemetry. <strong>Your voice recordings, transcripts, and uploaded slides are never sold, rented, leased, or used to train public third-party AI models.</strong>
+              At <strong>Oratii</strong> (&quot;Platform&quot;, &quot;We&quot;, &quot;Us&quot;), your trust is our top priority. Your audio speech recordings contain your valuable intellectual property. We process your data strictly to generate real-time coaching feedback and telemetry. <strong>Your voice recordings and transcripts are never sold, rented, leased, or used to train public third-party AI models.</strong>
             </p>
           </section>
 
@@ -46,19 +46,16 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-xl font-black text-slate-950 mb-3">1. Information We Collect</h2>
             <div className="space-y-3 text-slate-700 font-medium">
               <p>
-                <strong>a. Speech &amp; Vocal Telemetry Data:</strong> When you record your voice during speech practice, viva defense, or mock interview sessions, audio streams are transcribed and evaluated in real-time to compute words-per-minute (WPM) pacing, filler word density, vocal pitch, and acoustic metrics.
+                <strong>a. Speech &amp; Vocal Telemetry Data:</strong> When you record your voice during speech practice, audio streams are transcribed and evaluated in real-time to compute words-per-minute (WPM) pacing, filler word density, vocal pitch, and acoustic metrics.
               </p>
               <p>
-                <strong>b. Presentation Decks &amp; Documents:</strong> Uploaded PowerPoint files (.pptx), PDF slide decks, and resume documents are processed solely to extract slide text, calculate slide density metrics, and construct viva defense questions.
+                <strong>b. On-Device Camera Telemetry:</strong> Body posture, gaze alignment, and eye contact telemetry are calculated locally on your device using WebAssembly (WASM) computer vision models. <strong>No raw camera video is ever uploaded or recorded on our servers.</strong>
               </p>
               <p>
-                <strong>c. On-Device Camera Telemetry:</strong> Body posture, gaze alignment, and eye contact telemetry are calculated locally on your device using WebAssembly (WASM) computer vision models. <strong>No raw camera video is ever uploaded or recorded on our servers.</strong>
+                <strong>c. Account Information:</strong> Your full name, email address, authentication credentials, and user preferences collected during registration via Supabase Auth.
               </p>
               <p>
-                <strong>d. Account Information:</strong> Your full name, email address, authentication credentials, and user preferences collected during registration via Supabase Auth.
-              </p>
-              <p>
-                <strong>e. Payment &amp; Billing Data:</strong> Online payments are processed through PCI-DSS certified payment gateway partners (including Razorpay). Oratii does not store card numbers, CVVs, or banking passwords on our servers. We store transaction IDs, amount paid, and credit allocation status.
+                <strong>d. Payment &amp; Billing Data:</strong> Online payments are processed through PCI-DSS certified payment gateway partners (including Razorpay). Oratii does not store card numbers, CVVs, or banking passwords on our servers. We store transaction IDs, amount paid, and credit allocation status.
               </p>
             </div>
           </section>
@@ -67,8 +64,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">2. How We Use Your Data</h2>
             <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
-              <li>To evaluate vocal pacing, filler word frequency, posture, and STAR method interview delivery.</li>
-              <li>To generate customized viva defense questions and slide density heatmaps.</li>
+              <li>To evaluate vocal pacing, filler word frequency, and posture.</li>
               <li>To manage your credit balance, subscription status, and XP gamification progress.</li>
               <li>To enforce rate limits, prevent platform abuse, and maintain platform security.</li>
               <li>To send essential transactional notifications, billing receipts, and account updates.</li>

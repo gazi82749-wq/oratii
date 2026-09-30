@@ -86,7 +86,7 @@ export default function RefundPolicyPage() {
                 Refunds cannot be granted under the following circumstances:
               </p>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Credits that have already been consumed for speech evaluations, PPT slide analyses, or mock interview sessions (as third-party AI compute costs are incurred immediately upon execution).</li>
+                <li>Credits that have already been consumed for speech evaluations (as third-party AI compute costs are incurred immediately upon execution).</li>
                 <li>Refund requests submitted after 7 calendar days from the purchase date.</li>
                 <li>Accounts terminated due to violations of our Terms of Service (such as fraudulent chargeback attempts or bot scraping).</li>
               </ul>
