@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import ContactForm from '@/components/ContactForm';
+import CopyEmailButton from '@/components/CopyEmailButton';
 import { Mail, MapPin, Phone, MessageSquare, Clock, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -41,9 +42,7 @@ export default function ContactPage() {
               </div>
               <h3 className="text-base font-extrabold text-slate-900 mb-1">Customer Support Email</h3>
               <p className="text-xs text-slate-500 mb-3">Response time: Within 24 business hours</p>
-              <a href="mailto:support@oratii.in" className="text-sm font-bold text-indigo-700 hover:underline block truncate">
-                support@oratii.in
-              </a>
+              <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" />
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
@@ -52,9 +51,7 @@ export default function ContactPage() {
               </div>
               <h3 className="text-base font-extrabold text-slate-900 mb-1">Privacy &amp; Compliance</h3>
               <p className="text-xs text-slate-500 mb-3">Data deletion &amp; DPDP compliance</p>
-              <a href="mailto:support@oratii.in" className="text-sm font-bold text-emerald-700 hover:underline block truncate">
-                support@oratii.in
-              </a>
+              <CopyEmailButton email="support@oratii.in" className="text-emerald-700 hover:text-emerald-900" />
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
