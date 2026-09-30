@@ -91,7 +91,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
               <li><strong>Right to Access &amp; Portability:</strong> You can view all your session analytics and reports at any time from your account dashboard.</li>
-              <li><strong>Right to Erasure (Data Deletion):</strong> You may request full deletion of your account and session history by emailing <a href="mailto:privacy@oratii.in" className="font-bold underline text-indigo-700">privacy@oratii.in</a>. All associated records will be purged within 14 business days.</li>
+              <li><strong>Right to Erasure (Data Deletion):</strong> You may request full deletion of your account and session history by emailing <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a>. All associated records will be purged within 14 business days.</li>
               <li><strong>No Data Selling:</strong> We do not sell or rent personal information to third-party data brokers or advertisers under any circumstances.</li>
             </ul>
           </section>
@@ -113,7 +113,7 @@ export default function PrivacyPolicyPage() {
                 For questions, data deletion requests, or privacy concerns under applicable privacy laws, please contact our privacy compliance team:
               </p>
               <div className="text-xs font-medium space-y-1 text-slate-700">
-                <p><strong>Email:</strong> <a href="mailto:privacy@oratii.in" className="font-bold underline text-indigo-700">privacy@oratii.in</a> / <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a></p>
+                <p><strong>Email:</strong> <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a></p>
                 <p><strong>Website Support:</strong> <Link href="/support" className="font-bold underline text-indigo-700">Oratii Support Center</Link></p>
               </div>
             </div>

@@ -52,8 +52,8 @@ export default function ContactPage() {
               </div>
               <h3 className="text-base font-extrabold text-slate-900 mb-1">Privacy &amp; Compliance</h3>
               <p className="text-xs text-slate-500 mb-3">Data deletion &amp; DPDP compliance</p>
-              <a href="mailto:privacy@oratii.in" className="text-sm font-bold text-emerald-700 hover:underline block truncate">
-                privacy@oratii.in
+              <a href="mailto:support@oratii.in" className="text-sm font-bold text-emerald-700 hover:underline block truncate">
+                support@oratii.in
               </a>
             </div>
 
