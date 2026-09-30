@@ -119,10 +119,10 @@ export default function SidebarLayout({ children }) {
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
     { href: '#', label: 'Presentation Practice', icon: <FileText size={17} />, isComingSoon: true },
     { 
-      href: user ? '/trainer' : '/signup?role=trainer', 
+      href: '#', 
       label: 'Trainer Hub', 
       icon: <Sparkles size={17} />,
-      isTrainer: true 
+      isComingSoon: true 
     },
     { href: '/dashboard', label: 'Account', icon: <User size={17} /> },
   ];
@@ -163,7 +163,7 @@ export default function SidebarLayout({ children }) {
     { href: '/interview', label: 'Mock Interview', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: 'Daily Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
     { href: '#', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium', isComingSoon: true },
-    { href: user ? '/trainer' : '/signup?role=trainer', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isTrainer: true },
+    { href: '#', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isComingSoon: true },
     { type: 'divider' },
     { href: '/reports', label: 'Reports', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },
   ];
@@ -202,25 +202,26 @@ export default function SidebarLayout({ children }) {
               <div className={`absolute top-full left-0 mt-3 w-64 bg-white border border-slate-200/90 shadow-2xl rounded-2xl transition-all duration-300 ease-out flex flex-col p-3 space-y-1 z-50 ${activeDropdown === 'products' ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}>
                 {productItems.map((item, i) => {
                   if (item.type === 'divider') return <div key={i} className="h-px bg-slate-100 my-1.5 mx-2"></div>;
+                  const itemAny = item as any;
                   return (
                     <Link 
                       key={i} 
-                      href={item.href} 
+                      href={item.href || '#'} 
                       onClick={(e) => {
-                        if (item.isComingSoon) {
+                        if (itemAny.isComingSoon) {
                           e.preventDefault();
                           return;
                         }
-                        if (item.isTrainer) {
+                        if (itemAny.isTrainer) {
                           handleTrainerLinkClick(e);
                         } else {
                           setActiveDropdown(null);
                         }
                       }} 
-                      className={`px-4 py-2.5 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${item.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-slate-50 hover:text-slate-950'}`}
+                      className={`px-4 py-2.5 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${itemAny.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-slate-50 hover:text-slate-950'}`}
                     >
-                      <span className="flex items-center gap-2">{item.label}</span>
-                      {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded border border-slate-200/50">Soon</span>}
+                      <span className="flex items-center gap-2">{item.icon} {item.label}</span>
+                      {itemAny.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded border border-slate-200/50">Soon</span>}
                     </Link>
                   );
                 })}
@@ -361,23 +362,26 @@ export default function SidebarLayout({ children }) {
             
             <div className="flex flex-col gap-1.5 pt-3 border-t border-indigo-100">
               <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest px-2 mb-1">Products</span>
-              {productItems.filter(item => !item.type).map((item, i) => (
-                <Link 
-                  key={i} 
-                  href={item.href} 
-                  onClick={(e) => {
-                    if (item.isComingSoon) {
-                      e.preventDefault();
-                      return;
-                    }
-                    if (item.isTrainer) handleTrainerLinkClick(e);
-                  }}
-                  className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center justify-between rounded-xl transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''} ${item.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-indigo-50 active:bg-indigo-100'}`}
-                >
-                  <span className="flex items-center gap-3">{item.icon} {item.label}</span>
-                  {item.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-400 px-1.5 py-0.5 rounded">Soon</span>}
-                </Link>
-              ))}
+              {productItems.filter(item => !item.type).map((item, i) => {
+                const itemAny = item as any;
+                return (
+                  <Link 
+                    key={i} 
+                    href={item.href || '#'} 
+                    onClick={(e) => {
+                      if (itemAny.isComingSoon) {
+                        e.preventDefault();
+                        return;
+                      }
+                      if (itemAny.isTrainer) handleTrainerLinkClick(e);
+                    }}
+                    className={`text-left text-sm ${item.fontWeight} text-slate-800 px-4 py-3 min-h-[48px] flex items-center justify-between rounded-xl transition-all ${pathname === item.href ? 'bg-indigo-50/60 text-[#1B2140] font-bold' : ''} ${itemAny.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-indigo-50 active:bg-indigo-100'}`}
+                  >
+                    <span className="flex items-center gap-3">{item.icon} {item.label}</span>
+                    {itemAny.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-400 px-1.5 py-0.5 rounded">Soon</span>}
+                  </Link>
+                );
+              })}
             </div>
 
             <Link href="/pricing" className="text-left text-base font-bold text-slate-900 px-4 py-3 min-h-[48px] flex items-center rounded-xl hover:bg-indigo-50 active:scale-[0.99] transition-all border-t border-indigo-100 pt-3 mt-1">Pricing</Link>
@@ -423,13 +427,18 @@ export default function SidebarLayout({ children }) {
       {/* Modern Sticky Glassmorphic Mobile Bottom Navigation Bar */}
       <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-0 left-0 right-0 z-50 mobile-bottom-nav px-1 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-1 print:hidden shadow-lg border-t border-slate-200/80">
         {mobileNavItems.map((item) => {
+          const itemAny = item as any;
           const isActive = pathname === item.href;
           return (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
               onClick={(e) => {
-                if (item.isTrainer) {
+                if (itemAny.isComingSoon) {
+                  e.preventDefault();
+                  return;
+                }
+                if (itemAny.isTrainer) {
                   handleTrainerLinkClick(e);
                 }
               }}
@@ -437,13 +446,15 @@ export default function SidebarLayout({ children }) {
                 isActive 
                   ? 'text-[#1B2140]' 
                   : 'text-slate-500 hover:text-slate-900'
-              }`}
+              } ${itemAny.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none' : ''}`}
             >
               <div className={`relative flex items-center justify-center w-8 h-8 rounded-xl transition-all ${
                 isActive ? 'bg-[#1B2140] text-white shadow-sm ring-2 ring-[#F2A93B]/40' : 'text-slate-600 hover:bg-slate-100/60'
               }`}>
                 {item.icon}
-                {isActive && (
+                {itemAny.isComingSoon ? (
+                  <span className="absolute -top-1 -right-1.5 text-[8px] font-extrabold uppercase tracking-tighter bg-slate-200 text-slate-500 px-1 py-0.2 rounded border border-slate-300">Soon</span>
+                ) : isActive && (
                   <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#F2A93B] animate-pulse"></span>
                 )}
               </div>
