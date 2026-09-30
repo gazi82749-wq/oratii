@@ -102,23 +102,19 @@ export default function PricingClient() {
   const faqs = [
     {
       q: 'How do Oratii credits work?',
-      a: 'Credits are simple: 1 Credit = 1 Speech Audio Analysis, 1 Credit = 1 Presentation Practice Session, and 2 Credits = 1 AI Viva Defense Q&A Session. You only pay for what you actually use.'
+      a: 'Credits are simple: 1 Credit = 1 AI Speech Audio Analysis. You receive 10 Free Credits every month to analyze your vocal pacing and filler word density.'
     },
     {
-      q: 'Do paid credits ever expire?',
-      a: 'No! Paid credit packs come with lifetime validity. Your credits never expire, so you can use them whenever you need to prepare for a speech or presentation.'
+      q: 'Do credits expire?',
+      a: 'Your 10 monthly credits allow you to practice AI speech analysis whenever you prepare for a presentation, speech, or interview.'
     },
     {
-      q: 'What is included in the Free Trial?',
-      a: 'When you sign up, you automatically receive 10 Free Credits with full access to test out Speech Analysis, Presentation Practice, and AI Viva Defense sessions.'
+      q: 'What is included in the Free Starter Plan?',
+      a: 'When you sign up, you automatically receive 10 Free Credits every month with full access to test out Speech Analysis, Vocal Pacing, and Filler Word detection.'
     },
     {
-      q: 'How fast are credits added after payment?',
-      a: 'Instantly! As soon as your UPI, GPay, Paytm, or Card payment is completed in the Razorpay popup, your credits are added to your account within seconds.'
-    },
-    {
-      q: 'Can I top up more credits anytime?',
-      a: 'Yes, you can top up anytime. New credits are added directly to your existing credit balance.'
+      q: 'When will paid credit top-ups be available?',
+      a: 'Pro (40 Credits for ₹149) and Premium (200 Credits for ₹499) paid top-up packs are launching soon! In the meantime, all registered users can enjoy 10 Free Monthly Credits.'
     }
   ];
 
@@ -256,18 +252,20 @@ export default function PricingClient() {
                   </div>
 
                   <button
-                    onClick={() => handlePurchase(pack)}
-                    disabled={isProcessing}
-                    className={`w-full py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 group shadow-md cursor-pointer ${
-                      isPopular 
-                        ? 'bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#0F1426] shadow-amber-500/20 hover:-translate-y-0.5 active:scale-98' 
+                    onClick={() => !pack.comingSoon && handlePurchase(pack)}
+                    disabled={pack.comingSoon || isProcessing}
+                    className={`w-full py-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-2 group shadow-md ${
+                      pack.comingSoon
+                        ? 'bg-slate-200/80 text-slate-500 border border-slate-300 cursor-not-allowed opacity-80'
+                        : isPopular 
+                        ? 'bg-gradient-to-r from-amber-400 via-[#F2A93B] to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#0F1426] shadow-amber-500/20 hover:-translate-y-0.5 active:scale-98 cursor-pointer' 
                         : isFree
-                        ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-200 hover:-translate-y-0.5 active:scale-98'
-                        : 'bg-[#0F1426] text-white hover:bg-[#1A2035] hover:-translate-y-0.5 active:scale-98'
+                        ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 border border-slate-200 hover:-translate-y-0.5 active:scale-98 cursor-pointer'
+                        : 'bg-[#0F1426] text-white hover:bg-[#1A2035] hover:-translate-y-0.5 active:scale-98 cursor-pointer'
                     }`}
                   >
-                    <span>{pack.cta}</span>
-                    <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                    <span>{pack.comingSoon ? 'Coming Soon' : pack.cta}</span>
+                    {!pack.comingSoon && <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />}
                   </button>
                 </div>
               );
@@ -281,10 +279,10 @@ export default function PricingClient() {
               <div className="flex-1">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
                   <Sparkles size={13} className="text-emerald-400" />
-                  B2B & Campus License
+                  B2B &amp; Campus License
                 </div>
                 <h3 className="text-2xl font-black text-white tracking-tight mb-2">
-                  University Placement Cells & Sales Academies
+                  University Placement Cells &amp; Sales Academies
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
                   Manage student cohorts, assign Daily Bootcamps, track filler word reduction metrics across batches, and access institutional volume discounts.
@@ -314,18 +312,14 @@ export default function PricingClient() {
         <section className="max-w-4xl mx-auto px-4 sm:px-6 mb-16 relative z-10">
           <div className="space-y-6">
             {/* Credit Usage Matrix */}
-            <div className="ui-card p-5 grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+            <div className="ui-card p-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-center">
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/80 border border-slate-200/70">
                 <Mic size={18} className="text-indigo-600 shrink-0" />
-                <div className="text-left text-xs font-bold text-slate-900">1 Credit = 1 Speech Audit</div>
+                <div className="text-left text-xs font-bold text-slate-900">1 Credit = 1 AI Speech Audio Analysis</div>
               </div>
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/80 border border-slate-200/70">
-                <FileText size={18} className="text-amber-600 shrink-0" />
-                <div className="text-left text-xs font-bold text-slate-900">1 Credit = 1 PPT Audit</div>
-              </div>
-              <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/80 border border-slate-200/70">
-                <MessageSquare size={18} className="text-purple-600 shrink-0" />
-                <div className="text-left text-xs font-bold text-slate-900">2 Credits = 1 AI Viva</div>
+                <Sparkles size={18} className="text-amber-600 shrink-0" />
+                <div className="text-left text-xs font-bold text-slate-900">10 Free Credits Every Month</div>
               </div>
             </div>
 
