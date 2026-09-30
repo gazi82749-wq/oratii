@@ -54,6 +54,24 @@ async function sendEmail(
   }
 }
 
+export async function sendWelcomeEmail(toEmail: string, userName: string) {
+  const siteUrl = getSiteUrl();
+  await sendEmail(
+    toEmail,
+    'Welcome to Oratii AI — Master Your Speaking & Interview Skills!',
+    'Welcome to Oratii AI! 🎉',
+    `<p>Hi ${userName || 'there'},</p>
+     <p>Thank you for creating your account on <strong>Oratii AI</strong>!</p>
+     <p>With Oratii, you can practice public speaking, slide presentation rehearsals, mock job interviews, and academic viva defense with real-time AI feedback.</p>
+     <p>Head over to your dashboard to launch your first practice session!</p>`,
+    'Launch Dashboard',
+    `${siteUrl}/dashboard`,
+    '#0F1426',
+    'Oratii <hello@oratii.in>',
+    'hello@oratii.in'
+  );
+}
+
 export async function sendPaymentSuccessEmail(toEmail: string, userName: string, planName: string, amount: number) {
   const siteUrl = getSiteUrl();
   await sendEmail(
