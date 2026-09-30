@@ -5,17 +5,19 @@ async function verifyAdminCaller(request: Request) {
   let user;
 
   const authHeader = request.headers.get('authorization');
-  if (authHeader && authHeader.startsWith('Bearer ')) {
+  if (authHeader && authHeader.startsWith('Bearer ') && authHeader.length > 10) {
     const token = authHeader.substring(7).trim();
     const { data: { user: authUser } } = await supabase.auth.getUser(token);
     user = authUser;
-  } else {
+  } 
+  
+  if (!user) {
     const { data: { user: cookieUser } } = await supabase.auth.getUser();
     user = cookieUser;
   }
 
   if (!user) return false;
-  if (user.email === 'gazi82749@gmail.com') return true; // Owner hardcode
+  if (user.email?.toLowerCase() === 'gazi82749@gmail.com') return true; // Owner hardcode
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient
