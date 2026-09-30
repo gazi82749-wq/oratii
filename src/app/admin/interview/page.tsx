@@ -13,8 +13,8 @@ export default function MockInterviewSessionsPage() {
   useEffect(() => {
     async function loadSessions() {
       setLoading(true);
-      // Fetch actual interview data, NOT viva
-      const { data } = await supabase.from('sessions').select('*').order('created_at', { ascending: false });
+      // Fetch actual interview data ONLY
+      const { data } = await supabase.from('sessions').select('*').eq('session_type', 'interview').order('created_at', { ascending: false });
       if (data && data.length > 0) {
         const mapped = data.map((v: any) => ({
           id: v.id,
@@ -50,8 +50,8 @@ export default function MockInterviewSessionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Viva AI — Sessions</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">All viva practice sessions across the platform.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Mock Interview — Sessions</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">All mock interview practice sessions across the platform.</p>
       </div>
 
       {/* Stats */}
