@@ -2,26 +2,25 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Search, Video, Clock, HelpCircle, BarChart3 } from 'lucide-react';
-import { vivaSessions as mockVivaSessions, type VivaSession } from '@/lib/admin/data';
 import { supabase } from '@/lib/supabaseClient';
 import { formatDate, formatDuration, scoreColor } from '@/lib/admin/utils';
 
-
-export default function VivaSessionsPage() {
+export default function MockInterviewSessionsPage() {
   const [search, setSearch] = useState('');
-  const [sessions, setSessions] = useState<VivaSession[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadSessions() {
       setLoading(true);
+      // Fetch actual interview data, NOT viva
       const { data } = await supabase.from('sessions').select('*').order('created_at', { ascending: false });
       if (data && data.length > 0) {
-        const mapped: VivaSession[] = data.map((v: any) => ({
+        const mapped = data.map((v: any) => ({
           id: v.id,
           userId: v.user_id || 'anon',
-          userName: 'Viva Participant',
-          subject: v.session_type || 'General Viva',
+          userName: 'Interview Participant',
+          subject: v.session_type || 'Mock Interview',
           date: v.created_at || new Date().toISOString(),
           questionsAsked: 5,
           score: Number(v.score) || 0,
@@ -29,7 +28,7 @@ export default function VivaSessionsPage() {
         }));
         setSessions(mapped);
       } else {
-        setSessions([]);
+        setSessions([]); // No dummy data!
       }
       setLoading(false);
     }
