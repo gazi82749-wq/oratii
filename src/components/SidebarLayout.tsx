@@ -220,7 +220,7 @@ export default function SidebarLayout({ children }) {
                       }} 
                       className={`px-4 py-2.5 text-sm ${item.fontWeight} text-slate-700 transition-all rounded-xl flex items-center justify-between ${pathname === item.href ? 'bg-indigo-50/80 text-indigo-950 font-bold' : ''} ${itemAny.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none hover:bg-transparent' : 'hover:bg-slate-50 hover:text-slate-950'}`}
                     >
-                      <span className="flex items-center gap-2">{item.icon} {item.label}</span>
+                      <span className="flex items-center gap-2">{item.label}</span>
                       {itemAny.isComingSoon && <span className="text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded border border-slate-200/50">Soon</span>}
                     </Link>
                   );
