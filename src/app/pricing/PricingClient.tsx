@@ -279,7 +279,7 @@ export default function PricingClient() {
               <div className="flex-1">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
                   <Sparkles size={13} className="text-emerald-400" />
-                  B2B &amp; Campus License
+                  B2B &amp; Campus License • Launching Soon
                 </div>
                 <h3 className="text-2xl font-black text-white tracking-tight mb-2">
                   University Placement Cells &amp; Sales Academies
@@ -291,17 +291,16 @@ export default function PricingClient() {
 
               <div className="shrink-0 flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={() => router.push('/trainer')}
-                  className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-bold text-white transition-all cursor-pointer"
+                  disabled
+                  className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-slate-400 cursor-not-allowed opacity-80"
                 >
-                  Trainer Dashboard Demo
+                  Trainer Dashboard (Coming Soon)
                 </button>
                 <button
-                  onClick={() => router.push('/support')}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-emerald-500 hover:opacity-95 text-white text-xs font-extrabold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  disabled
+                  className="px-6 py-3 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 text-xs font-extrabold cursor-not-allowed opacity-80 flex items-center justify-center gap-2"
                 >
-                  Request B2B Quote
-                  <ArrowRight size={15} />
+                  Request B2B Quote (Coming Soon)
                 </button>
               </div>
             </div>
