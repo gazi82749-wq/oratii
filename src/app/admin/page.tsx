@@ -57,9 +57,7 @@ export default function AdminDashboard() {
   });
 
   const [moduleUsage, setModuleUsage] = useState([
-    { name: 'Speech Coach', value: 40, color: '#10b981' },
-    { name: 'Slide Analyzer', value: 35, color: '#fa7c42' },
-    { name: 'Viva AI', value: 25, color: '#06b6d4' },
+    { name: 'Speech Coach', value: 100, color: '#10b981' },
   ]);
 
   const [liveActivity, setLiveActivity] = useState<any[]>([]);
@@ -72,7 +70,12 @@ export default function AdminDashboard() {
       let feed: any[] = [];
 
       try {
-        const userRes = await fetch('/api/admin/users?limit=5');
+        const { data: { session } } = await supabase.auth.getSession();
+        const userRes = await fetch('/api/admin/users?limit=5', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
+        });
         const userJson = await userRes.json();
         if (userJson && userJson.users) {
           usersCount = userJson.total || userJson.users.length;
@@ -91,21 +94,17 @@ export default function AdminDashboard() {
       
       // 2. Fetch Module Counts
       const { count: reportsCount } = await supabase.from('analysis_reports').select('*', { count: 'exact', head: true });
-      const { count: vivaCount } = await supabase.from('sessions').select('*', { count: 'exact', head: true });
 
-      const speechCount = Math.round((reportsCount || 0) * 0.4);
-      const pptCount = reportsCount || 0;
-      const vivaTotal = vivaCount || 0;
-
-      const totalModules = speechCount + pptCount + vivaTotal;
+      const speechCount = reportsCount || 0;
+      const totalModules = speechCount;
 
       setStats({
         totalUsers: usersCount || 0,
         activeUsers: usersCount || 0,
         premiumUsers: premiumCount || 0,
         speechAnalyses: speechCount,
-        pptAnalyses: pptCount,
-        vivaSessions: vivaTotal,
+        pptAnalyses: 0,
+        vivaSessions: 0,
         revenue: (premiumCount || 0) * 499,
         aiRequests: totalModules,
       });
@@ -113,15 +112,11 @@ export default function AdminDashboard() {
       // Calculate real module usage distribution
       if (totalModules > 0) {
         setModuleUsage([
-          { name: 'Speech Coach', value: Math.round((speechCount / totalModules) * 100), color: '#10b981' },
-          { name: 'Slide Analyzer', value: Math.round((pptCount / totalModules) * 100), color: '#fa7c42' },
-          { name: 'Viva AI', value: Math.round((vivaTotal / totalModules) * 100), color: '#06b6d4' },
+          { name: 'Speech Coach', value: 100, color: '#10b981' },
         ]);
       } else {
         setModuleUsage([
           { name: 'Speech Coach', value: 0, color: '#10b981' },
-          { name: 'Slide Analyzer', value: 0, color: '#fa7c42' },
-          { name: 'Viva AI', value: 0, color: '#06b6d4' },
         ]);
       }
 
@@ -136,8 +131,6 @@ export default function AdminDashboard() {
     { label: 'Active Users', value: stats.activeUsers.toString(), change: '100%', trend: 'up' as const, icon: UserCheck, color: 'emerald' },
     { label: 'Premium Users', value: stats.premiumUsers.toString(), change: '0%', trend: 'up' as const, icon: Crown, color: 'amber' },
     { label: 'Speech Analyses', value: stats.speechAnalyses.toString(), change: '+15%', trend: 'up' as const, icon: Mic, color: 'blue' },
-    { label: 'PPT Analyses', value: stats.pptAnalyses.toString(), change: '+25%', trend: 'up' as const, icon: FileText, color: 'indigo' },
-    { label: 'Viva Sessions', value: stats.vivaSessions.toString(), change: '+10%', trend: 'up' as const, icon: Video, color: 'cyan' },
     { label: 'Monthly Revenue', value: `₹${stats.revenue}`, change: '+15%', trend: 'up' as const, icon: DollarSign, color: 'green' },
     { label: 'AI Requests', value: stats.aiRequests.toString(), change: '+30%', trend: 'up' as const, icon: Zap, color: 'orange' },
   ];

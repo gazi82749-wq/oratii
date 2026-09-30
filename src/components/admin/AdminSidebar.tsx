@@ -45,19 +45,6 @@ const navigation: SidebarEntry[] = [
       { label: 'Analytics', href: '/admin/speech/analytics', icon: <BarChart3 size={16} /> },
     ],
   },
-  {
-    label: 'Presentation (Soon)', icon: <FileText size={18} />,
-    items: [
-      { label: 'Presentation Practice', href: '#', icon: <FileText size={16} /> },
-      { label: 'Analytics', href: '#', icon: <BarChart3 size={16} /> },
-    ],
-  },
-  {
-    label: 'Viva AI', icon: <MessageSquare size={18} />,
-    items: [
-      { label: 'Sessions', href: '/admin/viva', icon: <MessageSquare size={16} /> },
-      { label: 'Question Bank', href: '/admin/viva/questions', icon: <FileText size={16} /> },
-    ],
   },
   {
     label: 'Subscriptions', icon: <CreditCard size={18} />,
