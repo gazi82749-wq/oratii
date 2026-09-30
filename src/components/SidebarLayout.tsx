@@ -117,7 +117,6 @@ export default function SidebarLayout({ children }) {
     { href: '/', label: 'Home', icon: <Home size={17} /> },
     { href: '/speech-coach', label: 'Drills', icon: <Mic size={17} /> },
     { href: '/interview', label: 'Placement', icon: <Briefcase size={17} /> },
-    { href: '#', label: 'Presentation Practice', icon: <FileText size={17} />, isComingSoon: true },
     { 
       href: '#', 
       label: 'Trainer Hub', 
@@ -162,7 +161,6 @@ export default function SidebarLayout({ children }) {
     { href: '/speech-coach', label: 'Speech Coach', icon: <Mic size={18} className="text-[#FF6B35]" />, fontWeight: 'font-medium' },
     { href: '/interview', label: 'Mock Interview', icon: <Briefcase size={18} className="text-amber-500" />, fontWeight: 'font-medium' },
     { href: '/challenge', label: 'Daily Challenge', icon: <Trophy size={18} className="text-[#D98200]" />, fontWeight: 'font-semibold' },
-    { href: '#', label: 'Presentation Practice', icon: <FileText size={18} className="text-indigo-900" />, fontWeight: 'font-medium', isComingSoon: true },
     { href: '#', label: 'Trainer Hub', icon: <Sparkles size={18} className="text-purple-600" />, fontWeight: 'font-bold', isComingSoon: true },
     { type: 'divider' },
     { href: '/reports', label: 'Reports', icon: <BarChart2 size={18} className="text-slate-500" />, fontWeight: 'font-medium' },

@@ -5,15 +5,14 @@ import { Mic, Video, Briefcase, CheckCircle2 } from 'lucide-react';
 
 const modules = [
   { id: 'speech', label: 'Speech Coach', icon: Mic },
-  { id: 'interview', label: 'Mock Interview', icon: Briefcase },
-  { id: 'presentation', label: 'Presentation Practice', icon: Video, isComingSoon: true }
+  { id: 'interview', label: 'Mock Interview', icon: Briefcase }
 ];
 
 export default function HeroShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
-  const activeModulesCount = modules.filter(m => !m.isComingSoon).length;
+  const activeModulesCount = modules.filter(m => !(m as any).isComingSoon).length;
 
   const cycleNext = useCallback(() => {
     setIsFading(true);
@@ -50,20 +49,21 @@ export default function HeroShowcase() {
             {modules.map((m, i) => {
               const Icon = m.icon;
               const isActive = i === activeIndex;
+              const isComingSoon = (m as any).isComingSoon;
               return (
                 <button
                   key={m.id}
                   onClick={() => {
-                    if (m.isComingSoon) return;
+                    if (isComingSoon) return;
                     setIsFading(true);
                     setTimeout(() => {
                       setActiveIndex(i);
                       setIsFading(false);
                     }, 200);
                   }}
-                  disabled={m.isComingSoon}
+                  disabled={isComingSoon}
                   className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-extrabold transition-all ${
-                    m.isComingSoon
+                    isComingSoon
                       ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none text-slate-400'
                       : isActive
                       ? 'bg-[#0F1426] text-[#F2A93B] shadow-xs cursor-pointer'
@@ -73,7 +73,7 @@ export default function HeroShowcase() {
                   <Icon size={12} className={isActive ? 'text-[#F2A93B]' : 'text-slate-400'} />
                   <span className="hidden sm:inline flex items-center gap-1.5">
                     {m.label}
-                    {m.isComingSoon && <span className="text-[8px] bg-slate-200/50 text-slate-400 px-1 py-0.5 rounded uppercase tracking-widest hidden lg:inline-block">Soon</span>}
+                    {isComingSoon && <span className="text-[8px] bg-slate-200/50 text-slate-400 px-1 py-0.5 rounded uppercase tracking-widest hidden lg:inline-block">Soon</span>}
                   </span>
                 </button>
               );

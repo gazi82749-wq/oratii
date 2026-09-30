@@ -26,7 +26,6 @@ export default function Footer() {
               <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech Coach</Link></li>
               <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview Studio</Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
-              <li><span className="opacity-50 blur-[0.3px] cursor-not-allowed pointer-events-none select-none text-slate-500 inline-flex items-center">Presentation Practice <span className="text-[9px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded ml-1 border border-slate-800">SOON</span></span></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>
             </ul>
           </div>

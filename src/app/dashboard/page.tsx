@@ -354,18 +354,6 @@ export default function ProfessionalDashboard() {
     },
     {
       num: '03',
-      title: 'Presentation Practice',
-      desc: 'Upload PowerPoint/PDF decks to practice presenting live with WASM Edge HUD, webcam feedback, and optional AI viva defense.',
-      href: '/presentation',
-      icon: <FileText size={22} className="text-white" />,
-      badge: 'Coming Soon',
-      gradient: 'from-indigo-600 to-purple-600 opacity-60',
-      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      features: ['Real-time WPM & Gaze Vector', 'In-built Committee Defense'],
-      isComingSoon: true
-    },
-    {
-      num: '04',
       title: 'Daily Challenge & Streaks',
       desc: 'Daily 2-to-5 minute adaptive speech exercises to fix vocal crutches, track streaks, and earn XP badges.',
       href: '/challenge',
@@ -581,9 +569,10 @@ export default function ProfessionalDashboard() {
             <div
               key={idx}
               onClick={() => {
-                if (!m.isComingSoon) router.push(m.href);
+                const itemAny = m as any;
+                if (!itemAny.isComingSoon) router.push(m.href);
               }}
-              className={`group bg-white border border-slate-200/90 rounded-3xl p-6 transition-all duration-300 shadow-sm relative overflow-hidden flex flex-col justify-between gap-5 ${m.isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none grayscale-[0.3]' : 'hover:border-indigo-400 hover:shadow-xl transform hover:-translate-y-1 cursor-pointer'}`}
+              className={`group bg-white border border-slate-200/90 rounded-3xl p-6 transition-all duration-300 shadow-sm relative overflow-hidden flex flex-col justify-between gap-5 ${(m as any).isComingSoon ? 'opacity-50 blur-[0.5px] cursor-not-allowed pointer-events-none select-none grayscale-[0.3]' : 'hover:border-indigo-400 hover:shadow-xl transform hover:-translate-y-1 cursor-pointer'}`}
             >
               {/* Card Top Header */}
               <div className="flex items-start justify-between gap-4">
@@ -646,18 +635,6 @@ export default function ProfessionalDashboard() {
               <p className="text-lg sm:text-xl font-black text-slate-950 leading-relaxed">
                 {generateInsight(scoreTrend, stats.streak)}
               </p>
-            </div>
-
-            <div className="pt-4 border-t border-indigo-100 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-xs text-slate-600 font-semibold">Ready to analyze or practice your presentation?</span>
-              <div className="flex items-center gap-2 flex-wrap">
-                <button
-                  disabled
-                  className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-slate-400 to-slate-500 text-white font-extrabold text-xs shadow-md transition-all cursor-not-allowed flex items-center gap-2 opacity-60"
-                >
-                  <FileText size={15} /> Presentation Practice (Soon)
-                </button>
-              </div>
             </div>
           </div>
 
