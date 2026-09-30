@@ -61,10 +61,18 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 1. Guard /admin routes
-  if (pathname.startsWith('/admin')) {
+  // 1. Guard /admin routes (both UI and API)
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     if (pathname === '/admin/login') return res;
-    if (!user) return NextResponse.redirect(new URL('/admin/login', req.url));
+    
+    const isApi = pathname.startsWith('/api/');
+    
+    if (!user || user.email !== 'gazi82749@gmail.com') {
+      if (isApi) {
+        return new NextResponse(JSON.stringify({ error: "Forbidden: Admin access only" }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      }
+      return NextResponse.redirect(new URL(user ? '/dashboard' : '/admin/login', req.url));
+    }
   }
 
   // 2. Guard /trainer routes

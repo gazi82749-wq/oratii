@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (profile && profile.role === 'admin') {
+      if (session.user.email === 'gazi82749@gmail.com') {
         setIsAuthorized(true);
         if (pathname === '/admin/login') {
           router.push('/admin');
