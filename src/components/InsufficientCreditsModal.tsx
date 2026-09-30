@@ -109,7 +109,7 @@ export default function InsufficientCreditsModal({
           </h3>
 
           <p className="text-slate-500 text-xs sm:text-sm leading-relaxed font-medium">
-            Your 5 free credits are finished ({currentBalance} remaining, {requiredCredits} required for <span className="font-bold text-slate-800">{featureName}</span>). Purchase credits below to continue!
+            Your 10 free credits are finished ({currentBalance} remaining, {requiredCredits} required for <span className="font-bold text-slate-800">{featureName}</span>). Purchase credits below to continue!
           </p>
         </div>
 

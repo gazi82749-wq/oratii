@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
           email: data.user.email,
           full_name: fullName,
           role,
+          credits: 10,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'id' }

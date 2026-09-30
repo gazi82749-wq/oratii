@@ -50,24 +50,32 @@ export async function GET(request: NextRequest) {
     const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error && session?.user) {
-      // 1. If roleParam is provided, persist to profiles
-      if (roleParam === 'trainer') {
-        try {
-          const { getServiceSupabase } = await import('@/lib/supabaseClient');
-          const adminClient = getServiceSupabase();
-          await adminClient.from('profiles').upsert(
-            {
-              id: session.user.id,
-              email: session.user.email,
-              full_name: session.user.user_metadata?.full_name || '',
-              role: 'trainer',
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'id' }
-          );
-        } catch (profileErr) {
-          console.warn('[OAuth Callback] Profile upsert notice:', profileErr);
+      // 1. Persist or update profile
+      try {
+        const { getServiceSupabase } = await import('@/lib/supabaseClient');
+        const adminClient = getServiceSupabase();
+        
+        const profilePayload: any = {
+          id: session.user.id,
+          email: session.user.email,
+          full_name: session.user.user_metadata?.full_name || '',
+          updated_at: new Date().toISOString(),
+        };
+
+        if (roleParam === 'trainer') {
+          profilePayload.role = 'trainer';
         }
+
+        if (isSignup) {
+          profilePayload.credits = 10;
+        }
+
+        await adminClient.from('profiles').upsert(
+          profilePayload,
+          { onConflict: 'id' }
+        );
+      } catch (profileErr) {
+        console.warn('[OAuth Callback] Profile upsert notice:', profileErr);
       }
 
       // 2. Check if user is trainer and if academy onboarding is required

@@ -87,7 +87,7 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-6 space-y-2 text-xs font-semibold text-slate-700">
           <div className="flex items-center gap-2">
             <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
-            <span>5 Free Credits credited immediately</span>
+            <span>10 Free Credits credited immediately</span>
           </div>
           <div className="flex items-center gap-2">
             <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
