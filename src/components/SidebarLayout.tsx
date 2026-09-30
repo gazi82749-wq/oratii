@@ -261,7 +261,7 @@ export default function SidebarLayout({ children }) {
             {!authLoading && (
               user ? (
                 <div className="hidden md:flex items-center gap-2.5">
-                  <Link href="/pricing" title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
+                  <Link href={userCredits !== null && userCredits >= 99999 ? "/admin" : "/pricing"} title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
                     {userCredits !== null && userCredits >= 99999 ? (
                       <span className="flex items-center gap-1">
                         <Crown size={13} className="text-amber-600" />

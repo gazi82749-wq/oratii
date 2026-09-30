@@ -39,9 +39,12 @@ const navigation: SidebarEntry[] = [
     ],
   },
   {
-    label: 'Speech Coach', icon: <Mic size={18} />,
+    label: 'AI Coaches', icon: <Mic size={18} />,
     items: [
-      { label: 'Analysis Reports', href: '/admin/speech', icon: <FileText size={16} /> },
+      { label: 'Speech Reports', href: '/admin/speech', icon: <FileText size={16} /> },
+      { label: 'Mock Interviews', href: '/admin/viva', icon: <FileText size={16} /> },
+      { label: 'PPT Presentations', href: '/admin/ppt', icon: <FileText size={16} /> },
+      { label: 'Daily Habits', href: '/admin/challenge', icon: <FileText size={16} /> },
       { label: 'Analytics', href: '/admin/speech/analytics', icon: <BarChart3 size={16} /> },
     ],
   },
