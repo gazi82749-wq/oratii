@@ -12,15 +12,15 @@ export const CREDIT_PACKAGES = [
     name: 'Starter',
     badge: 'Zero Risk',
     price: 0,
-    credits: 5,
+    credits: 10,
     subtitle: 'Experience the power of real-time AI speech and slide analysis.',
     popular: false,
     cta: 'Get Started Free',
     validity: 'Lifetime',
     features: [
-      '5 Free Credits on registration',
+      '10 Free Credits on registration',
       'Full Access to All AI Features',
-      '5 Speech Drills OR 2 AI Vivas',
+      '10 Speech Drills OR 5 AI Vivas',
       'Instant AI Scorecard & Feedback',
       'Never Expires (Use anytime)',
     ],
@@ -70,8 +70,6 @@ export const CREDIT_PACKAGES = [
 export async function getUserCredits(userId: string): Promise<number> {
   if (!userId) return 0;
 
-  // Removed insecure client-side admin bypass
-
   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -79,21 +77,20 @@ export async function getUserCredits(userId: string): Promise<number> {
       .eq('id', userId)
       .maybeSingle();
 
-    // 2. Check profile role, plan, or admin email prefix
     if (
       data?.role === 'admin' ||
       data?.current_plan === 'admin_unlimited' ||
       (data?.email && (data.email.startsWith('admin') || data.email.includes('admin@')))
     ) {
-      return 999999; // Unlimited access for Administrator accounts
+      return 999999;
     }
 
     if (error || !data || typeof data.credits !== 'number') {
-      return 5;
+      return 10;
     }
     return data.credits;
   } catch {
-    return 5;
+    return 10;
   }
 }
 
@@ -109,8 +106,6 @@ export async function checkAndDeductCredits(
     return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
   }
 
-  // Removed insecure client-side admin bypass
-
   try {
     const { data: profile } = await supabase
       .from('profiles')
@@ -118,7 +113,6 @@ export async function checkAndDeductCredits(
       .eq('id', userId)
       .maybeSingle();
 
-    // 2. Bypass deduction for Administrators
     if (
       profile?.role === 'admin' ||
       profile?.current_plan === 'admin_unlimited' ||
@@ -127,7 +121,7 @@ export async function checkAndDeductCredits(
       return { allowed: true, remainingCredits: 999999 };
     }
 
-    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 5;
+    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 10;
     if (currentCredits < cost) {
       return {
         allowed: false,
@@ -149,7 +143,7 @@ export async function checkAndDeductCredits(
     return { allowed: true, remainingCredits: newCredits };
   } catch (e) {
     console.error('Failed to deduct credits:', e);
-    return { allowed: true, remainingCredits: 5 };
+    return { allowed: true, remainingCredits: 10 };
   }
 }
 

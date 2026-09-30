@@ -110,7 +110,7 @@ export default function PricingClient() {
     },
     {
       q: 'What is included in the Free Trial?',
-      a: 'When you sign up, you automatically receive 5 Free Credits with full access to test out Speech Analysis, Presentation Practice, and AI Viva Defense sessions.'
+      a: 'When you sign up, you automatically receive 10 Free Credits with full access to test out Speech Analysis, Presentation Practice, and AI Viva Defense sessions.'
     },
     {
       q: 'How fast are credits added after payment?',
