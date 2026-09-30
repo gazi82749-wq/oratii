@@ -61,6 +61,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // 0.5 Redirect /dashboard/admin to /admin
+  if (pathname === '/dashboard/admin') {
+    return NextResponse.redirect(new URL('/admin', req.url));
+  }
+
   // 1. Guard /admin routes (both UI and API)
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     if (pathname === '/admin/login') return res;
