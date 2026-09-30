@@ -25,6 +25,8 @@ export async function GET(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+    let capturedCookies: { name: string, value: string, options: any }[] = [];
+
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
@@ -33,7 +35,10 @@ export async function GET(request: NextRequest) {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
+              // Set on Next.js cookie store
               cookieStore.set(name, value, options);
+              // ALSO capture them to manually apply to our redirect response later
+              capturedCookies.push({ name, value, options });
             });
           } catch {
             // Ignored if called in read-only context
@@ -97,6 +102,12 @@ export async function GET(request: NextRequest) {
       }
 
       const response = NextResponse.redirect(new URL(finalRedirectUrl, request.url));
+      
+      // Explicitly attach the captured Supabase auth cookies to the redirect response
+      capturedCookies.forEach(({ name, value, options }) => {
+        response.cookies.set(name, value, options);
+      });
+
       response.cookies.set('Oratii_logged_in', 'true', {
         path: '/',
         maxAge: 31536000,
