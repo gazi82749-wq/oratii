@@ -45,7 +45,6 @@ const navigation: SidebarEntry[] = [
       { label: 'Analytics', href: '/admin/speech/analytics', icon: <BarChart3 size={16} /> },
     ],
   },
-  },
   {
     label: 'Subscriptions', icon: <CreditCard size={18} />,
     items: [
