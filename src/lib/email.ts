@@ -5,16 +5,26 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii <hello@oratii.in>';
 const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
 
 // Generic email sender to avoid template duplication
-async function sendEmail(to: string, subject: string, heading: string, body: string, ctaText: string, ctaUrl: string, ctaColor: string) {
+async function sendEmail(
+  to: string,
+  subject: string,
+  heading: string,
+  body: string,
+  ctaText: string,
+  ctaUrl: string,
+  ctaColor: string,
+  fromSender: string = 'Oratii Support <support@oratii.in>',
+  replyToAddress: string = 'support@oratii.in'
+) {
   if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
     console.log(`[Email Skipped - No Resend Key] To: ${to}, Subject: ${subject}`);
     return;
   }
   try {
     await resend.emails.send({
-      from: FROM_EMAIL,
+      from: fromSender,
       to,
-      replyTo: 'hello@oratii.in',
+      replyTo: replyToAddress,
       subject,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
