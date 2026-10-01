@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import CopyEmailButton from '@/components/CopyEmailButton';
 import { Receipt, CheckCircle, Clock, AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -125,9 +126,12 @@ export default function RefundPolicyPage() {
               <li>Razorpay Payment ID (e.g., <code className="bg-slate-200 px-1.5 py-0.5 rounded text-xs font-mono">pay_...</code>)</li>
               <li>A brief description of the issue or refund reason</li>
             </ul>
-            <div className="bg-white border border-slate-200 p-4 rounded-xl text-xs font-medium text-slate-700">
-              <p>Email your request to: <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a></p>
-              <p className="mt-1">Or visit our: <Link href="/support" className="font-bold underline text-indigo-700">Oratii Help &amp; Support Center</Link></p>
+            <div className="bg-white border border-slate-200 p-4 rounded-xl text-xs font-medium text-slate-700 space-y-2">
+              <div className="flex items-center gap-1.5">
+                <span>Email your request to:</span>
+                <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" />
+              </div>
+              <p>Or visit our: <Link href="/support" className="font-bold underline text-indigo-700">Oratii Help &amp; Support Center</Link></p>
             </div>
           </section>
 

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import CopyEmailButton from '@/components/CopyEmailButton';
 import { FileText, ShieldAlert, CheckCircle, Scale, AlertTriangle } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -119,9 +120,11 @@ export default function TermsOfServicePage() {
 
           <section>
             <h2 className="text-xl font-black text-slate-950 mb-3">9. Legal Contact</h2>
-            <p className="text-slate-700 font-medium leading-relaxed">
-              For legal inquiries or questions regarding these Terms of Service, please contact us at <a href="mailto:support@oratii.in" className="font-bold text-indigo-700 underline">support@oratii.in</a> or visit our <Link href="/support" className="font-bold text-indigo-700 underline">Support Desk</Link>.
-            </p>
+            <div className="text-slate-700 font-medium leading-relaxed flex flex-wrap items-center gap-1.5">
+              <span>For legal inquiries or questions regarding these Terms of Service, please contact us at</span>
+              <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" />
+              <span>or visit our <Link href="/support" className="font-bold text-indigo-700 underline">Support Desk</Link>.</span>
+            </div>
           </section>
         </div>
       </div>

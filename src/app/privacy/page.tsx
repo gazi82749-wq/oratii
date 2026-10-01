@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import CopyEmailButton from '@/components/CopyEmailButton';
 import { Lock, ShieldCheck, Mail, FileText, Cpu, Server, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -105,7 +106,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium">
               <li><strong>Right to Access &amp; Portability:</strong> You can view and export all your session reports and billing transactions from your account dashboard at any time.</li>
-              <li><strong>Right to Erasure (Data Deletion):</strong> You may request complete deletion of your account and session history by emailing <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a>. All associated records will be permanently purged within 14 business days.</li>
+              <li><strong>Right to Erasure (Data Deletion):</strong> You may request complete deletion of your account and session history by contacting support at <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" />. All associated records will be permanently purged within 14 business days.</li>
               <li><strong>No Data Selling:</strong> We do not sell, rent, or trade personal information to third-party data brokers or advertisers under any circumstances.</li>
             </ul>
           </section>
@@ -126,8 +127,8 @@ export default function PrivacyPolicyPage() {
               <p className="text-xs text-slate-600 font-medium leading-relaxed mb-3">
                 For privacy inquiries, data erasure requests, or compliance questions under applicable data privacy laws, please contact our compliance team:
               </p>
-              <div className="text-xs font-medium space-y-1 text-slate-700">
-                <p><strong>Email:</strong> <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a></p>
+              <div className="text-xs font-medium space-y-2 text-slate-700">
+                <div className="flex items-center gap-2"><strong>Email:</strong> <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" /></div>
                 <p><strong>Support Desk:</strong> <Link href="/support" className="font-bold underline text-indigo-700">Oratii Support Center</Link></p>
               </div>
             </div>

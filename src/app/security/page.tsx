@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import CopyEmailButton from '@/components/CopyEmailButton';
 import { ShieldCheck, Lock, Cpu, Eye, CheckCircle2, FileText, Server, ShieldAlert } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -123,9 +124,10 @@ export default function SecurityEthicsPage() {
           <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 text-slate-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="font-extrabold text-sm mb-1">Security or Ethics Question?</p>
-              <p className="text-xs text-slate-600 font-medium">
-                Contact our security compliance team at <a href="mailto:support@oratii.in" className="font-bold underline text-indigo-700">support@oratii.in</a>
-              </p>
+              <div className="text-xs text-slate-600 font-medium flex items-center gap-1.5 mt-1">
+                <span>Contact our security compliance team at</span>
+                <CopyEmailButton email="support@oratii.in" className="text-indigo-700 hover:text-indigo-900" />
+              </div>
             </div>
             <Link
               href="/support"
