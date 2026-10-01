@@ -4,17 +4,21 @@ import Footer from '@/components/Footer';
 import { Receipt, CheckCircle, Clock, AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Cancellation & Refund Policy',
-  description: 'Oratii cancellation, refund, and digital product delivery policy for AI speech coaching credits and subscription packages.',
+  title: 'Cancellation & Refund Policy | Oratii AI',
+  description: 'Oratii cancellation, refund, and digital product delivery policy for AI speech coaching credit sachets and top-up packages.',
   openGraph: {
     title: 'Cancellation & Refund Policy | Oratii',
     description: 'Understand how Oratii handles payment cancellations, digital delivery of AI credits, and refund requests.',
+    url: 'https://oratii.in/refund-policy',
+  },
+  alternates: {
+    canonical: 'https://oratii.in/refund-policy',
   },
 };
 
 export default function RefundPolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] w-full">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] w-full font-sans antialiased text-slate-900">
       <div className="flex-1 w-full max-w-4xl mx-auto py-12 px-4 sm:px-6 text-slate-800 animate-fade-in relative">
         
         {/* Header */}
@@ -26,8 +30,8 @@ export default function RefundPolicyPage() {
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
             Cancellation &amp; Refund Policy
           </h1>
-          <p className="text-sm text-slate-500 font-normal">
-            Last Updated: September 2026 • Effective Immediately
+          <p className="text-sm text-slate-500 font-medium">
+            Last Updated: October 2026 • Effective Immediately
           </p>
         </div>
 
@@ -40,7 +44,7 @@ export default function RefundPolicyPage() {
               <CheckCircle size={20} className="text-emerald-600" /> Instant Digital Delivery Guarantee
             </h2>
             <p className="text-slate-700 font-normal leading-relaxed">
-              All Oratii services—including our <strong>Pay-As-You-Go Credit Sachets (₹49, ₹99, ₹199, ₹1499)</strong> and subscriptions—are <strong>100% digital software services</strong>. Upon successful online payment verification via our payment gateway (Razorpay), your purchased credits are automatically deposited into your account dashboard immediately with zero shipping delay.
+              All Oratii services—including our <strong>Pay-As-You-Go Credit Sachets (Pro ₹149 for 40 Credits, Premium ₹499 for 200 Credits)</strong>—are <strong>100% digital software services</strong>. Upon successful online payment verification via our payment gateway (Razorpay), your purchased credits are automatically deposited into your account dashboard immediately with zero shipping delay.
             </p>
           </section>
 
@@ -49,10 +53,10 @@ export default function RefundPolicyPage() {
             <h2 className="text-xl font-black text-slate-950 mb-3">1. Cancellation Policy</h2>
             <div className="space-y-3 text-slate-700 font-medium">
               <p>
-                <strong>a. Pay-As-You-Go Sachets:</strong> Credit sachets are one-time, non-recurring purchases. Because there are no recurring subscription charges or auto-debits, no manual cancellation is required.
+                <strong>a. Pay-As-You-Go Credit Sachets:</strong> Credit packs are one-time, non-recurring top-up purchases. Because there are no recurring subscription charges or auto-debits, no manual cancellation is required.
               </p>
               <p>
-                <strong>b. Subscription Plans (if active):</strong> You may cancel any recurring subscription at any time via your Account Settings. Upon cancellation, you will retain full access until the end of your prepaid billing period, and no further charges will be made.
+                <strong>b. Starter Plan:</strong> All registered accounts automatically receive 10 Free Monthly Credits to evaluate platform features with zero commitment.
               </p>
             </div>
           </section>
@@ -86,7 +90,7 @@ export default function RefundPolicyPage() {
                 Refunds cannot be granted under the following circumstances:
               </p>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Credits that have already been consumed for speech evaluations (as third-party AI compute costs are incurred immediately upon execution).</li>
+                <li>Credits that have already been consumed for AI speech or interview evaluations (as third-party AI compute costs are incurred immediately upon execution).</li>
                 <li>Refund requests submitted after 7 calendar days from the purchase date.</li>
                 <li>Accounts terminated due to violations of our Terms of Service (such as fraudulent chargeback attempts or bot scraping).</li>
               </ul>
