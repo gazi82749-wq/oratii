@@ -14,10 +14,19 @@ export default function DailyHabitsAdminPage() {
   useEffect(() => {
     async function loadProfiles() {
       setLoading(true);
-      const { data } = await supabase.from('profiles').select('*');
-      if (data && data.length > 0) {
-        setProfiles(data);
-      } else {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/users?limit=1000', {
+          headers: { 'authorization': `Bearer ${session?.access_token || ''}` }
+        });
+        const json = await res.json();
+        if (json && json.users) {
+          setProfiles(json.users);
+        } else {
+          setProfiles([]);
+        }
+      } catch (err) {
+        console.error('Failed to load challenge analytics:', err);
         setProfiles([]);
       }
       setLoading(false);

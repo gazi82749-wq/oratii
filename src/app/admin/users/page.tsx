@@ -63,7 +63,13 @@ export default function AllUsersPage() {
       if (debouncedSearch) url.searchParams.set('search', debouncedSearch);
       if (planFilter !== 'all') url.searchParams.set('plan', planFilter);
 
-      const res = await fetch(url.toString());
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const res = await fetch(url.toString(), {
+        headers: {
+          'authorization': `Bearer ${session?.access_token || ''}`
+        }
+      });
       const json = await res.json();
 
       if (json && json.users) {

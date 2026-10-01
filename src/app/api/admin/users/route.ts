@@ -80,6 +80,7 @@ export async function GET(req: NextRequest) {
           current_plan: p.current_plan || 'free',
           role: p.role || (u.email?.includes('admin') ? 'admin' : 'user'),
           credits: p.credits ?? 20,
+          streak: p.streak || 0,
           analyses_count: p.analyses_count || 0,
           last_active: u.last_sign_in_at || p.updated_at || u.created_at,
         };
@@ -93,6 +94,7 @@ export async function GET(req: NextRequest) {
         current_plan: p.current_plan || 'free',
         role: p.role || 'user',
         credits: p.credits ?? 20,
+        streak: p.streak || 0,
         analyses_count: p.analyses_count || 0,
         last_active: p.updated_at || p.created_at,
       }));
