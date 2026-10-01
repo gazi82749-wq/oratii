@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200" fill="none">
+  <defs>
+    <linearGradient id="waveGradFull" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F2A93B"/>
+      <stop offset="100%" stop-color="#2FBF9F"/>
+    </linearGradient>
+    <clipPath id="badgeClipFull">
+      <rect x="30" y="50" width="200" height="200" rx="52"/>
+    </clipPath>
+  </defs>
+
+  <!-- Navbar Badge Icon -->
+  <g transform="translate(10, -25) scale(0.75)">
+    <path d="M 55 235 L 55 275 L 95 240 Z" fill="#1B2140"/>
+    <rect x="30" y="50" width="200" height="200" rx="52" fill="#1B2140"/>
+    <g clip-path="url(#badgeClipFull)">
+      <path d="M 178 50 L 230 50 L 230 102 Z" fill="#FFFFFF" opacity="0.10"/>
+    </g>
+    <g>
+      <rect x="66"  y="145" width="16" height="60"  rx="8" fill="url(#waveGradFull)"/>
+      <rect x="92"  y="115" width="16" height="120" rx="8" fill="url(#waveGradFull)"/>
+      <rect x="118" y="95"  width="16" height="160" rx="8" fill="url(#waveGradFull)"/>
+      <rect x="144" y="125" width="16" height="100" rx="8" fill="url(#waveGradFull)"/>
+      <rect x="170" y="150" width="16" height="50"  rx="8" fill="url(#waveGradFull)"/>
+    </g>
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="210" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="76" font-weight="900" letter-spacing="-2">
+    <tspan fill="#0F172A">Orat</tspan><tspan fill="#F2A93B">ii</tspan>
+  </text>
+  <text x="212" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="800" fill="#64748B" letter-spacing="4">SAY IT WELL. SHOW IT WELL.</text>
+</svg>

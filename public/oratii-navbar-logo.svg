@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F2A93B"/>
+      <stop offset="100%" stop-color="#2FBF9F"/>
+    </linearGradient>
+    <clipPath id="badgeClip">
+      <rect x="30" y="50" width="200" height="200" rx="52"/>
+    </clipPath>
+  </defs>
+
+  <!-- Square Dark Navy Background for Google Cloud Console -->
+  <rect width="512" height="512" rx="96" fill="#0F172A"/>
+
+  <!-- Centered Navbar Soundwave Badge -->
+  <g transform="translate(146, 50) scale(1.1)">
+    <path d="M 55 235 L 55 275 L 95 240 Z" fill="#1B2140"/>
+    <rect x="30" y="50" width="200" height="200" rx="52" fill="#1B2140"/>
+    <g clip-path="url(#badgeClip)">
+      <path d="M 178 50 L 230 50 L 230 102 Z" fill="#FFFFFF" opacity="0.10"/>
+    </g>
+    <g>
+      <rect x="66"  y="145" width="16" height="60"  rx="8" fill="url(#waveGrad)"/>
+      <rect x="92"  y="115" width="16" height="120" rx="8" fill="url(#waveGrad)"/>
+      <rect x="118" y="95"  width="16" height="160" rx="8" fill="url(#waveGrad)"/>
+      <rect x="144" y="125" width="16" height="100" rx="8" fill="url(#waveGrad)"/>
+      <rect x="170" y="150" width="16" height="50"  rx="8" fill="url(#waveGrad)"/>
+    </g>
+  </g>
+
+  <!-- Exact Navbar Brand Typography -->
+  <text x="256" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="60" font-weight="900" letter-spacing="-1">
+    <tspan fill="#FFFFFF">Orat</tspan><tspan fill="#F2A93B">ii</tspan>
+  </text>
+  <text x="256" y="440" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="3">SAY IT WELL. SHOW IT WELL.</text>
+</svg>
