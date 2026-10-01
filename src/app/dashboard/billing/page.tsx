@@ -1,33 +1,73 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CreditCard, Download, AlertTriangle, Zap, CheckCircle2 } from 'lucide-react';
+import { CreditCard, Download, Zap, CheckCircle2, Coins, ArrowRight, ShieldCheck, History } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
+import { supabase } from '@/lib/supabaseClient';
+import { getUserCredits } from '@/lib/credits';
 
 export default function BillingDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  
-  // Mock data for UI until Supabase is fully hooked up
-  const [billingData, setBillingData] = useState({
-    plan: 'Pro',
-    status: 'active',
-    renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-    speechCount: 12,
-    speechLimit: 'Unlimited',
-    pptCount: 5,
-    pptLimit: 'Unlimited',
-    vivaCount: 8,
-    vivaLimit: 20,
-    payments: [
-      { id: 'pay_123', date: new Date().toLocaleDateString(), amount: '₹299', status: 'Success', plan: 'Pro' }
-    ]
-  });
+  const [credits, setCredits] = useState<number>(10);
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [currentPlan, setCurrentPlan] = useState<string>('Starter (Free)');
+  const [payments, setPayments] = useState<any[]>([]);
 
   useEffect(() => {
-    // In production, fetch from /api/billing/status
-    setTimeout(() => setLoading(false), 1000);
+    async function loadUserBilling() {
+      setLoading(true);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUserEmail(session.user.email || '');
+          const userCreds = await getUserCredits(session.user.id);
+          setCredits(userCreds);
+
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('current_plan')
+            .eq('id', session.user.id)
+            .maybeSingle();
+
+          if (profile?.current_plan) {
+            const p = profile.current_plan.toLowerCase();
+            if (p === 'pro' || p === 'interview_sprint') setCurrentPlan('Pro Credit Pack (40 Credits)');
+            else if (p === 'premium' || p === 'season_pass') setCurrentPlan('Premium Credit Pack (200 Credits)');
+            else if (p === 'admin_unlimited' || p === 'admin') setCurrentPlan('Admin Unlimited');
+            else setCurrentPlan('Starter (10 Monthly Free Credits)');
+          }
+
+          const { data: userPayments } = await supabase
+            .from('payments')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .order('created_at', { ascending: false });
+
+          if (userPayments && userPayments.length > 0) {
+            const mapped = userPayments.map((p: any) => {
+              let amt = p.amount || 149;
+              if (amt > 2000) amt = amt / 100;
+              return {
+                id: p.id || p.razorpay_payment_id || p.payment_id || 'PAY-LIVE',
+                date: new Date(p.created_at || Date.now()).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }),
+                amount: `₹${amt}`,
+                plan: p.plan || (amt === 499 ? 'Premium Pack (200 Cr)' : amt === 149 ? 'Pro Pack (40 Cr)' : 'Credit Pack'),
+                status: p.status === 'captured' || p.status === 'completed' ? 'Success' : p.status || 'Success',
+              };
+            });
+            setPayments(mapped);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load user billing data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUserBilling();
   }, []);
 
   if (loading) {
@@ -41,126 +81,145 @@ export default function BillingDashboard() {
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#F8FAFC]">
       <div className="max-w-5xl mx-auto p-6 space-y-8 flex-1 w-full">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Billing & Usage</h1>
-            <p className="text-slate-500 mt-1">Manage your subscription and track your API usage.</p>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Billing &amp; Credit Balance</h1>
+            <p className="text-slate-500 mt-1 text-sm font-medium">Track your active AI analysis credits and transaction receipts.</p>
           </div>
           <button 
             onClick={() => router.push('/pricing')}
-            className="px-4 py-2 bg-slate-900 text-white font-medium rounded-lg hover:bg-black flex items-center gap-2 cursor-pointer"
+            className="px-5 py-2.5 bg-[#0F1426] hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center gap-2 transition-all shadow-md cursor-pointer"
           >
-            <Zap size={16} /> Upgrade Plan
+            <Zap size={15} className="text-[#F2A93B]" /> Get More Credits
           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Active Plan Card */}
-          <div className="col-span-1 md:col-span-2 bg-white rounded-2xl border border-indigo-200 p-6 shadow-sm flex flex-col justify-between">
+          {/* Active Credits Card */}
+          <div className="col-span-1 md:col-span-2 bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-2xl rounded-full pointer-events-none" />
             <div>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Current Plan</p>
-                  <h2 className="text-3xl font-black text-slate-900 mt-1">{billingData.plan}</h2>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Credit Tier</p>
+                  <h2 className="text-2xl font-black text-slate-950 mt-1">{currentPlan}</h2>
                 </div>
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase rounded-full flex items-center gap-1">
-                  <CheckCircle2 size={14} /> Active
+                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-xs font-bold rounded-full flex items-center gap-1.5">
+                  <CheckCircle2 size={14} /> Pay-As-You-Go Active
                 </span>
               </div>
-              <p className="text-slate-600 font-medium">Your subscription renews on <span className="text-slate-900 font-bold">{billingData.renewalDate}</span>.</p>
+              
+              <div className="mt-6 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-bold text-amber-900">Current Available Balance</div>
+                  <div className="text-3xl font-black text-amber-950 font-mono mt-0.5 flex items-center gap-2">
+                    <Coins size={24} className="text-[#F2A93B]" />
+                    {credits} Credits
+                  </div>
+                </div>
+                <button
+                  onClick={() => router.push('/pricing')}
+                  className="px-4 py-2 bg-gradient-to-r from-amber-400 to-[#F2A93B] text-slate-950 font-extrabold text-xs rounded-xl shadow-xs hover:brightness-105 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  Top Up <ArrowRight size={14} />
+                </button>
+              </div>
             </div>
-            
-            <div className="mt-8 flex gap-4">
-              <button className="px-4 py-2 border border-indigo-200 font-semibold rounded-lg hover:bg-indigo-50 text-slate-700 cursor-pointer">
-                Cancel Subscription
-              </button>
+
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Account: <strong className="text-slate-800">{userEmail}</strong></span>
+              <span className="flex items-center gap-1 text-emerald-700 font-bold">
+                <ShieldCheck size={14} /> 1 Credit = 1 AI Speech Analysis
+              </span>
             </div>
           </div>
 
-          {/* Payment Method Card */}
-          <div className="col-span-1 bg-white rounded-2xl border border-indigo-200 p-6 shadow-sm">
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Payment Method</p>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-8 bg-indigo-100 rounded flex items-center justify-center border border-indigo-200">
-                <CreditCard className="text-slate-600" size={20} />
+          {/* Payment Method Info Card */}
+          <div className="col-span-1 bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Instant Payment Gateway</p>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-10 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100 shrink-0">
+                  <CreditCard className="text-indigo-900" size={20} />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900 text-sm">UPI &amp; Razorpay</p>
+                  <p className="text-xs text-slate-500 font-medium">Zero auto-debit, instant top-up</p>
+                </div>
               </div>
-              <div>
-                <p className="font-bold text-slate-900">Razorpay</p>
-                <p className="text-xs text-slate-500">Auto-billing enabled</p>
-              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                Purchased credits never expire. Top up anytime with Google Pay, PhonePe, Paytm, UPI ID, or credit/debit cards.
+              </p>
             </div>
-            <button className="text-[#1B2140] text-sm font-bold hover:text-[#151930] cursor-pointer">Update Payment Method</button>
+
+            <button 
+              onClick={() => router.push('/pricing')}
+              className="mt-6 text-indigo-900 text-xs font-bold hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              View Pricing Tiers →
+            </button>
           </div>
         </div>
 
-        {/* Usage Stats */}
-        <div className="bg-white rounded-2xl border border-indigo-200 p-6 shadow-sm">
-          <h3 className="text-xl font-bold text-slate-900 mb-6">Current Month Usage</h3>
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm font-semibold mb-2">
-                <span className="text-slate-700">Speech Analyses</span>
-                <span className="text-slate-900">{billingData.speechCount} / {billingData.speechLimit}</span>
-              </div>
-              <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#F2A93B] rounded-full" style={{ width: billingData.speechLimit === 'Unlimited' ? '100%' : `${(billingData.speechCount / (billingData.vivaLimit as number)) * 100}%` }}></div>
-              </div>
+        {/* Credit Usage Matrix Info */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm space-y-4">
+          <h3 className="text-lg font-bold text-slate-950 flex items-center gap-2">
+            <Coins size={18} className="text-[#F2A93B]" /> Credit Consumption Rate
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="text-xs font-bold text-slate-400 uppercase">AI Speech Coach</div>
+              <div className="text-base font-extrabold text-slate-900 mt-1">1 Credit / Session</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Vocal pacing, STT transcript &amp; tone audit</div>
             </div>
-
-            <div>
-              <div className="flex justify-between text-sm font-semibold mb-2">
-                <span className="text-slate-700">PPT Analyses</span>
-                <span className="text-slate-900">{billingData.pptCount} / {billingData.pptLimit}</span>
-              </div>
-              <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#F2A93B] rounded-full" style={{ width: billingData.pptLimit === 'Unlimited' ? '100%' : '50%' }}></div>
-              </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="text-xs font-bold text-slate-400 uppercase">Presentation Slide Audit</div>
+              <div className="text-base font-extrabold text-slate-900 mt-1">1 Credit / Deck</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">PDF / PPTX visual slide analysis</div>
             </div>
-
-            <div>
-              <div className="flex justify-between text-sm font-semibold mb-2">
-                <span className="text-slate-700">Viva Sessions</span>
-                <span className="text-slate-900">{billingData.vivaCount} / {billingData.vivaLimit}</span>
-              </div>
-              <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(billingData.vivaCount / (billingData.vivaLimit as number)) * 100}%` }}></div>
-              </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+              <div className="text-xs font-bold text-slate-400 uppercase">Interactive Viva / Interview</div>
+              <div className="text-base font-extrabold text-slate-900 mt-1">2 Credits / Session</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Real-time voice examiner &amp; scorecard</div>
             </div>
           </div>
         </div>
 
         {/* Payment History */}
-        <div className="bg-white rounded-2xl border border-indigo-200 p-6 shadow-sm">
-          <h3 className="text-xl font-bold text-slate-900 mb-6">Payment History</h3>
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm">
+          <h3 className="text-lg font-bold text-slate-950 mb-4 flex items-center gap-2">
+            <History size={18} className="text-indigo-900" /> Payment &amp; Credit Pack Receipts
+          </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-indigo-200 text-sm text-slate-500">
+                <tr className="border-b border-slate-100 text-xs text-slate-400 uppercase tracking-wider">
                   <th className="pb-3 font-semibold">Date</th>
                   <th className="pb-3 font-semibold">Amount</th>
-                  <th className="pb-3 font-semibold">Plan</th>
+                  <th className="pb-3 font-semibold">Credit Pack</th>
                   <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Invoice</th>
                 </tr>
               </thead>
-              <tbody className="text-sm">
-                {billingData.payments.map((p, i) => (
-                  <tr key={i} className="border-b border-indigo-100 last:border-0">
-                    <td className="py-4 text-slate-900 font-medium">{p.date}</td>
-                    <td className="py-4 text-slate-900">{p.amount}</td>
-                    <td className="py-4 text-slate-600">{p.plan}</td>
-                    <td className="py-4">
-                      <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md">
+              <tbody className="text-xs">
+                {payments.map((p, i) => (
+                  <tr key={p.id || i} className="border-b border-slate-100 last:border-0">
+                    <td className="py-3.5 text-slate-900 font-bold">{p.date}</td>
+                    <td className="py-3.5 text-slate-900 font-mono font-bold">{p.amount}</td>
+                    <td className="py-3.5 text-slate-700 font-medium">{p.plan}</td>
+                    <td className="py-3.5">
+                      <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[11px] font-bold rounded-md">
                         {p.status}
                       </span>
                     </td>
-                    <td className="py-4">
-                      <button className="text-[#1B2140] hover:text-[#151930] p-1 cursor-pointer">
-                        <Download size={18} />
-                      </button>
-                    </td>
                   </tr>
                 ))}
+                {payments.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-xs text-slate-400 font-medium">
+                      No payment receipts yet. Free Starter credits (10/mo) are active on your account.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
