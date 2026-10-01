@@ -47,16 +47,18 @@ const navigation: SidebarEntry[] = [
     ],
   },
   {
-    label: 'Interview Coach', icon: <Mic size={18} />,
+    label: 'Mock Interview (v1)', icon: <Video size={18} />,
     items: [
-      { label: 'Mock Interviews', href: '/admin/interview', icon: <FileText size={16} /> },
+      { label: 'Mock Interviews', href: '/admin/interview', icon: <Video size={16} /> },
+      { label: 'Question Bank', href: '/admin/interview/questions', icon: <FileText size={16} /> },
       { label: 'Analytics', href: '/admin/interview/analytics', icon: <BarChart3 size={16} /> },
     ],
   },
   {
-    label: 'Other Features', icon: <FileText size={18} />,
+    label: 'Presentation Practice', icon: <FileText size={18} />,
     items: [
-      { label: 'PPT Presentations', href: '/admin/ppt', icon: <FileText size={16} />, isComingSoon: true },
+      { label: 'PPT Slide Decks', href: '/admin/ppt', icon: <FileText size={16} /> },
+      { label: 'Viva Defense', href: '/admin/viva', icon: <Mic size={16} />, isComingSoon: true },
       { label: 'Daily Habits', href: '/admin/challenge', icon: <FileText size={16} /> },
     ],
   },
@@ -64,6 +66,7 @@ const navigation: SidebarEntry[] = [
     label: 'Subscriptions', icon: <CreditCard size={18} />,
     items: [
       { label: 'Plans', href: '/admin/subscriptions', icon: <CreditCard size={16} /> },
+      { label: 'Revenue Dashboard', href: '/admin/revenue', icon: <Receipt size={16} /> },
       { label: 'Payments', href: '/admin/subscriptions/payments', icon: <Receipt size={16} /> },
     ],
   },

@@ -13,22 +13,33 @@ export default function MockInterviewSessionsPage() {
   useEffect(() => {
     async function loadSessions() {
       setLoading(true);
-      // Fetch actual interview data ONLY
-      const { data } = await supabase.from('sessions').select('*').eq('session_type', 'interview').order('created_at', { ascending: false });
-      if (data && data.length > 0) {
-        const mapped = data.map((v: any) => ({
-          id: v.id,
-          userId: v.user_id || 'anon',
-          userName: 'Interview Participant',
-          subject: v.session_type || 'Mock Interview',
-          date: v.created_at || new Date().toISOString(),
-          questionsAsked: 5,
-          score: Number(v.score) || 0,
-          duration: 300,
-        }));
-        setSessions(mapped);
-      } else {
-        setSessions([]); // No dummy data!
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=interview', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
+        });
+        const json = await res.json();
+        if (json && json.sessions) {
+          const mapped = json.sessions.map((v: any) => ({
+            id: v.id,
+            userId: v.userId,
+            userName: v.userName,
+            userEmail: v.userEmail,
+            subject: v.subject,
+            date: v.createdAt,
+            questionsAsked: v.questionsAsked,
+            score: v.score,
+            duration: v.duration,
+          }));
+          setSessions(mapped);
+        } else {
+          setSessions([]);
+        }
+      } catch (err) {
+        console.error('Failed to load interview sessions:', err);
+        setSessions([]);
       }
       setLoading(false);
     }

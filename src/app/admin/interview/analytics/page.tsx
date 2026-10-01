@@ -14,15 +14,21 @@ export default function MockInterviewAnalyticsPage() {
   useEffect(() => {
     async function loadSessions() {
       setLoading(true);
-      const { data } = await supabase.from('sessions').select('*').eq('session_type', 'interview').order('created_at', { ascending: false });
-      if (data && data.length > 0) {
-        const mapped = data.map((v: any) => ({
-          score: Number(v.score) || 0,
-          duration: 300,
-          questionsAsked: 5,
-        }));
-        setSessions(mapped);
-      } else {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=interview', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
+        });
+        const json = await res.json();
+        if (json && json.sessions) {
+          setSessions(json.sessions);
+        } else {
+          setSessions([]);
+        }
+      } catch (err) {
+        console.error('Failed to load interview analytics:', err);
         setSessions([]);
       }
       setLoading(false);

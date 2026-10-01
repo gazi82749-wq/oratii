@@ -12,20 +12,22 @@ export default function PptAnalyticsPage() {
 
   useEffect(() => {
     async function loadReports() {
-      const { data } = await supabase.from('analysis_reports').select('*').order('created_at', { ascending: false });
-      if (data && data.length > 0) {
-        const mapped = data.map((r: any) => {
-          const sa = r.slide_analysis || {};
-          return {
-            id: r.id,
-            contentScore: sa.contentScore || r.overall_score || 78,
-            deliveryScore: sa.designScore || r.overall_score || 72,
-            engagementScore: sa.storytellingScore || r.overall_score || 75,
-            overallRating: r.overall_score || sa.overallScore || 75,
-            category: sa.category || 'Academic / Pitch',
-          };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=ppt', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
         });
-        setReports(mapped);
+        const json = await res.json();
+        if (json && json.sessions) {
+          setReports(json.sessions);
+        } else {
+          setReports([]);
+        }
+      } catch (err) {
+        console.error('Failed to load PPT analytics:', err);
+        setReports([]);
       }
     }
     loadReports();

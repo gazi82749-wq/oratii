@@ -15,34 +15,39 @@ export default function PptReportsPage() {
   useEffect(() => {
     async function loadReports() {
       setLoading(true);
-      const { data } = await supabase
-        .from('analysis_reports')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (data && data.length > 0) {
-        const mapped = data.map((r: any) => {
-          const sa = r.slide_analysis || {};
-          return {
-            id: r.id,
-            userId: r.user_id || 'anon',
-            userName: r.user_id ? `User (${r.user_id.substring(0, 6)})` : 'Slide Analyzer User',
-            presentationName: sa.title || r.presentation_id || 'Oratii Presentation Deck',
-            date: r.created_at || new Date().toISOString(),
-            contentScore: sa.contentScore || r.overall_score || 75,
-            deliveryScore: sa.designScore || r.overall_score || 70,
-            engagementScore: sa.storytellingScore || r.overall_score || 72,
-            overallRating: r.overall_score || sa.overallScore || 75,
-            slideCount: sa.slideBySlideFeedback?.length || 13,
-            category: sa.category || 'Academic / Pitch',
-            strengths: sa.strengths || [],
-            weaknesses: sa.weaknesses || [],
-            suggestions: sa.suggestions || [],
-            slides: sa.slideBySlideFeedback || [],
-          };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=ppt', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
         });
-        setReports(mapped);
-      } else {
+        const json = await res.json();
+        if (json && json.sessions) {
+          const mapped = json.sessions.map((r: any) => ({
+            id: r.id,
+            userId: r.userId,
+            userName: r.userName,
+            userEmail: r.userEmail,
+            presentationName: r.presentationName,
+            date: r.createdAt,
+            contentScore: r.contentScore,
+            deliveryScore: r.deliveryScore,
+            engagementScore: r.engagementScore,
+            overallRating: r.overallRating,
+            slideCount: r.slides?.length || 1,
+            category: r.category,
+            strengths: r.strengths,
+            weaknesses: r.weaknesses,
+            suggestions: r.suggestions,
+            slides: r.slides,
+          }));
+          setReports(mapped);
+        } else {
+          setReports([]);
+        }
+      } catch (err) {
+        console.error('Failed to load PPT reports:', err);
         setReports([]);
       }
       setLoading(false);

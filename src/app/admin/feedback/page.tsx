@@ -36,22 +36,29 @@ export default function FeedbackPage() {
   useEffect(() => {
     async function loadFeedback() {
       setLoading(true);
-      const { data } = await supabase
-        .from('user_feedback')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (data && data.length > 0) {
-        const mapped = data.map((f: any) => ({
-          id: f.id,
-          userName: f.user_name || 'Anonymous User',
-          type: f.type || 'general',
-          rating: f.rating || 5,
-          message: f.message || '',
-          date: f.created_at || new Date().toISOString(),
-        }));
-        setItems(mapped);
-      } else {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/feedback', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
+        });
+        const json = await res.json();
+        if (json && json.feedback) {
+          const mapped = json.feedback.map((f: any) => ({
+            id: f.id,
+            userName: f.user_name || f.user_email || 'Anonymous User',
+            type: f.type || 'general',
+            rating: f.rating || 5,
+            message: f.message || '',
+            date: f.created_at || new Date().toISOString(),
+          }));
+          setItems(mapped);
+        } else {
+          setItems([]);
+        }
+      } catch (err) {
+        console.error('Failed to load feedback:', err);
         setItems([]);
       }
       setLoading(false);

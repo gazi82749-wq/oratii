@@ -14,28 +14,33 @@ export default function SpeechReportsPage() {
   useEffect(() => {
     async function loadReports() {
       setLoading(true);
-      const { data } = await supabase
-        .from('analysis_reports')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (data && data.length > 0) {
-        const mapped = data.map((r: any) => {
-          const sa = r.slide_analysis || {};
-          return {
-            id: r.id,
-            userId: r.user_id || 'anon',
-            userName: r.user_id ? `User (${r.user_id.substring(0, 6)})` : 'Speech Coach User',
-            date: r.created_at || new Date().toISOString(),
-            wpm: sa.wpm || 135,
-            toneClarity: sa.toneClarity || r.overall_score || 82,
-            fluencyScore: sa.fluencyScore || r.overall_score || 85,
-            fillerWords: sa.fillerWordsCount !== undefined ? sa.fillerWordsCount : 3,
-            overallRating: r.overall_score || 80,
-          };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=speech', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
         });
-        setReports(mapped);
-      } else {
+        const json = await res.json();
+        if (json && json.sessions) {
+          const mapped = json.sessions.map((r: any) => ({
+            id: r.id,
+            userId: r.userId,
+            userName: r.userName,
+            userEmail: r.userEmail,
+            date: r.createdAt,
+            wpm: r.wpm,
+            toneClarity: r.toneClarity,
+            fluencyScore: r.fluencyScore,
+            fillerWords: r.fillerWords,
+            overallRating: r.overallRating,
+          }));
+          setReports(mapped);
+        } else {
+          setReports([]);
+        }
+      } catch (err) {
+        console.error('Failed to load speech reports:', err);
         setReports([]);
       }
       setLoading(false);

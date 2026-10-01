@@ -12,45 +12,50 @@ export default function SpeechAnalyticsPage() {
 
   useEffect(() => {
     async function loadReports() {
-      const { data } = await supabase.from('analysis_reports').select('*').order('created_at', { ascending: false });
-      if (data && data.length > 0) {
-        const mapped = data.map((r: any) => {
-          const sa = r.slide_analysis || {};
-          return {
-            id: r.id,
-            wpm: sa.wpm || 135,
-            toneClarity: sa.toneClarity || r.overall_score || 82,
-            fluencyScore: sa.fluencyScore || r.overall_score || 85,
-            fillerWords: sa.fillerWordsCount !== undefined ? sa.fillerWordsCount : 3,
-            overallRating: r.overall_score || 80,
-          };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=speech', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
         });
-        setReports(mapped);
+        const json = await res.json();
+        if (json && json.sessions) {
+          setReports(json.sessions);
+        } else {
+          setReports([]);
+        }
+      } catch (err) {
+        console.error('Failed to load speech analytics:', err);
+        setReports([]);
       }
     }
     loadReports();
   }, []);
 
   const total = reports.length;
-  const avgWPM = total > 0 ? Math.round(reports.reduce((s, r) => s + r.wpm, 0) / total) : 135;
-  const avgTone = total > 0 ? Math.round(reports.reduce((s, r) => s + r.toneClarity, 0) / total) : 82;
-  const avgFluency = total > 0 ? Math.round(reports.reduce((s, r) => s + r.fluencyScore, 0) / total) : 85;
-  const avgFillerWords = total > 0 ? Math.round(reports.reduce((s, r) => s + r.fillerWords, 0) / total) : 3;
+  const avgWPM = total > 0 ? Math.round(reports.reduce((s, r) => s + (r.wpm || 0), 0) / total) : 0;
+  const avgTone = total > 0 ? Math.round(reports.reduce((s, r) => s + (r.toneClarity || 0), 0) / total) : 0;
+  const avgFluency = total > 0 ? Math.round(reports.reduce((s, r) => s + (r.fluencyScore || 0), 0) / total) : 0;
+  const avgFillerWords = total > 0 ? Math.round(reports.reduce((s, r) => s + (r.fillerWords || 0), 0) / total) : 0;
 
   const scoreDistribution = [
-    { range: '0-20', count: reports.filter(r => r.overallRating < 20).length },
-    { range: '20-40', count: reports.filter(r => r.overallRating >= 20 && r.overallRating < 40).length },
-    { range: '40-60', count: reports.filter(r => r.overallRating >= 40 && r.overallRating < 60).length },
-    { range: '60-80', count: reports.filter(r => r.overallRating >= 60 && r.overallRating < 80).length },
-    { range: '80-100', count: reports.filter(r => r.overallRating >= 80).length },
+    { range: '0-20', count: reports.filter(r => (r.overallRating || 0) < 20).length },
+    { range: '20-40', count: reports.filter(r => (r.overallRating || 0) >= 20 && (r.overallRating || 0) < 40).length },
+    { range: '40-60', count: reports.filter(r => (r.overallRating || 0) >= 40 && (r.overallRating || 0) < 60).length },
+    { range: '60-80', count: reports.filter(r => (r.overallRating || 0) >= 60 && (r.overallRating || 0) < 80).length },
+    { range: '80-100', count: reports.filter(r => (r.overallRating || 0) >= 80).length },
   ];
 
-  const scoreTrendsData = [
-    { week: 'W1', pace: 130, tone: 78, fluency: 80 },
-    { week: 'W2', pace: 132, tone: 80, fluency: 82 },
-    { week: 'W3', pace: 135, tone: 82, fluency: 84 },
-    { week: 'W4', pace: 138, tone: 84, fluency: 86 },
-  ];
+  const scoreTrendsData = ['W1', 'W2', 'W3', 'W4'].map((week, idx) => {
+    if (total === 0) return { week, pace: 0, tone: 0, fluency: 0 };
+    return {
+      week,
+      pace: avgWPM,
+      tone: avgTone,
+      fluency: avgFluency,
+    };
+  });
 
   return (
     <div className="space-y-6">

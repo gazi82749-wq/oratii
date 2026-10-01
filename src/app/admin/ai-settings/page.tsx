@@ -70,23 +70,30 @@ export default function AISettingsPage() {
       todayStart.setHours(0, 0, 0, 0);
       const isoToday = todayStart.toISOString();
 
-      // Query real activity created today from Supabase
-      const { count: pptToday } = await supabase
-        .from('analysis_reports')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', isoToday);
+      // Query real activity created today from Admin Sessions API
+      let sessionCounts: Record<string, number> = {};
 
-      const { data: sessionsToday } = await supabase
-        .from('sessions')
-        .select('session_type')
-        .gte('created_at', isoToday);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/admin/sessions?type=all', {
+          headers: {
+            'authorization': `Bearer ${session?.access_token || ''}`
+          }
+        });
+        const json = await res.json();
+        if (json && json.sessions) {
+          json.sessions.forEach((s: any) => {
+            if (new Date(s.createdAt) >= todayStart) {
+              const st = s.sessionType || 'other';
+              sessionCounts[st] = (sessionCounts[st] || 0) + 1;
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load session counts in ai-settings:', err);
+      }
 
-      const sessionCounts = (sessionsToday || []).reduce((acc: any, curr: any) => {
-        acc[curr.session_type] = (acc[curr.session_type] || 0) + 1;
-        return acc;
-      }, {});
-
-      const realPptCount = pptToday || 0;
+      const realPptCount = sessionCounts['ppt'] || sessionCounts['presentation'] || 0;
       const speechCount = sessionCounts['speech'] || 0;
       const interviewCount = sessionCounts['interview'] || 0;
       const vivaCount = sessionCounts['viva'] || 0;
