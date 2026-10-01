@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-01 (Upgraded all transactional email templates in src/lib/email.ts to world-class SaaS design standards with clean 'Oratii' branding; verified Resend & Gmail support replies)*
+*Last Updated: 2026-10-01 (Replaced all mailto hyperlinks with interactive CopyEmailButton components across Privacy Policy, Terms, Refund Policy, and Security pages; upgraded transactional emails)*
