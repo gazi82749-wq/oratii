@@ -75,15 +75,15 @@ function AnimatedNumber({ value, duration = 800 }: { value: number; duration?: n
 }
 
 function generateInsight(scoreTrend: number[], streak: number) {
-  if (scoreTrend.length < 2) return "Complete your first slide deck audit or speech session to unlock AI coaching insights!";
+  if (scoreTrend.length < 2) return "Complete your first speech coach analysis or voice mock interview to unlock AI coaching insights!";
   const latest = scoreTrend[scoreTrend.length - 1];
   const previous = scoreTrend[scoreTrend.length - 2];
   const average = scoreTrend.reduce((a, b) => a + b, 0) / scoreTrend.length;
-  if (latest > previous + 5) return `Outstanding growth! Your presentation delivery score jumped by +${latest - previous}%!`;
-  if (streak >= 3) return `Keep your ${streak}-day presentation practice streak alive!`;
-  if (latest >= 90) return `Master tier delivery! You scored ${latest}%, placing you in the top 5% of presenters.`;
+  if (latest > previous + 5) return `Outstanding growth! Your vocal performance score jumped by +${latest - previous}%!`;
+  if (streak >= 3) return `Keep your ${streak}-day speech practice streak alive!`;
+  if (latest >= 90) return `Master tier performance! You scored ${latest}%, placing you in the top 5% of speakers.`;
   if (latest > average) return `Consistent growth! Your latest score of ${latest}% is above your recent average.`;
-  return `Every live presentation practice session brings you closer to mastery.`;
+  return `Every speech and interview practice session brings you closer to mastery.`;
 }
 
 export default function ProfessionalDashboard() {
@@ -238,12 +238,28 @@ export default function ProfessionalDashboard() {
             .limit(10);
 
           if (dbSessions && dbSessions.length > 0) {
-            const mappedSessions = dbSessions.map(s => ({
-              id: s.id,
-              topic: s.session_type ? s.session_type.replace('_', ' ').toUpperCase() : 'Practice Session',
-              timestamp: s.created_at,
-              scores: { overall: s.score || 85 },
-            }));
+            const mappedSessions = dbSessions.map(s => {
+              const payload = s.session_data || {};
+              const sType = s.session_type || payload.type || 'speech';
+              let topicName = payload.topic || payload.roleTitle || payload.situation;
+              if (!topicName) {
+                if (sType === 'speech') topicName = 'Speech Coach Analysis';
+                else if (sType === 'interview') topicName = payload.roleTitle ? `Interview: ${payload.roleTitle}` : 'AI Voice Interview';
+                else if (sType === 'viva') topicName = 'Academic Viva Defense';
+                else if (sType === 'challenge') topicName = 'Daily Habit Drill';
+                else if (sType === 'presentation') topicName = 'Presentation Deck Audit';
+                else topicName = 'Practice Session';
+              }
+
+              return {
+                id: s.id,
+                type: sType,
+                topic: topicName,
+                timestamp: s.created_at,
+                scores: { overall: s.score || payload.scores?.overall || 85 },
+                ...payload
+              };
+            });
 
             if (history.length === 0) {
               history = mappedSessions;
@@ -545,7 +561,7 @@ export default function ProfessionalDashboard() {
               </p>
             </div>
             <span className="text-xs font-bold text-purple-900 bg-purple-100/80 border border-purple-200 px-2.5 py-0.5 rounded-full w-fit">
-              Decks, Viva &amp; speeches
+              Speech, Interview &amp; Drills
             </span>
           </div>
         </div>
@@ -630,7 +646,7 @@ export default function ProfessionalDashboard() {
           <div className="lg:col-span-2 bg-gradient-to-br from-indigo-50/90 via-purple-50/50 to-white border border-indigo-200/80 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-6 fade-up-scroll stagger-1">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-600 text-white text-[11px] font-black uppercase tracking-widest mb-3 shadow-xs">
-                <Sparkles size={12} fill="currentColor" /> AI Presentation Coach
+                <Sparkles size={12} fill="currentColor" /> AI Vocal &amp; Interview Coach
               </div>
               <p className="text-lg sm:text-xl font-black text-slate-950 leading-relaxed">
                 {generateInsight(scoreTrend, stats.streak)}
@@ -653,7 +669,7 @@ export default function ProfessionalDashboard() {
               {recentSessions.map((session, idx) => (
                 <div key={idx} className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 flex items-center justify-between text-xs">
                   <div>
-                    <p className="font-extrabold text-slate-900 truncate max-w-[140px]">{session.topic || 'Presentation Audit'}</p>
+                    <p className="font-extrabold text-slate-900 truncate max-w-[140px]">{session.topic || (session.type === 'interview' ? 'Voice Interview' : session.type === 'speech' ? 'Speech Analysis' : session.type === 'viva' ? 'AI Viva Defense' : session.type === 'challenge' ? 'Daily Drill' : 'Practice Session')}</p>
                     <p className="text-[10px] text-slate-500 font-medium">{new Date(session.timestamp).toLocaleDateString()}</p>
                   </div>
                   <div className="flex items-center gap-2">

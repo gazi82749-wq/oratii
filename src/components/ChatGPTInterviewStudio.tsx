@@ -770,6 +770,8 @@ export default function ChatGPTInterviewStudio({
       }
 
       const sessionRecord = saveSession("interview", {
+        topic: roleTitle ? `Interview: ${roleTitle}` : 'AI Voice Interview',
+        type: 'interview',
         roleTitle,
         difficultyLevel,
         mockSeriesRound,
@@ -796,6 +798,8 @@ export default function ChatGPTInterviewStudio({
       console.warn("Generating dynamic evaluation report notice:", err);
       const fallbackScores = { technical: 82, communication: 85, starAlignment: 80, relevance: 88, overall: 84 };
       const sessionRecord = saveSession("interview", {
+        topic: roleTitle ? `Interview: ${roleTitle}` : 'AI Voice Interview',
+        type: 'interview',
         roleTitle,
         difficultyLevel,
         mockSeriesRound,

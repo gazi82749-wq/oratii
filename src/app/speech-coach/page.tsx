@@ -511,6 +511,8 @@ export default function SpeechCoach() {
       });
 
       const sessionRecord = saveSession('speech', {
+        topic: situation ? `Speech: ${situation}` : 'Speech Coach Analysis',
+        type: 'speech',
         duration: duration || 120,
         scores: { overall: finalOverallScore, fillerCount: fillerCount },
         strengths: finalStrengths,

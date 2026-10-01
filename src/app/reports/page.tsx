@@ -321,8 +321,9 @@ export default function Reports() {
           >
             <option value="all">ALL REPORTS</option>
             <option value="speech">SPEECH COACH</option>
-            <option value="presentation" disabled className="text-slate-400 opacity-50 blur-[0.5px]">PRESENTATION PRACTICE (SOON)</option>
-            <option value="viva">AI VIVA</option>
+            <option value="interview">AI VOICE INTERVIEW</option>
+            <option value="challenge">DAILY HABIT DRILLS</option>
+            <option value="viva">AI VIVA DEFENSE</option>
           </select>
         </div>
       </div>
