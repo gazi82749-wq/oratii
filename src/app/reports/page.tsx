@@ -12,8 +12,9 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts';
-import { Cloud, CloudOff, TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive, Share2, Check } from 'lucide-react';
+import { TrendingUp, FileText, Mic, BarChart3, GraduationCap, Briefcase, Scale, ClipboardList, Inbox, HardDrive, Share2, Check } from 'lucide-react';
 import Footer from '@/components/Footer';
+import MediaPreviewPlayer from '@/components/MediaPreviewPlayer';
 
 const VideoPlayer = ({ sessionId }: { sessionId: string }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -302,18 +303,6 @@ export default function Reports() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            {isCloudSynced ? (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200 shadow-2xs">
-                <Cloud className="w-3.5 h-3.5" /> Cloud Synced
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-100 text-slate-700 rounded-full text-xs font-bold border border-slate-200 shadow-2xs">
-                <CloudOff className="w-3.5 h-3.5" /> Local Storage
-              </span>
-            )}
-          </div>
-
           <select 
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -558,8 +547,14 @@ export default function Reports() {
                   </div>
                 )}
                 
-                {/* Render local video if it exists in IndexedDB */}
-                {session.hasVideo && <VideoPlayer sessionId={session.id} />}
+                {/* Render local media preview (audio or video) if available in IndexedDB */}
+                <div className="mt-6 border-t border-slate-100 pt-5 w-full">
+                  <MediaPreviewPlayer
+                    sessionId={session.id}
+                    mediaType={session.type === 'presentation' ? 'video' : 'audio'}
+                    title={`${getModuleName(session.type)} Media Recording`}
+                  />
+                </div>
               </div>
             </div>
           ))}

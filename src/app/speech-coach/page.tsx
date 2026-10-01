@@ -16,6 +16,7 @@ const GuestAuthModal = dynamic(() => import('../../components/GuestAuthModal'), 
 const InsufficientCreditsModal = dynamic(() => import('../../components/InsufficientCreditsModal'), { ssr: false });
 const ConfidenceGraph = dynamic(() => import('../../components/ConfidenceGraph'), { ssr: false });
 const ScoreRing = dynamic(() => import('../../components/ConfidenceGraph').then(mod => mod.ScoreRing), { ssr: false });
+const MediaPreviewPlayer = dynamic(() => import('../../components/MediaPreviewPlayer'), { ssr: false });
 import { generateAuditedSpeechRubric, getAcademicLevel, AuditedSpeechRubric } from '../../lib/scoringRubric';
 import {
   Mic, FileText, Upload, Sparkles, X, CheckCircle2, RotateCcw, Award, Zap, Globe,
@@ -220,6 +221,7 @@ export default function SpeechCoach() {
   const [topicPhase, setTopicPhase] = useState('input'); // 'input' | 'speech' | 'practice'
   const [showContext, setShowContext] = useState(false);
   const [showTrialPrompt, setShowTrialPrompt] = useState(false);
+  const [lastSessionId, setLastSessionId] = useState<string | null>(null);
   const speechRef = useRef(null);
 
   const [isPaused, setIsPaused] = useState(false);
@@ -533,6 +535,8 @@ export default function SpeechCoach() {
         ieltsDescriptor: auditedRubric.benchmark.ieltsDescriptor,
         situation
       });
+
+      setLastSessionId(sessionRecord.id);
 
       if (mediaFile) {
         saveMediaBlob(sessionRecord.id, mediaFile, 'audio');
@@ -1578,6 +1582,15 @@ export default function SpeechCoach() {
               </button>
             </div>
           </div>
+
+          {/* Universal Audio Recording Preview Player */}
+          {lastSessionId && (
+            <MediaPreviewPlayer
+              sessionId={lastSessionId}
+              mediaType="audio"
+              title="Speech Practice Audio Recording & Waveform"
+            />
+          )}
 
           {/* Placement & Delivery Practice Gym: 30-Second Clean Re-Do Drill */}
           <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 rounded-3xl p-0.5 shadow-xl animate-fade-in">
