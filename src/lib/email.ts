@@ -80,7 +80,7 @@ async function sendEmail(
                       <hr style="border: none; border-top: 1px solid #F1F5F9; margin: 28px 0 20px 0;" />
                       
                       <p style="font-size: 13px; color: #64748B; margin: 0; line-height: 1.5; text-align: center;">
-                        Have questions or need assistance? Reply directly to this email or visit our <a href="${getSiteUrl()}/help" style="color: #4F46E5; text-decoration: underline;">Help Center</a>.<br/>
+                        Have questions or need assistance? Reply directly to this email or visit our <a href="${getSiteUrl()}/contact" style="color: #4F46E5; text-decoration: underline;">Contact Us</a> page.<br/>
                         Warm regards,<br/><strong style="color: #0F172A;">The Oratii Team</strong>
                       </p>
                     </td>
