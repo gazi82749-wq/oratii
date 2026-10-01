@@ -1,19 +1,18 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Oratii <hello@oratii.in>';
 const getSiteUrl = () => process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
 
-// Generic email sender to avoid template duplication
+// Shared professional email layout template
 async function sendEmail(
   to: string,
   subject: string,
   heading: string,
-  body: string,
+  bodyHtml: string,
   ctaText: string,
   ctaUrl: string,
-  ctaColor: string,
-  fromSender: string = 'Oratii Support <support@oratii.in>',
+  ctaColor: string = '#0F172A',
+  fromSender: string = 'Oratii <hello@oratii.in>',
   replyToAddress: string = 'support@oratii.in'
 ) {
   if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
@@ -27,26 +26,84 @@ async function sendEmail(
       replyTo: replyToAddress,
       subject,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
-          <div style="background-color: #1B2140; padding: 28px 24px; text-align: center;">
-            <h1 style="color: #FFFFFF; font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">
-              Orat<span style="color: #F2A93B;">ii</span> AI
-            </h1>
-          </div>
-          <div style="padding: 28px 24px;">
-            <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin-top: 0;">${heading}</h2>
-            <div style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
-              ${body}
-            </div>
-            <div style="text-align: center; margin: 28px 0;">
-              <a href="${ctaUrl}" style="background-color: ${ctaColor}; color: white; padding: 14px 28px; text-decoration: none; border-radius: 100px; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">${ctaText}</a>
-            </div>
-            <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
-            <p style="font-size: 13px; color: #94A3B8; margin: 0; text-align: center;">
-              If you have any questions, feel free to reply to this email.<br/>Best regards, <strong>The Oratii AI Team</strong>
-            </p>
-          </div>
-        </div>
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+          <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F1F5F9; padding: 32px 16px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04); border: 1px solid #E2E8F0;">
+                  
+                  <!-- Header Branding -->
+                  <tr>
+                    <td style="background-color: #0F172A; padding: 32px 24px; text-align: center;">
+                      <a href="${getSiteUrl()}" style="text-decoration: none; display: inline-block;">
+                        <span style="color: #FFFFFF; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                          Orat<span style="color: #F2A93B;">ii</span>
+                        </span>
+                        <span style="color: #94A3B8; font-size: 12px; font-weight: 700; text-transform: uppercase; tracking-wider; display: block; margin-top: 4px; letter-spacing: 1px;">
+                          AI Communication &amp; Speech Platform
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- Main Content Area -->
+                  <tr>
+                    <td style="padding: 36px 32px; background-color: #FFFFFF;">
+                      <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 0 0 16px 0; letter-spacing: -0.3px;">
+                        ${heading}
+                      </h2>
+                      
+                      <div style="font-size: 15px; color: #334155; line-height: 1.65; margin-bottom: 28px;">
+                        ${bodyHtml}
+                      </div>
+
+                      ${ctaText && ctaUrl ? `
+                      <!-- Call To Action Button -->
+                      <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td align="center" style="padding: 8px 0 24px 0;">
+                            <a href="${ctaUrl}" target="_blank" style="background-color: ${ctaColor}; color: #FFFFFF; padding: 14px 32px; text-decoration: none; border-radius: 9999px; font-weight: 700; font-size: 14px; display: inline-block; letter-spacing: 0.2px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);">
+                              ${ctaText} &rarr;
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                      ` : ''}
+
+                      <hr style="border: none; border-top: 1px solid #F1F5F9; margin: 28px 0 20px 0;" />
+                      
+                      <p style="font-size: 13px; color: #64748B; margin: 0; line-height: 1.5; text-align: center;">
+                        Have questions or need assistance? Reply directly to this email or visit our <a href="${getSiteUrl()}/help" style="color: #4F46E5; text-decoration: underline;">Help Center</a>.<br/>
+                        Warm regards,<br/><strong style="color: #0F172A;">The Oratii Team</strong>
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #F8FAFC; padding: 20px 32px; text-align: center; border-top: 1px solid #E2E8F0;">
+                      <p style="font-size: 12px; color: #94A3B8; margin: 0 0 6px 0; font-weight: 500;">
+                        &copy; ${new Date().getFullYear()} Oratii (oratii.in). All rights reserved.
+                      </p>
+                      <p style="font-size: 11px; color: #CBD5E1; margin: 0;">
+                        Oratii AI • Speech Coach, Presentation Audits &amp; Mock Interviews
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
       `,
     });
   } catch (error) {
@@ -54,24 +111,43 @@ async function sendEmail(
   }
 }
 
+// 1. Welcome Email
 export async function sendWelcomeEmail(toEmail: string, userName: string) {
   const siteUrl = getSiteUrl();
+  const name = userName ? userName.split(' ')[0] : 'there';
+
+  const bodyContent = `
+    <p style="margin-top: 0;">Hi ${name},</p>
+    <p>Welcome to <strong>Oratii</strong>! We are thrilled to have you on board.</p>
+    <p>Oratii is your personal AI-powered speech, presentation, and interview coach designed to help you communicate with confidence and poise.</p>
+    
+    <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">Here is what you can do today:</h3>
+      <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.8;">
+        <li><strong>Speech Coach:</strong> Analyze your speaking pace (WPM), clarity, and filler words in real time.</li>
+        <li><strong>Presentation Audit:</strong> Upload slide decks (PPTX/PDF) to review slide engagement and delivery.</li>
+        <li><strong>AI Mock Interviews:</strong> Practice voice-based job interviews and viva defenses with instant feedback.</li>
+        <li><strong>Daily Challenge:</strong> Build a daily practice streak and earn XP rewards.</li>
+      </ul>
+    </div>
+
+    <p>Ready to get started? Launch your first session right now from your personal dashboard.</p>
+  `;
+
   await sendEmail(
     toEmail,
-    'Welcome to Oratii AI — Master Your Speaking & Interview Skills!',
-    'Welcome to Oratii AI! 🎉',
-    `<p>Hi ${userName || 'there'},</p>
-     <p>Thank you for creating your account on <strong>Oratii AI</strong>!</p>
-     <p>With Oratii, you can practice public speaking, vocal pacing, filler word reduction, and voice mock interviews with real-time AI feedback.</p>
-     <p>Head over to your dashboard to launch your first practice session!</p>`,
+    'Welcome to Oratii — Elevate Your Speaking & Interview Skills',
+    'Welcome to Oratii! 🎉',
+    bodyContent,
     'Launch Dashboard',
     `${siteUrl}/dashboard`,
-    '#0F1426',
+    '#0F172A',
     'Oratii <hello@oratii.in>',
     'hello@oratii.in'
   );
 }
 
+// 2. Login Security Alert Email
 export async function sendLoginAlertEmail(
   toEmail: string,
   userName: string,
@@ -79,56 +155,101 @@ export async function sendLoginAlertEmail(
   userAgent: string = 'Browser'
 ) {
   const siteUrl = getSiteUrl();
+  const name = userName ? userName.split(' ')[0] : 'there';
   const loginTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+  const bodyContent = `
+    <p style="margin-top: 0;">Hi ${name},</p>
+    <p>We detected a recent sign-in to your <strong>Oratii</strong> account.</p>
+    
+    <div style="background-color: #F8FAFC; border-left: 4px solid #F2A93B; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; padding: 16px 20px; margin: 20px 0; border-radius: 0 12px 12px 0;">
+      <p style="margin: 0 0 6px 0; font-size: 13px; color: #334155;"><strong>Date &amp; Time:</strong> ${loginTime} (IST)</p>
+      <p style="margin: 0; font-size: 13px; color: #334155;"><strong>IP Address:</strong> ${ipAddress}</p>
+    </div>
+
+    <p style="font-size: 14px; color: #475569;">If this was you, no further action is needed! If you did not authorize this login or suspect unauthorized access, please update your account password immediately.</p>
+  `;
+
   await sendEmail(
     toEmail,
-    '🔐 Security Alert: Recent Sign-in to Your Oratii Account',
-    'Security Alert: Recent Sign-in',
-    `<p>Hi ${userName || 'there'},</p>
-     <p>We detected a recent sign-in to your <strong>Oratii AI</strong> account.</p>
-     <div style="background-color: #F1F5F9; border-left: 4px solid #F2A93B; padding: 14px; margin: 18px 0; border-radius: 8px;">
-       <p style="margin: 0; font-size: 13px; color: #334155;"><strong>Date &amp; Time:</strong> ${loginTime} (IST)</p>
-       <p style="margin: 4px 0 0 0; font-size: 13px; color: #334155;"><strong>IP Address:</strong> ${ipAddress}</p>
-     </div>
-     <p>If this was you, no action is needed! If you did <strong>not</strong> log in or suspect unauthorized access, please reset your password immediately or contact our support team.</p>`,
-    'Manage Account Security',
+    'Security Alert: Recent Sign-in to Your Oratii Account',
+    'Security Alert: New Sign-in',
+    bodyContent,
+    'Manage Security',
     `${siteUrl}/dashboard`,
-    '#0F1426',
+    '#0F172A',
     'Oratii Security <security@oratii.in>',
     'support@oratii.in'
   );
 }
 
+// 3. Payment Success Email
 export async function sendPaymentSuccessEmail(toEmail: string, userName: string, planName: string, amount: number) {
   const siteUrl = getSiteUrl();
+  const name = userName ? userName.split(' ')[0] : 'there';
+
+  const bodyContent = `
+    <p style="margin-top: 0;">Hi ${name},</p>
+    <p>Thank you for your purchase! We successfully received your payment of <strong>₹${amount}</strong> for the <strong>${planName}</strong> credit pack.</p>
+    
+    <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="font-size: 13px; color: #64748B; padding-bottom: 8px;">Package:</td>
+          <td align="right" style="font-size: 13px; font-weight: 700; color: #0F172A; padding-bottom: 8px;">${planName}</td>
+        </tr>
+        <tr>
+          <td style="font-size: 13px; color: #64748B; padding-bottom: 8px;">Amount Paid:</td>
+          <td align="right" style="font-size: 13px; font-weight: 700; color: #16A34A; padding-bottom: 8px;">₹${amount}</td>
+        </tr>
+        <tr>
+          <td style="font-size: 13px; color: #64748B;">Status:</td>
+          <td align="right" style="font-size: 13px; font-weight: 700; color: #16A34A;">Completed ✅</td>
+        </tr>
+      </table>
+    </div>
+
+    <p>Your practice credits have been added to your account instantly. You can now use them across all speech, presentation, and interview tools.</p>
+  `;
+
   await sendEmail(
     toEmail,
-    'Payment Successful - Welcome to Oratii AI Premium!',
-    'Payment Successful!',
-    `<p>Hi ${userName || 'there'},</p>
-     <p>We successfully received your payment of <strong>₹${amount}</strong> for the <strong>${planName}</strong> credit pack.</p>
-     <p>Your practice credits have been added to your account instantly. Head over to your dashboard to start practicing!</p>`,
+    'Payment Confirmed — Your Oratii Credits Are Ready',
+    'Payment Successful! 🎉',
+    bodyContent,
     'Go to Dashboard',
     `${siteUrl}/dashboard`,
-    '#4f46e5'
+    '#16A34A',
+    'Oratii Billing <hello@oratii.in>',
+    'support@oratii.in'
   );
 }
 
+// 4. Payment Failed Email
 export async function sendPaymentFailedEmail(toEmail: string, userName: string) {
   const siteUrl = getSiteUrl();
+  const name = userName ? userName.split(' ')[0] : 'there';
+
+  const bodyContent = `
+    <p style="margin-top: 0;">Hi ${name},</p>
+    <p>We encountered an issue processing your recent payment for Oratii practice credits.</p>
+    <p>No funds were charged to your account. You can retry your transaction or select an alternative payment method from our pricing page.</p>
+  `;
+
   await sendEmail(
     toEmail,
-    'Action Required: Payment Failed',
-    'Payment Processing Issue',
-    `<p>Hi ${userName || 'there'},</p>
-     <p>We encountered an issue processing your recent payment for Oratii credits.</p>
-     <p>Please check your payment method or try again from the pricing page.</p>`,
-    'Try Again',
+    'Action Required: Oratii Payment Unsuccessful',
+    'Payment Attempt Issue',
+    bodyContent,
+    'Review Pricing & Plans',
     `${siteUrl}/pricing`,
-    '#ef4444'
+    '#DC2626',
+    'Oratii Support <support@oratii.in>',
+    'support@oratii.in'
   );
 }
 
+// 5. Weekly Digest Email
 export interface WeeklyDigestStats {
   totalDrills: number;
   avgWpm: number;
@@ -140,103 +261,74 @@ export interface WeeklyDigestStats {
 }
 
 export async function sendWeeklyDigestEmail(toEmail: string, userName: string, stats: WeeklyDigestStats) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'placeholder' || process.env.RESEND_API_KEY.includes('re_placeholder')) {
-    console.log(`[Email Skipped - No Resend Key] Weekly Digest to ${toEmail}`);
-    return;
-  }
+  const siteUrl = getSiteUrl();
+  const name = userName ? userName.split(' ')[0] : 'there';
 
-  const htmlContent = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
-      <!-- Header -->
-      <div style="background-color: #1B2140; padding: 32px 24px; text-align: center;">
-        <h1 style="color: #FFFFFF; font-size: 24px; font-weight: 900; margin: 0 0 6px 0; letter-spacing: -0.5px;">
-          Orat<span style="color: #F2A93B;">ii</span>
-        </h1>
-        <p style="color: #94A3B8; font-size: 13px; font-weight: 700; uppercase; tracking-wider; margin: 0;">
-          YOUR WEEKLY SPEAKING &amp; INTERVIEW PROGRESS
-        </p>
-      </div>
+  const bodyContent = `
+    <p style="margin-top: 0;">Hi ${name}, 👋</p>
+    <p>Here is your weekly speaking performance digest from <strong>Oratii</strong>. See how your vocal pacing, filler word control, and interview delivery improved this week!</p>
 
-      <!-- Content Container -->
-      <div style="padding: 28px 24px;">
-        <p style="font-size: 16px; font-weight: 700; color: #0F172A; margin-top: 0;">
-          Hi ${userName || 'there'}, 👋
-        </p>
-        <p style="font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 24px;">
-          Here is your Grammarly-style weekly speaking performance summary. See how your vocal pacing, filler word control, and interview delivery improved this week!
-        </p>
+    <!-- Stats Grid -->
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 20px 0;">
+      <tr>
+        <td width="50%" style="padding-right: 6px; padding-bottom: 12px;">
+          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center;">
+            <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Practice Drills</span>
+            <div style="font-size: 22px; font-weight: 900; color: #0F172A; margin-top: 4px;">${stats.totalDrills} Completed</div>
+          </div>
+        </td>
+        <td width="50%" style="padding-left: 6px; padding-bottom: 12px;">
+          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center;">
+            <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Avg Pacing</span>
+            <div style="font-size: 22px; font-weight: 900; color: #4F46E5; margin-top: 4px;">${stats.avgWpm} WPM</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" style="padding-right: 6px;">
+          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center;">
+            <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Fillers Avoided</span>
+            <div style="font-size: 22px; font-weight: 900; color: #16A34A; margin-top: 4px;">-${stats.fillersReduced} Words</div>
+          </div>
+        </td>
+        <td width="50%" style="padding-left: 6px;">
+          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center;">
+            <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">Practice Streak</span>
+            <div style="font-size: 22px; font-weight: 900; color: #D97706; margin-top: 4px;">🔥 ${stats.streakDays} Days</div>
+          </div>
+        </td>
+      </tr>
+    </table>
 
-        <!-- Stats Grid (Grammarly style 2x2) -->
-        <table style="width: 100%; border-collapse: separate; border-spacing: 10px; margin-bottom: 24px;">
-          <tr>
-            <td style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center; width: 50%;">
-              <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Practice Drills</span>
-              <div style="font-size: 22px; font-weight: 900; color: #1E293B; margin-top: 4px;">${stats.totalDrills} Done</div>
-            </td>
-            <td style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center; width: 50%;">
-              <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Average Pacing</span>
-              <div style="font-size: 22px; font-weight: 900; color: #4F46E5; margin-top: 4px;">${stats.avgWpm} WPM</div>
-            </td>
-          </tr>
-          <tr>
-            <td style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center; width: 50%;">
-              <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Fillers Defeated</span>
-              <div style="font-size: 22px; font-weight: 900; color: #10B981; margin-top: 4px;">-${stats.fillersReduced} Words</div>
-            </td>
-            <td style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; text-align: center; width: 50%;">
-              <span style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Practice Streak</span>
-              <div style="font-size: 22px; font-weight: 900; color: #F59E0B; margin-top: 4px;">🔥 ${stats.streakDays} Days</div>
-            </td>
-          </tr>
-        </table>
+    <div style="background-color: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;">
+      <span style="font-size: 11px; font-weight: 900; color: #4338CA; text-transform: uppercase; letter-spacing: 0.5px;">🌟 Top Weekly Achievement</span>
+      <p style="font-size: 14px; font-weight: 700; color: #1E1B4B; margin: 4px 0 0 0;">
+        ${stats.topSkillImprovement}
+      </p>
+    </div>
 
-        <!-- Highlight Card -->
-        <div style="background-color: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 12px; padding: 18px; margin-bottom: 24px;">
-          <span style="font-size: 11px; font-weight: 900; color: #4338CA; text-transform: uppercase;">🌟 Top Weekly Growth</span>
-          <p style="font-size: 14px; font-weight: 700; color: #1E1B4B; margin: 4px 0 0 0;">
-            ${stats.topSkillImprovement}
-          </p>
-        </div>
-
-        <!-- AI Coach Personal Tip -->
-        <div style="background-color: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 18px; margin-bottom: 28px;">
-          <span style="font-size: 11px; font-weight: 900; color: #B45309; text-transform: uppercase;">💡 AI Coach Recommendation for Next Week</span>
-          <p style="font-size: 13px; color: #78350F; line-height: 1.5; margin: 6px 0 0 0;">
-            ${stats.aiCoachTip}
-          </p>
-        </div>
-
-        <!-- CTA Button -->
-        <div style="text-align: center; margin-bottom: 20px;">
-          <a href="${siteUrl}/speech-coach" style="display: inline-block; background-color: #1B2140; color: #FFFFFF; font-size: 15px; font-weight: 800; padding: 14px 32px; border-radius: 100px; text-decoration: none; box-shadow: 0 4px 14px rgba(27,33,64,0.3);">
-            Launch This Week's Speech Coach &rarr;
-          </a>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div style="background-color: #F1F5F9; padding: 20px; text-align: center; border-top: 1px solid #E2E8F0;">
-        <p style="font-size: 12px; color: #94A3B8; margin: 0;">
-          © 2026 Oratii Inc. • AI Speech, Presentation &amp; Interview Coach
-        </p>
-      </div>
+    <div style="background-color: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
+      <span style="font-size: 11px; font-weight: 900; color: #B45309; text-transform: uppercase; letter-spacing: 0.5px;">💡 AI Coach Tip for Next Week</span>
+      <p style="font-size: 13px; color: #78350F; line-height: 1.5; margin: 6px 0 0 0;">
+        ${stats.aiCoachTip}
+      </p>
     </div>
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: toEmail,
-      replyTo: 'hello@oratii.in',
-      subject: `📊 Your Weekly Speaking & Interview Report — ${stats.streakDays}-Day Streak!`,
-      html: htmlContent,
-    });
-  } catch (error) {
-    console.error(`Failed to send weekly digest email to ${toEmail}:`, error);
-  }
+  await sendEmail(
+    toEmail,
+    `📊 Your Weekly Speaking Progress — ${stats.streakDays}-Day Streak! | Oratii`,
+    'Your Weekly Performance Summary',
+    bodyContent,
+    'Launch Speech Coach',
+    `${siteUrl}/speech-coach`,
+    '#0F172A',
+    'Oratii <hello@oratii.in>',
+    'hello@oratii.in'
+  );
 }
 
+// 6. Contact Support Notification Email
 export async function sendContactSupportNotificationEmail(
   fromEmail: string,
   fromName: string,
@@ -248,51 +340,30 @@ export async function sendContactSupportNotificationEmail(
     return;
   }
 
-  const htmlContent = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #F8FAFC; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
-      <div style="background-color: #1B2140; padding: 24px; text-align: center;">
-        <h1 style="color: #FFFFFF; font-size: 22px; font-weight: 900; margin: 0;">
-          Orat<span style="color: #F2A93B;">ii</span> Support Inquiry
-        </h1>
-      </div>
-      <div style="padding: 24px;">
-        <p style="font-size: 14px; color: #475569; margin-top: 0;"><strong>From:</strong> ${fromName} (&lt;${fromEmail}&gt;)</p>
-        <p style="font-size: 14px; color: #475569;"><strong>Subject:</strong> ${subject}</p>
-        <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 16px 0;" />
-        <div style="font-size: 14px; color: #0F172A; line-height: 1.6; white-space: pre-wrap; background-color: #FFFFFF; padding: 16px; border-radius: 12px; border: 1px solid #E2E8F0;">${message}</div>
-        <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 16px 0;" />
-        <p style="font-size: 12px; color: #94A3B8; margin: 0; text-align: center;">
-          Sent via Oratii Contact Form • Direct reply will send email to ${fromEmail}
-        </p>
-      </div>
-    </div>
+  const bodyContent = `
+    <p style="margin-top: 0;"><strong>From:</strong> ${fromName} (&lt;${fromEmail}&gt;)</p>
+    <p><strong>Subject:</strong> ${subject}</p>
+    <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 16px 0;" />
+    <div style="font-size: 14px; color: #0F172A; line-height: 1.65; white-space: pre-wrap; background-color: #F8FAFC; padding: 18px; border-radius: 12px; border: 1px solid #E2E8F0;">${message}</div>
   `;
 
-  try {
-    await resend.emails.send({
-      from: 'Oratii Support <support@oratii.in>',
-      to: 'support@oratii.in',
-      replyTo: fromEmail,
-      subject: `[Contact Form] ${subject} - from ${fromName}`,
-      html: htmlContent,
-    });
-  } catch (error) {
-    console.error(`Failed to send contact support email from ${fromEmail}:`, error);
-  }
+  await sendEmail(
+    'support@oratii.in',
+    `[Support Ticket] ${subject} - from ${fromName}`,
+    'New User Inquiry',
+    bodyContent,
+    'Reply via Gmail',
+    `mailto:${fromEmail}`,
+    '#0F172A',
+    'Oratii Support <support@oratii.in>',
+    fromEmail
+  );
 }
 
-/**
- * @deprecated Break reminders are delivered via Browser Web Push notifications only per user requirements.
- */
-export async function sendInterviewPrepReminderEmail(
-  toEmail: string,
-  userName: string,
-  roleTitle: string,
-  nextRoundTitle: string,
-  weaknesses: string[]
-) {
-  console.log(`[Prep Break Reminder] Skipped email to ${toEmail}. 40-min prep break reminders are push notification only.`);
+export async function sendInterviewPrepReminderEmail() {
+  console.log(`[Prep Break Reminder] Skipped email. 40-min prep break reminders are push notification only.`);
 }
+
 
 
 
