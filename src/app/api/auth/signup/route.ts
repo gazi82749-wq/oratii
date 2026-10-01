@@ -146,6 +146,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Send Welcome Email asynchronously
+  if (data?.user?.email) {
+    import('@/lib/email').then(({ sendWelcomeEmail }) => {
+      sendWelcomeEmail(data.user!.email!, fullName || data.user!.email!.split('@')[0]).catch(err => {
+        console.warn('Welcome email non-critical notice:', err);
+      });
+    });
+  }
+
   // Direct sign-in (email confirmation disabled in Supabase settings)
   return NextResponse.json(
     {

@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-01 (All legal & privacy pages aligned with active live site modules, unreleased feature disclosures, DPDP Act 2023, zero-retention AI policy, and Indian legal jurisdiction)*
+*Last Updated: 2026-10-01 (Added automated Welcome Email on signup and Security Alert Email on login via Resend; legal & privacy pages aligned)*

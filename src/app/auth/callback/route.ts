@@ -74,6 +74,19 @@ export async function GET(request: NextRequest) {
           profilePayload,
           { onConflict: 'id' }
         );
+
+        // Trigger welcome or login security alert email asynchronously
+        if (session.user.email) {
+          const uEmail = session.user.email;
+          const uName = session.user.user_metadata?.full_name || uEmail.split('@')[0];
+          import('@/lib/email').then(({ sendWelcomeEmail, sendLoginAlertEmail }) => {
+            if (isSignup) {
+              sendWelcomeEmail(uEmail, uName).catch(e => console.warn('Welcome email error:', e));
+            } else {
+              sendLoginAlertEmail(uEmail, uName).catch(e => console.warn('Login alert error:', e));
+            }
+          });
+        }
       } catch (profileErr) {
         console.warn('[OAuth Callback] Profile upsert notice:', profileErr);
       }

@@ -5,7 +5,6 @@ import { checkRateLimit, AUTH_RATE_LIMIT } from '@/lib/rateLimit';
 
 export const dynamic = 'force-dynamic';
 
-
 export async function POST(req: NextRequest) {
   // 1. Rate limit by IP
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'unknown';
@@ -107,6 +106,17 @@ export async function POST(req: NextRequest) {
       }
     } catch (checkErr) {
       console.warn('[Login Route] Profile check notice:', checkErr);
+    }
+
+    // Send Security Login Alert Email asynchronously
+    if (data.user?.email) {
+      const userEmail = data.user.email;
+      const userName = data.user.user_metadata?.full_name || userEmail.split('@')[0];
+      import('@/lib/email').then(({ sendLoginAlertEmail }) => {
+        sendLoginAlertEmail(userEmail, userName, ip).catch(err => {
+          console.warn('Login alert email non-critical notice:', err);
+        });
+      });
     }
   }
 

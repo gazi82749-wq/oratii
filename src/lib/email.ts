@@ -62,13 +62,40 @@ export async function sendWelcomeEmail(toEmail: string, userName: string) {
     'Welcome to Oratii AI! 🎉',
     `<p>Hi ${userName || 'there'},</p>
      <p>Thank you for creating your account on <strong>Oratii AI</strong>!</p>
-     <p>With Oratii, you can practice public speaking, slide presentation rehearsals, mock job interviews, and academic viva defense with real-time AI feedback.</p>
+     <p>With Oratii, you can practice public speaking, vocal pacing, filler word reduction, and voice mock interviews with real-time AI feedback.</p>
      <p>Head over to your dashboard to launch your first practice session!</p>`,
     'Launch Dashboard',
     `${siteUrl}/dashboard`,
     '#0F1426',
     'Oratii <hello@oratii.in>',
     'hello@oratii.in'
+  );
+}
+
+export async function sendLoginAlertEmail(
+  toEmail: string,
+  userName: string,
+  ipAddress: string = 'Unknown',
+  userAgent: string = 'Browser'
+) {
+  const siteUrl = getSiteUrl();
+  const loginTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+  await sendEmail(
+    toEmail,
+    '🔐 Security Alert: Recent Sign-in to Your Oratii Account',
+    'Security Alert: Recent Sign-in',
+    `<p>Hi ${userName || 'there'},</p>
+     <p>We detected a recent sign-in to your <strong>Oratii AI</strong> account.</p>
+     <div style="background-color: #F1F5F9; border-left: 4px solid #F2A93B; padding: 14px; margin: 18px 0; border-radius: 8px;">
+       <p style="margin: 0; font-size: 13px; color: #334155;"><strong>Date &amp; Time:</strong> ${loginTime} (IST)</p>
+       <p style="margin: 4px 0 0 0; font-size: 13px; color: #334155;"><strong>IP Address:</strong> ${ipAddress}</p>
+     </div>
+     <p>If this was you, no action is needed! If you did <strong>not</strong> log in or suspect unauthorized access, please reset your password immediately or contact our support team.</p>`,
+    'Manage Account Security',
+    `${siteUrl}/dashboard`,
+    '#0F1426',
+    'Oratii Security <security@oratii.in>',
+    'support@oratii.in'
   );
 }
 
