@@ -63,6 +63,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: 'googlec3782b2854582f83',
+  },
   openGraph: {
     title: 'Oratii | AI Speech & Interview Coach',
     description: 'Get real-time AI feedback on your vocal pacing, filler words, daily speech habits, and job interview delivery.',
