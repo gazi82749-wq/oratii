@@ -76,11 +76,12 @@ export async function POST(req: Request) {
         });
     }
 
-    // Update the user's profile and reset usage limits
+    // Update the user's profile and reset usage limits to 10 free credits
     await supabaseAdmin
       .from('profiles')
       .update({
         current_plan: planName.toLowerCase(),
+        credits: 10,
         plan_expiry: endDate.toISOString(),
       })
       .eq('id', userId);
@@ -88,9 +89,9 @@ export async function POST(req: Request) {
     await supabaseAdmin
       .from('usage_limits')
       .update({
-        speech_analysis_count: 0,
-        ppt_analysis_count: 0,
-        viva_sessions_count: 0,
+        speech_analysis_count: 10,
+        ppt_analysis_count: 5,
+        viva_sessions_count: 5,
         current_month: new Date().toISOString(),
       })
       .eq('user_id', userId);

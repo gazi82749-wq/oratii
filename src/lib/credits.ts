@@ -101,50 +101,23 @@ export async function getUserCredits(userId: string): Promise<number> {
  */
 export async function checkAndDeductCredits(
   userId: string,
-  cost: number
+  cost: number = 1
 ): Promise<{ allowed: boolean; remainingCredits: number; error?: string }> {
   if (!userId) {
     return { allowed: false, remainingCredits: 0, error: 'Please log in to use AI analysis.' };
   }
 
   try {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('credits, role, current_plan, email')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (
-      profile?.role === 'admin' ||
-      profile?.current_plan === 'admin_unlimited' ||
-      (profile?.email && (profile.email.startsWith('admin') || profile.email.includes('admin@')))
-    ) {
-      return { allowed: true, remainingCredits: 999999 };
-    }
-
-    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 10;
-    if (currentCredits < cost) {
-      return {
-        allowed: false,
-        remainingCredits: currentCredits,
-        error: `Insufficient credits (${currentCredits} remaining). Please top up to continue AI analysis.`,
-      };
-    }
-
-    const newCredits = currentCredits - cost;
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ credits: newCredits })
-      .eq('id', userId);
-
-    if (updateError) {
-      console.error('Credit deduction update error:', updateError.message);
-    }
-
-    return { allowed: true, remainingCredits: newCredits };
+    const { checkAndDecrementUsage } = await import('./billing');
+    const result = await checkAndDecrementUsage(userId, 'speech_analysis_count');
+    return {
+      allowed: result.allowed,
+      remainingCredits: result.remainingCredits ?? 0,
+      error: result.allowed ? undefined : `Insufficient credits (${result.remainingCredits ?? 0} remaining). Please top up to continue AI analysis.`,
+    };
   } catch (e) {
     console.error('Failed to deduct credits:', e);
-    return { allowed: true, remainingCredits: 10 };
+    return { allowed: true, remainingCredits: 9 };
   }
 }
 

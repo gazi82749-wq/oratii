@@ -66,13 +66,30 @@ export async function GET(request: NextRequest) {
           profilePayload.role = 'trainer';
         }
 
-        if (isSignup) {
+        const { data: existingProfile } = await adminClient
+          .from('profiles')
+          .select('credits')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (isSignup || !existingProfile || typeof existingProfile.credits !== 'number') {
           profilePayload.credits = 10;
         }
 
         await adminClient.from('profiles').upsert(
           profilePayload,
           { onConflict: 'id' }
+        );
+
+        await adminClient.from('usage_limits').upsert(
+          {
+            user_id: session.user.id,
+            speech_analysis_count: 10,
+            ppt_analysis_count: 5,
+            viva_sessions_count: 5,
+            current_month: new Date().toISOString(),
+          },
+          { onConflict: 'user_id' }
         );
 
         // Trigger welcome or login security alert email asynchronously

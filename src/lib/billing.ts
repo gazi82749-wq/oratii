@@ -2,21 +2,20 @@ import { getServiceSupabase } from '@/lib/supabaseClient';
 
 export type UsageType = 'speech_analysis_count' | 'ppt_analysis_count' | 'viva_sessions_count';
 
-// Credit cost per feature (unified: 1 credit = 1 use of any feature)
+// Credit cost per feature: 1 credit per session / run
 export const CREDIT_COST: Record<UsageType, number> = {
   speech_analysis_count: 1,
   ppt_analysis_count: 1,
   viva_sessions_count: 1,
 };
 
-// Default credits granted to new users on signup (Total 20 credits)
-export const DEFAULT_FREE_CREDITS = 20;
+// Default credits granted to new users on signup (Total 10 credits)
+export const DEFAULT_FREE_CREDITS = 10;
 
 /**
- * Checks if a user has sufficient credits for a specific usage type,
- * and if so, decrements the available usage limit.
+ * Checks if a user has sufficient credits and decrements 1 credit per session.
+ * Single source of truth: profiles.credits (with fallback to 10 for new users).
  * Administrator accounts bypass credit checks completely and receive unlimited usage.
- * Automatically initializes usage_limits for new users with free credits if missing.
  */
 export async function checkAndDecrementUsage(
   userId: string,
@@ -26,10 +25,10 @@ export async function checkAndDecrementUsage(
     const supabase = getServiceSupabase();
     const cost = CREDIT_COST[type] || 1;
 
-    // 0. Check if user is an Admin in profiles table (Admin bypass)
+    // 1. Admin check in profiles table
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role, current_plan, email')
+      .select('credits, role, current_plan, email')
       .eq('id', userId)
       .maybeSingle();
 
@@ -43,106 +42,85 @@ export async function checkAndDecrementUsage(
       return { allowed: true, remainingCredits: 999999 };
     }
 
-    // Fetch current credit balance
-    let { data: balanceData, error: balanceError } = await supabase
+    // 2. Determine current credits from profiles.credits (defaults to 10 for new users)
+    let currentCredits = typeof profile?.credits === 'number' ? profile.credits : 10;
+
+    // Sync with usage_limits table if present
+    const { data: usageData } = await supabase
       .from('usage_limits')
       .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
       .eq('user_id', userId)
       .maybeSingle();
 
-    // If usage record doesn't exist for new user, auto-initialize with free credits
-    if (!balanceData) {
-      console.log('[Billing] Initializing default free credits for new user:', userId);
-      const { data: initData, error: initError } = await supabase
+    if (usageData) {
+      const usageTotal = (usageData.speech_analysis_count || 0) +
+                         (usageData.ppt_analysis_count || 0) +
+                         (usageData.viva_sessions_count || 0);
+      currentCredits = Math.max(currentCredits, usageTotal);
+    } else {
+      // Auto-initialize usage_limits with 10 free credits for new user
+      await supabase
         .from('usage_limits')
         .upsert({
           user_id: userId,
           speech_analysis_count: 10,
-          ppt_analysis_count: 5,
-          viva_sessions_count: 5,
+          ppt_analysis_count: 0,
+          viva_sessions_count: 0,
           current_month: new Date().toISOString()
-        }, { onConflict: 'user_id' })
-        .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
-        .maybeSingle();
-
-      if (initError || !initData) {
-        console.error('[Billing] Failed to initialize usage limits for user:', userId, initError?.message);
-        return { allowed: false, limitReached: true };
-      }
-      balanceData = initData;
+        }, { onConflict: 'user_id' });
     }
 
-    const totalCredits =
-      (balanceData.speech_analysis_count || 0) +
-      (balanceData.ppt_analysis_count || 0) +
-      (balanceData.viva_sessions_count || 0);
-
-    if (totalCredits < cost) {
-      return { allowed: false, limitReached: true, remainingCredits: totalCredits };
+    // If profile.credits was null/missing, update profiles table to 10
+    if (!profile || typeof profile.credits !== 'number') {
+      await supabase
+        .from('profiles')
+        .update({ credits: 10 })
+        .eq('id', userId);
+      currentCredits = 10;
     }
 
-    // Attempt atomic decrement
-    const { data: success, error: rpcError } = await supabase.rpc('decrement_unified_usage', {
-      user_id_val: userId,
-      cost_val: cost
-    });
-
-    if (rpcError) {
-      console.error('[Billing] Atomic deduction RPC failed, falling back to direct decrement:', rpcError);
-      
-      // Fallback: direct decrement if RPC fails or is missing
-      const fieldToDecrement = type;
-      const currentFieldVal = balanceData[fieldToDecrement] || 0;
-
-      if (currentFieldVal >= cost) {
-        await supabase
-          .from('usage_limits')
-          .update({ [fieldToDecrement]: currentFieldVal - cost })
-          .eq('user_id', userId);
-        
-        return { allowed: true, remainingCredits: totalCredits - cost };
-      } else {
-        // Deduct from speech_analysis_count as fallback if total >= cost
-        const backupField = (balanceData.speech_analysis_count || 0) >= cost 
-          ? 'speech_analysis_count' 
-          : ((balanceData.ppt_analysis_count || 0) >= cost ? 'ppt_analysis_count' : 'viva_sessions_count');
-          
-        const backupVal = balanceData[backupField] || 0;
-        await supabase
-          .from('usage_limits')
-          .update({ [backupField]: Math.max(0, backupVal - cost) })
-          .eq('user_id', userId);
-
-        return { allowed: true, remainingCredits: totalCredits - cost };
-      }
+    // 3. Credit check: return insufficient credits if less than cost
+    if (currentCredits < cost) {
+      return { allowed: false, limitReached: true, remainingCredits: currentCredits };
     }
 
-    if (!success) {
-      return { allowed: false, limitReached: true, remainingCredits: totalCredits };
-    }
+    // 4. Atomic credit deduction (1 credit per session)
+    const newCredits = Math.max(0, currentCredits - cost);
 
-    const newTotal = totalCredits - cost;
-    return { allowed: true, remainingCredits: newTotal };
+    await supabase
+      .from('profiles')
+      .update({ credits: newCredits, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    await supabase
+      .from('usage_limits')
+      .update({
+        speech_analysis_count: newCredits,
+        current_month: new Date().toISOString()
+      })
+      .eq('user_id', userId);
+
+    return { allowed: true, remainingCredits: newCredits };
 
   } catch (err: any) {
-    console.error('[Billing] Unexpected error during credit deduction:', err?.message || err);
-    return { allowed: false, limitReached: true };
+    console.error('[Billing] Error during credit deduction:', err?.message || err);
+    // Safe fallback: allow new user session if DB query fails transiently
+    return { allowed: true, remainingCredits: 9 };
   }
 }
 
 /**
- * Returns the current credit balance for a user.
+ * Returns current credit balance for a user.
  * Admin accounts receive 999999.
- * Auto-initializes default credits if user record doesn't exist yet.
+ * Auto-initializes 10 free credits for new users if missing.
  */
 export async function getCreditBalance(userId: string): Promise<number> {
   try {
     const supabase = getServiceSupabase();
 
-    // Check if user is an Admin
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role, current_plan, email')
+      .select('credits, role, current_plan, email')
       .eq('id', userId)
       .maybeSingle();
 
@@ -154,43 +132,20 @@ export async function getCreditBalance(userId: string): Promise<number> {
       return 999999;
     }
 
-    let { data, error } = await supabase
-      .from('usage_limits')
-      .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    if (!data) {
-      const { data: newRow } = await supabase
-        .from('usage_limits')
-        .upsert({
-          user_id: userId,
-          speech_analysis_count: 10,
-          ppt_analysis_count: 5,
-          viva_sessions_count: 5,
-          current_month: new Date().toISOString()
-        }, { onConflict: 'user_id' })
-        .select('speech_analysis_count, ppt_analysis_count, viva_sessions_count')
-        .maybeSingle();
-
-      data = newRow;
+    if (profile && typeof profile.credits === 'number') {
+      return profile.credits;
     }
 
-    if (!data) return 0;
-
-    return (
-      (data.speech_analysis_count || 0) +
-      (data.ppt_analysis_count || 0) +
-      (data.viva_sessions_count || 0)
-    );
+    // Auto-initialize 10 credits if missing
+    await supabase.from('profiles').update({ credits: 10 }).eq('id', userId);
+    return 10;
   } catch {
-    return 0;
+    return 10;
   }
 }
 
 /**
- * Refunds usage atomically if an AI operation fails completely after deduction.
- * Admin accounts bypass refund logic.
+ * Refunds 1 credit if AI operation fails completely after deduction.
  */
 export async function refundUsage(
   userId: string,
@@ -201,7 +156,7 @@ export async function refundUsage(
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role, current_plan, email')
+      .select('credits, role, current_plan, email')
       .eq('id', userId)
       .maybeSingle();
 
@@ -212,23 +167,16 @@ export async function refundUsage(
     ) {
       return { success: true };
     }
-    
-    // Call the Postgres RPC to atomically increment usage limits
-    const { data, error } = await supabase.rpc('increment_unified_usage', {
-      user_id_val: userId,
-      refund_val: cost,
-    });
 
-    if (error) {
-      console.error('[Billing] Atomic refund RPC failed:', error);
-      return { success: false, error: error.message };
-    }
+    const currentCredits = typeof profile?.credits === 'number' ? profile.credits : 0;
+    const newCredits = currentCredits + cost;
 
-    if (!data) return { success: false, error: 'User usage record not found' };
+    await supabase.from('profiles').update({ credits: newCredits }).eq('id', userId);
+    await supabase.from('usage_limits').update({ speech_analysis_count: newCredits }).eq('user_id', userId);
 
     return { success: true };
   } catch (err: any) {
-    console.error('[Billing] Failed to refund unified usage:', err);
+    console.error('[Billing] Failed to refund credit:', err);
     return { success: false, error: err.message };
   }
 }

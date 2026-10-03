@@ -105,6 +105,16 @@ export async function POST(req: NextRequest) {
         },
         { onConflict: 'id' }
       );
+      await adminClient.from('usage_limits').upsert(
+        {
+          user_id: data.user.id,
+          speech_analysis_count: 10,
+          ppt_analysis_count: 5,
+          viva_sessions_count: 5,
+          current_month: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' }
+      );
     } catch (profileErr) {
       console.warn('Non-critical signup profile upsert notice:', profileErr);
     }
