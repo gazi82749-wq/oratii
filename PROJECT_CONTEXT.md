@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-03 (Updated Login & Signup left-panel branding to remove v1 excluded features 'viva' and 'presentation', aligning messaging with core speech & mock interview coaching; blurred & disabled non-clickable Footer 'For Institutes & Trainers' link with v2 Coming Soon badge for v1 launch)*
+*Last Updated: 2026-10-03 (Added explicit Oratii favicon, 192x192, 512x512 PNG, and Apple touch icon tags to HTML head in layout.tsx & src/app for Google Search favicon indexer; updated Login & Signup left-panel branding and blurred non-clickable Footer 'For Institutes & Trainers' link for v1 launch)*
