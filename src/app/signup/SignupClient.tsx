@@ -124,7 +124,7 @@ export default function SignupClient() {
             <Sparkles size={13} className="text-amber-400" /> Free Starter Account
           </div>
           <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-6">
-            Present with <span className="text-[#F2A93B]">unshakeable confidence.</span>
+            Speak with <span className="text-[#F2A93B]">unshakeable confidence.</span>
           </h2>
           <p className="text-base lg:text-lg text-slate-300 font-medium leading-relaxed max-w-sm">
             Join thousands of speakers who use AI-powered coaching to eliminate filler words, perfect their pacing, and deliver with clarity.
@@ -135,7 +135,7 @@ export default function SignupClient() {
         <div className="relative z-10 space-y-4 border-t border-white/10 pt-8">
           {[
             { icon: Mic, text: 'Real-time speech analysis' },
-            { icon: BarChart3, text: 'Interactive Presentation Practice' },
+            { icon: BarChart3, text: 'AI Mock Interview Studio' },
             { icon: Trophy, text: 'Gamified challenges & badges' },
           ].map((f, i) => {
             const Icon = f.icon;
@@ -248,7 +248,7 @@ export default function SignupClient() {
                           )}
                         </div>
                         <div className="font-extrabold text-xs text-slate-900">Learner / Speaker</div>
-                        <div className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">Practice speech, viva & slides</div>
+                        <div className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">Practice speech & mock interviews</div>
                       </button>
 
                       <button

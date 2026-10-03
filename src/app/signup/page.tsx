@@ -3,10 +3,10 @@ import SignupClient from './SignupClient';
 
 export const metadata: Metadata = {
   title: 'Create Free Account',
-  description: 'Sign up for a free Oratii account and get 10 free credits to test real-time AI speech coaching, presentation slide audits, and mock viva prep.',
+  description: 'Sign up for a free Oratii account and get 10 free credits to test real-time AI speech coaching and mock interview prep.',
   openGraph: {
     title: 'Create Free Account | Oratii AI Speech Coach',
-    description: 'Sign up for free and master your public speaking with Oratii AI Speech & Presentation Coach.',
+    description: 'Sign up for free and master your public speaking with Oratii AI Speech & Mock Interview Coach.',
   },
 };
 

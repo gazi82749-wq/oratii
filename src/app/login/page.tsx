@@ -4,10 +4,10 @@ import LoginClient from './LoginClient';
 
 export const metadata: Metadata = {
   title: 'Log In',
-  description: 'Log in to your Oratii account to access your AI speech reports, presentation slide audits, and viva coaching dashboard.',
+  description: 'Log in to your Oratii account to access your AI speech reports, vocal analysis, and mock interview coaching dashboard.',
   openGraph: {
     title: 'Log In | Oratii AI Speech Coach',
-    description: 'Log in to access real-time AI public speaking coaching and slide deck analysis.',
+    description: 'Log in to access real-time AI public speaking and mock interview coaching.',
   },
 };
 

@@ -123,7 +123,7 @@ export default function LoginClient() {
             Speak with <span className="text-[#F2A93B]">executive clarity.</span>
           </h2>
           <p className="text-base lg:text-lg text-slate-300 font-medium leading-relaxed max-w-sm">
-            Analyze your speeches and practice live presentations with real-time AI feedback.
+            Analyze your speeches and practice mock interviews with real-time AI feedback.
           </p>
         </div>
 
