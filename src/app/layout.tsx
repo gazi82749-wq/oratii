@@ -4,6 +4,7 @@ import "./globals.css";
 import SidebarLayout from "../components/SidebarLayout";
 import ServiceWorkerRegister from "../components/ServiceWorkerRegister";
 import PwaInstallPrompt from "../components/PwaInstallPrompt";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -186,6 +187,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ServiceWorkerRegister />
         <PwaInstallPrompt />
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || "G-VP7GYTQVVB"} />
     </html>
   );
 }

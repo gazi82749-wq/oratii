@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-05 (Enforced mandatory GuestAuthModal popup for all unauthenticated/guest users when attempting to launch mock interviews, analyze speech/slides, generate speeches, or start practice sessions across /interview, /speech-coach, /presentation, and /challenge)*
+*Last Updated: 2026-10-05 (Installed @next/third-parties and integrated official Google Analytics component with Measurement ID G-VP7GYTQVVB in src/app/layout.tsx; updated .env.local and .env.example with NEXT_PUBLIC_GA_ID)*
