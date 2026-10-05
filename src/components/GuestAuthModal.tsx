@@ -62,7 +62,7 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
               <Lock size={28} />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-slate-900 font-black text-[10px]">
-              +5
+              +10
             </div>
           </div>
         </div>
@@ -75,11 +75,11 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
           </div>
 
           <h3 className="text-2xl font-black text-slate-950 tracking-tight">
-            Claim 5 Free Welcome Credits
+            Claim 10 Free Welcome Credits
           </h3>
 
           <p className="text-slate-500 text-sm leading-relaxed font-medium">
-            Sign up in 10 seconds to unlock <span className="font-bold text-slate-800">{featureName}</span> and receive 5 free AI analysis credits automatically.
+            Sign up in 10 seconds to unlock <span className="font-bold text-slate-800">{featureName}</span> and receive 10 free AI analysis credits automatically.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
           </div>
           <div className="flex items-center gap-2">
             <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
-            <span>Access Speech Coach, Slide Studio & Viva Practice</span>
+            <span>Access AI Speech Coach &amp; Mock Interview Studio</span>
           </div>
         </div>
 
@@ -105,7 +105,7 @@ export default function GuestAuthModal({ isOpen, onClose, featureName = 'this fe
             href="/signup"
             className="w-full py-3.5 px-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-center"
           >
-            <span>Sign Up Free (Get 5 Credits)</span>
+            <span>Sign Up Free (Get 10 Credits)</span>
             <ArrowRight size={16} />
           </Link>
 

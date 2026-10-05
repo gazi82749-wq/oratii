@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-05 (Installed @next/third-parties and integrated official Google Analytics component with Measurement ID G-VP7GYTQVVB in src/app/layout.tsx; updated .env.local and .env.example with NEXT_PUBLIC_GA_ID)*
+*Last Updated: 2026-10-06 (Updated GuestAuthModal and InsufficientCreditsModal copy to accurately declare 10 Free Credits and highlight Oratii v1 core modules: AI Speech Coach & Mock Interview Studio)*

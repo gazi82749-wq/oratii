@@ -101,7 +101,7 @@ export default function InsufficientCreditsModal({
         <div className="text-center space-y-1.5 mb-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 text-rose-700 text-xs font-extrabold uppercase tracking-wider">
             <Sparkles size={12} className="text-rose-500 animate-pulse" />
-            <span>5 Credits Finished • Top-Up Required</span>
+            <span>10 Free Credits Exhausted • Top-Up Required</span>
           </div>
 
           <h3 className="text-2xl font-black text-slate-900 tracking-tight">
