@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1128 282" width="1128" height="282">
+  <defs>
+    <!-- Background Gradient matching Oratii Official Navy #1B2140 -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F142A" />
+      <stop offset="50%" stop-color="#1B2140" />
+      <stop offset="100%" stop-color="#0B0E1E" />
+    </linearGradient>
+
+    <!-- Official Brand Gradient: #F2A93B (Gold) to #2FBF9F (Teal) -->
+    <linearGradient id="brand-wave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F2A93B" />
+      <stop offset="100%" stop-color="#2FBF9F" />
+    </linearGradient>
+
+    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2FBF9F" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1" />
+    </pattern>
+
+    <!-- Filters -->
+    <filter id="blur-bg" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="50" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1128" height="282" fill="url(#bg-grad)" />
+
+  <!-- Grid Overlay -->
+  <rect width="1128" height="282" fill="url(#grid)" />
+
+  <!-- Ambient Glowing Orbs -->
+  <circle cx="200" cy="50" r="180" fill="#F2A93B" opacity="0.15" filter="url(#blur-bg)" />
+  <circle cx="950" cy="220" r="200" fill="#2FBF9F" opacity="0.18" filter="url(#blur-bg)" />
+  <circle cx="600" cy="240" r="150" fill="#3B82F6" opacity="0.10" filter="url(#blur-bg)" />
+
+  <!-- Diagonal Aesthetic Accent -->
+  <path d="M 0 282 L 340 0 L 365 0 L 25 282 Z" fill="url(#brand-wave)" opacity="0.10" />
+
+  <!-- Brand Section (Centered vertically, left margin for avatar space) -->
+  <g transform="translate(240, 52)">
+    
+    <!-- Header Logo + Name -->
+    <g transform="translate(0, 0)">
+      <!-- Mini Badge Logo -->
+      <g transform="translate(0, 0) scale(0.85)">
+        <rect x="0" y="0" width="56" height="56" rx="14" fill="#141933" stroke="#2FBF9F" stroke-width="2" />
+        <rect x="12" y="30" width="4" height="14" rx="2" fill="url(#brand-wave)" />
+        <rect x="19" y="22" width="4" height="22" rx="2" fill="url(#brand-wave)" />
+        <rect x="26" y="14" width="4" height="30" rx="2" fill="url(#brand-wave)" />
+        <rect x="33" y="20" width="4" height="24" rx="2" fill="url(#brand-wave)" />
+        <rect x="40" y="28" width="4" height="16" rx="2" fill="url(#brand-wave)" />
+      </g>
+
+      <!-- Brand Name Title -->
+      <text x="60" y="34" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="36" fill="#FFFFFF" letter-spacing="-0.5">ORATII</text>
+      <text x="200" y="34" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="36" fill="#2FBF9F">.IN</text>
+    </g>
+    
+    <!-- Sub-headline -->
+    <text x="0" y="82" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="20" fill="#F8FAFC">AI-Powered Speech &amp; Mock Interview Coaching</text>
+    <text x="0" y="110" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="14" fill="#94A3B8">Elevate your communication with real-time feedback, pace tracking &amp; interview scoring.</text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(0, 136)">
+      <!-- Pill 1 -->
+      <g transform="translate(0, 0)">
+        <rect width="160" height="32" rx="16" fill="#141933" stroke="#2FBF9F" stroke-opacity="0.4" stroke-width="1" />
+        <circle cx="16" cy="16" r="4.5" fill="#F2A93B" />
+        <text x="28" y="21" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12" fill="#E2E8F0">🎙️ AI Speech Coach</text>
+      </g>
+
+      <!-- Pill 2 -->
+      <g transform="translate(172, 0)">
+        <rect width="168" height="32" rx="16" fill="#141933" stroke="#2FBF9F" stroke-opacity="0.4" stroke-width="1" />
+        <circle cx="16" cy="16" r="4.5" fill="#2FBF9F" />
+        <text x="28" y="21" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12" fill="#E2E8F0">💼 AI Mock Interview</text>
+      </g>
+
+      <!-- Pill 3 -->
+      <g transform="translate(352, 0)">
+        <rect width="180" height="32" rx="16" fill="#141933" stroke="#2FBF9F" stroke-opacity="0.4" stroke-width="1" />
+        <circle cx="16" cy="16" r="4.5" fill="#3B82F6" />
+        <text x="28" y="21" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="12" fill="#E2E8F0">⚡ Real-time Pace (WPM)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Visual: Sound Wave + AI Score Widget -->
+  <g transform="translate(800, 42)">
+    <!-- Equalizer Sound Wave Bars -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="30" width="6" height="35" rx="3" fill="#F2A93B" opacity="0.7" />
+      <rect x="12" y="15" width="6" height="75" rx="3" fill="#F2A93B" />
+      <rect x="24" y="0" width="6" height="105" rx="3" fill="url(#brand-wave)" />
+      <rect x="36" y="20" width="6" height="65" rx="3" fill="#2FBF9F" />
+      <rect x="48" y="5" width="6" height="95" rx="3" fill="#2FBF9F" />
+      <rect x="60" y="25" width="6" height="55" rx="3" fill="#38BDF8" />
+      <rect x="72" y="40" width="6" height="28" rx="3" fill="#38BDF8" opacity="0.6" />
+    </g>
+
+    <!-- Score Card Widget -->
+    <g transform="translate(95, 10)">
+      <rect width="200" height="160" rx="14" fill="#141933" stroke="#2FBF9F" stroke-opacity="0.5" stroke-width="1.5" />
+      
+      <text x="16" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="11" fill="#2FBF9F" letter-spacing="0.5">ORATII AI SPEECH SCORE</text>
+      
+      <text x="16" y="76" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="38" fill="#F2A93B">94<tspan font-size="20" fill="#94A3B8">/100</tspan></text>
+      <text x="118" y="68" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="12" fill="#2FBF9F">✦ Excellent</text>
+      
+      <line x1="16" y1="96" x2="184" y2="96" stroke="#222A4E" stroke-width="1" />
+      <text x="16" y="120" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#CBD5E1">WPM: <tspan font-weight="700" fill="#FFFFFF">142</tspan></text>
+      <text x="96" y="120" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#CBD5E1">Fillers: <tspan font-weight="700" fill="#FFFFFF">0.8%</tspan></text>
+      <text x="16" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#94A3B8">Tone: Confident &amp; Clear</text>
+    </g>
+  </g>
+
+  <!-- Border -->
+  <rect width="1128" height="282" fill="none" stroke="#2FBF9F" stroke-opacity="0.3" stroke-width="1" />
+</svg>

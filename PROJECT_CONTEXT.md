@@ -111,4 +111,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-04 (Unified credit system across profiles & usage_limits to ensure every new user gets 10 free credits on signup; fixed credit deduction logic to consume 1 credit per session/run and prevent premature 'quota exhausted' errors on speech coach, speech writer, and mock interview tools)*
+*Last Updated: 2026-10-05 (Enforced mandatory GuestAuthModal popup for all unauthenticated/guest users when attempting to launch mock interviews, analyze speech/slides, generate speeches, or start practice sessions across /interview, /speech-coach, /presentation, and /challenge)*

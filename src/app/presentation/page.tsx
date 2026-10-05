@@ -92,9 +92,12 @@ function PresentationPracticeContent() {
     playSound('click');
     if (!file) return;
 
-    setIsLoading(true);
-    setError(null);
     const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      setIsGuestAuthModalOpen(true);
+      setIsLoading(false);
+      return;
+    }
 
     const authHeaders: Record<string, string> = {};
     if (session?.access_token) {
@@ -285,7 +288,14 @@ function PresentationPracticeContent() {
              
              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <button 
-                  onClick={() => setIsPracticeMode(true)}
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session?.user) {
+                      setIsGuestAuthModalOpen(true);
+                      return;
+                    }
+                    setIsPracticeMode(true);
+                  }}
                   className="flex-1 py-4 px-6 rounded-xl text-base font-black bg-gradient-to-r from-amber-400 to-[#F2A93B] hover:from-amber-300 hover:to-[#e0992b] text-[#151930] shadow-xl shadow-amber-500/20 transition-all text-center cursor-pointer flex items-center justify-center gap-2 transform hover:-translate-y-0.5"
                 >
                   <Video size={20} /> Start Presentation Practice →

@@ -44,6 +44,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import ConfidenceGraph, { ScoreRing } from "@/components/ConfidenceGraph";
+import GuestAuthModal from "@/components/GuestAuthModal";
 
 interface ChatGPTInterviewStudioProps {
   onCancel?: () => void;
@@ -108,6 +109,7 @@ export default function ChatGPTInterviewStudio({
   >("friendly");
   const [mockSeriesRound, setMockSeriesRound] = useState<1 | 2 | 3>(1);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [isGuestAuthModalOpen, setIsGuestAuthModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const searchParams = useSearchParams();
@@ -510,15 +512,21 @@ export default function ChatGPTInterviewStudio({
   };
 
   const startInterviewSession = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.user) {
+      setIsGuestAuthModalOpen(true);
+      return;
+    }
+
     setStep("interview");
     setIsLoading(true);
     setCurrentRound(1);
     setChatHistory([]);
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
       const authHeaders: Record<string, string> = {
         "Content-Type": "application/json",
       };
@@ -2013,6 +2021,12 @@ export default function ChatGPTInterviewStudio({
           </div>,
           document.body,
         )}
+
+      <GuestAuthModal
+        isOpen={isGuestAuthModalOpen}
+        onClose={() => setIsGuestAuthModalOpen(false)}
+        featureName="AI Mock Interview Campaign"
+      />
     </div>
   );
 }

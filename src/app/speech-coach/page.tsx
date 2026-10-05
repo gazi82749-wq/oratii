@@ -103,7 +103,13 @@ export default function SpeechCoach() {
     }
   }, [language]);
 
-  const startCleanDrill = () => {
+  const startCleanDrill = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      setIsGuestAuthModalOpen(true);
+      return;
+    }
+
     setCleanDrillSeconds(30);
     setCleanDrillTranscript('');
     setCleanDrillFillers([]);
@@ -243,6 +249,12 @@ export default function SpeechCoach() {
   };
 
   const startRecording = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      setIsGuestAuthModalOpen(true);
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -344,15 +356,8 @@ export default function SpeechCoach() {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session?.user) {
-      // Guest demo check (3 free sample analyses allowed without signup)
-      const currentCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('oratii_guest_trials_count') || '0', 10) : 0;
-      if (currentCount >= 3) {
-        setIsGuestAuthModalOpen(true);
-        return;
-      }
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('oratii_guest_trials_count', String(currentCount + 1));
-      }
+      setIsGuestAuthModalOpen(true);
+      return;
     } else {
       // Signed-in user: deduct 1 credit for Speech Coach analysis
       const creditCheck = await checkAndDeductCredits(session.user.id, 1);
@@ -795,6 +800,12 @@ export default function SpeechCoach() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        setIsGuestAuthModalOpen(true);
+        setTopicLoading(false);
+        return;
+      }
+
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (session?.access_token) {
         headers['Authorization'] = `Bearer ${session.access_token}`;
