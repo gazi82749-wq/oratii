@@ -27,6 +27,7 @@
 | **Client ML Vision** | MediaPipe Tasks Vision (GPU in-browser eye contact & posture tracking) |
 | **Payments** | Razorpay Checkout SDK & Webhook verification (Pro: ₹499/mo, Enterprise: ₹1,999/mo) |
 | **Notifications** | VAPID Web Push Notifications (`web-push`) & Resend Transactional Email |
+| **Analytics & SEO** | Google Analytics 4 (`G-VP7GYTQVV8` via `@next/third-parties/google`), OpenGraph, JSON-LD Schema |
 | **File Processing** | `pdf.js` (client), `JSZip` (PPTX parsing), `pdf-parse` (server), ConvertAPI |
 | **Media Recording** | `react-webcam`, `RecordRTC` (WebM/WAV audio blob recording), IndexedDB |
 | **Data Viz & PDF** | Recharts (Responsive charts), `jsPDF` + `html2canvas` (PDF Export) |
@@ -111,4 +112,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-06 (Updated GuestAuthModal and InsufficientCreditsModal copy to accurately declare 10 Free Credits and highlight Oratii v1 core modules: AI Speech Coach & Mock Interview Studio)*
+*Last Updated: 2026-10-08 (Verified Google Analytics 4 integration with GA ID `G-VP7GYTQVV8` in Next.js layout)*
