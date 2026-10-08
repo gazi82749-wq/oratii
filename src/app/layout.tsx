@@ -187,7 +187,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ServiceWorkerRegister />
         <PwaInstallPrompt />
       </body>
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || "G-VP7GYTQVV8"} />
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || "G-VP7GYTQVVB"} />
     </html>
   );
 }

@@ -27,7 +27,7 @@
 | **Client ML Vision** | MediaPipe Tasks Vision (GPU in-browser eye contact & posture tracking) |
 | **Payments** | Razorpay Checkout SDK & Webhook verification (Pro: ₹499/mo, Enterprise: ₹1,999/mo) |
 | **Notifications** | VAPID Web Push Notifications (`web-push`) & Resend Transactional Email |
-| **Analytics & SEO** | Google Analytics 4 (`G-VP7GYTQVV8` via `@next/third-parties/google`), OpenGraph, JSON-LD Schema |
+| **Analytics & SEO** | Google Analytics 4 (`G-VP7GYTQVVB` via `@next/third-parties/google`), OpenGraph, JSON-LD Schema |
 | **File Processing** | `pdf.js` (client), `JSZip` (PPTX parsing), `pdf-parse` (server), ConvertAPI |
 | **Media Recording** | `react-webcam`, `RecordRTC` (WebM/WAV audio blob recording), IndexedDB |
 | **Data Viz & PDF** | Recharts (Responsive charts), `jsPDF` + `html2canvas` (PDF Export) |
