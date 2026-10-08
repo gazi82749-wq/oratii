@@ -154,7 +154,7 @@ export default function HomeClient() {
             <FadeUp delay={300}>
               <div className="flex items-center justify-center lg:justify-start gap-2 pt-6 text-xs font-semibold text-slate-500">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Real-time voice &amp; speech feedback • No app installation required</span>
+                <span>Real-time voice &amp; speech feedback</span>
               </div>
             </FadeUp>
           </div>
