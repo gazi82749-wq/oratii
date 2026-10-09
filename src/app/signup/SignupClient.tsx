@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { Logo } from '@/components/Logo';
 import { Sparkles, Mic, BarChart3, Trophy, Check, Gift } from 'lucide-react';
 
 export default function SignupClient() {
@@ -124,9 +125,8 @@ export default function SignupClient() {
 
         {/* Logo */}
         <div className="relative z-10">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-[#F2A93B] text-[#151930] flex items-center justify-center font-black text-lg rounded-xl shadow-md">O</div>
-            <span className="text-2xl font-black text-white tracking-tight">Oratii</span>
+          <Link href="/" className="inline-block">
+            <Logo className="text-2xl text-white" />
           </Link>
         </div>
 
@@ -168,9 +168,8 @@ export default function SignupClient() {
         
         {/* Mobile/Tablet Navbar */}
         <nav className="w-full px-6 md:px-10 py-6 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-3 lg:hidden">
-            <div className="w-10 h-10 rounded-xl bg-[#151930] text-[#F2A93B] flex items-center justify-center font-black text-lg shadow-sm">O</div>
-            <span className="font-extrabold text-xl text-slate-900 tracking-tight">Oratii</span>
+          <Link href="/" className="lg:hidden">
+            <Logo className="text-xl text-slate-900" />
           </Link>
           <div className="flex-1" />
           <Link 
