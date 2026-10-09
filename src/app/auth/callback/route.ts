@@ -66,6 +66,23 @@ export async function GET(request: NextRequest) {
           profilePayload.role = 'trainer';
         }
 
+        const refParam = requestUrl.searchParams.get('ref') || '';
+        let initialCredits = 10;
+        let referrerUser: any = null;
+
+        if (refParam && isSignup) {
+          const { data: foundReferrers } = await adminClient
+            .from('profiles')
+            .select('id, credits')
+            .or(`id.eq.${refParam},id.like.${refParam}%`)
+            .limit(1);
+
+          if (foundReferrers && foundReferrers.length > 0) {
+            referrerUser = foundReferrers[0];
+            initialCredits = 15;
+          }
+        }
+
         const { data: existingProfile } = await adminClient
           .from('profiles')
           .select('credits')
@@ -73,13 +90,23 @@ export async function GET(request: NextRequest) {
           .maybeSingle();
 
         if (isSignup || !existingProfile || typeof existingProfile.credits !== 'number') {
-          profilePayload.credits = 10;
+          profilePayload.credits = initialCredits;
         }
 
         await adminClient.from('profiles').upsert(
           profilePayload,
           { onConflict: 'id' }
         );
+
+        if (referrerUser?.id && isSignup) {
+          await adminClient
+            .from('profiles')
+            .update({
+              credits: (referrerUser.credits || 10) + 5,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', referrerUser.id);
+        }
 
         await adminClient.from('usage_limits').upsert(
           {

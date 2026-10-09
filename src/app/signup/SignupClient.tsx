@@ -1,12 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
-import { Sparkles, Mic, BarChart3, Trophy, Check } from 'lucide-react';
+import { Sparkles, Mic, BarChart3, Trophy, Check, Gift } from 'lucide-react';
 
 export default function SignupClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refCode = searchParams?.get('ref') || '';
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +29,7 @@ export default function SignupClient() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName, role: selectedRole }),
+        body: JSON.stringify({ email, password, fullName, role: selectedRole, refCode }),
       });
 
       const data = await res.json();
@@ -83,11 +86,12 @@ export default function SignupClient() {
     setError(null);
 
     const nextUrl = selectedRole === 'trainer' ? '/trainer/onboarding' : '/dashboard';
+    const refQuery = refCode ? `&ref=${encodeURIComponent(refCode)}` : '';
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}&role=${selectedRole}&is_signup=true`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}&role=${selectedRole}&is_signup=true${refQuery}`,
         queryParams: {
           prompt: 'select_account',
         },
@@ -191,6 +195,23 @@ export default function SignupClient() {
               </div>
             ) : (
               <>
+                {/* Referral Bonus Banner */}
+                {refCode && (
+                  <div className="mb-6 p-4 bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-amber-500/10 border border-amber-500/40 text-amber-950 rounded-2xl flex items-center gap-3 shadow-sm">
+                    <div className="p-2.5 bg-amber-500 text-slate-950 rounded-xl shadow-md shrink-0">
+                      <Gift size={20} className="stroke-[2.5]" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1">
+                        Referral Bonus Unlocked! 🎉
+                      </h4>
+                      <p className="text-xs font-bold text-amber-950 mt-0.5 leading-snug">
+                        You were invited by a friend! Sign up now to claim <span className="underline decoration-amber-600 font-black">10 Base + 5 Bonus Credits (15 Total Credits)</span> instantly.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Header */}
                 <div className="mb-6">
                   <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-2">Create your account</h1>

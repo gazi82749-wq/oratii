@@ -29,13 +29,14 @@ export async function POST(req: NextRequest) {
   }
 
   // 2. Parse request body
-  let email: string, password: string, fullName: string, role: string;
+  let email: string, password: string, fullName: string, role: string, refCode: string;
   try {
     const body = await req.json();
     email = body.email;
     password = body.password;
     fullName = body.fullName || '';
     role = body.role === 'trainer' ? 'trainer' : 'student';
+    refCode = (body.refCode || '').trim();
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
@@ -94,17 +95,44 @@ export async function POST(req: NextRequest) {
     try {
       const { getServiceSupabase } = await import('@/lib/supabaseClient');
       const adminClient = getServiceSupabase();
+
+      let initialCredits = 10;
+      let referrerUser: any = null;
+
+      if (refCode) {
+        const { data: foundReferrers } = await adminClient
+          .from('profiles')
+          .select('id, credits')
+          .or(`id.eq.${refCode},id.like.${refCode}%`)
+          .limit(1);
+
+        if (foundReferrers && foundReferrers.length > 0) {
+          referrerUser = foundReferrers[0];
+          initialCredits = 15; // 10 Base + 5 Referral Bonus
+        }
+      }
+
       await adminClient.from('profiles').upsert(
         {
           id: data.user.id,
           email: data.user.email,
           full_name: fullName,
           role,
-          credits: 10,
+          credits: initialCredits,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'id' }
       );
+
+      if (referrerUser?.id) {
+        await adminClient
+          .from('profiles')
+          .update({
+            credits: (referrerUser.credits || 10) + 5,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', referrerUser.id);
+      }
       await adminClient.from('usage_limits').upsert(
         {
           user_id: data.user.id,
