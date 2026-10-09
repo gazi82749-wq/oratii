@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
@@ -19,6 +19,14 @@ export default function SignupClient() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [selectedRole, setSelectedRole] = useState<'student' | 'trainer'>('student');
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        router.replace('/dashboard');
+      }
+    });
+  }, [router]);
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,7 +307,7 @@ export default function SignupClient() {
                       type="text" 
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Gazi Abbas" 
+                      placeholder="Alex Morgan" 
                       className="w-full bg-white border border-indigo-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-400 transition-all text-slate-900 placeholder-slate-400 focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                       required
                     />

@@ -112,4 +112,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-09 (Updated signup page OpenGraph metadata & ReferralCard share message for 15 Total Credits)*
+*Last Updated: 2026-10-09 (Added logged-in user auto-redirect on /signup & updated generic name placeholder in SignupClient)*
