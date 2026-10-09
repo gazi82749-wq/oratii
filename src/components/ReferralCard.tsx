@@ -25,7 +25,7 @@ export default function ReferralCard() {
     ? `${origin}/signup?ref=${userId.slice(0, 8)}`
     : `${origin}/signup`;
 
-  const shareText = `Practice public speaking, rehearse presentations, and ace technical job interviews with Oratii AI! Sign up using my link for 5 free trial credits: ${referralLink}`;
+  const shareText = `Practice public speaking, AI voice mock interviews, and daily speech challenges with Oratii AI! Sign up using my link for 10 Free Credits + 5 Bonus Credits (15 Total Credits): ${referralLink}`;
 
   const handleCopy = async () => {
     try {

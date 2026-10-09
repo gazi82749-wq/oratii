@@ -112,4 +112,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-08 (Verified Google Analytics 4 integration with GA ID `G-VP7GYTQVV8` in Next.js layout)*
+*Last Updated: 2026-10-09 (Updated ReferralCard share text to state 10 Base Credits + 5 Bonus Credits = 15 Total Credits on referral signup)*
