@@ -1521,15 +1521,44 @@ export default function SpeechCoach() {
                           <div className="w-20 h-20 border-4 border-indigo-200 rounded-full border-t-slate-900 animate-spin mb-4"></div>
                           <p className="text-sm font-bold text-slate-500">Analyzing...</p>
                         </div>
+                      ) : mediaFile && !isRecording ? (
+                        /* ── Post-recording: show preview + analyze ── */
+                        <div className="flex flex-col items-center gap-3 w-full">
+                          {/* Audio preview */}
+                          {mediaUrl && (
+                            <audio
+                              src={mediaUrl}
+                              controls
+                              className="w-full h-9 rounded-lg"
+                              style={{ minWidth: 0 }}
+                            />
+                          )}
+                          {/* Primary CTA */}
+                          <button
+                            onClick={() => handleAnalyze(mediaFile)}
+                            className="w-full px-4 py-3 bg-slate-900 hover:bg-black text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                          >
+                            <Sparkles size={16} className="text-amber-400" />
+                            Analyze Speech
+                          </button>
+                          {/* Re-record */}
+                          <button
+                            onClick={() => { setMediaFile(null); setRecordingSeconds(0); }}
+                            className="w-full px-4 py-2.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-slate-700 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <RotateCcw size={13} /> Re-record
+                          </button>
+                        </div>
                       ) : (
+                        /* ── Idle / Recording state ── */
                         <div className="flex flex-col items-center">
                           <div className="relative">
                             {isRecording && <div className="absolute -inset-3 rounded-full border-4 border-rose-400 animate-ping opacity-20"></div>}
-                            <button 
+                            <button
                               onClick={isRecording ? stopRecording : startRecording}
                               className={`w-24 h-24 rounded-full flex items-center justify-center text-4xl transition-all shadow-sm ${
-                                isRecording 
-                                  ? 'bg-rose-50 border-4 border-rose-200 text-rose-600 scale-95' 
+                                isRecording
+                                  ? 'bg-rose-50 border-4 border-rose-200 text-rose-600 scale-95'
                                   : 'bg-white border-4 border-indigo-200 hover:scale-105'
                               }`}
                             >
@@ -1537,9 +1566,9 @@ export default function SpeechCoach() {
                             </button>
                           </div>
                           <p className={`mt-4 text-sm font-bold text-center ${isRecording ? 'text-rose-600 animate-pulse' : 'text-slate-900'}`}>
-                            {isRecording ? 'Recording...' : 'Tap to speak'}
+                            {isRecording ? `Recording… ${recordingSeconds}s` : 'Tap to speak'}
                           </p>
-                          {isRecording && <p className="text-xs font-medium text-slate-500 mt-1 text-center">Speak clearly</p>}
+                          {isRecording && <p className="text-xs font-medium text-slate-500 mt-1 text-center">Tap square to stop</p>}
                         </div>
                       )}
 
