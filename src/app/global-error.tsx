@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function GlobalError({
   error,
@@ -10,10 +10,38 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [isOffline, setIsOffline] = useState(false);
+
   useEffect(() => {
-    // Log the error to Sentry
-    Sentry.captureException(error);
+    // 1. Safe Sentry exception capture
+    try {
+      Sentry.captureException(error);
+    } catch {
+      // Swallowed
+    }
+
+    if (typeof navigator !== 'undefined') {
+      setIsOffline(!navigator.onLine);
+    }
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      window.location.reload();
+    };
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, [error]);
+
+  const handleReload = () => {
+    window.location.reload();
+  };
 
   return (
     <html lang="en">
@@ -45,8 +73,8 @@ export default function GlobalError({
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              background: '#FEE2E2',
-              color: '#DC2626',
+              background: isOffline ? '#FEF3C7' : '#FEE2E2',
+              color: isOffline ? '#D97706' : '#DC2626',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -64,7 +92,7 @@ export default function GlobalError({
               letterSpacing: '-0.025em',
               margin: '0 0 0.75rem 0',
             }}>
-              Application Error
+              {isOffline ? 'Connection Interrupted' : 'Application Error'}
             </h1>
 
             <p style={{
@@ -73,12 +101,14 @@ export default function GlobalError({
               color: '#64748B',
               margin: '0 0 2rem 0',
             }}>
-              An unexpected issue occurred while rendering the page. Our engineering team has been notified.
+              {isOffline
+                ? 'Unable to load page assets due to an offline state or network interruption. Reconnecting once internet is restored.'
+                : 'An unexpected issue occurred while rendering the page. Our engineering team has been notified.'}
             </p>
 
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
-                onClick={() => reset()}
+                onClick={handleReload}
                 style={{
                   padding: '0.75rem 1.75rem',
                   background: '#151930',
@@ -90,6 +120,22 @@ export default function GlobalError({
                   cursor: 'pointer',
                   boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                   transition: 'background 0.2s',
+                }}
+              >
+                Reload Page
+              </button>
+
+              <button
+                onClick={() => reset()}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#F1F5F9',
+                  color: '#334155',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
                 }}
               >
                 Try Again

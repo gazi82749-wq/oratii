@@ -105,6 +105,25 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 
 ---
 
+## ⚡ Network Resilience & Service Worker Architecture (`/public/sw.js` & `src/app/error.tsx`)
+
+* **Service Worker v3 (`CACHE_NAME = 'oratii-pwa-v3'`)**:
+  - Strictly ignores API (`/api/*`), Next.js RSC data (`_rsc`, `_next/data`), and development HMR requests.
+  - For Next.js dynamic JS chunks (`/_next/static/*`) and static assets: never returns HTML documents on network failures, preventing fatal `SyntaxError: Unexpected token '<'` (script compiling/execution errors).
+  - Only serves HTML offline fallback when `event.request.mode === 'navigate'`.
+  - Automatically flushes obsolete caches (`v1`, `v2`) on activation.
+* **Error Boundaries (`src/app/error.tsx` & `src/app/global-error.tsx`)**:
+  - Network and ChunkLoadError detection (`ChunkLoadError`, `Failed to fetch`, `Unexpected token '<'`, offline status).
+  - Displays polished "Connection Interrupted" card with automatic `online` event listener for seamless auto-reconnect.
+  - Safe error reporting wrapped in try/catch to prevent Sentry telemetry failures from crashing recovery UI.
+  - Provides dual recovery actions: **"Reload & Reconnect"** (`window.location.reload()`) for clearing failed module caches, and **"Try Again"** (`reset()`).
+
+* **SEO & Google Favicon Standardization**:
+  - `next.config.mjs` configures an automatic 308 Permanent Redirect from `ppt-analyzer.vercel.app` to `https://oratii.in` to consolidate search indexing and prevent Google from branding search results with Vercel.
+  - Multi-resolution favicon support: SVG vector (`/oratii-logo-square.svg`), exact 48px multiple PNG (`/icon-192.png`, 192x192), `/icon-512.png`, and root `/favicon.ico` for Googlebot-Image crawler compliance.
+
+---
+
 ## 📝 Agent Guidelines for Maintaining Context
 
 > **IMPORTANT MANDATE FOR AGENTS:**
@@ -112,4 +131,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-09 (Replaced placeholder plain text 'O' logos with official SVG Logo component across Signup & Login headers)*
+*Last Updated: 2026-10-11 (Fixed Service Worker HTML fallback hijacking for JS chunks, upgraded error boundaries, added 308 redirects from vercel.app to oratii.in, and configured SVG/PNG favicons for Google Search)*

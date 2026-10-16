@@ -43,19 +43,27 @@ export default function HomeClient() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
       if (session?.user) {
-        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
-          if (data?.role) setUserRole(data.role);
-        });
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(
+          ({ data }) => {
+            if (data?.role) setUserRole(data.role);
+          },
+          () => {}
+        );
       }
+      setAuthLoading(false);
+    }, () => {
       setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
       if (session?.user) {
-        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
-          if (data?.role) setUserRole(data.role);
-        });
+        supabase.from('profiles').select('role').eq('id', session.user.id).single().then(
+          ({ data }) => {
+            if (data?.role) setUserRole(data.role);
+          },
+          () => {}
+        );
       } else {
         setUserRole(null);
       }
