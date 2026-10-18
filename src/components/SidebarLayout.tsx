@@ -269,7 +269,7 @@ export default function SidebarLayout({ children }) {
             {!authLoading && (
               user ? (
                 <div className="hidden md:flex items-center gap-2.5">
-                  <Link href={userCredits !== null && userCredits >= 99999 ? "/admin" : "/pricing"} title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
+                  <Link href={userCredits !== null && userCredits >= 99999 ? "/admin" : "/pricing"} rel={userCredits !== null && userCredits >= 99999 ? "nofollow" : undefined} title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
                     {userCredits !== null && userCredits >= 99999 ? (
                       <span className="flex items-center gap-1">
                         <Crown size={13} className="text-amber-600" />
@@ -286,6 +286,7 @@ export default function SidebarLayout({ children }) {
                   {/* Sleek Profile Icon Button */}
                   <Link
                     href="/dashboard"
+                    rel="nofollow"
                     title="Dashboard & Profile"
                     className={`p-2.5 border rounded-2xl transition-all flex items-center justify-center shrink-0 active:scale-95 ${
                       pathname === '/dashboard'
@@ -344,7 +345,7 @@ export default function SidebarLayout({ children }) {
 
             {/* Auth-aware: show Dashboard & Profile in mobile if logged in */}
             {!authLoading && user && (
-              <Link href="/dashboard" className="text-left text-base font-bold text-slate-900 px-4 py-3 min-h-[48px] flex items-center gap-2.5 rounded-xl bg-indigo-50/80 hover:bg-indigo-100/80 active:scale-[0.99] transition-all">
+              <Link href="/dashboard" rel="nofollow" className="text-left text-base font-bold text-slate-900 px-4 py-3 min-h-[48px] flex items-center gap-2.5 rounded-xl bg-indigo-50/80 hover:bg-indigo-100/80 active:scale-[0.99] transition-all">
                 <User size={18} className="text-[#1B2140]" /> Dashboard & Account
               </Link>
             )}
@@ -387,7 +388,7 @@ export default function SidebarLayout({ children }) {
             {!authLoading && (
               <div className="flex flex-col gap-2.5 pt-4 border-t border-indigo-100 mt-1">
                 {user ? (
-                  <Link href="/dashboard" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Go to Dashboard</Link>
+                  <Link href="/dashboard" rel="nofollow" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Go to Dashboard</Link>
                 ) : (
                   <>
                     <Link href="/signup" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Get Started Free</Link>

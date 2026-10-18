@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { 
   MessageSquare, 
   Plus, 
@@ -160,10 +159,18 @@ const CATEGORIES = [
 ];
 
 export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportFeedbackHubProps) {
-  const searchParams = useSearchParams();
-  const urlTab = searchParams.get('tab') as HubTab | null;
+  const [activeTab, setActiveTab] = useState<HubTab>(initialTab);
 
-  const [activeTab, setActiveTab] = useState<HubTab>(urlTab || initialTab);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlTab = params.get('tab') as HubTab | null;
+      if (urlTab && ['feedback', 'ticket', 'my-tickets', 'faq'].includes(urlTab)) {
+        setActiveTab(urlTab);
+      }
+    }
+  }, []);
+
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   // --- Feedback Form States ---
@@ -426,7 +433,11 @@ export default function SupportFeedbackHub({ initialTab = 'feedback' }: SupportF
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 mb-4 leading-tight">
-            How can we help you <span className="text-[#F2A93B]">excel?</span>
+            {activeTab === 'feedback' ? (
+              <>User Feedback &amp; <span className="text-[#F2A93B]">Reviews</span></>
+            ) : (
+              <>How can we help you <span className="text-[#F2A93B]">excel?</span></>
+            )}
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed mb-8">

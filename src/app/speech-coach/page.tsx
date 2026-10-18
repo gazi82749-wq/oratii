@@ -1199,7 +1199,7 @@ export default function SpeechCoach() {
                         Pick a topic · Practice speaking
                       </div>
                       <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">What do you want to speak about?</h2>
-                      <p className="text-slate-300 text-sm md:text-base font-medium">Type any topic — we'll write a natural, simple speech the way a real person talks. Then practice recording yourself!</p>
+                      <p className="text-slate-300 text-sm md:text-base font-medium">Type any topic — we&apos;ll write a natural, simple speech the way a real person talks. Then practice recording yourself!</p>
                     </div>
                   </div>
 

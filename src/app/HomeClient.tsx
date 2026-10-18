@@ -93,7 +93,7 @@ export default function HomeClient() {
 
           <div className="flex items-center gap-4">
             {user ? (
-              <Link href="/dashboard" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all shadow-xs">
+              <Link href="/dashboard" rel="nofollow" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all shadow-xs">
                 Dashboard
               </Link>
             ) : (

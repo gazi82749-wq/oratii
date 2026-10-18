@@ -47,6 +47,7 @@ export default function AboutCta() {
       {user ? (
         <Link
           href="/dashboard"
+          rel="nofollow"
           className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-indigo-200 transition-all cursor-pointer transform hover:-translate-y-0.5"
         >
           Go to Dashboard <ArrowRight size={16} />

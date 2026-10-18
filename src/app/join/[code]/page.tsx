@@ -115,6 +115,7 @@ export default function StudentJoinBatchPage() {
           </p>
           <Link
             href="/dashboard"
+            rel="nofollow"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold"
           >
             Go to My Dashboard

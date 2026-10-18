@@ -24,18 +24,11 @@ export default function ChallengePage() {
     setState(getChallengeState());
   }, []);
 
-  if (!mounted || !state) {
-    return (
-      <div className="w-full max-w-4xl mx-auto py-16 flex flex-col items-center justify-center">
-        <div className="w-10 h-10 border-4 border-indigo-200 border-t-[#F2A93B] rounded-full animate-spin mb-4"></div>
-        <p className="text-xs font-extrabold text-slate-500">Loading Daily Challenge...</p>
-      </div>
-    );
-  }
-
-  // Loop back to day 1 if they complete all 10
-  const cycleDayNum = ((state.current_day - 1) % 10) + 1;
+  // Loop back to day 1 if they complete all 10 (fallback to Day 1 during SSR)
+  const currentDay = state?.current_day ?? 1;
+  const cycleDayNum = ((currentDay - 1) % 10) + 1;
   const todayTask = DAILY_TASKS.find((t) => t.day === cycleDayNum) || DAILY_TASKS[0];
+  const streakCount = state?.streak_count ?? 0;
 
   const handleStartTask = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -75,7 +68,7 @@ export default function ChallengePage() {
             </div>
             <div>
               <div className="text-xl font-black text-[#0F1426] leading-none">
-                {state.streak_count} <span className="text-xs font-bold text-slate-500">Days</span>
+                {streakCount} <span className="text-xs font-bold text-slate-500">Days</span>
               </div>
               <span className="text-[11px] font-extrabold text-emerald-800 uppercase tracking-wider">Active Streak</span>
             </div>
@@ -89,7 +82,7 @@ export default function ChallengePage() {
           
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-950 text-[11px] font-black uppercase tracking-widest shadow-2xs mb-6 relative z-10">
             <CheckCircle2 size={14} className="text-emerald-600" />
-            <span>Today&apos;s Prompt (Day {state.current_day})</span>
+            <span>Today&apos;s Prompt (Day {currentDay})</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-black text-[#0F1426] mb-3 relative z-10 max-w-2xl tracking-tight">

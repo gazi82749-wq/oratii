@@ -159,6 +159,7 @@ export default function TrainerOnboardingPage() {
           </div>
           <Link
             href="/dashboard"
+            rel="nofollow"
             className="text-xs font-bold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all"
           >
             ← Back to Student View

@@ -660,7 +660,7 @@ export default function ProfessionalDashboard() {
               <h3 className="text-xs font-black text-slate-950 uppercase tracking-wider flex items-center gap-2">
                 <Clock size={15} className="text-indigo-600" /> Recent Audits
               </h3>
-              <Link href="/reports" className="text-xs font-extrabold text-indigo-600 hover:underline">
+              <Link href="/reports" rel="nofollow" className="text-xs font-extrabold text-indigo-600 hover:underline">
                 View All
               </Link>
             </div>

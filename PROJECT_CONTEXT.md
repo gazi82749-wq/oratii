@@ -118,9 +118,11 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - Safe error reporting wrapped in try/catch to prevent Sentry telemetry failures from crashing recovery UI.
   - Provides dual recovery actions: **"Reload & Reconnect"** (`window.location.reload()`) for clearing failed module caches, and **"Try Again"** (`reset()`).
 
-* **SEO & Google Favicon Standardization**:
-  - `next.config.mjs` configures an automatic 308 Permanent Redirect from `ppt-analyzer.vercel.app` to `https://oratii.in` to consolidate search indexing and prevent Google from branding search results with Vercel.
+* **SEO & Webmaster Tools Optimization**:
+  - `next.config.mjs` configures an automatic 308 Permanent Redirect from `ppt-analyzer.vercel.app` to `https://oratii.in` and `X-Robots-Tag: noindex` on Vercel preview URLs.
   - Multi-resolution favicon support: SVG vector (`/oratii-logo-square.svg`), exact 48px multiple PNG (`/icon-192.png`, 192x192), `/icon-512.png`, and root `/favicon.ico` for Googlebot-Image crawler compliance.
+  - Added `rel="nofollow"` to links pointing to private/disallowed routes (`/dashboard`, `/reports`, `/admin`) to prevent "Blocked by robots.txt" crawl errors in Bing Webmaster Tools.
+  - Eliminated client bailouts during SSR for `/feedback`, `/support`, and `/challenge` to ensure all pages render with clean, crawlable `<h1>` tags in static server HTML.
 
 ---
 
@@ -131,4 +133,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-11 (Fixed Service Worker HTML fallback hijacking for JS chunks, upgraded error boundaries, added 308 redirects from vercel.app to oratii.in, and configured SVG/PNG favicons for Google Search)*
+*Last Updated: 2026-10-18 (Fixed Bing Webmaster H1 missing notices on /feedback, /support, /challenge; added rel="nofollow" to dashboard/reports links; fixed JSX entity in speech-coach; clean build verified)*
