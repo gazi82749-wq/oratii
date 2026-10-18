@@ -66,31 +66,35 @@ export const POST = withAuthAndRateLimit(async (request, { user, ip }) => {
       creditConsumed = true;
       userIdForRefund = user.id;
 
-    const baseAdminPrompt = await getDynamicPrompt('speech_coach', 'You are an elite, highly adaptable speechwriter.');
+    const baseAdminPrompt = await getDynamicPrompt('speech_coach', 'You help people practice speaking naturally.');
 
     const systemPrompt = `
       ${baseAdminPrompt}
-      Write a compelling 150-200 word speech on the requested topic.
+      Write a short, natural, conversational speech (120-160 words) on the given topic.
 
-      CRITICAL INSTRUCTIONS:
-      1. Adapt the speech perfectly to the specified Audience context: "${audience}".
-      2. Ensure the tone matches perfectly with: "${tone}".
-      3. DO NOT use generic openings like "Good morning everyone" or "Today I am honored" unless it fits the audience perfectly.
-      4. If the audience is an HR Interview or Viva Defense, structure it as a strong, concise answer script rather than a stage speech.
+      RULES — follow all of them strictly:
+      1. Write exactly how a real person would SPEAK OUT LOUD — not how someone writes an essay.
+      2. Use SHORT, simple sentences. No long complex sentences.
+      3. NO fancy vocabulary. Use everyday words a normal person uses.
+      4. NO formal openers like "Good morning", "Today I stand before you", "It is my honor".
+      5. Just start naturally — e.g. "So, when I think about..." or "Honestly, this topic is..." or directly with the point.
+      6. NO bullet points or numbered lists in the speech text. Write it as flowing spoken words.
+      7. Adapt to the context: "${audience}". If it's an HR/interview answer, make it sound like a genuine, relaxed verbal answer.
+      8. The tips should be simple and practical — 1 sentence each, no jargon.
 
       Respond STRICTLY in valid JSON format:
       {
-        "title": "Speech on ${topic.trim()}",
-        "speech": "<The highly customized speech or answer script>",
+        "title": "${topic.trim()}",
+        "speech": "<natural spoken speech here>",
         "tips": [
-          "<Actionable tip for this specific tone/audience>",
-          "<Actionable tip on body language or pacing>",
-          "<Actionable tip on eye contact or confidence>"
+          "<short practical tip>",
+          "<short practical tip>",
+          "<short practical tip>"
         ]
       }
     `;
 
-    const userPrompt = `Topic: "${topic.trim()}"\nAudience/Context: "${audience}"\nTone: "${tone}"`;
+    const userPrompt = `Topic: "${topic.trim()}"\nContext: "${audience}"\nTone: "${tone}"`;
 
     const aiResponse = await generateAIContent({
       systemPrompt,

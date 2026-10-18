@@ -27,14 +27,14 @@ import {
 const MAX_FREE_RECORDING_SECONDS = 180; // 3-Minute Free Drill Cap
 
 const SUGGESTED_TOPICS = [
-  'Tell Me About Yourself (Placement HR)',
-  'Explain Your Final Year Project (Tech Viva)',
-  'Why Should We Hire You Over Others?',
-  'STAR Method: Handled High Pressure Situation',
-  'IELTS Cue Card: A Life Changing Decision',
-  'Why Do You Want to Work in Tech / IT?',
-  'Extempore: Future of AI in Engineering',
-  'Describe a Difficult Technical Bug You Solved'
+  'Tell me about yourself',
+  'My favourite hobby',
+  'Why I love technology',
+  'My biggest achievement',
+  'A challenge I overcame',
+  'The future of AI',
+  'Why I chose my career',
+  'A person who inspires me'
 ];
 
 export default function SpeechCoach() {
@@ -1196,10 +1196,10 @@ export default function SpeechCoach() {
                     <div className="absolute top-4 right-8 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl pointer-events-none"></div>
                     <div className="relative z-10">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-3 border border-white/10">
-                        Campus Placement & Viva Drills
+                        Pick a topic · Practice speaking
                       </div>
-                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">Placement & Viva Speech Prompts</h2>
-                      <p className="text-slate-300 text-sm md:text-base font-medium">Generate structured answer scripts for high-frequency HR rounds, engineering viva defenses, and IELTS cue cards. Then practice speaking live!</p>
+                      <h2 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">What do you want to speak about?</h2>
+                      <p className="text-slate-300 text-sm md:text-base font-medium">Type any topic — we'll write a natural, simple speech the way a real person talks. Then practice recording yourself!</p>
                     </div>
                   </div>
 
@@ -1212,7 +1212,7 @@ export default function SpeechCoach() {
                         value={topicInput}
                         onChange={(e) => { setTopicInput(e.target.value); setTopicError(''); }}
                         onKeyDown={(e) => { if (e.key === 'Enter' && !topicLoading) handleGenerateSpeech(); }}
-                        placeholder="e.g. Tell me about yourself, Explain my final project, STAR behavioral..."
+                        placeholder="e.g. Tell me about yourself, My favourite hobby, Future of AI..."
                         className="flex-1 px-5 py-3.5 bg-indigo-50 border border-indigo-200 rounded-xl text-slate-900 text-base font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 transition-all"
                         disabled={topicLoading}
                         maxLength={200}
@@ -1232,39 +1232,6 @@ export default function SpeechCoach() {
                           <>Generate Speech</>
                         )}
                       </button>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                      <div className="flex-1">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Audience / Context</label>
-                        <select
-                          value={topicAudience}
-                          onChange={(e) => setTopicAudience(e.target.value)}
-                          disabled={topicLoading}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all cursor-pointer"
-                        >
-                          <option value="General Public">General Public / Public Speaking</option>
-                          <option value="HR Interview">HR Interview / Hiring Manager</option>
-                          <option value="Technical Viva Defense">Technical Viva / Project Defense</option>
-                          <option value="Corporate / Executive">Corporate / Executive Leadership</option>
-                          <option value="Academic / Classroom">Academic / Classroom Teacher</option>
-                        </select>
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Speech Tone</label>
-                        <select
-                          value={topicTone}
-                          onChange={(e) => setTopicTone(e.target.value)}
-                          disabled={topicLoading}
-                          className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all cursor-pointer"
-                        >
-                          <option value="Professional & Inspiring">Professional & Inspiring</option>
-                          <option value="Strict, Concise, & Technical">Strict, Concise, & Technical</option>
-                          <option value="Friendly & Conversational">Friendly & Conversational</option>
-                          <option value="Persuasive & Confident">Persuasive & Confident</option>
-                          <option value="Formal & Academic">Formal & Academic</option>
-                        </select>
-                      </div>
                     </div>
 
                     {topicError && (
