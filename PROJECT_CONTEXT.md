@@ -124,6 +124,7 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - Added `rel="nofollow"` to links pointing to private/disallowed routes (`/dashboard`, `/reports`, `/admin`) to prevent "Blocked by robots.txt" crawl errors in Bing Webmaster Tools.
   - Eliminated client bailouts during SSR for `/feedback`, `/support`, and `/challenge` to ensure all pages render with clean, crawlable `<h1>` tags in static server HTML.
   - Upgraded Google Analytics 4 integration to bulletproof `next/script` `afterInteractive` gtag.js tags inside `<body>` with automatic `G-` prefix normalization to prevent missing measurement ID issues.
+  - Added official Google Tag Manager container (`GTM-TFNFSSKK`) script and noscript iframe in `src/app/layout.tsx`.
 
 ---
 
@@ -134,4 +135,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-19 (Fixed Google Analytics 4 gtag.js script loading and G- prefix normalization; verified static build)*
+*Last Updated: 2026-10-19 (Added Google Tag Manager GTM-TFNFSSKK container + GA4 gtag.js direct integration)*
