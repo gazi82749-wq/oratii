@@ -126,6 +126,12 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - Upgraded Google Analytics 4 integration to bulletproof `next/script` `afterInteractive` gtag.js tags inside `<body>` with automatic `G-` prefix normalization to prevent missing measurement ID issues.
   - Added official Google Tag Manager container (`GTM-TFNFSSKK`) script and noscript iframe in `src/app/layout.tsx`.
 
+* **Trainer Portal v1 (Live & Enabled)**:
+  - Removed "Coming Soon" overlay from `/trainer` dashboard and enabled full batch management, student gradebook, drill assignments, and 1-click WhatsApp class invites & leaderboards.
+  - Activated navigation links across desktop dropdown, mobile drawer, and mobile bottom bar in `SidebarLayout.tsx` and active footer link in `Footer.tsx`.
+  - Harmonized with Oratii website theme (deep midnight navy `#0F1426`, gold `#F2A93B` accents, emerald badges, and rounded-3xl cards).
+  - Kept unreleased v2 tracks (Viva & Slide Presentation cohorts) gracefully badged as "SOON" while Speech and Mock Interview tracks are fully active in v1.
+
 ---
 
 ## 📝 Agent Guidelines for Maintaining Context
@@ -135,4 +141,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-19 (Added Google Tag Manager GTM-TFNFSSKK container + GA4 gtag.js direct integration)*
+*Last Updated: 2026-10-19 (Enabled Trainer Portal v1 live with full navigation and Oratii theme style; verified production build)*

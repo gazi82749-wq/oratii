@@ -273,9 +273,9 @@ export default function BatchDetailPage() {
 
           <button
             onClick={() => setShowNewAssignment(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-200 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
           >
-            <Plus size={14} />
+            <Plus size={14} className="text-[#F2A93B]" />
             Assign Drill
           </button>
         </div>
@@ -285,10 +285,10 @@ export default function BatchDetailPage() {
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
           onClick={() => setActiveTab('gradebook')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'gradebook'
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#0F1426] text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-100/80'
           }`}
         >
           <BarChart3 size={14} /> Student Gradebook ({gradebook.length})
@@ -296,10 +296,10 @@ export default function BatchDetailPage() {
 
         <button
           onClick={() => setActiveTab('assignments')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'assignments'
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#0F1426] text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-100/80'
           }`}
         >
           <BookOpen size={14} /> Active Assignments ({assignments.length})
@@ -307,10 +307,10 @@ export default function BatchDetailPage() {
 
         <button
           onClick={() => setActiveTab('submissions')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'submissions'
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#0F1426] text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-100/80'
           }`}
         >
           <FileText size={14} /> Submissions Stream ({submissions.length})
@@ -682,7 +682,7 @@ export default function BatchDetailPage() {
                 <button
                   type="submit"
                   disabled={submittingAssign}
-                  className="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-200 disabled:opacity-50 cursor-pointer"
+                  className="w-1/2 py-2.5 rounded-xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-xs uppercase tracking-wider shadow-md disabled:opacity-50 cursor-pointer transition-all active:scale-95"
                 >
                   {submittingAssign ? 'Assigning...' : 'Publish Drill'}
                 </button>

@@ -329,74 +329,44 @@ export default function TrainerDashboardPage() {
   const totalStudents = batches.reduce((acc, b) => acc + (b.studentCount || 0), 0);
   const totalSubmissions = batches.reduce((acc, b) => acc + (b.submissionCount || 0), 0);
 
-  // ─── Case 2: Registered Trainer Dashboard (Coming Soon Overlay) ───
+  // ─── Case 2: Registered Trainer Dashboard (v1 Live) ───
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full relative overflow-hidden">
-      {/* Prominent Coming Soon Hero Overlay */}
-      <div className="absolute inset-0 z-30 bg-slate-950/40 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
-        <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-3xl p-8 sm:p-10 max-w-lg w-full shadow-2xl space-y-5 animate-in zoom-in-95 duration-300">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-100/90 text-indigo-700 flex items-center justify-center mx-auto shadow-sm">
-            <Building2 size={32} />
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between w-full relative">
+      <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1">
+        {/* Top Banner */}
+        <div className="bg-gradient-to-br from-[#0F1426] via-[#1B2140] to-[#151930] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-500/10 blur-3xl rounded-full pointer-events-none" />
+
+          <div className="flex items-center gap-4 z-10">
+            <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-[#F2A93B] shadow-sm shrink-0">
+              <Building2 size={30} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{academy.name}</h1>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
+                  Partner Academy · v1
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 flex items-center gap-2 flex-wrap">
+                <span className="flex items-center gap-1"><MapPin size={12} className="text-[#F2A93B]" /> {academy.city || 'India'}</span>
+                <span className="text-slate-500">•</span>
+                <span className="text-emerald-300 font-semibold">20% Student Top-Up Commission Active</span>
+              </p>
+            </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-wider">
-            <Sparkles size={14} className="text-amber-500" /> Trainer &amp; Campus Portal • Launching Soon
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-            Institutional Classrooms Coming Soon
-          </h1>
-
-          <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-            Our university placement cell dashboard and batch analytics suite is undergoing final V1 polish. In the meantime, launch our AI Speech Coach for immediate vocal practice!
-          </p>
-
-          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+          <div className="flex items-center gap-3 z-10">
             <button
-              onClick={() => router.push('/speech-coach')}
-              className="w-full py-3.5 px-6 rounded-2xl bg-[#0F1426] hover:bg-slate-900 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              onClick={() => setShowCreateBatch(true)}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95"
             >
-              <span>Launch Speech Coach</span>
-              <ArrowRight size={15} />
+              <Plus size={16} />
+              Create New Batch
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="p-6 sm:p-8 space-y-8 font-sans max-w-7xl mx-auto w-full flex-1 filter blur-[2px] opacity-50 pointer-events-none select-none">
-      {/* Top Banner */}
-      <div className="bg-[#0F1426] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#F2A93B]/10 blur-3xl rounded-full pointer-events-none" />
-
-        <div className="flex items-center gap-4 z-10">
-          <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-[#F2A93B] shadow-sm">
-            <Building2 size={30} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-extrabold tracking-tight">{academy.name}</h1>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">
-                Partner Academy
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-300 mt-0.5 flex items-center gap-2">
-              <span className="flex items-center gap-1"><MapPin size={12} className="text-[#F2A93B]" /> {academy.city || 'India'}</span>
-              <span className="text-slate-500">•</span>
-              <span>20% Student Top-Up Commission Active</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 z-10">
-          <button
-            onClick={() => setShowCreateBatch(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F2A93B] hover:bg-[#e0992b] text-[#0F1426] font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer"
-          >
-            <Plus size={16} />
-            Create New Batch
-          </button>
-        </div>
-      </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -453,21 +423,21 @@ export default function TrainerDashboardPage() {
         </div>
 
         {batches.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 border border-slate-100 shadow-sm text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+          <div className="bg-white rounded-3xl p-10 sm:p-14 border border-slate-200/90 shadow-sm text-center space-y-5">
+            <div className="w-16 h-16 rounded-3xl bg-amber-50 text-[#F2A93B] border border-amber-200/70 flex items-center justify-center mx-auto shadow-sm">
               <BookOpen size={28} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">No batches created yet</h3>
-              <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                Create your first batch (e.g. &quot;IELTS Morning Batch&quot; or &quot;Placement Prep 2026&quot;) to generate your unique WhatsApp invite link.
+              <h3 className="text-lg font-black text-slate-900">No batches created yet</h3>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
+                Create your first batch (e.g. &quot;IELTS Morning Batch&quot; or &quot;Campus Placement 2026&quot;) to generate your unique WhatsApp invite link for students.
               </p>
             </div>
             <button
               onClick={() => setShowCreateBatch(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-200 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95"
             >
-              <Plus size={16} />
+              <Plus size={16} className="text-[#F2A93B]" />
               Create Your First Batch
             </button>
           </div>
@@ -531,29 +501,29 @@ export default function TrainerDashboardPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="space-y-2 pt-2">
+                  <div className="space-y-2.5 pt-2">
                     <button
                       onClick={() => copyWhatsAppLink(batch.code, batch.name)}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-all border border-emerald-200/60"
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold transition-all border border-emerald-200/80 cursor-pointer active:scale-[0.99]"
                     >
                       {isCopied ? (
                         <>
                           <Check size={14} className="text-emerald-600" />
-                          WhatsApp Link Copied!
+                          <span>WhatsApp Link Copied!</span>
                         </>
                       ) : (
                         <>
                           <Share2 size={14} className="text-emerald-600" />
-                          Share WhatsApp Link
+                          <span>Share WhatsApp Link</span>
                         </>
                       )}
                     </button>
 
                     <Link
                       href={`/trainer/batches/${batch.id}`}
-                      className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-sm shadow-indigo-100"
+                      className="w-full flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl bg-[#0F1426] hover:bg-[#1A2035] text-white text-xs font-bold transition-all shadow-sm active:scale-[0.99] cursor-pointer"
                     >
-                      Open Student Gradebook
+                      <span>Open Student Gradebook</span>
                       <ChevronRight size={14} />
                     </Link>
                   </div>
@@ -698,7 +668,7 @@ export default function TrainerDashboardPage() {
                 <button
                   type="submit"
                   disabled={creatingBatch}
-                  className="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-indigo-200 disabled:opacity-50 cursor-pointer"
+                  className="w-1/2 py-2.5 rounded-xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-xs uppercase tracking-wider shadow-md disabled:opacity-50 cursor-pointer transition-all active:scale-95"
                 >
                   {creatingBatch ? 'Creating...' : 'Create Batch'}
                 </button>

@@ -36,14 +36,9 @@ export default function Footer() {
               <li><Link href="/about" className="hover:text-amber-400 transition-colors">About Us</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400 transition-colors">Contact Us</Link></li>
               <li>
-                <div className="flex items-center gap-2 cursor-not-allowed select-none group" title="Institutional Portal is not available in v1 launch">
-                  <span className="text-slate-400 font-medium flex items-center gap-1.5 filter blur-[1.2px] opacity-50 pointer-events-none transition-all">
-                    <GraduationCap size={15} /> For Institutes &amp; Trainers
-                  </span>
-                  <span className="text-[9px] font-extrabold text-amber-400/90 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20 uppercase tracking-widest shrink-0">
-                    v2 Coming Soon
-                  </span>
-                </div>
+                <Link href="/trainer" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                  <GraduationCap size={15} className="text-[#F2A93B]" /> For Institutes &amp; Trainers
+                </Link>
               </li>
               <li><Link href="/feedback" className="hover:text-amber-400 transition-colors">Feedback &amp; Support</Link></li>
             </ul>
