@@ -54,21 +54,16 @@ export async function GET(request: NextRequest) {
     let submissionCounts: Record<string, number> = {};
 
     if (batchIds.length > 0) {
-      const { data: members } = await supabaseAdmin
-        .from('batch_members')
-        .select('batch_id')
-        .in('batch_id', batchIds);
+      const [membersRes, subsRes] = await Promise.all([
+        supabaseAdmin.from('batch_members').select('batch_id').in('batch_id', batchIds),
+        supabaseAdmin.from('batch_submissions').select('batch_id').in('batch_id', batchIds),
+      ]);
 
-      members?.forEach((m) => {
+      membersRes.data?.forEach((m) => {
         memberCounts[m.batch_id] = (memberCounts[m.batch_id] || 0) + 1;
       });
 
-      const { data: subs } = await supabaseAdmin
-        .from('batch_submissions')
-        .select('batch_id')
-        .in('batch_id', batchIds);
-
-      subs?.forEach((s) => {
+      subsRes.data?.forEach((s) => {
         submissionCounts[s.batch_id] = (submissionCounts[s.batch_id] || 0) + 1;
       });
     }

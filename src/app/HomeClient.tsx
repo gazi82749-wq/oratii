@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { Mic, Video, MessageSquare, Briefcase, HelpCircle, Trophy, Flame, ArrowRight, CheckCircle2, AlertCircle, Sparkles, GraduationCap } from 'lucide-react';
+import { Mic, Video, MessageSquare, Briefcase, HelpCircle, Trophy, Flame, ArrowRight, CheckCircle2, AlertCircle, Sparkles, GraduationCap, Building2, Share2 } from 'lucide-react';
 import HeroShowcase from '../components/HeroShowcase';
 import dynamic from 'next/dynamic';
 
@@ -89,6 +89,9 @@ export default function HomeClient() {
             <a href="#features" className="hover:text-[#0F1426] transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-[#0F1426] transition-colors">How it works</a>
             <a href="#audience" className="hover:text-[#0F1426] transition-colors">Solutions</a>
+            <a href="#trainer-portal" className="text-amber-600 hover:text-amber-700 font-bold transition-colors flex items-center gap-1.5">
+              <GraduationCap size={15} /> For Trainers
+            </a>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -821,6 +824,196 @@ export default function HomeClient() {
               )}
             </div>
           </FadeUp>
+        </div>
+      </section>
+
+      {/* 7.5. Trainer & Educator Studio Section */}
+      <section id="trainer-portal" className="py-20 sm:py-28 px-4 sm:px-6 bg-[#0F1426] text-white relative overflow-hidden">
+        {/* Ambient Glows */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <FadeUp>
+            <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-[#F2A93B]/30 text-[#F2A93B] text-xs font-black uppercase tracking-wider mb-4 shadow-sm">
+                <GraduationCap size={15} />
+                <span>Oratii For Academies &amp; Trainers</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-[1.2] mb-4">
+                Empower Your Speech &amp; Placement Classroom
+              </h2>
+              <p className="text-slate-300 text-sm sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto">
+                Create student batches, assign AI-scored presentation &amp; interview homework, and generate 1-click WhatsApp leaderboards in seconds.
+              </p>
+            </div>
+          </FadeUp>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column: 4 Feature Highlights */}
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Feature 1 */}
+              <FadeUp delay={100}>
+                <div className="p-6 rounded-3xl bg-[#151930] border border-indigo-900/40 hover:border-amber-500/40 transition-all space-y-3 h-full flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-[#F2A93B] flex items-center justify-center font-bold">
+                    <Share2 size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-white mb-1.5">6-Digit WhatsApp Batch Codes</h3>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                      Generate unique invite codes (e.g. <span className="text-[#F2A93B] font-mono font-bold">OXFD26</span>). Students join directly via WhatsApp link with zero app downloads.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-bold text-amber-400/90 inline-flex items-center gap-1">
+                    Instant class onboarding <CheckCircle2 size={13} />
+                  </span>
+                </div>
+              </FadeUp>
+
+              {/* Feature 2 */}
+              <FadeUp delay={150}>
+                <div className="p-6 rounded-3xl bg-[#151930] border border-indigo-900/40 hover:border-teal-500/40 transition-all space-y-3 h-full flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-bold">
+                    <Mic size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-white mb-1.5">Automated Homework Grading</h3>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                      AI audits student speaking rate (WPM), filler word count, pause cadence, and argument structure automatically.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-bold text-teal-400 inline-flex items-center gap-1">
+                    Saves 5+ hours per batch <CheckCircle2 size={13} />
+                  </span>
+                </div>
+              </FadeUp>
+
+              {/* Feature 3 */}
+              <FadeUp delay={200}>
+                <div className="p-6 rounded-3xl bg-[#151930] border border-indigo-900/40 hover:border-emerald-500/40 transition-all space-y-3 h-full flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                    <MessageSquare size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-white mb-1.5">1-Click WhatsApp Leaderboards</h3>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                      Export beautifully formatted emoji rank cards ready to drop directly into student WhatsApp class groups.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-bold text-emerald-400 inline-flex items-center gap-1">
+                    Drives 3x student practice <CheckCircle2 size={13} />
+                  </span>
+                </div>
+              </FadeUp>
+
+              {/* Feature 4 */}
+              <FadeUp delay={250}>
+                <div className="p-6 rounded-3xl bg-[#151930] border border-indigo-900/40 hover:border-amber-500/40 transition-all space-y-3 h-full flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-[#F2A93B] flex items-center justify-center font-bold">
+                    <Building2 size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-white mb-1.5">Co-Branded Academy Hub</h3>
+                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                      Your institute’s name &amp; city displayed prominently on student drill screens and completion scorecards.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-bold text-amber-400/90 inline-flex items-center gap-1">
+                    Free partner status (₹0) <CheckCircle2 size={13} />
+                  </span>
+                </div>
+              </FadeUp>
+            </div>
+
+            {/* Right Column: Interactive Academy Hub Preview */}
+            <div className="lg:col-span-5">
+              <FadeUp delay={200}>
+                <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-b from-[#181D38] to-[#12162B] border border-indigo-800/50 shadow-2xl space-y-6 relative overflow-hidden">
+                  {/* Subtle Accent Glow */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 blur-2xl rounded-full pointer-events-none" />
+
+                  {/* Header */}
+                  <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-[#F2A93B] text-[#0F1426] font-black flex items-center justify-center text-lg shadow-md">
+                        O
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-extrabold text-white">Oxford Speech Academy</h4>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Live Hub</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-medium">📍 Bengaluru · 3 Active Batches</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Batch Card Simulation */}
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-xs font-bold text-white">Batch Alpha (Evening)</span>
+                      </div>
+                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-lg bg-amber-400/20 text-[#F2A93B] font-bold">
+                        CODE: OXFD26
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                      <div className="p-2 rounded-xl bg-black/20">
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">Students</p>
+                        <p className="text-sm font-extrabold text-white mt-0.5">42</p>
+                      </div>
+                      <div className="p-2 rounded-xl bg-black/20">
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">Submissions</p>
+                        <p className="text-sm font-extrabold text-emerald-400 mt-0.5">94%</p>
+                      </div>
+                      <div className="p-2 rounded-xl bg-black/20">
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">Avg Score</p>
+                        <p className="text-sm font-extrabold text-[#F2A93B] mt-0.5">86/100</p>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-[#0F1426]/70 border border-white/5 text-[11px] font-mono text-slate-300 flex items-center justify-between">
+                      <span className="truncate">🏆 1st: Aryan K. (92% · 136 WPM)</span>
+                      <span className="text-[10px] text-emerald-400 font-bold shrink-0">Ready to Share</span>
+                    </div>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="space-y-2.5 pt-2">
+                    {userRole === 'trainer' || userRole === 'admin' ? (
+                      <Link
+                        href="/trainer"
+                        className="w-full py-3.5 px-5 bg-gradient-to-r from-[#F2A93B] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                      >
+                        Enter Trainer Portal <ArrowRight size={15} />
+                      </Link>
+                    ) : user ? (
+                      <button
+                        onClick={() => setShowEducatorModal(true)}
+                        className="w-full py-3.5 px-5 bg-gradient-to-r from-[#F2A93B] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                      >
+                        Activate Educator Studio (₹0 Free) <ArrowRight size={15} />
+                      </button>
+                    ) : (
+                      <Link
+                        href="/signup?role=trainer"
+                        className="w-full py-3.5 px-5 bg-gradient-to-r from-[#F2A93B] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                      >
+                        Get Started as a Trainer (₹0 Free) <ArrowRight size={15} />
+                      </Link>
+                    )}
+
+                    <p className="text-[11px] text-center text-slate-400 font-medium">
+                      Zero setup fees · Instant 6-digit WhatsApp class access · For coaches &amp; colleges
+                    </p>
+                  </div>
+                </div>
+              </FadeUp>
+            </div>
+          </div>
         </div>
       </section>
 

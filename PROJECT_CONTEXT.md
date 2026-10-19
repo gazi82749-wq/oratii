@@ -126,11 +126,11 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - Upgraded Google Analytics 4 integration to bulletproof `next/script` `afterInteractive` gtag.js tags inside `<body>` with automatic `G-` prefix normalization to prevent missing measurement ID issues.
   - Added official Google Tag Manager container (`GTM-TFNFSSKK`) script and noscript iframe in `src/app/layout.tsx`.
 
-* **Trainer Portal v1 (Live & Enabled)**:
-  - Removed "Coming Soon" overlay from `/trainer` dashboard and enabled full batch management, student gradebook, drill assignments, and 1-click WhatsApp class invites & leaderboards.
-  - Activated navigation links across desktop dropdown, mobile drawer, and mobile bottom bar in `SidebarLayout.tsx` and active footer link in `Footer.tsx`.
+* **Trainer Portal v1 (Performance, Access Control & Landing Page Showcase)**:
+  - **High-Speed Loading & Parallel Fetching**: Eliminated multi-hop waterfalls by parallelizing `profiles` & `academies` queries in `TrainerLayout` (`Promise.all`), parallelizing `/api/trainer/academy` and `/api/trainer/batches` in `page.tsx`, and parallelizing member/submission counts in `/api/trainer/batches/route.ts`. Added instant animated dashboard skeleton loader.
+  - **Strict Normal User Protection Gate**: Guarded `/trainer` routes in `TrainerLayout` against normal student accounts (`role !== 'trainer' && role !== 'admin'`). Renders a dedicated "Instructor Access Only" gate with quick return to `/dashboard` or upgrade via `EducatorSwitchModal`.
+  - **Landing Page Showcase Section (`#trainer-portal`)**: Added dedicated, high-converting Educator Studio showcase on `HomeClient.tsx` with header nav link, interactive academy batch simulation, WhatsApp leaderboard preview, and instant CTAs.
   - Harmonized with Oratii website theme (deep midnight navy `#0F1426`, gold `#F2A93B` accents, emerald badges, and rounded-3xl cards).
-  - Kept unreleased v2 tracks (Viva & Slide Presentation cohorts) gracefully badged as "SOON" while Speech and Mock Interview tracks are fully active in v1.
 
 ---
 
@@ -141,4 +141,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-19 (Enabled Trainer Portal v1 live with full navigation and Oratii theme style; verified production build)*
+*Last Updated: 2026-10-19 (Optimized Trainer Portal load speed, enforced strict normal user gate, added landing page trainer section; build verified)*

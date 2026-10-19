@@ -85,21 +85,27 @@ export default function TrainerDashboardPage() {
       }
       setUser(session.user);
 
-      // 1. Fetch Academy Info
-      const acadRes = await fetch('/api/trainer/academy', {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      const acadData = await acadRes.json();
-      if (acadData.academy) {
+      // Fetch Academy Info and Batches in parallel to eliminate slow waterfalls
+      const [acadRes, batchRes] = await Promise.all([
+        fetch('/api/trainer/academy', {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          cache: 'no-store',
+        }),
+        fetch('/api/trainer/batches', {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          cache: 'no-store',
+        }),
+      ]);
+
+      const [acadData, batchData] = await Promise.all([
+        acadRes.json().catch(() => ({})),
+        batchRes.json().catch(() => ({})),
+      ]);
+
+      if (acadData?.academy) {
         setAcademy(acadData.academy);
       }
-
-      // 2. Fetch Batches
-      const batchRes = await fetch('/api/trainer/batches', {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      const batchData = await batchRes.json();
-      if (batchData.batches) {
+      if (batchData?.batches) {
         setBatches(batchData.batches);
       }
     } catch (err) {
@@ -229,10 +235,50 @@ export default function TrainerDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[85vh] flex items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-semibold text-slate-500">Loading Trainer Portal...</p>
+      <div className="min-h-screen bg-[#F8FAFC] pb-16 font-sans antialiased animate-in fade-in duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
+          {/* Header Skeleton */}
+          <div className="rounded-3xl p-6 sm:p-8 bg-[#0F1426] shadow-xl border border-indigo-950 flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden animate-pulse">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-white/10 shrink-0" />
+              <div className="space-y-2.5">
+                <div className="h-7 w-48 bg-white/20 rounded-xl" />
+                <div className="h-4 w-64 bg-white/10 rounded-lg" />
+              </div>
+            </div>
+            <div className="h-11 w-40 bg-white/20 rounded-2xl shrink-0" />
+          </div>
+
+          {/* Metric Cards Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4 animate-pulse">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-3 w-20 bg-slate-200 rounded" />
+                  <div className="h-6 w-12 bg-slate-200 rounded-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Batches Grid Skeleton */}
+          <div className="space-y-4 pt-4">
+            <div className="h-6 w-36 bg-slate-200 rounded-lg animate-pulse" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4 animate-pulse">
+                  <div className="flex items-center justify-between">
+                    <div className="h-5 w-28 bg-slate-200 rounded-lg" />
+                    <div className="h-6 w-16 bg-slate-100 rounded-full" />
+                  </div>
+                  <div className="h-4 w-full bg-slate-100 rounded" />
+                  <div className="h-12 bg-slate-50 rounded-2xl" />
+                  <div className="h-10 bg-slate-100 rounded-xl" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
