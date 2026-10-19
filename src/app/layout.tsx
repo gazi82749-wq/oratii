@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { Inter, Space_Grotesk, Caveat } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import SidebarLayout from "../components/SidebarLayout";
 import ServiceWorkerRegister from "../components/ServiceWorkerRegister";
 import PwaInstallPrompt from "../components/PwaInstallPrompt";
-import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,6 +26,8 @@ const caveat = Caveat({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+const rawGaId = process.env.NEXT_PUBLIC_GA_ID?.trim() || 'G-VP7GYTQVVB';
+const gaId = rawGaId.startsWith('G-') ? rawGaId : `G-${rawGaId}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -189,8 +191,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SidebarLayout>
         <ServiceWorkerRegister />
         <PwaInstallPrompt />
+
+        {/* Google Analytics 4 (gtag.js) */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
       </body>
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || "G-VP7GYTQVVB"} />
     </html>
   );
 }
