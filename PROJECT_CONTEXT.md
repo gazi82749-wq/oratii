@@ -129,7 +129,7 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 * **Trainer Portal v1 (Performance, Access Control & Landing Page Showcase)**:
   - **High-Speed Loading & Parallel Fetching**: Eliminated multi-hop waterfalls by parallelizing `profiles` & `academies` queries in `TrainerLayout` (`Promise.all`), parallelizing `/api/trainer/academy` and `/api/trainer/batches` in `page.tsx`, and parallelizing member/submission counts in `/api/trainer/batches/route.ts`. Added instant animated dashboard skeleton loader.
   - **Strict Normal User Protection Gate**: Guarded `/trainer` routes in `TrainerLayout` against normal student accounts (`role !== 'trainer' && role !== 'admin'`). Renders a dedicated "Instructor Access Only" gate with quick return to `/dashboard` or upgrade via `EducatorSwitchModal`.
-  - **Landing Page Showcase Section (`#trainer-portal`)**: Added dedicated, high-converting Educator Studio showcase on `HomeClient.tsx` with header nav link, interactive academy batch simulation, WhatsApp leaderboard preview, and instant CTAs.
+  - **Landing Page Showcase Section (`#trainer-portal`)**: Added dedicated Educator Studio showcase on `HomeClient.tsx` with header nav link, interactive academy batch simulation, WhatsApp leaderboard preview, and instant CTAs. Dynamically targeted to only display for users who signed up as a trainer or admin (`role === 'trainer' || role === 'admin'`), keeping normal learner views uncluttered.
   - Harmonized with Oratii website theme (deep midnight navy `#0F1426`, gold `#F2A93B` accents, emerald badges, and rounded-3xl cards).
 
 ---
@@ -141,4 +141,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-19 (Optimized Trainer Portal load speed, enforced strict normal user gate, added landing page trainer section; build verified)*
+*Last Updated: 2026-10-20 (Restricted landing page trainer section & nav strictly to trainer/admin signups; build verified)*

@@ -89,9 +89,11 @@ export default function HomeClient() {
             <a href="#features" className="hover:text-[#0F1426] transition-colors">Features</a>
             <a href="#how-it-works" className="hover:text-[#0F1426] transition-colors">How it works</a>
             <a href="#audience" className="hover:text-[#0F1426] transition-colors">Solutions</a>
-            <a href="#trainer-portal" className="text-amber-600 hover:text-amber-700 font-bold transition-colors flex items-center gap-1.5">
-              <GraduationCap size={15} /> For Trainers
-            </a>
+            {(userRole === 'trainer' || userRole === 'admin') && (
+              <a href="#trainer-portal" className="text-amber-600 hover:text-amber-700 font-bold transition-colors flex items-center gap-1.5">
+                <GraduationCap size={15} /> For Trainers
+              </a>
+            )}
           </nav>
 
           <div className="flex items-center gap-4">
@@ -827,8 +829,9 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 7.5. Trainer & Educator Studio Section */}
-      <section id="trainer-portal" className="py-20 sm:py-28 px-4 sm:px-6 bg-[#0F1426] text-white relative overflow-hidden">
+      {/* 7.5. Trainer & Educator Studio Section (Only for Trainer / Admin signups) */}
+      {(userRole === 'trainer' || userRole === 'admin') && (
+        <section id="trainer-portal" className="py-20 sm:py-28 px-4 sm:px-6 bg-[#0F1426] text-white relative overflow-hidden">
         {/* Ambient Glows */}
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
@@ -1016,6 +1019,7 @@ export default function HomeClient() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 8. Final CTA Section */}
       <ModernBackgroundAnimation variant="cta" className="py-16 sm:py-32 text-center px-4 sm:px-6 text-white">
