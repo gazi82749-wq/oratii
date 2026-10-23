@@ -58,9 +58,52 @@ function createPng(width, height, drawFn) {
   return Buffer.concat([sig, ihdrChunk, idatChunk, iendChunk]);
 }
 
-// Oratii brand colors:
-// Background Navy: #1B2140 -> R:27, G:33, B:64
-// Bar Gradient: #F2A93B (242, 169, 59) to #2FBF9F (47, 191, 159)
+function createIco(images) {
+  const count = images.length;
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // 1 = ICO
+  header.writeUInt16LE(count, 4);
+
+  let offset = 6 + count * 16;
+  const entries = [];
+  for (const img of images) {
+    const entry = Buffer.alloc(16);
+    entry.writeUInt8(img.width >= 256 ? 0 : img.width, 0);
+    entry.writeUInt8(img.height >= 256 ? 0 : img.height, 1);
+    entry.writeUInt8(0, 2);
+    entry.writeUInt8(0, 3);
+    entry.writeUInt16LE(1, 4);
+    entry.writeUInt16LE(32, 6);
+    entry.writeUInt32LE(img.buffer.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    offset += img.buffer.length;
+    entries.push(entry);
+  }
+
+  return Buffer.concat([header, ...entries, ...images.map((img) => img.buffer)]);
+}
+
+// Distance from point (px, py) to rounded rectangle centered at (cx, cy) with half-width hw, half-height hh, and corner radius r
+function distToRoundRect(px, py, cx, cy, hw, hh, r) {
+  const dx = Math.abs(px - cx) - (hw - r);
+  const dy = Math.abs(py - cy) - (hh - r);
+  const outsideDist = Math.hypot(Math.max(dx, 0), Math.max(dy, 0));
+  const insideDist = Math.min(Math.max(dx, dy), 0);
+  return outsideDist + insideDist - r;
+}
+
+// Check if point is inside speech bubble tail triangle: (-0.32, 0.28) -> (-0.32, 0.46) -> (-0.12, 0.30)
+function insideTail(x, y) {
+  if (x < -0.34 || x > -0.10 || y < 0.26 || y > 0.48) return false;
+  // Barycentric or edge function for triangle A(-0.32, 0.28), B(-0.32, 0.46), C(-0.12, 0.30)
+  const d1 = (x - -0.32) * (0.30 - 0.46) - (y - 0.46) * (-0.12 - -0.32);
+  const d2 = (x - -0.12) * (0.28 - 0.30) - (y - 0.30) * (-0.32 - -0.12);
+  const d3 = (x - -0.32) * (0.46 - 0.28) - (y - 0.28) * (-0.32 - -0.32);
+  const hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+  const hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+  return !(hasNeg && hasPos);
+}
 
 function drawOratiiIcon(x, y, width, height, isMaskable = false) {
   const cx = width / 2;
@@ -68,60 +111,70 @@ function drawOratiiIcon(x, y, width, height, isMaskable = false) {
   const nx = (x - cx) / width;  // -0.5 to 0.5
   const ny = (y - cy) / height; // -0.5 to 0.5
 
-  // Maskable uses full bleed background, standard uses rounded sqircle
-  if (!isMaskable) {
-    // Rounded corner check (radius ~ 22% of dimension)
-    const padding = 0.05;
-    if (Math.abs(nx) > 0.45 || Math.abs(ny) > 0.45) {
-      // Corners
-      const cornerR = 0.12;
-      const cornerCx = 0.45 - cornerR;
-      const cornerCy = 0.45 - cornerR;
-      if (Math.abs(nx) > cornerCx && Math.abs(ny) > cornerCy) {
-        const dx = Math.abs(nx) - cornerCx;
-        const dy = Math.abs(ny) - cornerCy;
-        if (dx * dx + dy * dy > cornerR * cornerR) {
-          return [0, 0, 0, 0]; // Transparent outside
-        }
-      }
-    }
+  const bgNavy = [21, 25, 48, 255];     // #151930
+  const goldBorder = [242, 169, 59, 255]; // #F2A93B
+
+  const badgeDist = distToRoundRect(nx, ny, 0.01, -0.04, 0.44, 0.40, 0.16);
+  const inBadge = badgeDist <= 0;
+  const inTail = insideTail(nx, ny);
+  const isInsideShape = inBadge || inTail;
+
+  if (!isInsideShape && !isMaskable) {
+    return [0, 0, 0, 0]; // Transparent background outside badge!
   }
 
-  // Navy background color (#1B2140)
-  let bgR = 27, bgG = 33, bgB = 64, bgA = 255;
-
-  // 5 Soundwave Bars in center
-  // Bar definitions relative to center: { xCenter, yMin, yMax, width }
+  // 5 Soundwave bars positioned prominently inside the badge
   const bars = [
-    { xCenter: -0.22, yMin: -0.05, yMax: 0.22, w: 0.07 },
-    { xCenter: -0.11, yMin: -0.18, yMax: 0.28, w: 0.07 },
-    { xCenter: 0.00,  yMin: -0.28, yMax: 0.32, w: 0.07 },
-    { xCenter: 0.11,  yMin: -0.14, yMax: 0.24, w: 0.07 },
-    { xCenter: 0.22,  yMin: -0.02, yMax: 0.18, w: 0.07 },
+    { xCenter: -0.24, yCenter: -0.04, halfH: 0.13, halfW: 0.04 },
+    { xCenter: -0.12, yCenter: -0.04, halfH: 0.24, halfW: 0.04 },
+    { xCenter:  0.00, yCenter: -0.04, halfH: 0.32, halfW: 0.04 },
+    { xCenter:  0.12, yCenter: -0.04, halfH: 0.21, halfW: 0.04 },
+    { xCenter:  0.24, yCenter: -0.04, halfH: 0.10, halfW: 0.04 },
   ];
 
   for (const bar of bars) {
-    const halfW = bar.w / 2;
-    if (nx >= bar.xCenter - halfW && nx <= bar.xCenter + halfW) {
-      if (ny >= bar.yMin && ny <= bar.yMax) {
-        // Gradient from top (#F2A93B) to bottom (#2FBF9F)
-        const t = (ny - bar.yMin) / (bar.yMax - bar.yMin);
-        const r = Math.round(242 * (1 - t) + 47 * t);
-        const g = Math.round(169 * (1 - t) + 191 * t);
-        const b = Math.round(59 * (1 - t) + 159 * t);
-        return [r, g, b, 255];
-      }
+    const barDist = distToRoundRect(nx, ny, bar.xCenter, bar.yCenter, bar.halfW, bar.halfH, bar.halfW);
+    if (barDist <= 0) {
+      // Vibrant vertical gradient: #F2A93B (gold) to #2FBF9F (emerald)
+      const topY = bar.yCenter - bar.halfH;
+      const botY = bar.yCenter + bar.halfH;
+      const t = Math.max(0, Math.min(1, (ny - topY) / (botY - topY)));
+      const r = Math.round(242 * (1 - t) + 47 * t);
+      const g = Math.round(169 * (1 - t) + 191 * t);
+      const b = Math.round(59 * (1 - t) + 159 * t);
+      return [r, g, b, 255];
     }
   }
 
-  return [bgR, bgG, bgB, bgA];
+  // Subtle golden border around the badge for crisp contrast on dark and light surfaces
+  if (inBadge && badgeDist >= -0.02) {
+    return goldBorder;
+  }
+
+  return bgNavy;
 }
 
 const publicDir = path.join(__dirname, '..', 'public');
+const appDir = path.join(__dirname, '..', 'src', 'app');
+
+console.log('Generating crisp favicon icons (16x16, 32x32, 48x48)...');
+const png16 = createPng(16, 16, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
+const png32 = createPng(32, 32, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
+const png48 = createPng(48, 48, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
+
+console.log('Creating multi-resolution favicon.ico...');
+const ico = createIco([
+  { width: 16, height: 16, buffer: png16 },
+  { width: 32, height: 32, buffer: png32 },
+  { width: 48, height: 48, buffer: png48 },
+]);
+fs.writeFileSync(path.join(publicDir, 'favicon.ico'), ico);
+fs.writeFileSync(path.join(appDir, 'favicon.ico'), ico);
 
 console.log('Generating 192x192 icon...');
 const png192 = createPng(192, 192, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
 fs.writeFileSync(path.join(publicDir, 'icon-192.png'), png192);
+fs.writeFileSync(path.join(appDir, 'icon.png'), png192);
 
 console.log('Generating 512x512 icon...');
 const png512 = createPng(512, 512, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
@@ -132,7 +185,8 @@ const pngMaskable = createPng(512, 512, (x, y, w, h) => drawOratiiIcon(x, y, w, 
 fs.writeFileSync(path.join(publicDir, 'icon-maskable.png'), pngMaskable);
 
 console.log('Generating 180x180 Apple Touch Icon...');
-const pngApple = createPng(180, 180, (x, y, w, h) => drawOratiiIcon(x, y, w, h, true));
+const pngApple = createPng(180, 180, (x, y, w, h) => drawOratiiIcon(x, y, w, h, false));
 fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), pngApple);
+fs.writeFileSync(path.join(appDir, 'apple-icon.png'), pngApple);
 
-console.log('Successfully generated all PWA icons!');
+console.log('Successfully generated all PWA & Favicon assets with transparent background and vivid brand soundwaves!');
