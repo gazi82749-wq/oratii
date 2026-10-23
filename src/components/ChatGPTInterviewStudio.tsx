@@ -865,85 +865,104 @@ export default function ChatGPTInterviewStudio({
   };
 
   return (
-    <div
-      className="border border-indigo-200/80 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-50/90 via-blue-50/40 to-[#F8FAFC] shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden text-slate-900 font-sans"
-      style={{ isolation: "isolate" }}
-    >
-      {/* Background Soft Pulsing Auras matching Landing Page Interview Section */}
-      <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-300/15 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Top Accent Gradient Stripe matching Landing Page Indigo Theme */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-800"></div>
-
-      {/* Header / Mode Switcher Navbar (Matching Indigo Theme) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-indigo-200/60 pb-5 relative z-10">
-        <div>
-          <h2 className="text-base sm:text-lg font-black text-[#0F1426] flex items-center gap-2">
-            <Mic size={18} className="text-indigo-600 shrink-0" />
-            <span>Practice &amp; Rehearse Mock Interview</span>
-          </h2>
-          <p className="text-xs text-slate-600 font-medium mt-0.5">
-            Select interviewer panel, enter target role, and optionally ground
-            questions in your resume.
-          </p>
-        </div>
-
-        {/* Mode Selector Navbar Pills with 3-Round Series Tracker */}
-        <div className="flex bg-white/80 backdrop-blur-xs p-1.5 rounded-xl border border-indigo-200/80 shrink-0 gap-1 shadow-2xs">
-          <button
-            type="button"
-            onClick={() => {
-              setExaminerTone("friendly");
-              setMockSeriesRound(1);
-            }}
-            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
-              examinerTone === "friendly"
-                ? "bg-[#0F1426] text-white shadow-xs"
-                : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
-            }`}
-          >
-            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
-            Standard Mock
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setExaminerTone("strict");
-              setMockSeriesRound(2);
-            }}
-            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
-              examinerTone === "strict"
-                ? "bg-indigo-700 text-white shadow-xs"
-                : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
-            }`}
-          >
-            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">2</span>
-            Technical Round
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setExaminerTone("star");
-              setMockSeriesRound(3);
-            }}
-            className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
-              examinerTone === "star"
-                ? "bg-indigo-900 text-white shadow-xs"
-                : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
-            }`}
-          >
-            <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">3</span>
-            STAR Method
-          </button>
-        </div>
-      </div>
-
-      {/* STEP 1: SETUP */}
+    <>
+      {/* STEP 1: SETUP SCREEN */}
       {step === "setup" && (
-        <div className="space-y-5 relative z-10 animate-in fade-in duration-300">
-          {/* Target Role Card */}
-          <div className="bg-white/90 backdrop-blur-xs p-4 sm:p-5 rounded-2xl border border-indigo-200/80 space-y-3.5 shadow-2xs">
+        <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300 font-sans">
+          {/* Header Title with Landing Page Indigo/Blue Theme */}
+          <div className="text-left bg-gradient-to-br from-indigo-50/90 via-blue-50/40 to-[#F8FAFC] border border-indigo-200/80 p-5 sm:p-7 rounded-3xl relative overflow-hidden shadow-2xs">
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-56 h-56 bg-blue-300/15 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-100/90 border border-indigo-300 text-indigo-950 text-[11px] font-black uppercase tracking-widest mb-3 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> 3-Round Placement Campaign
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-black text-[#0F1426] tracking-tight mb-1.5">
+                3-Round AI Mock Interview Campaign
+              </h1>
+              <p className="text-xs sm:text-base text-slate-700 font-medium max-w-2xl leading-relaxed">
+                Practice full placement drives across 3 sequential rounds: Standard HR Warmup &rarr; Technical Panel Deep-Dive &rarr; STAR Method Behavioral Probe with 40-minute prep breaks &amp; weakness feedback.
+              </p>
+            </div>
+          </div>
+
+          {/* Setup Configuration Card */}
+          <div
+            className="border border-indigo-200/80 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-50/90 via-blue-50/40 to-[#F8FAFC] shadow-xl p-5 sm:p-6 flex flex-col gap-5 relative overflow-hidden text-slate-900"
+            style={{ isolation: "isolate" }}
+          >
+            {/* Background Soft Pulsing Auras */}
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-300/15 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Top Accent Gradient Stripe */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-800"></div>
+
+            {/* Header / Mode Switcher Navbar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-indigo-200/60 pb-5 relative z-10">
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-[#0F1426] flex items-center gap-2">
+                  <Mic size={18} className="text-indigo-600 shrink-0" />
+                  <span>Practice &amp; Rehearse Mock Interview</span>
+                </h2>
+                <p className="text-xs text-slate-600 font-medium mt-0.5">
+                  Select interviewer panel, enter target role, and optionally ground questions in your resume.
+                </p>
+              </div>
+
+              {/* Mode Selector Navbar Pills with 3-Round Series Tracker */}
+              <div className="flex bg-white/80 backdrop-blur-xs p-1.5 rounded-xl border border-indigo-200/80 shrink-0 gap-1 shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExaminerTone("friendly");
+                    setMockSeriesRound(1);
+                  }}
+                  className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
+                    examinerTone === "friendly"
+                      ? "bg-[#0F1426] text-white shadow-xs"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
+                  Standard Mock
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExaminerTone("strict");
+                    setMockSeriesRound(2);
+                  }}
+                  className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
+                    examinerTone === "strict"
+                      ? "bg-indigo-700 text-white shadow-xs"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">2</span>
+                  Technical Round
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExaminerTone("star");
+                    setMockSeriesRound(3);
+                  }}
+                  className={`px-3 py-1.5 text-xs font-black transition-all rounded-lg cursor-pointer flex items-center gap-1.5 ${
+                    examinerTone === "star"
+                      ? "bg-indigo-900 text-white shadow-xs"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-indigo-50/70"
+                  }`}
+                >
+                  <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">3</span>
+                  STAR Method
+                </button>
+              </div>
+            </div>
+
+            {/* Target Role Card */}
+            <div className="bg-white/90 backdrop-blur-xs p-4 sm:p-5 rounded-2xl border border-indigo-200/80 space-y-3.5 shadow-2xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               <label className="text-xs font-black text-[#0F1426] uppercase tracking-wider flex items-center gap-1.5">
                 <Briefcase size={14} className="text-indigo-600" />
@@ -1196,22 +1215,70 @@ export default function ChatGPTInterviewStudio({
             )}
           </div>
         </div>
+        </div>
       )}
 
-      {/* STEP 2: LIVE AI VIDEO INTERVIEW STAGE (Mocklingo Call Interface) */}
+      {/* STEP 2: DEDICATED LIVE AI VIDEO INTERVIEW ROOM (Mocklingo Call Interface) */}
       {step === "interview" && (
-        <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
+        <div className="w-full space-y-3 sm:space-y-4 relative z-10 animate-in fade-in duration-300 font-sans">
+          {/* Dedicated Conference Room Navigation Bar */}
+          <div className="bg-[#0F1426] text-white rounded-2xl sm:rounded-3xl border border-indigo-900/60 p-3 sm:p-4 px-4 sm:px-6 shadow-xl flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-700 flex items-center justify-center font-black text-white shadow-md shrink-0">
+                <Mic size={18} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-sm sm:text-base font-black text-white tracking-tight">
+                    Live AI Interview Call
+                  </h2>
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Call Connected
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 font-medium">
+                  Candidate: <strong>{roleTitle}</strong> &bull; Round {mockSeriesRound} of 3 ({mockSeriesRound === 1 ? "Standard Mock" : mockSeriesRound === 2 ? "Technical Panel" : "STAR Method"})
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAvatarGender((prev) => (prev === "female" ? "male" : "female"))}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/15 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                title="Switch Interviewer Avatar"
+              >
+                <span>{avatarGender === "female" ? "Switch to Marcus 👨‍💼" : "Switch to Sarah 👩‍💼"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm("Are you sure you want to exit the interview room and return to setup?")) {
+                    setStep("setup");
+                  }
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+                title="Leave Interview Room"
+              >
+                <X size={14} />
+                <span>Exit Call</span>
+              </button>
+            </div>
+          </div>
+
           {/* 1. TOP OF PAGE: Current Question Card */}
-          <div className="bg-white rounded-2xl sm:rounded-3xl border border-indigo-200/90 p-4 sm:p-6 shadow-md relative overflow-hidden space-y-3">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-indigo-200/90 p-3.5 sm:p-5 shadow-sm relative overflow-hidden space-y-2.5">
             {/* Ambient Accent Glow */}
             <div className="absolute top-0 right-0 w-64 h-32 bg-amber-400/10 blur-2xl rounded-full pointer-events-none" />
 
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="px-3 py-1 rounded-full bg-[#0F1426] text-[#F2A93B] text-[11px] font-black uppercase tracking-wider shadow-xs">
+                <span className="px-3 py-0.5 rounded-full bg-[#0F1426] text-[#F2A93B] text-[11px] font-black uppercase tracking-wider shadow-xs">
                   Round {mockSeriesRound} • Q{currentRound}/5
                 </span>
-                <span className="px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-bold">
                   {stageLabel}
                 </span>
                 {isPaused && (
@@ -1221,19 +1288,19 @@ export default function ChatGPTInterviewStudio({
                 )}
               </div>
 
-              <div className="text-[11px] text-slate-500 font-semibold flex items-center gap-2">
+              <div className="text-[11px] text-slate-500 font-semibold flex items-center gap-1.5">
                 <span>Interviewer: <strong className="text-slate-800">{avatarGender === "female" ? "Sarah Jenkins" : "Marcus Vance"}</strong></span>
               </div>
             </div>
 
             {/* Current Question Text */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-900 font-black flex items-center justify-center shrink-0 text-xs mt-0.5 shadow-2xs">
+                <div className="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-900 font-black flex items-center justify-center shrink-0 text-xs mt-0.5 shadow-2xs">
                   Q
                 </div>
-                <div className="space-y-1 flex-1">
-                  <h3 className="text-base sm:text-xl font-black text-[#0F1426] tracking-tight leading-snug">
+                <div className="space-y-0.5 flex-1">
+                  <h3 className="text-base sm:text-lg font-black text-[#0F1426] tracking-tight leading-snug">
                     {currentQuestion}
                   </h3>
                   {answerFormatHint && (
@@ -1248,13 +1315,13 @@ export default function ChatGPTInterviewStudio({
 
             {/* Recent Interviewer Feedback Notice (if available) */}
             {chatHistory.length > 1 && chatHistory[chatHistory.length - 1]?.feedback && (
-              <div className="p-3 rounded-2xl bg-indigo-50/80 border border-indigo-200/90 text-xs text-indigo-950 flex items-start gap-2.5 animate-in fade-in">
-                <Sparkles size={14} className="text-indigo-600 shrink-0 mt-0.5" />
+              <div className="p-2.5 rounded-xl bg-indigo-50/80 border border-indigo-200/90 text-xs text-indigo-950 flex items-start gap-2.5 animate-in fade-in">
+                <Sparkles size={13} className="text-indigo-600 shrink-0 mt-0.5" />
                 <div className="space-y-0.5">
                   <span className="font-extrabold uppercase text-[10px] tracking-wider text-indigo-700 block">
                     Interviewer Feedback On Previous Answer:
                   </span>
-                  <p className="font-medium text-slate-700 leading-relaxed">
+                  <p className="font-medium text-slate-700 leading-relaxed text-[11px]">
                     {chatHistory[chatHistory.length - 1].feedback}
                   </p>
                 </div>
@@ -1263,10 +1330,10 @@ export default function ChatGPTInterviewStudio({
           </div>
 
           {/* 2. DUAL-PANE LIVE AI INTERVIEW STAGE (Mocklingo Video Call Interface) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 relative">
             {/* Left Pane: Live AI Interviewer */}
             <div
-              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-video flex flex-col justify-between transition-all duration-300 ${
+              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-[16/10] sm:aspect-video h-[230px] sm:h-[290px] md:h-[340px] lg:h-[370px] max-h-[40vh] flex flex-col justify-between transition-all duration-300 ${
                 isAiSpeaking
                   ? "border-emerald-500 ring-4 ring-emerald-500/20 shadow-emerald-950/40"
                   : "border-indigo-900/60"
@@ -1334,7 +1401,7 @@ export default function ChatGPTInterviewStudio({
 
             {/* Right Pane: Candidate Live Video (You) */}
             <div
-              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-video flex flex-col justify-between transition-all duration-300 ${
+              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-[16/10] sm:aspect-video h-[230px] sm:h-[290px] md:h-[340px] lg:h-[370px] max-h-[40vh] flex flex-col justify-between transition-all duration-300 ${
                 isListening
                   ? "border-indigo-500 ring-4 ring-indigo-500/20 shadow-indigo-950/40"
                   : "border-indigo-900/60"
@@ -2214,6 +2281,6 @@ export default function ChatGPTInterviewStudio({
         onClose={() => setIsGuestAuthModalOpen(false)}
         featureName="AI Mock Interview Campaign"
       />
-    </div>
+    </>
   );
 }
