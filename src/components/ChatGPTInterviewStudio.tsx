@@ -1201,33 +1201,6 @@ export default function ChatGPTInterviewStudio({
       {/* STEP 2: LIVE AI VIDEO INTERVIEW STAGE (Mocklingo Call Interface) */}
       {step === "interview" && (
         <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
-          {/* Paused Overlay Backdrop */}
-          {isPaused && (
-            <div className="fixed inset-0 bg-[#0F1426]/90 backdrop-blur-md flex flex-col items-center justify-center z-50 space-y-3 p-4 animate-fade-in">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center animate-pulse">
-                <Pause size={28} />
-              </div>
-              <h3 className="text-xl font-black text-white">Interview Session Paused</h3>
-              <p className="text-xs sm:text-sm text-slate-300 font-medium text-center max-w-sm leading-relaxed">
-                Take a moment to structure your thoughts. Click resume when you are ready to continue.
-              </p>
-              <div className="flex items-center gap-2 pt-2">
-                <button
-                  onClick={togglePause}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-1.5 cursor-pointer transition-all"
-                >
-                  <Play size={14} /> Resume Interview
-                </button>
-                <button
-                  onClick={() => setShowRetryConfirmModal(true)}
-                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
-                >
-                  <RotateCcw size={14} /> Retry Round
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* 1. TOP OF PAGE: Current Question Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-indigo-200/90 p-4 sm:p-6 shadow-md relative overflow-hidden space-y-3">
             {/* Ambient Accent Glow */}
@@ -1241,41 +1214,15 @@ export default function ChatGPTInterviewStudio({
                 <span className="px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-bold">
                   {stageLabel}
                 </span>
+                {isPaused && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-black uppercase tracking-wider flex items-center gap-1 animate-pulse">
+                    <Pause size={10} /> Paused
+                  </span>
+                )}
               </div>
 
-              <div className="flex items-center gap-2">
-                {voiceEnabled && (
-                  <button
-                    type="button"
-                    onClick={() => speakText(lastSpokenTextRef.current || currentQuestion)}
-                    className="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-[11px] rounded-xl border border-amber-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                    title="Replay current question audio aloud"
-                  >
-                    <Volume2 size={13} className="text-[#F2A93B]" />
-                    <span>Replay Question Audio</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => setShowRetryConfirmModal(true)}
-                  className="px-3 py-1 text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl transition-all cursor-pointer flex items-center gap-1"
-                >
-                  <RotateCcw size={12} /> Retry Round
-                </button>
-
-                <button
-                  type="button"
-                  onClick={togglePause}
-                  className={`px-3 py-1 text-xs font-bold border rounded-xl transition-all cursor-pointer flex items-center gap-1 ${
-                    isPaused
-                      ? "bg-amber-400 text-slate-900 border-amber-500 font-black"
-                      : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
-                  }`}
-                >
-                  {isPaused ? <Play size={12} /> : <Pause size={12} />}
-                  <span>{isPaused ? "Resume" : "Pause"}</span>
-                </button>
+              <div className="text-[11px] text-slate-500 font-semibold flex items-center gap-2">
+                <span>Interviewer: <strong className="text-slate-800">{avatarGender === "female" ? "Sarah Jenkins" : "Marcus Vance"}</strong></span>
               </div>
             </div>
 
@@ -1520,68 +1467,113 @@ export default function ChatGPTInterviewStudio({
             ) : null}
 
             {/* Main Action Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Primary Mic Toggle / Answer Button */}
-                <button
-                  onClick={toggleMic}
-                  className={`px-5 sm:px-7 py-3 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95 ${
-                    isListening
-                      ? "bg-rose-600 hover:bg-rose-700 text-white animate-pulse shadow-rose-300"
-                      : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-200"
-                  }`}
-                >
-                  {isListening ? (
-                    <>
-                      <Square size={16} /> Finish Speaking
-                    </>
-                  ) : (
-                    <>
-                      <Mic size={16} /> Tap to Answer Aloud
-                    </>
+            <div className="space-y-3 pt-1">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                {/* Candidate Primary Input Actions */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Primary Mic Toggle / Answer Button */}
+                  <button
+                    onClick={toggleMic}
+                    disabled={isPaused}
+                    className={`px-5 sm:px-7 py-3 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95 disabled:opacity-40 ${
+                      isListening
+                        ? "bg-rose-600 hover:bg-rose-700 text-white animate-pulse shadow-rose-300"
+                        : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-200"
+                    }`}
+                  >
+                    {isListening ? (
+                      <>
+                        <Square size={16} /> Finish Speaking
+                      </>
+                    ) : (
+                      <>
+                        <Mic size={16} /> Tap to Answer Aloud
+                      </>
+                    )}
+                  </button>
+
+                  {/* Submit Answer */}
+                  <button
+                    onClick={submitAnswer}
+                    disabled={isLoading || isPaused || !userAnswerText.trim()}
+                    className="px-5 py-3 rounded-2xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-40"
+                  >
+                    <span>Submit Answer</span>
+                    <Send size={14} className="text-[#F2A93B]" />
+                  </button>
+
+                  {/* Switch Input Mode */}
+                  <button
+                    type="button"
+                    onClick={() => setInputMode((prev) => (prev === "voice" ? "text" : "voice"))}
+                    className="px-3.5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
+                  >
+                    <FileText size={14} />
+                    <span>{inputMode === "voice" ? "Type Answer" : "Voice Mode"}</span>
+                  </button>
+                </div>
+
+                {/* Session & Utility Controls: Pause, Replay, Retry, Transcript, End */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Pause / Resume Button */}
+                  <button
+                    type="button"
+                    onClick={togglePause}
+                    className={`px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                      isPaused
+                        ? "bg-amber-400 hover:bg-amber-300 text-slate-950 font-black border border-amber-500 shadow-amber-200 ring-2 ring-amber-400/30"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                    }`}
+                    title={isPaused ? "Resume interview session" : "Pause interview session"}
+                  >
+                    {isPaused ? <Play size={13} className="fill-current" /> : <Pause size={13} />}
+                    <span>{isPaused ? "Resume Session" : "Pause"}</span>
+                  </button>
+
+                  {/* Replay Question Audio */}
+                  {voiceEnabled && (
+                    <button
+                      type="button"
+                      onClick={() => speakText(lastSpokenTextRef.current || currentQuestion)}
+                      disabled={isPaused}
+                      className="px-3.5 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs rounded-xl border border-amber-200 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40 shadow-2xs"
+                      title="Replay current question audio aloud"
+                    >
+                      <Volume2 size={13} className="text-[#F2A93B]" />
+                      <span className="hidden sm:inline">Replay Audio</span>
+                    </button>
                   )}
-                </button>
 
-                {/* Submit Answer */}
-                <button
-                  onClick={submitAnswer}
-                  disabled={isLoading || !userAnswerText.trim()}
-                  className="px-5 py-3 rounded-2xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-40"
-                >
-                  <span>Submit Answer</span>
-                  <Send size={14} className="text-[#F2A93B]" />
-                </button>
+                  {/* Retry Round */}
+                  <button
+                    type="button"
+                    onClick={() => setShowRetryConfirmModal(true)}
+                    className="px-3.5 py-2.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                    title="Restart this round from Question 1"
+                  >
+                    <RotateCcw size={13} />
+                    <span className="hidden sm:inline">Retry Round</span>
+                  </button>
 
-                {/* Switch Input Mode */}
-                <button
-                  type="button"
-                  onClick={() => setInputMode((prev) => (prev === "voice" ? "text" : "voice"))}
-                  className="px-3.5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
-                >
-                  <FileText size={14} />
-                  <span>{inputMode === "voice" ? "Type Answer" : "Voice Mode"}</span>
-                </button>
-              </div>
+                  {/* Conversation History Drawer Button */}
+                  <button
+                    type="button"
+                    onClick={() => setShowHistoryDrawer(!showHistoryDrawer)}
+                    className="px-3.5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <MessageSquare size={13} className="text-indigo-600" />
+                    <span>Transcript ({chatHistory.length})</span>
+                  </button>
 
-              <div className="flex items-center gap-2">
-                {/* Conversation History Drawer Button */}
-                <button
-                  type="button"
-                  onClick={() => setShowHistoryDrawer(!showHistoryDrawer)}
-                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <MessageSquare size={14} className="text-indigo-600" />
-                  <span>Transcript ({chatHistory.length})</span>
-                </button>
-
-                {/* Early End & Evaluation */}
-                <button
-                  onClick={() => finishInterview()}
-                  disabled={isLoading}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                >
-                  <span>End &amp; Get Report</span>
-                </button>
+                  {/* Early End & Evaluation */}
+                  <button
+                    onClick={() => finishInterview()}
+                    disabled={isLoading}
+                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span>End &amp; Get Report</span>
+                  </button>
+                </div>
               </div>
             </div>
 
