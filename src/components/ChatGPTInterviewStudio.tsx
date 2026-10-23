@@ -3,11 +3,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { saveSession } from "@/lib/storage";
 import { createPortal } from "react-dom";
 import {
   Mic,
   MicOff,
+  Video,
+  VideoOff,
+  Camera,
   Upload,
   FileText,
   Send,
@@ -45,6 +49,10 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import ConfidenceGraph, { ScoreRing } from "@/components/ConfidenceGraph";
 import GuestAuthModal from "@/components/GuestAuthModal";
+
+const Webcam = dynamic(() => import("react-webcam").then((m) => m.default) as any, {
+  ssr: false,
+}) as any;
 
 interface ChatGPTInterviewStudioProps {
   onCancel?: () => void;
@@ -110,6 +118,10 @@ export default function ChatGPTInterviewStudio({
   const [mockSeriesRound, setMockSeriesRound] = useState<1 | 2 | 3>(1);
   const [isDragActive, setIsDragActive] = useState(false);
   const [isGuestAuthModalOpen, setIsGuestAuthModalOpen] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(true);
+  const [avatarGender, setAvatarGender] = useState<"female" | "male">("female");
+  const [showHistoryDrawer, setShowHistoryDrawer] = useState(false);
+  const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const searchParams = useSearchParams();
@@ -1186,127 +1198,274 @@ export default function ChatGPTInterviewStudio({
         </div>
       )}
 
-      {/* STEP 2: INTERACTIVE VOICE INTERVIEW STAGE */}
+      {/* STEP 2: LIVE AI VIDEO INTERVIEW STAGE (Mocklingo Call Interface) */}
       {step === "interview" && (
         <div className="space-y-4 sm:space-y-5 relative z-10 animate-in fade-in duration-300">
-          {/* Voice-First Header Ribbon with Pause & Fresh Start / Retry Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-            <div className="flex items-center gap-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100/90 text-indigo-950 border border-indigo-300 text-[11px] font-black uppercase tracking-wider">
-                <span className={`w-2 h-2 rounded-full ${isPaused ? 'bg-amber-500' : 'bg-indigo-600 animate-pulse'}`}></span>
-                <span>{isPaused ? 'Interview Paused' : 'Voice-First Practice Mode Active'}</span>
+          {/* Paused Overlay Backdrop */}
+          {isPaused && (
+            <div className="fixed inset-0 bg-[#0F1426]/90 backdrop-blur-md flex flex-col items-center justify-center z-50 space-y-3 p-4 animate-fade-in">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center animate-pulse">
+                <Pause size={28} />
+              </div>
+              <h3 className="text-xl font-black text-white">Interview Session Paused</h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-medium text-center max-w-sm leading-relaxed">
+                Take a moment to structure your thoughts. Click resume when you are ready to continue.
+              </p>
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  onClick={togglePause}
+                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <Play size={14} /> Resume Interview
+                </button>
+                <button
+                  onClick={() => setShowRetryConfirmModal(true)}
+                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <RotateCcw size={14} /> Retry Round
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 1. TOP OF PAGE: Current Question Card */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-indigo-200/90 p-4 sm:p-6 shadow-md relative overflow-hidden space-y-3">
+            {/* Ambient Accent Glow */}
+            <div className="absolute top-0 right-0 w-64 h-32 bg-amber-400/10 blur-2xl rounded-full pointer-events-none" />
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-3 py-1 rounded-full bg-[#0F1426] text-[#F2A93B] text-[11px] font-black uppercase tracking-wider shadow-xs">
+                  Round {mockSeriesRound} • Q{currentRound}/5
+                </span>
+                <span className="px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-900 text-[11px] font-bold">
+                  {stageLabel}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {voiceEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => speakText(lastSpokenTextRef.current || currentQuestion)}
+                    className="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-[11px] rounded-xl border border-amber-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                    title="Replay current question audio aloud"
+                  >
+                    <Volume2 size={13} className="text-[#F2A93B]" />
+                    <span>Replay Question Audio</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowRetryConfirmModal(true)}
+                  className="px-3 py-1 text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <RotateCcw size={12} /> Retry Round
+                </button>
+
+                <button
+                  type="button"
+                  onClick={togglePause}
+                  className={`px-3 py-1 text-xs font-bold border rounded-xl transition-all cursor-pointer flex items-center gap-1 ${
+                    isPaused
+                      ? "bg-amber-400 text-slate-900 border-amber-500 font-black"
+                      : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+                  }`}
+                >
+                  {isPaused ? <Play size={12} /> : <Pause size={12} />}
+                  <span>{isPaused ? "Resume" : "Pause"}</span>
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Pause / Resume Button */}
-              <button
-                type="button"
-                onClick={togglePause}
-                className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
-                  isPaused
-                    ? 'bg-amber-400 text-[#0F1426] border-amber-500 hover:bg-amber-300 font-extrabold'
-                    : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
-                }`}
-              >
-                {isPaused ? <Play size={13} /> : <Pause size={13} />}
-                <span>{isPaused ? 'Resume' : 'Pause'}</span>
-              </button>
-
-              {/* Fresh Start / Retry Button */}
-              <button
-                type="button"
-                onClick={() => setShowRetryConfirmModal(true)}
-                className="px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-950 border border-indigo-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                title="Fresh Start: Reset back to Question 1 of this round"
-              >
-                <RotateCcw size={13} className="text-indigo-600" />
-                <span>Fresh Start / Retry</span>
-              </button>
-
-              <span className="text-xs text-slate-600 font-extrabold hidden sm:inline">
-                Round {mockSeriesRound} • Q{currentRound}/5
-              </span>
-            </div>
-          </div>
-
-          {/* AI Voice Visualizer Stage Card matching Landing Page Dark Indigo Theme */}
-          <div className="flex flex-col items-center justify-center py-6 sm:py-8 bg-gradient-to-br from-[#0F1426] via-[#151930] to-[#0B0E27] rounded-2xl border border-indigo-900/60 text-white relative overflow-hidden shadow-2xl px-4">
-            {/* Soft pulsing background glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Paused Overlay Backdrop */}
-            {isPaused && (
-              <div className="absolute inset-0 bg-[#0F1426]/90 backdrop-blur-xs flex flex-col items-center justify-center z-20 space-y-3 p-4 animate-fade-in">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center animate-pulse">
-                  <Pause size={24} />
+            {/* Current Question Text */}
+            <div className="space-y-2">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-900 font-black flex items-center justify-center shrink-0 text-xs mt-0.5 shadow-2xs">
+                  Q
                 </div>
-                <h3 className="text-base sm:text-lg font-black text-white">Interview Session Paused</h3>
-                <p className="text-xs text-slate-300 font-medium text-center max-w-sm">
-                  Take a break to structure your thought process. Click below when you are ready to continue speaking.
-                </p>
-                <div className="flex items-center gap-2 pt-1">
-                  <button
-                    onClick={togglePause}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer transition-all"
-                  >
-                    <Play size={14} /> Resume Interview
-                  </button>
-                  <button
-                    onClick={() => setShowRetryConfirmModal(true)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
-                  >
-                    <RotateCcw size={14} /> Fresh Start (Retry Round)
-                  </button>
+                <div className="space-y-1 flex-1">
+                  <h3 className="text-base sm:text-xl font-black text-[#0F1426] tracking-tight leading-snug">
+                    {currentQuestion}
+                  </h3>
+                  {answerFormatHint && (
+                    <p className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                      <Sparkles size={12} className="text-[#F2A93B] shrink-0" />
+                      <span>{answerFormatHint}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Interviewer Feedback Notice (if available) */}
+            {chatHistory.length > 1 && chatHistory[chatHistory.length - 1]?.feedback && (
+              <div className="p-3 rounded-2xl bg-indigo-50/80 border border-indigo-200/90 text-xs text-indigo-950 flex items-start gap-2.5 animate-in fade-in">
+                <Sparkles size={14} className="text-indigo-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span className="font-extrabold uppercase text-[10px] tracking-wider text-indigo-700 block">
+                    Interviewer Feedback On Previous Answer:
+                  </span>
+                  <p className="font-medium text-slate-700 leading-relaxed">
+                    {chatHistory[chatHistory.length - 1].feedback}
+                  </p>
                 </div>
               </div>
             )}
+          </div>
 
+          {/* 2. DUAL-PANE LIVE AI INTERVIEW STAGE (Mocklingo Video Call Interface) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+            {/* Left Pane: Live AI Interviewer */}
             <div
-              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-500 relative z-10 ${
+              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-video flex flex-col justify-between transition-all duration-300 ${
                 isAiSpeaking
-                  ? "bg-indigo-600 text-white scale-110 animate-pulse shadow-lg shadow-indigo-500/40"
-                  : isListening
-                    ? "bg-blue-600 text-white scale-105 shadow-lg shadow-blue-500/40"
-                    : "bg-indigo-950 border-2 border-indigo-800 text-indigo-300"
+                  ? "border-emerald-500 ring-4 ring-emerald-500/20 shadow-emerald-950/40"
+                  : "border-indigo-900/60"
               }`}
             >
-              {isAiSpeaking ? (
-                <span className="text-white font-black text-[10px] sm:text-xs uppercase tracking-wider animate-bounce">
-                  AI Speaking
-                </span>
-              ) : isListening ? (
-                <Mic className="w-7 h-7 sm:w-8 sm:h-8 text-white animate-pulse" />
-              ) : (
-                <MessageSquare className="w-7 h-7 sm:w-8 sm:h-8 text-indigo-400" />
-              )}
+              {/* Virtual Interviewer Photorealistic Image */}
+              <img
+                src={avatarGender === "female" ? "/images/interviewer-female.jpg" : "/images/interviewer-male.jpg"}
+                alt="Live AI Interviewer"
+                className="absolute inset-0 w-full h-full object-cover object-center filter brightness-95"
+              />
+
+              {/* Ambient Vignette Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F1426]/95 via-transparent to-[#0F1426]/60 pointer-events-none" />
+
+              {/* Top Bar Overlay */}
+              <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0F1426]/85 backdrop-blur-md border border-white/10 text-white text-[11px] font-extrabold shadow-sm">
+                  <span className={`w-2 h-2 rounded-full ${isAiSpeaking ? "bg-emerald-400 animate-ping" : "bg-emerald-400"}`} />
+                  <span>Live AI Interviewer</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setAvatarGender((prev) => (prev === "female" ? "male" : "female"))}
+                  className="px-2.5 py-1 rounded-xl bg-black/50 hover:bg-black/70 backdrop-blur-md text-[10px] font-bold text-white border border-white/15 transition-all cursor-pointer shadow-xs"
+                  title="Switch Interviewer Avatar"
+                >
+                  {avatarGender === "female" ? "Switch to Marcus 👨‍💼" : "Switch to Sarah 👩‍💼"}
+                </button>
+              </div>
+
+              {/* Bottom Bar Overlay: Name, Role & Status */}
+              <div className="relative z-10 p-3 sm:p-4 flex items-end justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm font-black text-white drop-shadow-md">
+                    {avatarGender === "female" ? "Sarah Jenkins" : "Marcus Vance"}
+                  </p>
+                  <p className="text-[10px] text-slate-300 font-medium drop-shadow-sm">
+                    {mockSeriesRound === 2 ? "Senior Technical Hiring Lead" : "Campus Talent Director"}
+                  </p>
+                </div>
+
+                {isAiSpeaking ? (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/90 text-white text-xs font-black shadow-lg backdrop-blur-md animate-pulse">
+                    <div className="flex items-center gap-0.5 h-3">
+                      <span className="w-1 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1 h-4 bg-white rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                    <span>Speaking...</span>
+                  </div>
+                ) : isListening ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/80 border border-indigo-400/30 text-indigo-200 text-[11px] font-bold backdrop-blur-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping" />
+                    <span>Listening to you...</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-slate-300 text-[10px] font-bold">
+                    <span>Ready for your answer</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <span className="mt-3 text-xs font-black text-indigo-300 uppercase tracking-widest text-center relative z-10">
-              {stageLabel}
-            </span>
-            <span className="text-[11px] text-slate-300 font-medium mt-1 text-center px-2 relative z-10">
-              {answerFormatHint}
-            </span>
+            {/* Right Pane: Candidate Live Video (You) */}
+            <div
+              className={`rounded-3xl bg-[#0F1426] border-2 overflow-hidden shadow-2xl relative aspect-video flex flex-col justify-between transition-all duration-300 ${
+                isListening
+                  ? "border-indigo-500 ring-4 ring-indigo-500/20 shadow-indigo-950/40"
+                  : "border-indigo-900/60"
+              }`}
+            >
+              {isCameraActive ? (
+                <Webcam
+                  audio={false}
+                  mirrored={true}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                  videoConstraints={{ facingMode: "user" }}
+                  onUserMediaError={() => setIsCameraActive(false)}
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-[#12162B] via-[#0F1426] to-[#0A0D1F] flex flex-col items-center justify-center space-y-3 p-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-indigo-700 to-indigo-900 border-2 border-indigo-500/40 text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-xl">
+                    YOU
+                  </div>
+                  <p className="text-xs font-bold text-slate-300">Camera is turned off</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsCameraActive(true)}
+                    className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                  >
+                    <Video size={13} /> Enable Camera
+                  </button>
+                </div>
+              )}
 
-            {/* Replay Question Audio Button */}
-            {voiceEnabled && !isPaused && (
-              <button
-                type="button"
-                onClick={() => speakText(lastSpokenTextRef.current || currentQuestion)}
-                className="mt-2.5 px-3 py-1 bg-indigo-950/90 hover:bg-indigo-900 text-indigo-200 font-bold text-[11px] rounded-lg border border-indigo-800 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs relative z-10"
-                title="Re-speak current question completely aloud"
-              >
-                <Volume2 size={13} className="text-indigo-400" />
-                <span>Replay Question Audio</span>
-              </button>
-            )}
+              {/* Vignette Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F1426]/95 via-transparent to-[#0F1426]/60 pointer-events-none" />
+
+              {/* Top Bar Overlay */}
+              <div className="relative z-10 p-3 sm:p-4 flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0F1426]/85 backdrop-blur-md border border-white/10 text-white text-[11px] font-extrabold shadow-sm">
+                  <span className={`w-2 h-2 rounded-full ${isListening ? "bg-red-500 animate-ping" : "bg-emerald-400"}`} />
+                  <span>{isListening ? `Speaking (${speakingSeconds}s)` : "Candidate Audio Ready"}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsCameraActive(!isCameraActive)}
+                  className={`p-2 rounded-xl backdrop-blur-md transition-all cursor-pointer ${
+                    isCameraActive
+                      ? "bg-white/20 hover:bg-white/30 text-white"
+                      : "bg-rose-500/80 text-white"
+                  }`}
+                  title={isCameraActive ? "Turn Camera Off" : "Turn Camera On"}
+                >
+                  {isCameraActive ? <Video size={14} /> : <VideoOff size={14} />}
+                </button>
+              </div>
+
+              {/* Bottom Bar Overlay */}
+              <div className="relative z-10 p-3 sm:p-4 flex items-end justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm font-black text-white drop-shadow-md">
+                    You (Candidate)
+                  </p>
+                  <p className="text-[10px] text-slate-300 font-medium drop-shadow-sm truncate max-w-[180px]">
+                    {roleTitle}
+                  </p>
+                </div>
+
+                {isListening && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-black shadow-lg animate-pulse">
+                    <Mic size={12} />
+                    <span>Recording Answer</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Real-Time Pacing & Delivery Guidance */}
+          {/* Real-Time Pacing & Delivery Guidance Bar */}
           {isListening && (
             <div
-              className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all animate-fade-in shadow-xs ${
+              className={`p-3 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all animate-fade-in shadow-xs ${
                 speakingSeconds > 75
                   ? "bg-rose-50 border-rose-300 text-rose-900"
                   : speakingSeconds > 45
@@ -1317,107 +1476,143 @@ export default function ChatGPTInterviewStudio({
               <div className="flex items-center gap-2 font-bold shrink-0">
                 <Timer
                   size={15}
-                  className={
-                    speakingSeconds > 75
-                      ? "text-rose-600 animate-pulse"
-                      : "text-indigo-600"
-                  }
+                  className={speakingSeconds > 75 ? "text-rose-600 animate-pulse" : "text-indigo-600"}
                 />
                 <span className="font-mono">{speakingSeconds}s elapsed</span>
                 <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-white/80 border border-current">
-                  Pacing Cue
+                  STAR Pacing Cue
                 </span>
               </div>
               <div className="text-xs font-medium">
-                {speakingSeconds <= 45 &&
-                  "🟢 State your Situation & your direct role clearly."}
-                {speakingSeconds > 45 &&
-                  speakingSeconds <= 75 &&
-                  "🟡 Transition into specific Actions & technical trade-offs."}
-                {speakingSeconds > 75 &&
-                  "🟠 Wrap up: Recruiters lose focus after 90s. State your quantitative Result now!"}
+                {speakingSeconds <= 45 && "🟢 State your Situation & your direct role clearly."}
+                {speakingSeconds > 45 && speakingSeconds <= 75 && "🟡 Transition into specific Actions & technical trade-offs."}
+                {speakingSeconds > 75 && "🟠 Wrap up: Recruiters lose focus after 90s. State your quantitative Result now!"}
               </div>
             </div>
           )}
 
-          {/* Chat Stream View */}
-          <div className="max-h-96 sm:max-h-[32rem] overflow-y-auto space-y-4 p-4 sm:p-6 bg-[#0F1426] rounded-2xl border border-indigo-900/60 text-sm shadow-inner">
-            {chatHistory.map((item, idx) => (
-              <div key={idx} className="space-y-1.5">
-                {item.question && (
-                  <div className="flex flex-col space-y-2.5 text-slate-100 p-4 rounded-xl bg-indigo-950/80 border border-indigo-800/60 shadow-sm">
-                    {item.feedback && (
-                      <div className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 p-3 rounded-lg text-xs font-medium space-y-1">
-                        <span className="font-black text-indigo-300 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
-                          <Sparkles size={12} className="text-indigo-400" /> Live Interviewer Feedback:
-                        </span>
-                        <p className="leading-relaxed text-slate-200">{item.feedback}</p>
-                      </div>
-                    )}
-                    <div className="flex items-start space-x-3">
-                      <span className="font-extrabold text-indigo-300 shrink-0 text-sm">
-                        Interviewer:
-                      </span>
-                      <p className="leading-relaxed font-medium text-sm sm:text-base">
-                        {item.question}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {item.text && (
-                  <div className="flex items-start space-x-3 text-white p-4 rounded-xl bg-indigo-600 font-medium shadow-sm">
-                    <span className="font-black shrink-0 text-sm text-indigo-100">Candidate:</span>
-                    <p className="leading-relaxed font-semibold text-sm sm:text-base">{item.text}</p>
-                  </div>
-                )}
+          {/* 3. Live Speech Recognized Transcript & Response Controls Bar */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-indigo-200/90 p-4 sm:p-5 shadow-sm space-y-3">
+            {/* Live Speech Recognition Caption / Preview */}
+            {isListening ? (
+              <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-950 space-y-1.5 animate-in fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-indigo-700 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    Live Spoken Transcript:
+                  </span>
+                  <span className="text-[11px] font-mono font-bold text-slate-500">{speakingSeconds}s</span>
+                </div>
+                <p className="text-sm font-semibold text-slate-800 leading-relaxed min-h-[1.5rem]">
+                  {userAnswerText || "Listening to your voice... Speak clearly into your microphone."}
+                </p>
               </div>
-            ))}
-            <div ref={chatEndRef} />
-          </div>
+            ) : inputMode === "text" ? (
+              <div className="space-y-2">
+                <textarea
+                  value={userAnswerText}
+                  onChange={(e) => setUserAnswerText(e.target.value)}
+                  placeholder="Type your response to the question here..."
+                  rows={3}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-sm text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white"
+                />
+              </div>
+            ) : null}
 
-          {/* Voice & Text Input Controls */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
-            <div className="flex items-center space-x-2 flex-1">
-              <button
-                onClick={toggleMic}
-                className={`p-3.5 rounded-xl border transition-all cursor-pointer shrink-0 ${
-                  isListening
-                    ? "bg-red-600 text-white border-red-500 animate-pulse"
-                    : "bg-[#0F1426] text-indigo-300 border-indigo-800 hover:bg-indigo-950"
-                }`}
-                title={isListening ? "Stop Listening" : "Speak Your Answer"}
-              >
-                {isListening ? (
-                  <MicOff className="w-5 h-5" />
-                ) : (
-                  <Mic className="w-5 h-5" />
-                )}
-              </button>
+            {/* Main Action Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Primary Mic Toggle / Answer Button */}
+                <button
+                  onClick={toggleMic}
+                  className={`px-5 sm:px-7 py-3 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95 ${
+                    isListening
+                      ? "bg-rose-600 hover:bg-rose-700 text-white animate-pulse shadow-rose-300"
+                      : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-200"
+                  }`}
+                >
+                  {isListening ? (
+                    <>
+                      <Square size={16} /> Finish Speaking
+                    </>
+                  ) : (
+                    <>
+                      <Mic size={16} /> Tap to Answer Aloud
+                    </>
+                  )}
+                </button>
 
-              <input
-                type="text"
-                value={userAnswerText}
-                onChange={(e) => setUserAnswerText(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && submitAnswer()}
-                placeholder={
-                  isListening
-                    ? "Listening to your voice..."
-                    : "Type or speak your answer..."
-                }
-                className="w-full bg-[#0F1426] border border-indigo-900/80 rounded-xl px-5 py-4 text-sm sm:text-base text-white font-medium focus:outline-none focus:border-indigo-500 shadow-sm"
-              />
+                {/* Submit Answer */}
+                <button
+                  onClick={submitAnswer}
+                  disabled={isLoading || !userAnswerText.trim()}
+                  className="px-5 py-3 rounded-2xl bg-[#0F1426] hover:bg-[#1A2035] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-40"
+                >
+                  <span>Submit Answer</span>
+                  <Send size={14} className="text-[#F2A93B]" />
+                </button>
+
+                {/* Switch Input Mode */}
+                <button
+                  type="button"
+                  onClick={() => setInputMode((prev) => (prev === "voice" ? "text" : "voice"))}
+                  className="px-3.5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
+                >
+                  <FileText size={14} />
+                  <span>{inputMode === "voice" ? "Type Answer" : "Voice Mode"}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Conversation History Drawer Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowHistoryDrawer(!showHistoryDrawer)}
+                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare size={14} className="text-indigo-600" />
+                  <span>Transcript ({chatHistory.length})</span>
+                </button>
+
+                {/* Early End & Evaluation */}
+                <button
+                  onClick={() => finishInterview()}
+                  disabled={isLoading}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>End &amp; Get Report</span>
+                </button>
+              </div>
             </div>
 
-            <button
-              onClick={submitAnswer}
-              disabled={isLoading || !userAnswerText.trim()}
-              className="w-full sm:w-auto px-6 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-xl disabled:opacity-40 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shrink-0 shadow-md"
-            >
-              <span>Send</span>
-              <Send className="w-3.5 h-3.5" />
-            </button>
+            {/* Expandable Transcript Log */}
+            {showHistoryDrawer && (
+              <div className="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 max-h-60 overflow-y-auto space-y-3 animate-in fade-in">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                  <span className="text-xs font-black uppercase text-slate-700">Interview Transcript Log</span>
+                  <button onClick={() => setShowHistoryDrawer(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer">
+                    Close ✕
+                  </button>
+                </div>
+                {chatHistory.map((item, idx) => (
+                  <div key={idx} className="text-xs space-y-1">
+                    {item.question && (
+                      <p className="text-slate-600">
+                        <strong className="text-indigo-700">Interviewer:</strong> {item.question}
+                      </p>
+                    )}
+                    {item.text && (
+                      <p className="text-slate-800 bg-white p-2 rounded-xl border border-slate-200">
+                        <strong className="text-emerald-700">You:</strong> {item.text}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
+          {/* Footer Tracker & Proceed Button */}
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-indigo-200/60">
             <span className="text-xs sm:text-sm text-slate-700 font-extrabold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-indigo-600"></span>

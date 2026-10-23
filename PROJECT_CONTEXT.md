@@ -65,7 +65,7 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | `/` | Landing page with feature showcases, interactive AI demo cards, & pricing | - |
 | `/speech-coach` | Studio for speech practice with STT, WPM counter, filler word detection, & AI feedback | `/api/speech-analyzer`, `/api/speech-analyzer-deep` |
 | `/presentation` | Slide deck analyzer supporting PPTX/PDF uploads, slide audit, and live presentation mode | `/api/convert-pptx`, `/api/presentations/*`, `/api/analyze-body-language` |
-| `/interview` | AI Mock Interviewer with customizable role personas, real-time voice, and candidate evaluation | `/api/interview-eval`, `/api/interview/reminder` |
+| `/interview` | Live AI Video Mock Interview Studio (Mocklingo-style dual-pane call): Left pane photorealistic AI interviewer (Sarah Jenkins / Marcus Vance) with speaking animations; Right pane live candidate webcam (`react-webcam`) with on/off toggle; Top question bar with audio replay; Real-time voice answer capture, STAR pacing cues, and automated evaluation reports | `/api/interview-eval`, `/api/interview/reminder` |
 | `/viva` | Academic viva defense examiner for thesis and technical subject Q&A | `/api/viva` |
 | `/challenge` | 20-Day Public Speaking Challenge with gamified daily drills & streak tracking | `/api/cron/streak-reminder` |
 | `/dashboard` | User performance dashboard showing XP, streak, session history, & billing link | `/api/free-upgrade` |
