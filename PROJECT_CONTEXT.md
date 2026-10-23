@@ -120,7 +120,7 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 
 * **SEO & Webmaster Tools Optimization**:
   - `next.config.mjs` configures an automatic 308 Permanent Redirect from `ppt-analyzer.vercel.app` to `https://oratii.in` and `X-Robots-Tag: noindex` on Vercel preview URLs.
-  - Multi-resolution favicon support: SVG vector (`/oratii-logo-square.svg`), exact 48px multiple PNG (`/icon-192.png`, 192x192), `/icon-512.png`, and root `/favicon.ico` for Googlebot-Image crawler compliance.
+  - Multi-resolution favicon support: SVG vector (`/oratii-logo-square.svg`), transparent Oratii speech bubble emblem with prominent gold/emerald soundwaves, multi-resolution ICO (`/favicon.ico` 16x16, 32x32, 48x48), `/icon-192.png`, and `/icon-512.png` eliminating black box artifact in browser URL bars.
   - Added `rel="nofollow"` to links pointing to private/disallowed routes (`/dashboard`, `/reports`, `/admin`) to prevent "Blocked by robots.txt" crawl errors in Bing Webmaster Tools.
   - Eliminated client bailouts during SSR for `/feedback`, `/support`, and `/challenge` to ensure all pages render with clean, crawlable `<h1>` tags in static server HTML.
   - Upgraded Google Analytics 4 integration to bulletproof `next/script` `afterInteractive` gtag.js tags inside `<body>` with automatic `G-` prefix normalization to prevent missing measurement ID issues.
@@ -141,4 +141,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-20 (Restricted landing page trainer section & nav strictly to trainer/admin signups; build verified)*
+*Last Updated: 2026-10-23 (Replaced opaque dark square favicon with transparent Oratii brand speech emblem; build verified)*
