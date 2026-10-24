@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
+import { isAuthorizedAdminEmail } from '@/lib/adminAuth';
 
 async function verifyAdminCaller(request: Request) {
   let user;
@@ -17,7 +18,7 @@ async function verifyAdminCaller(request: Request) {
   }
 
   if (!user) return false;
-  if (user.email?.toLowerCase() === 'gazi82749@gmail.com') return true; // Owner hardcode
+  if (isAuthorizedAdminEmail(user.email)) return true;
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient

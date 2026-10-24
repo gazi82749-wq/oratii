@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { isAuthorizedAdminEmail } from '@/lib/adminAuth';
 import { Logo } from './Logo';
 import { useRouter } from 'next/navigation';
 
@@ -34,7 +35,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -43,7 +44,11 @@ export default function AdminLogin() {
       setErrorMsg(error.message);
       setLoading(false);
     } else {
-      router.push('/admin');
+      if (isAuthorizedAdminEmail(data.user?.email)) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     }
   };
 

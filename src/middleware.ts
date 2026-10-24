@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { checkRateLimit, AI_RATE_LIMIT } from './lib/rateLimit';
+import { isAuthorizedAdminEmail } from './lib/adminAuth';
 
 export async function middleware(req: NextRequest) {
   let res = NextResponse.next({
@@ -68,15 +69,26 @@ export async function middleware(req: NextRequest) {
 
   // 1. Guard /admin routes (both UI and API)
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
-    if (pathname === '/admin/login') return res;
-    
     const isApi = pathname.startsWith('/api/');
-    
-    if (!user || user.email !== 'gazi82749@gmail.com') {
+    const isAdmin = isAuthorizedAdminEmail(user?.email);
+
+    if (pathname === '/admin/login') {
+      if (isAdmin) {
+        return NextResponse.redirect(new URL('/admin', req.url));
+      }
+      return res;
+    }
+
+    if (!isAdmin) {
       if (isApi) {
         return new NextResponse(JSON.stringify({ error: "Forbidden: Admin access only" }), { status: 403, headers: { 'Content-Type': 'application/json' } });
       }
-      return NextResponse.redirect(new URL(user ? '/dashboard' : '/admin/login', req.url));
+      // If unauthenticated: redirect to admin login so gazi827@gmail.com can sign in
+      if (!user) {
+        return NextResponse.redirect(new URL('/admin/login', req.url));
+      }
+      // Non-admin logged-in user: redirect directly to home page
+      return NextResponse.redirect(new URL('/', req.url));
     }
   }
 

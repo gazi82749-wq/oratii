@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { isAuthorizedAdminEmail } from '@/lib/adminAuth';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import ThemeProvider from '@/components/admin/ThemeProvider';
@@ -35,17 +36,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (session.user.email === 'gazi82749@gmail.com') {
+      const userEmail = session.user.email?.toLowerCase().trim() || '';
+      const isAllowedAdmin = isAuthorizedAdminEmail(userEmail) || profile?.role === 'admin';
+
+      if (isAllowedAdmin) {
         setIsAuthorized(true);
         if (pathname === '/admin/login') {
           router.push('/admin');
         }
       } else {
         setIsAuthorized(false);
-        setErrorMsg('Your account does not have administrator privileges. Please sign in with an authorized admin account.');
-        if (pathname !== '/admin/login') {
-          router.push('/dashboard');
-        }
+        setErrorMsg('Your account does not have administrator privileges.');
+        router.push('/');
       }
 
       setLoading(false);

@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase, supabase } from '@/lib/supabaseClient';
 import { logSystemEvent, LogSeverity } from '@/lib/logger';
+import { isAuthorizedAdminEmail } from '@/lib/adminAuth';
 
 async function verifyAdminCaller(request: Request) {
   let user;
@@ -17,6 +18,7 @@ async function verifyAdminCaller(request: Request) {
   }
 
   if (!user) return false;
+  if (isAuthorizedAdminEmail(user.email)) return true;
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient

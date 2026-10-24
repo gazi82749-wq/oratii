@@ -80,6 +80,14 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 
 All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPABASE_SERVICE_ROLE_KEY`.
 
+### 🔐 Admin Authentication & Access Control Policy (`src/lib/adminAuth.ts`):
+* **Authorized Admin Accounts**: Centralized in `src/lib/adminAuth.ts` via `ADMIN_EMAILS = ['gazi827@gmail.com', 'gazi82749@gmail.com']` and `isAuthorizedAdminEmail(email)`.
+* **Multi-Layer Enforcement**:
+  1. **Server Middleware (`src/middleware.ts`)**: Authenticated non-admin visitors navigating to `/admin/*` are instantly redirected to `/` (home page). Unauthenticated requests redirect to `/admin/login`.
+  2. **Client Gatekeeper (`src/app/admin/layout.tsx`)**: Re-validates active session and confirms `isAuthorizedAdminEmail(session.user.email) || profile?.role === 'admin'`. Unauthorized users are securely routed to `/` (home page).
+  3. **Backend API Route Handlers (`src/app/api/admin/*`)**: Every admin endpoint invokes `verifyAdminCaller(req)` to validate bearer tokens/cookies against authorized admin emails or `profile.role === 'admin'`.
+  4. **Login Redirection (`src/components/AdminLogin.tsx`)**: Successfully authenticated admin accounts are routed to `/admin`, while any non-admin credential attempts are dismissed to `/`.
+
 | Admin Route | Module Name | Features & Real-Time Sync |
 | :--- | :--- | :--- |
 | `/admin` | **Dashboard Overview** | KPI cards, 6-month user growth chart, MRR revenue chart, daily active user trends, live user signup & session activity feed. |
@@ -141,4 +149,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-23 (Replaced opaque dark square favicon with transparent Oratii brand speech emblem; build verified)*
+*Last Updated: 2026-10-24 (Authorized gazi827@gmail.com as Admin; restricted unauthorized visitors to redirect to home page /; synchronized API route verification)*

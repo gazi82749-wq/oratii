@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabaseClient';
 import { supabase } from '@/lib/supabaseClient';
+import { isAuthorizedAdminEmail } from '@/lib/adminAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,7 @@ async function verifyAdminCaller(request: Request) {
   }
 
   if (!user) return false;
+  if (isAuthorizedAdminEmail(user.email)) return true;
 
   const serviceClient = getServiceSupabase();
   const { data: profile } = await serviceClient
