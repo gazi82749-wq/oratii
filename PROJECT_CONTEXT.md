@@ -63,7 +63,7 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | Route | Feature Description | API Endpoints Used |
 | :--- | :--- | :--- |
 | `/` | Landing page with feature showcases, interactive AI demo cards, & pricing | - |
-| `/speech-coach` | Studio for speech practice with STT, WPM counter, filler word detection, & AI feedback | `/api/speech-analyzer`, `/api/speech-analyzer-deep` |
+| `/speech-coach` | Studio for speech practice with STT, WPM counter, filler word detection, AI feedback, & free Topic Speech generator (`/api/speech-writer` is free; credit consumed only on audio evaluation) | `/api/speech-writer`, `/api/speech-analyzer`, `/api/speech-analyzer-deep` |
 | `/presentation` | Slide deck analyzer supporting PPTX/PDF uploads, slide audit, and live presentation mode | `/api/convert-pptx`, `/api/presentations/*`, `/api/analyze-body-language` |
 | `/interview` | Live AI Video Mock Interview Studio (Mocklingo-style dual-pane call): Left pane photorealistic AI interviewer (Sarah Jenkins / Marcus Vance) with speaking animations; Right pane live candidate webcam (`react-webcam`) with on/off toggle; Top question bar with audio replay; Real-time voice answer capture, STAR pacing cues, and automated evaluation reports | `/api/interview-eval`, `/api/interview/reminder` |
 | `/viva` | Academic viva defense examiner for thesis and technical subject Q&A | `/api/viva` |
@@ -149,4 +149,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-24 (Authorized gazi827@gmail.com as Admin; restricted unauthorized visitors to redirect to home page /; synchronized API route verification)*
+*Last Updated: 2026-10-25 (Made Topic Speech generation free in /api/speech-writer; credits strictly deducted only upon audio analysis)*
