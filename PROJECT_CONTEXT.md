@@ -115,11 +115,12 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 
 ## ⚡ Network Resilience & Service Worker Architecture (`/public/sw.js` & `src/app/error.tsx`)
 
-* **Service Worker v3 (`CACHE_NAME = 'oratii-pwa-v3'`)**:
+* **Service Worker v4 (`CACHE_NAME = 'oratii-pwa-v4'`)**:
   - Strictly ignores API (`/api/*`), Next.js RSC data (`_rsc`, `_next/data`), and development HMR requests.
   - For Next.js dynamic JS chunks (`/_next/static/*`) and static assets: never returns HTML documents on network failures, preventing fatal `SyntaxError: Unexpected token '<'` (script compiling/execution errors).
   - Only serves HTML offline fallback when `event.request.mode === 'navigate'`.
-  - Automatically flushes obsolete caches (`v1`, `v2`) on activation.
+  - Automatically flushes obsolete caches (`v1`, `v2`, `v3`) on activation.
+  - Eliminated duplicate secondary "O" logo header from `HomeClient.tsx`; unified navbar in `SidebarLayout.tsx` is now consistently `sticky top-0` across all pages (both online and during offline shell playback).
 * **Error Boundaries (`src/app/error.tsx` & `src/app/global-error.tsx`)**:
   - Network and ChunkLoadError detection (`ChunkLoadError`, `Failed to fetch`, `Unexpected token '<'`, offline status).
   - Displays polished "Connection Interrupted" card with automatic `online` event listener for seamless auto-reconnect.
@@ -149,4 +150,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-25 (Made Topic Speech generation free in /api/speech-writer; credits strictly deducted only upon audio analysis)*
+*Last Updated: 2026-10-25 (Removed duplicate secondary O logo header from HomeClient; set unified navbar sticky top-0 in SidebarLayout; bumped sw.js to v4)*

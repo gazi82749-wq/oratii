@@ -75,42 +75,7 @@ export default function HomeClient() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans antialiased text-slate-900 overflow-x-hidden">
-      
-      {/* 1. Header Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 font-black text-xl text-[#0F1426]">
-            <span className="w-8 h-8 rounded-xl bg-[#0F1426] text-[#F2A93B] flex items-center justify-center font-black text-sm shadow-xs">O</span>
-            <span>Oratii</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-            <a href="#features" className="hover:text-[#0F1426] transition-colors">Product</a>
-            <a href="#features" className="hover:text-[#0F1426] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[#0F1426] transition-colors">How it works</a>
-            <a href="#audience" className="hover:text-[#0F1426] transition-colors">Solutions</a>
-            {(userRole === 'trainer' || userRole === 'admin') && (
-              <a href="#trainer-portal" className="text-amber-600 hover:text-amber-700 font-bold transition-colors flex items-center gap-1.5">
-                <GraduationCap size={15} /> For Trainers
-              </a>
-            )}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            {user ? (
-              <Link href="/dashboard" rel="nofollow" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all shadow-xs">
-                Dashboard
-              </Link>
-            ) : (
-              <Link href="/speech-coach" className="px-5 py-2.5 bg-[#0F1426] text-white text-sm font-bold rounded-xl hover:bg-[#1A2035] transition-all shadow-xs">
-                Try Oratii
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="flex-1 pt-16 sm:pt-20">
+      <div className="flex-1">
 
       {/* 2. Hero Section */}
       <ModernBackgroundAnimation variant="hero" className="pt-12 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 bg-[#F8FAFC]">

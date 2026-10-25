@@ -1,8 +1,8 @@
-// Oratii Push Notification & PWA Service Worker (v3)
+// Oratii Push Notification & PWA Service Worker (v4)
 // Handles installation, offline caching fallback, and push notifications
 // CRITICAL: NEVER return HTML documents for scripts, styles, or API routes to prevent JS compile/syntax errors!
 
-const CACHE_NAME = 'oratii-pwa-v3';
+const CACHE_NAME = 'oratii-pwa-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/manifest.json',
