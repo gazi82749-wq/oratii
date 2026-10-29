@@ -15,11 +15,11 @@ export default function SpeechCoachMockup() {
       {/* Top Header Status Pill */}
       <div className="flex items-center justify-between z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700/80 text-xs font-semibold text-slate-300">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Live Speech Analysis
+          <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+          Interactive preview — sample values
         </div>
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/50 text-[11px] font-bold text-slate-400 border border-slate-700/50">
-          <Mic size={12} className="text-teal-400" /> Mic Active
+          <Mic size={12} className="text-slate-400" /> Sample Preview
         </div>
       </div>
 

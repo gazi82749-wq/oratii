@@ -40,8 +40,8 @@ export default function HeroShowcase() {
         {/* Header HUD with Interactive & Auto-Cycling Tabs */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-3 z-10">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-slate-800">Live Practice Studio</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <span className="text-xs font-bold text-slate-800">Interactive preview — sample values</span>
           </div>
 
           {/* Module Selector Tabs */}
@@ -130,10 +130,10 @@ export default function HeroShowcase() {
             {/* FRAME 2: Speech Coach */}
             {current.id === 'speech' && (
               <div className="flex flex-col justify-between h-full">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-teal-700 uppercase tracking-widest">Live Vocal Analysis</span>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <span className="text-xs font-bold text-teal-700 uppercase tracking-widest">Speech Coach Preview</span>
                   <span className="text-[10px] font-extrabold text-teal-900 bg-teal-100/80 border border-teal-300 px-2.5 py-0.5 rounded-full">
-                    Microphone Active
+                    Interactive preview — sample values
                   </span>
                 </div>
 
@@ -151,7 +151,7 @@ export default function HeroShowcase() {
                     145 <span className="text-xl font-bold text-slate-500">WPM</span>
                   </div>
                   <div className="text-xs font-bold text-teal-700 mt-1 inline-flex items-center gap-1">
-                    <CheckCircle2 size={13} className="text-teal-600" /> Optimal Speaking Speed
+                    <CheckCircle2 size={13} className="text-teal-600" /> Optimal Speaking Speed (Sample)
                   </div>
                 </div>
               </div>
@@ -190,21 +190,21 @@ export default function HeroShowcase() {
           <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 p-2.5 rounded-xl">
             <CheckCircle2 size={16} className="text-teal-600 shrink-0" />
             <div>
-              <div className="text-[10px] text-slate-500 font-semibold uppercase">Pacing</div>
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Pacing (Sample)</div>
               <div className="font-extrabold text-[#0F1426]">145 WPM • Optimal</div>
             </div>
           </div>
           <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 p-2.5 rounded-xl">
             <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
             <div>
-              <div className="text-[10px] text-slate-500 font-semibold uppercase">Fillers</div>
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Fillers (Sample)</div>
               <div className="font-extrabold text-[#0F1426]">0 Detected</div>
             </div>
           </div>
           <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 p-2.5 rounded-xl">
             <CheckCircle2 size={16} className="text-[#D98200] shrink-0" />
             <div>
-              <div className="text-[10px] text-slate-500 font-semibold uppercase">Clarity</div>
+              <div className="text-[10px] text-slate-500 font-semibold uppercase">Clarity (Sample)</div>
               <div className="font-extrabold text-[#0F1426]">Clarity 94%</div>
             </div>
           </div>

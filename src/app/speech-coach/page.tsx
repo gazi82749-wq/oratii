@@ -1111,6 +1111,13 @@ export default function SpeechCoach() {
                             {isRecording ? (isPaused ? 'Recording Paused' : 'Recording in Progress...') : 'Click Mic to Start Recording'}
                           </p>
 
+                          {isRecording && (
+                            <div className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                              {isPaused ? 'Microphone Paused' : 'Microphone Active — Live Session'}
+                            </div>
+                          )}
+
                           {/* Recording Progress HUD with 60s Daily Challenge Cap */}
                           {isRecording && (
                             <div className="w-full max-w-xs flex flex-col items-center mt-2.5">
@@ -1535,6 +1542,12 @@ export default function SpeechCoach() {
                           <p className={`mt-4 text-sm font-bold text-center ${isRecording ? 'text-rose-600 animate-pulse' : 'text-slate-900'}`}>
                             {isRecording ? `Recording… ${recordingSeconds}s` : 'Tap to speak'}
                           </p>
+                          {isRecording && (
+                            <div className="mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                              Microphone Active — Live Session
+                            </div>
+                          )}
                           {isRecording && <p className="text-xs font-medium text-slate-500 mt-1 text-center">Tap square to stop</p>}
                         </div>
                       )}
