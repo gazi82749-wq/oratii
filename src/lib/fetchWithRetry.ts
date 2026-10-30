@@ -34,9 +34,9 @@ export async function fetchWithRetry(
         return response;
       }
 
-      // Non-transient client errors (like 401, 403) should NOT be retried
+      // Non-transient client errors (like 400, 401, 403) should NOT be retried
       // Throw immediately to abort both the retry loop AND the fallback chain.
-      if (response.status === 401 || response.status === 403) {
+      if (response.status === 400 || response.status === 401 || response.status === 403) {
         const errText = await response.text().catch(() => '');
         const error = new Error(`Non-transient error ${response.status}: ${errText}`);
         (error as any).status = response.status;

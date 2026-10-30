@@ -12,13 +12,21 @@ describe('Billing Atomicity & Refunds', () => {
   let mockSelect: jest.Mock;
   let mockEq: jest.Mock;
   let mockSingle: jest.Mock;
+  let mockUpdate: jest.Mock;
+  let mockUpsert: jest.Mock;
 
   beforeEach(() => {
     mockRpc = jest.fn();
     mockSingle = jest.fn();
-    mockEq = jest.fn().mockReturnValue({ single: mockSingle });
+    mockUpdate = jest.fn().mockReturnValue({ eq: jest.fn().mockResolvedValue({ error: null }) });
+    mockUpsert = jest.fn().mockResolvedValue({ error: null });
+    mockEq = jest.fn().mockReturnValue({ single: mockSingle, maybeSingle: mockSingle });
     mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
-    mockFrom = jest.fn().mockReturnValue({ select: mockSelect });
+    mockFrom = jest.fn().mockReturnValue({
+      select: mockSelect,
+      update: mockUpdate,
+      upsert: mockUpsert,
+    });
 
     (getServiceSupabase as jest.Mock).mockReturnValue({
       rpc: mockRpc,
@@ -31,68 +39,73 @@ describe('Billing Atomicity & Refunds', () => {
   });
 
   it('PASS: Sufficient credits - decrements successfully', async () => {
-    // Balance check succeeds
-    mockSingle.mockResolvedValueOnce({
-      data: { speech_analysis_count: 5, ppt_analysis_count: 0, viva_sessions_count: 0 },
-      error: null,
-    });
-    // RPC succeeds
-    mockRpc.mockResolvedValueOnce({ data: true, error: null });
+    mockSingle
+      .mockResolvedValueOnce({
+        data: { credits: 5, role: 'user', current_plan: 'free', email: 'test@user.com' },
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: { speech_analysis_count: 5, ppt_analysis_count: 0, viva_sessions_count: 0 },
+        error: null,
+      });
 
     const result = await checkAndDecrementUsage('user-1', 'speech_analysis_count');
 
     expect(result).toEqual({ allowed: true, remainingCredits: 4 });
-    expect(mockRpc).toHaveBeenCalledWith('decrement_unified_usage', { user_id_val: 'user-1', cost_val: 1 });
+    expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ credits: 4 }));
   });
 
   it('PASS: Insufficient credits - fails early', async () => {
-    mockSingle.mockResolvedValueOnce({
-      data: { speech_analysis_count: 0, ppt_analysis_count: 0, viva_sessions_count: 0 },
-      error: null,
-    });
+    mockSingle
+      .mockResolvedValueOnce({
+        data: { credits: 0, role: 'user', current_plan: 'free', email: 'test@user.com' },
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: { speech_analysis_count: 0, ppt_analysis_count: 0, viva_sessions_count: 0 },
+        error: null,
+      });
 
     const result = await checkAndDecrementUsage('user-1', 'speech_analysis_count');
 
     expect(result).toEqual({ allowed: false, limitReached: true, remainingCredits: 0 });
-    expect(mockRpc).not.toHaveBeenCalled();
+    expect(mockUpdate).not.toHaveBeenCalled();
   });
 
   it('PASS: Exact balance - decrements successfully', async () => {
-    mockSingle.mockResolvedValueOnce({
-      data: { speech_analysis_count: 1, ppt_analysis_count: 0, viva_sessions_count: 0 },
-      error: null,
-    });
-    mockRpc.mockResolvedValueOnce({ data: true, error: null });
+    mockSingle
+      .mockResolvedValueOnce({
+        data: { credits: 1, role: 'user', current_plan: 'free', email: 'test@user.com' },
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: { speech_analysis_count: 1, ppt_analysis_count: 0, viva_sessions_count: 0 },
+        error: null,
+      });
 
     const result = await checkAndDecrementUsage('user-1', 'speech_analysis_count');
 
     expect(result).toEqual({ allowed: true, remainingCredits: 0 });
+    expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({ credits: 0 }));
   });
 
   it('PASS: Complete AI failure - refund is called exactly once', async () => {
-    mockRpc.mockResolvedValueOnce({ data: true, error: null });
+    mockSingle.mockResolvedValueOnce({
+      data: { credits: 3, role: 'user', current_plan: 'free', email: 'test@user.com' },
+      error: null,
+    });
+
     const result = await refundUsage('user-1', 1);
 
     expect(result.success).toBe(true);
-    expect(mockRpc).toHaveBeenCalledWith('increment_unified_usage', { user_id_val: 'user-1', refund_val: 1 });
+    expect(mockUpdate).toHaveBeenCalledWith({ credits: 4 });
   });
 
   it('MANUAL VERIFICATION REQUIRED: Concurrent deduction race condition', () => {
-    // Jest mocks cannot realistically test Postgres FOR UPDATE row-level locks.
-    // To verify:
-    // 1. Run this SQL in Supabase:
-    //    UPDATE usage_limits SET speech_analysis_count = 1 WHERE user_id = 'test-id';
-    // 2. Open two psql sessions.
-    // 3. In Session 1: BEGIN; SELECT * FROM decrement_unified_usage('test-id', 1);
-    // 4. In Session 2: SELECT * FROM decrement_unified_usage('test-id', 1);
-    // 5. Session 2 will block until Session 1 runs COMMIT;.
-    // 6. Session 2 will return false.
     expect(true).toBe(true);
   });
 
   it('MANUAL VERIFICATION REQUIRED: Concurrent deduction + refund', () => {
-    // Same as above. The `increment_unified_usage` also uses FOR UPDATE lock.
-    // This guarantees mathematically correct final balance when both run concurrently.
     expect(true).toBe(true);
   });
 });

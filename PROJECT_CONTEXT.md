@@ -51,10 +51,10 @@
 ## 🛡 Multi-AI Fallback & Waterfall Architecture
 
 Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime by automatically retrying failed or rate-limited requests across providers:
-1. **Cerebras Llama-3.3-70B**: High-speed primary text reasoning.
-2. **Groq Llama-3.3-70B**: Secondary high-throughput LLM.
-3. **Google Gemini 1.5 / 2.5 Flash**: Multimodal vision & structured JSON evaluation.
-4. **OpenRouter Free Fallback**: Emergency fallback network.
+1. **Groq**: High-throughput primary text/eval models with circuit-breaker protection.
+2. **Google Gemini 1.5 / 2.5 Flash**: Multimodal vision & structured evaluation (priority 1 if PDF).
+3. **OpenRouter**: Secondary multi-model safety net.
+4. **Cerebras**: High-speed text reasoning fallback.
 
 ---
 
