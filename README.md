@@ -23,7 +23,7 @@
 
 **Oratii** is a full-stack, AI-powered platform that helps students, professionals, and educators become exceptional communicators. From real-time speech analysis and slide deck audits to AI mock interviews and a 20-day habit-building challenge — Oratii gives you the tools to own every stage, boardroom, and screen.
 
-> Built for the modern communicator. Powered by Google Gemini, Deepgram, MediaPipe, and a multi-provider AI waterfall for near-100% uptime.
+> Built for the modern communicator. Powered by state-of-the-art AI models, real-time speech recognition, and in-browser computer vision.
 
 ---
 
@@ -31,7 +31,6 @@
 
 - [✨ Core Features](#-core-features)
 - [🛠 Tech Stack](#-tech-stack)
-- [🤖 AI Architecture](#-ai-architecture)
 - [🗂 Project Structure](#-project-structure)
 - [⚙️ Getting Started](#%EF%B8%8F-getting-started)
 - [🔑 Environment Variables](#-environment-variables)
@@ -72,17 +71,12 @@ Gamified daily habit builder:
 - Streak tracking, freeze tokens, XP rewards, and leaderboard
 - Day 20 Before vs After progress summary
 
-### 📚 Academic Defense Examiner
-AI-powered oral Q&A examiner for thesis and technical oral defenses:
-- Generates context-aware questions from uploaded slides or topic prompts
-- Difficulty levels: Easy → Medium → Hard
-- Instant examiner-style feedback per answer
-
 ### 🏫 Trainer Portal
-Educator-first cohort management:
-- Create academies, manage student batches, track progress
-- WhatsApp-style leaderboard preview
+Educator-first cohort management platform:
+- Create academies, manage student batches, and track individual progress
+- WhatsApp-style leaderboard and real-time engagement view
 - Invite-code based student enrollment (`/join/[code]`)
+- Dedicated Instructor Access gate — normal users stay completely separated
 
 ---
 
@@ -94,10 +88,10 @@ Educator-first cohort management:
 | **Language** | TypeScript 5.x |
 | **Styling** | Tailwind CSS 3.4, Vanilla CSS Keyframes, Glassmorphism, Dark Mode |
 | **Database & Auth** | Supabase (PostgreSQL, Row Level Security, Auth Triggers) |
-| **Primary AI** | Google Gemini 1.5 / 2.5 Flash (Multimodal Text + Vision) |
+| **AI Models** | Multi-model AI system with multimodal text + vision capabilities |
 | **Speech-to-Text** | Deepgram Nova-2 (real-time STT) |
 | **Client ML / CV** | MediaPipe Tasks Vision (GPU in-browser eye contact & posture) |
-| **AI Fallback Chain** | Cerebras Llama-3.3-70B → Groq → OpenAI GPT-4o → OpenRouter |
+| **AI Reliability** | Multi-provider failover with automatic circuit breakers for 99.9% uptime |
 | **Payments** | Razorpay Checkout SDK & Webhook verification |
 | **Notifications** | VAPID Web Push (`web-push`) + Resend Transactional Email |
 | **Analytics** | Google Analytics 4 + Google Tag Manager |
@@ -108,25 +102,6 @@ Educator-first cohort management:
 | **Error Monitoring** | Sentry (`@sentry/nextjs`) |
 | **Testing** | Jest + React Testing Library + Playwright (E2E) |
 | **Deployment** | Vercel (Edge Network, Auto CI/CD) |
-
----
-
-## 🤖 AI Architecture
-
-Oratii uses a **multi-provider AI waterfall** (`src/lib/aiFallback.ts`) to guarantee near-100% uptime across all AI features:
-
-```
-Request
-  └─► [1] Cerebras Llama-3.3-70B   — ultra-fast primary reasoning
-          ↓ on failure / rate-limit
-      [2] Groq Llama-3.3-70B        — high-throughput secondary
-          ↓ on failure / rate-limit
-      [3] Google Gemini 1.5/2.5     — multimodal vision & structured JSON
-          ↓ on failure
-      [4] OpenRouter Free            — emergency community fallback
-```
-
-**Gemini** handles all **multimodal tasks** — slide image analysis, body language scoring from webcam frames, and structured JSON evaluation reports.
 
 ---
 
@@ -156,7 +131,7 @@ oratii/
 │   │       └── admin/
 │   ├── components/                # Shared UI components
 │   ├── lib/                       # Core utilities
-│   │   ├── aiFallback.ts          # Multi-provider AI waterfall
+│   │   ├── aiFallback.ts          # AI reliability layer
 │   │   ├── supabase.ts            # DB client helpers
 │   │   ├── adminAuth.ts           # Admin email allowlist
 │   │   └── gamification.ts        # XP / streak / challenge logic
@@ -222,20 +197,20 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# ─── AI Providers ──────────────────────────────────────────────
-GOOGLE_GEMINI_API_KEY=
-CEREBRAS_API_KEY=
+# ─── AI (required — powers all coaching features) ──────────────
+GEMINI_API_KEY=
 GROQ_API_KEY=
-OPENAI_API_KEY=           # optional fallback
-OPENROUTER_API_KEY=       # optional fallback
+OPENROUTER_API_KEY=
+CEREBRAS_API_KEY=
 
 # ─── Speech-to-Text (Deepgram) ─────────────────────────────────
 DEEPGRAM_API_KEY=
 
 # ─── Payments (Razorpay) ───────────────────────────────────────
+NEXT_PUBLIC_RAZORPAY_KEY_ID=
 RAZORPAY_KEY_ID=
 RAZORPAY_KEY_SECRET=
-NEXT_PUBLIC_RAZORPAY_KEY_ID=
+RAZORPAY_WEBHOOK_SECRET=
 
 # ─── Email (Resend) ────────────────────────────────────────────
 RESEND_API_KEY=
@@ -243,6 +218,7 @@ RESEND_API_KEY=
 # ─── Push Notifications (VAPID) ────────────────────────────────
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=
 VAPID_PRIVATE_KEY=
+VAPID_CONTACT_EMAIL=mailto:your@email.com
 
 # ─── File Conversion ───────────────────────────────────────────
 CONVERTAPI_SECRET=
@@ -250,6 +226,10 @@ CONVERTAPI_SECRET=
 # ─── Rate Limiting (Upstash Redis) ────────────────────────────
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
+
+# ─── Internal Security ─────────────────────────────────────────
+ADMIN_SETUP_SECRET=
+WORKER_SECRET=
 ```
 
 > ⚠️ **Never commit `.env.local` to version control.** It is already listed in `.gitignore`.
@@ -331,7 +311,7 @@ All tables live in **Supabase (PostgreSQL)** with Row Level Security enabled:
 - [x] Trainer Portal v1 ✅
 - [x] Razorpay payments + webhooks ✅
 - [x] PWA Service Worker + offline support ✅
-- [x] Multi-AI fallback waterfall ✅
+- [x] AI reliability layer with automatic failover ✅
 - [x] VAPID push notifications ✅
 
 ---
