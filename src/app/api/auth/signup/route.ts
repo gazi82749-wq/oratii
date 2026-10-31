@@ -82,20 +82,102 @@ export async function POST(req: NextRequest) {
     ? `${origin}/auth/callback?next=/trainer/onboarding&role=trainer`
     : `${origin}/dashboard`;
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: fullName, role },
-      emailRedirectTo,
-    },
-  });
+  const { getServiceSupabase } = await import('@/lib/supabaseClient');
+  const adminClient = getServiceSupabase();
+  const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (data?.user?.id) {
+  let createdUser: { id: string; email?: string } | null = null;
+  let userSession: any = null;
+
+  if (hasServiceRole) {
+    // 1. Create confirmed user directly via Supabase admin API
+    // Bypasses Supabase default 3-email/hr SMTP limit and grants instant activation
+    const { data: adminUser, error: adminErr } = await adminClient.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: fullName, role },
+    });
+
+    if (adminErr) {
+      const errMsg = (adminErr.message || '').toLowerCase();
+      if (
+        errMsg.includes('already') ||
+        adminErr.status === 422 ||
+        (adminErr as any).code === 'email_exists'
+      ) {
+        return NextResponse.json(
+          { error: 'An account with this email already exists.' },
+          {
+            status: 409,
+            headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
+          }
+        );
+      }
+      return NextResponse.json(
+        { error: adminErr.message || 'Signup failed' },
+        {
+          status: 400,
+          headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
+        }
+      );
+    }
+
+    if (adminUser?.user) {
+      createdUser = { id: adminUser.user.id, email: adminUser.user.email };
+    }
+
+    // 2. Immediately sign in the new user to generate authentic session tokens & auth cookies
+    const { data: signInData, error: signInErr } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInErr) {
+      console.warn('Auto sign-in post-creation warning:', signInErr.message);
+    } else if (signInData?.session) {
+      userSession = signInData.session;
+    }
+  } else {
+    // Fallback to client signUp if service role key is absent
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName, role },
+        emailRedirectTo,
+      },
+    });
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        {
+          status: 400,
+          headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
+        }
+      );
+    }
+
+    if (data?.user?.identities?.length === 0) {
+      return NextResponse.json(
+        { error: 'An account with this email already exists.' },
+        {
+          status: 409,
+          headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
+        }
+      );
+    }
+
+    if (data?.user) {
+      createdUser = { id: data.user.id, email: data.user.email };
+    }
+    userSession = data?.session || null;
+  }
+
+  // 3. Upsert user profile, usage limits, and referral bonus
+  if (createdUser?.id) {
     try {
-      const { getServiceSupabase } = await import('@/lib/supabaseClient');
-      const adminClient = getServiceSupabase();
-
       let initialCredits = 10;
       let referrerUser: any = null;
 
@@ -112,12 +194,15 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      const { isAuthorizedAdminEmail } = await import('@/lib/adminAuth');
+      const dbRole = isAuthorizedAdminEmail(createdUser.email || email) ? 'admin' : 'user';
+
       await adminClient.from('profiles').upsert(
         {
-          id: data.user.id,
-          email: data.user.email,
+          id: createdUser.id,
+          email: createdUser.email || email,
           full_name: fullName,
-          role,
+          role: dbRole,
           credits: initialCredits,
           updated_at: new Date().toISOString(),
         },
@@ -133,9 +218,10 @@ export async function POST(req: NextRequest) {
           })
           .eq('id', referrerUser.id);
       }
+
       await adminClient.from('usage_limits').upsert(
         {
-          user_id: data.user.id,
+          user_id: createdUser.id,
           speech_analysis_count: 10,
           ppt_analysis_count: 5,
           viva_sessions_count: 5,
@@ -148,34 +234,22 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  if (error) {
-    return NextResponse.json(
-      { error: error.message },
-      {
-        status: 400,
-        headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
-      }
-    );
+  // 4. Send Welcome Email via Resend asynchronously
+  if (email) {
+    import('@/lib/email').then(({ sendWelcomeEmail }) => {
+      sendWelcomeEmail(email, fullName || email.split('@')[0]).catch(err => {
+        console.warn('Welcome email non-critical notice:', err);
+      });
+    });
   }
 
-  // Check for duplicate account (Supabase returns user with empty identities)
-  if (data?.user?.identities?.length === 0) {
-    return NextResponse.json(
-      { error: 'An account with this email already exists.' },
-      {
-        status: 409,
-        headers: { 'X-RateLimit-Remaining': String(rateResult.remaining) },
-      }
-    );
-  }
-
-  // Email confirmation required (no session returned)
-  if (data?.user && !data?.session) {
+  // 5. If confirmation is still required (e.g. fallback mode without session)
+  if (!userSession && createdUser) {
     return NextResponse.json(
       {
         status: 'confirmation_required',
         message: 'Please check your email to confirm your account.',
-        user: { id: data.user.id, email: data.user.email },
+        user: { id: createdUser.id, email: createdUser.email || email },
       },
       {
         status: 200,
@@ -184,29 +258,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Send Welcome Email asynchronously
-  if (data?.user?.email) {
-    import('@/lib/email').then(({ sendWelcomeEmail }) => {
-      sendWelcomeEmail(data.user!.email!, fullName || data.user!.email!.split('@')[0]).catch(err => {
-        console.warn('Welcome email non-critical notice:', err);
-      });
-    });
-  }
-
-  // Direct sign-in (email confirmation disabled in Supabase settings)
+  // 6. Direct sign-in success with active session
   return NextResponse.json(
     {
       status: 'success',
       session: {
-        access_token: data.session?.access_token,
-        refresh_token: data.session?.refresh_token,
-        expires_in: data.session?.expires_in,
-        token_type: data.session?.token_type,
+        access_token: userSession?.access_token,
+        refresh_token: userSession?.refresh_token,
+        expires_in: userSession?.expires_in,
+        token_type: userSession?.token_type,
       },
       user: {
-        id: data.user?.id,
-        email: data.user?.email,
-        user_metadata: data.user?.user_metadata,
+        id: createdUser?.id,
+        email: createdUser?.email || email,
+        user_metadata: { full_name: fullName, role },
       },
     },
     {

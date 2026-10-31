@@ -34,12 +34,17 @@ export default function SignupClient() {
     setLoading(true);
     setError(null);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName, role: selectedRole, refCode }),
+        body: JSON.stringify({ email: email.trim(), password, fullName: fullName.trim(), role: selectedRole, refCode }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       const data = await res.json();
 
@@ -50,14 +55,18 @@ export default function SignupClient() {
         return;
       }
 
-      if (res.status === 409) {
-        setError('An account with this email already exists.');
+      if (
+        res.status === 409 ||
+        res.status === 422 ||
+        data.error?.toLowerCase().includes('already')
+      ) {
+        setError('An account with this email already exists. Please log in instead.');
         setLoading(false);
         return;
       }
 
       if (!res.ok) {
-        setError(data.error || 'Signup failed');
+        setError(data.error || 'Signup failed. Please try again.');
         setLoading(false);
         return;
       }
@@ -69,10 +78,14 @@ export default function SignupClient() {
       }
 
       if (data.session?.access_token && data.session?.refresh_token) {
-        await supabase.auth.setSession({
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-        });
+        try {
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          });
+        } catch (sessionErr) {
+          console.warn('Non-blocking client setSession warning:', sessionErr);
+        }
       }
 
       if (typeof document !== 'undefined') {
@@ -84,8 +97,13 @@ export default function SignupClient() {
       } else {
         window.location.href = '/dashboard';
       }
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      if (err?.name === 'AbortError') {
+        setError('Signup timed out. Please check your internet connection and try again.');
+      } else {
+        setError('Network error. Please try again.');
+      }
       setLoading(false);
     }
   };

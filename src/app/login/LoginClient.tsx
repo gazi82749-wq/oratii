@@ -21,12 +21,17 @@ export default function LoginClient() {
     setLoading(true);
     setError(null);
     
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       const data = await res.json();
 
@@ -49,10 +54,14 @@ export default function LoginClient() {
       }
 
       if (data.session?.access_token && data.session?.refresh_token) {
-        await supabase.auth.setSession({
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-        });
+        try {
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          });
+        } catch (sessionErr) {
+          console.warn('Non-blocking client setSession warning:', sessionErr);
+        }
       }
 
       if (typeof document !== 'undefined') {
@@ -68,8 +77,13 @@ export default function LoginClient() {
       } else {
         window.location.href = targetRedirect;
       }
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      if (err?.name === 'AbortError') {
+        setError('Login timed out. Please check your internet connection and try again.');
+      } else {
+        setError('Network error. Please try again.');
+      }
       setLoading(false);
     }
   };

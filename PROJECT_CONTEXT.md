@@ -141,6 +141,14 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - **Landing Page Showcase Section (`#trainer-portal`)**: Added dedicated Educator Studio showcase on `HomeClient.tsx` with header nav link, interactive academy batch simulation, WhatsApp leaderboard preview, and instant CTAs. Dynamically targeted to only display for users who signed up as a trainer or admin (`role === 'trainer' || role === 'admin'`), keeping normal learner views uncluttered.
   - Harmonized with Oratii website theme (deep midnight navy `#0F1426`, gold `#F2A93B` accents, emerald badges, and rounded-3xl cards).
 
+* **Authentication & Instant Email Signup Architecture (`/api/auth/signup` & `SignupClient.tsx`)**:
+  - **Instant Account Activation & Rate-Limit Immunity**: Replaced standard client-side `supabase.auth.signUp()` with backend `adminClient.auth.admin.createUser({ email, password, email_confirm: true })`. This bypasses Supabase's strict 3-email/hour default SMTP limit (`over_email_send_rate_limit` 429 error) that previously caused infinite loading and blocked new email signups.
+  - **Immediate Session Creation**: Automatically signs in newly created users on the server (`supabase.auth.signInWithPassword`), returning full auth session tokens and cookies so users land in `/dashboard` instantly without waiting for confirmation emails, matching Google OAuth speed.
+  - **Welcome Emails via Resend**: Asynchronously dispatches transactional welcome emails using Resend (`sendWelcomeEmail`), completely decoupling email delivery from Supabase auth.
+  - **Rate Limiter Circuit Breaker & Timeout (`src/lib/rateLimit.ts`)**: Added an 800ms race timeout and a 10-minute circuit-breaker to Upstash Redis. If Redis is unreachable or DNS resolution fails (`ENOTFOUND`), it immediately falls back to in-memory sliding window rate limiting in 0ms without freezing requests for 4.5+ seconds.
+  - **PostgreSQL Enum Alignment**: Aligned `profiles.role` to valid `user_role` enum values (`user` | `admin`), while safely storing user selection (`student` / `trainer`) in user metadata, preventing PostgreSQL `22P02: invalid input value for enum user_role` aborts.
+  - **Client AbortController Safeguards**: Added 15-second client timeouts with `AbortController` in both `SignupClient.tsx` and `LoginClient.tsx` so buttons never stay frozen on "Creating account..." or "Logging in...".
+
 ---
 
 ## 📝 Agent Guidelines for Maintaining Context
@@ -150,4 +158,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-10-25 (Removed duplicate secondary O logo header from HomeClient; set unified navbar sticky top-0 in SidebarLayout; bumped sw.js to v4)*
+*Last Updated: 2026-11-01 (Resolved email signup infinite loading: added service-role instant account activation, Upstash rate limit circuit breaker, profiles enum alignment, and client timeouts)*

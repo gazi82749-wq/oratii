@@ -62,8 +62,11 @@ export async function GET(request: NextRequest) {
           updated_at: new Date().toISOString(),
         };
 
-        if (roleParam === 'trainer') {
-          profilePayload.role = 'trainer';
+        const { isAuthorizedAdminEmail } = await import('@/lib/adminAuth');
+        if (isAuthorizedAdminEmail(session.user.email)) {
+          profilePayload.role = 'admin';
+        } else {
+          profilePayload.role = 'user';
         }
 
         const refParam = requestUrl.searchParams.get('ref') || '';

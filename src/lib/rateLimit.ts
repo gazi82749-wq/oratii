@@ -106,7 +106,14 @@ const limiters = {
   convert: createLimiter(CONVERT_RATE_LIMIT),
 };
 
+let redisDisabledUntil = 0;
+
 export async function checkRateLimit(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
+  const now = Date.now();
+  if (now < redisDisabledUntil) {
+    return fallbackRateLimit(key, config);
+  }
+
   let type: 'auth' | 'ai' | 'convert' = 'ai';
   if (config.windowMs === AUTH_RATE_LIMIT.windowMs) type = 'auth';
   else if (config.windowMs === CONVERT_RATE_LIMIT.windowMs) type = 'convert';
@@ -118,7 +125,17 @@ export async function checkRateLimit(key: string, config: RateLimitConfig): Prom
   }
 
   try {
-    const { success, limit, remaining, reset } = await limiter.limit(key);
+    let timer: NodeJS.Timeout | undefined;
+    const limitPromise = limiter.limit(key);
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('RateLimit timeout')), 800);
+    });
+
+    const res = await Promise.race([limitPromise, timeoutPromise]).finally(() => {
+      if (timer) clearTimeout(timer);
+    });
+    
+    const { success, remaining, reset } = res as { success: boolean; limit: number; remaining: number; reset: number };
     
     return {
       allowed: success,
@@ -126,7 +143,9 @@ export async function checkRateLimit(key: string, config: RateLimitConfig): Prom
       retryAfterSeconds: success ? 0 : Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
     };
   } catch (err) {
-    console.error('[RateLimit] Upstash Redis failure, falling back to memory:', err);
+    // If Redis timed out or threw (e.g. ENOTFOUND or network failure), circuit-break to memory store for 10 minutes
+    redisDisabledUntil = Date.now() + 10 * 60 * 1000;
+    console.warn('[RateLimit] Upstash Redis unreachable/slow, circuit-breaking to memory store for 10m:', (err as Error)?.message || err);
     return fallbackRateLimit(key, config);
   }
 }
