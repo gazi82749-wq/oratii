@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { GraduationCap, ArrowRight } from 'lucide-react';
+import { GraduationCap, ArrowRight, Twitter, Linkedin, Github } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -15,9 +15,41 @@ export default function Footer() {
             <div className="flex items-center mb-4">
               <Logo className="text-white text-3xl" />
             </div>
-            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm mb-6 font-medium">
+            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm mb-5 font-medium">
               The AI-powered speech, communication &amp; job interview coach. Analyze vocal pacing, filler words, daily speech habits, and mock interviews in real-time.
             </p>
+            <div className="flex items-center gap-2.5 text-slate-400">
+              <a
+                href="https://x.com/GaziAbbas217059"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gazi Abbas on X"
+                title="Gazi Abbas on X"
+                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 flex items-center justify-center transition-all"
+              >
+                <Twitter size={15} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/gazi-abbas-3b611a324/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Gazi Abbas on LinkedIn"
+                title="Gazi Abbas on LinkedIn"
+                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 flex items-center justify-center transition-all"
+              >
+                <Linkedin size={15} />
+              </a>
+              <a
+                href="https://github.com/gazi82749-wq/oratii"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Oratii on GitHub"
+                title="Oratii on GitHub"
+                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white border border-white/10 flex items-center justify-center transition-all"
+              >
+                <Github size={15} />
+              </a>
+            </div>
           </div>
           
           <div>

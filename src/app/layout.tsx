@@ -86,6 +86,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Oratii | AI Speech & Interview Coach',
     description: 'Get real-time AI feedback on your vocal pacing, filler words, daily speech habits, and job interview delivery.',
+    creator: '@GaziAbbas217059',
+    site: '@GaziAbbas217059',
     images: [`${siteUrl}/og-image.png`],
   },
   icons: {
@@ -150,11 +152,19 @@ const organizationSchema = {
   name: 'Oratii',
   url: siteUrl,
   logo: `${siteUrl}/icon-512.png`,
+  founder: {
+    '@type': 'Person',
+    name: 'Gazi Abbas',
+    url: 'https://www.linkedin.com/in/gazi-abbas-3b611a324/',
+    sameAs: [
+      'https://x.com/GaziAbbas217059',
+      'https://www.linkedin.com/in/gazi-abbas-3b611a324/',
+    ],
+  },
   sameAs: [
-    'https://twitter.com/oratiiapp',
-    'https://www.linkedin.com/company/oratii',
+    'https://x.com/GaziAbbas217059',
+    'https://www.linkedin.com/in/gazi-abbas-3b611a324/',
     'https://github.com/gazi82749-wq/oratii',
-    'https://www.producthunt.com/products/oratii',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
