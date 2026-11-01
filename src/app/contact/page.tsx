@@ -5,18 +5,62 @@ import ContactForm from '@/components/ContactForm';
 import CopyEmailButton from '@/components/CopyEmailButton';
 import { Mail, MapPin, Phone, MessageSquare, Clock, ShieldCheck, ArrowRight } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
-  title: 'Contact Us',
+  title: 'Contact Customer Support & Partnerships | Oratii',
   description: 'Get in touch with the Oratii AI support & compliance team. Official contact email, customer support, and business inquiry form.',
-  openGraph: {
-    title: 'Contact Us | Oratii AI Speech Coach',
-    description: 'Reach out to the Oratii AI team for customer support, billing inquiries, enterprise partnerships, or technical help.',
+  alternates: {
+    canonical: `${siteUrl}/contact`,
   },
+  openGraph: {
+    title: 'Contact Customer Support & Partnerships | Oratii',
+    description: 'Reach out to the Oratii AI team for customer support, billing inquiries, enterprise partnerships, or technical help.',
+    url: `${siteUrl}/contact`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Contact Oratii Customer Support',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
+const contactFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How can I contact Oratii customer support?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You can email our official customer support desk directly at support@oratii.in or submit an inquiry using our online contact form. Our typical response time is within 24 business hours.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does Oratii offer institutional and campus licensing?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes! Colleges, universities, coaching academies, and corporate training teams can contact us at hello@oratii.in to set up custom cohort batches and campus discounts.',
+      },
+    },
+  ],
 };
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] font-sans antialiased text-slate-900 w-full">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactFaqSchema) }}
+      />
       <div className="flex-1 w-full max-w-5xl mx-auto py-12 sm:py-16 px-4 sm:px-6 relative">
         
         {/* Header */}

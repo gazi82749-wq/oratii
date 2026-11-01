@@ -52,9 +52,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Oratii' }],
   creator: 'Oratii',
-  alternates: {
-    canonical: siteUrl,
-  },
   robots: {
     index: true,
     follow: true,

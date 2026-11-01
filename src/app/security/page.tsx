@@ -4,16 +4,29 @@ import Footer from '@/components/Footer';
 import CopyEmailButton from '@/components/CopyEmailButton';
 import { ShieldCheck, Lock, Cpu, Eye, CheckCircle2, FileText, Server, ShieldAlert } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
   title: 'Security & Ethics Center | Oratii AI Speech Coach',
   description: 'Oratii AI Security & Ethics Commitments. Learn about our on-device WASM privacy, zero-retention AI data processing, and unbiased scoring guarantees.',
+  alternates: {
+    canonical: `${siteUrl}/security`,
+  },
   openGraph: {
     title: 'Security & Ethics Center | Oratii AI Speech Coach',
     description: 'Learn how Oratii enforces enterprise-grade security, WASM browser processing, zero-retention AI privacy, and ethical AI evaluation.',
-    url: 'https://oratii.in/security',
-  },
-  alternates: {
-    canonical: 'https://oratii.in/security',
+    url: `${siteUrl}/security`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Security & Ethics Center - Oratii AI',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 

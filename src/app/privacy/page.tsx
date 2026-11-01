@@ -4,16 +4,29 @@ import Footer from '@/components/Footer';
 import CopyEmailButton from '@/components/CopyEmailButton';
 import { Lock, ShieldCheck, Mail, FileText, Cpu, Server, CheckCircle2, AlertTriangle } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
   title: 'Privacy Policy | Oratii AI Speech & Interview Coach',
   description: 'Oratii Privacy Policy. Comprehensive data protection, voice recording security, on-device WASM privacy, DPDP Act 2023, IT Act 2000, and GDPR compliance.',
+  alternates: {
+    canonical: `${siteUrl}/privacy`,
+  },
   openGraph: {
     title: 'Privacy Policy | Oratii AI Speech & Interview Coach',
     description: 'Learn how Oratii protects your voice recordings, user privacy, and telemetry data under applicable data privacy laws.',
-    url: 'https://oratii.in/privacy',
-  },
-  alternates: {
-    canonical: 'https://oratii.in/privacy',
+    url: `${siteUrl}/privacy`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Privacy Policy - Oratii',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 

@@ -4,16 +4,29 @@ import Footer from '@/components/Footer';
 import CopyEmailButton from '@/components/CopyEmailButton';
 import { FileText, ShieldAlert, CheckCircle, Scale, AlertTriangle } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
   title: 'Terms of Service | Oratii AI Speech & Interview Coach',
   description: 'Oratii Terms of Service - Platform user agreement, AI coaching disclaimers, credit sachet terms, liability limitations, and legal governing terms.',
+  alternates: {
+    canonical: `${siteUrl}/terms`,
+  },
   openGraph: {
     title: 'Terms of Service | Oratii AI Speech & Interview Coach',
     description: 'Read the platform terms of service governing user accounts, credit purchases, AI coaching evaluations, and liability protections.',
-    url: 'https://oratii.in/terms',
-  },
-  alternates: {
-    canonical: 'https://oratii.in/terms',
+    url: `${siteUrl}/terms`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Terms of Service - Oratii',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 

@@ -27,6 +27,8 @@ export default function Footer() {
               <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview Studio</Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>
+              <li><Link href="/signup" className="hover:text-amber-400 transition-colors">Get Started Free</Link></li>
+              <li><Link href="/login" className="hover:text-amber-400 transition-colors">Account Login</Link></li>
             </ul>
           </div>
 
@@ -36,7 +38,7 @@ export default function Footer() {
               <li><Link href="/about" className="hover:text-amber-400 transition-colors">About Us</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400 transition-colors">Contact Us</Link></li>
               <li>
-                <Link href="/trainer" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <Link href="/#trainer-portal" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
                   <GraduationCap size={15} className="text-[#F2A93B]" /> For Institutes &amp; Trainers
                 </Link>
               </li>

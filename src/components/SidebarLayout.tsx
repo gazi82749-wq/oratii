@@ -213,6 +213,7 @@ export default function SidebarLayout({ children }) {
                     <Link 
                       key={i} 
                       href={item.href || '#'} 
+                      rel={itemAny.isTrainer ? "nofollow" : undefined}
                       onClick={(e) => {
                         if (itemAny.isComingSoon) {
                           e.preventDefault();
@@ -265,48 +266,46 @@ export default function SidebarLayout({ children }) {
               <StreakBadge />
             </div>
 
-            {/* Auth-aware buttons */}
-            {!authLoading && (
-              user ? (
-                <div className="hidden md:flex items-center gap-2.5">
-                  <Link href={userCredits !== null && userCredits >= 99999 ? "/admin" : "/pricing"} rel={userCredits !== null && userCredits >= 99999 ? "nofollow" : undefined} title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
-                    {userCredits !== null && userCredits >= 99999 ? (
-                      <span className="flex items-center gap-1">
-                        <Crown size={13} className="text-amber-600" />
-                        <span>Admin</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 font-bold">
-                        <Coins size={13} className="text-amber-600 shrink-0" />
-                        <span>{userCredits !== null ? `${userCredits}` : 'Credits'}</span>
-                      </span>
-                    )}
-                  </Link>
+            {/* Auth-aware buttons (rendered in SSR by default for SEO discovery) */}
+            {user ? (
+              <div className="hidden md:flex items-center gap-2.5">
+                <Link href={userCredits !== null && userCredits >= 99999 ? "/admin" : "/pricing"} rel={userCredits !== null && userCredits >= 99999 ? "nofollow" : undefined} title="View or Top Up Credits" className="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-950 text-xs font-black transition-all flex items-center gap-1 shadow-2xs shrink-0">
+                  {userCredits !== null && userCredits >= 99999 ? (
+                    <span className="flex items-center gap-1">
+                      <Crown size={13} className="text-amber-600" />
+                      <span>Admin</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 font-bold">
+                      <Coins size={13} className="text-amber-600 shrink-0" />
+                      <span>{userCredits !== null ? `${userCredits}` : 'Credits'}</span>
+                    </span>
+                  )}
+                </Link>
 
-                  {/* Sleek Profile Icon Button */}
-                  <Link
-                    href="/dashboard"
-                    rel="nofollow"
-                    title="Dashboard & Profile"
-                    className={`p-2.5 border rounded-2xl transition-all flex items-center justify-center shrink-0 active:scale-95 ${
-                      pathname === '/dashboard'
-                        ? 'bg-[#0F1426] border-[#0F1426] text-amber-400 shadow-sm'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    <User size={18} />
-                  </Link>
-                </div>
-              ) : (
-                <>
-                  <Link href="/login" className="hidden md:block text-sm text-slate-600 hover:text-slate-900 font-semibold transition-colors">
-                    Log in
-                  </Link>
-                  <Link href="/signup" className="hidden md:block px-5 py-2.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-sm font-bold rounded-2xl border border-white/10 shadow-[0_4px_16px_-4px_rgba(15,20,38,0.4)] hover:-translate-y-0.5 transition-all whitespace-nowrap active:scale-[0.98]">
-                    Get Started Free
-                  </Link>
-                </>
-              )
+                {/* Sleek Profile Icon Button */}
+                <Link
+                  href="/dashboard"
+                  rel="nofollow"
+                  title="Dashboard & Profile"
+                  className={`p-2.5 border rounded-2xl transition-all flex items-center justify-center shrink-0 active:scale-95 ${
+                    pathname === '/dashboard'
+                      ? 'bg-[#0F1426] border-[#0F1426] text-amber-400 shadow-sm'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <User size={18} />
+                </Link>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-4">
+                <Link href="/login" className="text-sm text-slate-600 hover:text-slate-900 font-semibold transition-colors">
+                  Log in
+                </Link>
+                <Link href="/signup" className="px-5 py-2.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-sm font-bold rounded-2xl border border-white/10 shadow-[0_4px_16px_-4px_rgba(15,20,38,0.4)] hover:-translate-y-0.5 transition-all whitespace-nowrap active:scale-[0.98]">
+                  Get Started Free
+                </Link>
+              </div>
             )}
             
             {/* Mobile Menu Toggle */}
@@ -384,19 +383,17 @@ export default function SidebarLayout({ children }) {
 
             <Link href="/about" className="text-left text-base font-bold text-slate-900 px-4 py-3 min-h-[48px] flex items-center rounded-xl hover:bg-indigo-50 active:scale-[0.99] transition-all border-t border-indigo-100 pt-3 mt-1">About Us</Link>
 
-            {/* Mobile auth buttons */}
-            {!authLoading && (
-              <div className="flex flex-col gap-2.5 pt-4 border-t border-indigo-100 mt-1">
-                {user ? (
-                  <Link href="/dashboard" rel="nofollow" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Go to Dashboard</Link>
-                ) : (
-                  <>
-                    <Link href="/signup" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Get Started Free</Link>
-                    <Link href="/login" className="w-full px-5 py-3 border border-slate-200 bg-white text-slate-800 text-sm font-bold rounded-2xl text-center hover:bg-slate-50 transition-colors min-h-[46px] flex items-center justify-center active:scale-[0.98]">Log in to Account</Link>
-                  </>
-                )}
-              </div>
-            )}
+            {/* Mobile auth buttons (rendered in SSR by default for SEO discovery) */}
+            <div className="flex flex-col gap-2.5 pt-4 border-t border-indigo-100 mt-1">
+              {user ? (
+                <Link href="/dashboard" rel="nofollow" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Go to Dashboard</Link>
+              ) : (
+                <>
+                  <Link href="/signup" className="w-full px-5 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white text-base font-bold rounded-2xl text-center min-h-[50px] flex items-center justify-center shadow-md border border-white/10 active:scale-[0.98] transition-all">Get Started Free</Link>
+                  <Link href="/login" className="w-full px-5 py-3 border border-slate-200 bg-white text-slate-800 text-sm font-bold rounded-2xl text-center hover:bg-slate-50 transition-colors min-h-[46px] flex items-center justify-center active:scale-[0.98]">Log in to Account</Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -423,6 +420,7 @@ export default function SidebarLayout({ children }) {
             <Link
               key={item.label}
               href={item.href}
+              rel={itemAny.isTrainer ? "nofollow" : undefined}
               onClick={(e) => {
                 if (itemAny.isComingSoon) {
                   e.preventDefault();

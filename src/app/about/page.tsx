@@ -19,16 +19,29 @@ import {
 import Footer from '@/components/Footer';
 import AboutCta from '@/components/AboutCta';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
   title: 'About Us | Oratii Speech & Placement Lab',
   description: 'Learn why we built Oratii — the next-generation speech coach, mock interview lab, and educator studio empowering every speaker to lead the room.',
   alternates: {
-    canonical: 'https://oratii.in/about',
+    canonical: `${siteUrl}/about`,
   },
   openGraph: {
     title: 'About Us | Oratii Speech & Placement Lab',
     description: 'Empowering every speaker to master their message and lead the room.',
-    url: 'https://oratii.in/about',
+    url: `${siteUrl}/about`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'About Oratii - AI Speech & Placement Lab',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 
@@ -245,6 +258,7 @@ export default function AboutUsPage() {
                 </div>
                 <Link
                   href="/trainer"
+                  rel="nofollow"
                   className="inline-flex items-center gap-1 text-xs font-extrabold text-indigo-600 hover:text-indigo-800 transition-colors pt-2 border-t border-slate-100"
                 >
                   Open Educator Studio <ArrowRight size={13} />

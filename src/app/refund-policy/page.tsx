@@ -4,16 +4,29 @@ import Footer from '@/components/Footer';
 import CopyEmailButton from '@/components/CopyEmailButton';
 import { Receipt, CheckCircle, Clock, AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://oratii.in';
+
 export const metadata: Metadata = {
   title: 'Cancellation & Refund Policy | Oratii AI',
   description: 'Oratii cancellation, refund, and digital product delivery policy for AI speech coaching credit sachets and top-up packages.',
+  alternates: {
+    canonical: `${siteUrl}/refund-policy`,
+  },
   openGraph: {
     title: 'Cancellation & Refund Policy | Oratii',
     description: 'Understand how Oratii handles payment cancellations, digital delivery of AI credits, and refund requests.',
-    url: 'https://oratii.in/refund-policy',
-  },
-  alternates: {
-    canonical: 'https://oratii.in/refund-policy',
+    url: `${siteUrl}/refund-policy`,
+    siteName: 'Oratii',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Cancellation & Refund Policy - Oratii',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 

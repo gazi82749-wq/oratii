@@ -149,6 +149,16 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - **PostgreSQL Enum Alignment**: Aligned `profiles.role` to valid `user_role` enum values (`user` | `admin`), while safely storing user selection (`student` / `trainer`) in user metadata, preventing PostgreSQL `22P02: invalid input value for enum user_role` aborts.
   - **Client AbortController Safeguards**: Added 15-second client timeouts with `AbortController` in both `SignupClient.tsx` and `LoginClient.tsx` so buttons never stay frozen on "Creating account..." or "Logging in...".
 
+* **Technical SEO, Indexability & Structured Data Optimization (Site Audit Resolution)**:
+  - **Self-Referencing Canonicals**: Removed root-level canonical override in `src/app/layout.tsx` so child routes do not inherit `https://oratii.in`. Explicitly configured self-referencing canonicals (`alternates: { canonical: 'https://oratii.in/...' }`) across all public pages (`/`, `/speech-coach`, `/interview`, `/challenge`, `/about`, `/pricing`, `/contact`, `/feedback`, `/support`, `/login`, `/signup`, `/terms`, `/privacy`, `/refund-policy`, `/security`).
+  - **OpenGraph & Social Sharing Compliance**: Added dedicated `openGraph.images` (1200x630 `/og-image.png`) and `openGraph.url` to every page metadata object to prevent OpenGraph property inheritance stripping in Next.js App Router.
+  - **Orphan Page Elimination & SSR Discovery**: Rendered `/login` and `/signup` navigational links in initial server-side HTML in `SidebarLayout.tsx` and `Footer.tsx` so crawlers consistently discover account access routes without requiring JavaScript hydration.
+  - **Redirect URL & Crawl Waste Prevention**: Added `rel="nofollow"` to all `/trainer` navigational links, pointed footer trainer links to `/#trainer-portal`, and added `/trainer` to `robots.ts` disallow rules, preventing external crawlers from hitting `/login?redirectedFrom=%2Ftrainer`.
+  - **Server Components & Semantic H1 Architecture**: Refactored `/interview` and `/challenge` into Server Components housing lightweight client interactive modules, rendering semantic `<h1>` tags and pre-rendered feature copy to eliminate "Thin content" and "Page has no H1 tag" crawler warnings.
+  - **AI Readiness & FAQ Structured Data**: Injected `FAQPage` JSON-LD schema into `/interview`, `/challenge`, `/signup`, and `/contact` to enhance Google Rich Results and AI citation indexability.
+  - **Accessibility**: Added explicit `aria-label` attributes to microphone and session recording buttons in `src/app/speech-coach/page.tsx`.
+  - **SERP Snippet Optimization**: Shortened meta descriptions to under 155 characters (~920px) across `/interview`, `/challenge`, `/signup`, `/about`, and `/pricing` to prevent Google SERP truncation.
+
 ---
 
 ## 📝 Agent Guidelines for Maintaining Context
@@ -158,4 +168,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-11-01 (Resolved email signup infinite loading: added service-role instant account activation, Upstash rate limit circuit breaker, profiles enum alignment, and client timeouts)*
+*Last Updated: 2026-11-01 (Technical SEO Audit Resolution: per-route canonicals, complete OpenGraph tags, SSR login/signup crawler links, Server Component architecture for /interview and /challenge, robots.txt disallow for /trainer, FAQPage JSON-LD schemas, and button accessibility)*

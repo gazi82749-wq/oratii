@@ -1098,6 +1098,7 @@ export default function SpeechCoach() {
                             {isRecording && !isPaused && <div className="absolute -inset-3 rounded-full border-4 border-rose-500 animate-ping opacity-30"></div>}
                             <button 
                               onClick={isRecording ? stopRecording : startRecording}
+                              aria-label={isRecording ? "Stop recording speech" : "Start recording speech"}
                               className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-4xl sm:text-5xl transition-all duration-300 shadow-2xl cursor-pointer ${
                                 isRecording 
                                   ? 'bg-gradient-to-br from-rose-500 to-rose-600 text-white scale-95 shadow-rose-500/40' 
@@ -1530,6 +1531,7 @@ export default function SpeechCoach() {
                             {isRecording && <div className="absolute -inset-3 rounded-full border-4 border-rose-400 animate-ping opacity-20"></div>}
                             <button
                               onClick={isRecording ? stopRecording : startRecording}
+                              aria-label={isRecording ? "Stop recording speech practice" : "Start recording speech practice"}
                               className={`w-24 h-24 rounded-full flex items-center justify-center text-4xl transition-all shadow-sm ${
                                 isRecording
                                   ? 'bg-rose-50 border-4 border-rose-200 text-rose-600 scale-95'
