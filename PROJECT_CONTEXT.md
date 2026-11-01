@@ -159,6 +159,11 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
   - **Accessibility**: Added explicit `aria-label` attributes to microphone and session recording buttons in `src/app/speech-coach/page.tsx`.
   - **SERP Snippet Optimization**: Shortened meta descriptions to under 155 characters (~920px) across `/interview`, `/challenge`, `/signup`, `/about`, and `/pricing` to prevent Google SERP truncation.
 
+* **Brand Entity, Backlink Foundation & Citation Architecture (Competitive Benchmarking)**:
+  - **Entity Knowledge Graph Schema (`src/app/layout.tsx`)**: Upgraded `Organization` schema with official `sameAs` profile entities (X/Twitter, LinkedIn, GitHub, Product Hunt), explicit `ContactPoint` (`support@oratii.in`), and enriched `WebApplication` schema with multi-OS support (`Web, iOS, Android, macOS, Windows`), browser requirements, and feature lists.
+  - **PWA Store Readiness (`src/app/manifest.ts`)**: Injected rich `screenshots` (desktop and mobile `form_factor` previews) and extended app categories (`education`, `productivity`, `utilities`) required for Google Play Store TWA (Trusted Web Activity) and Microsoft Store catalog inclusion.
+  - **Authoritative Citation Asset (`/research`)**: Launched the official *AI Speech & Interview Communication Benchmark Report 2026* (`src/app/research/page.tsx`) with vocal pacing standards (130-155 WPM), filler word distribution, and STAR 50% action rule metrics. Features an embeddable APA/MLA/Markdown citation box for bloggers and universities to cite and backlink to Oratii. Linked in `src/app/sitemap.ts` and `Footer.tsx`.
+
 ---
 
 ## 📝 Agent Guidelines for Maintaining Context
@@ -168,4 +173,4 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 > 2. **Update `PROJECT_CONTEXT.md`** whenever a new route, database table, API endpoint, or major configuration change is made.
 > 3. **Ensure Zero Dummy Data**: Always connect Admin views to live Supabase DB queries or `/api/admin/*` endpoints.
 
-*Last Updated: 2026-11-01 (Technical SEO Audit Resolution: per-route canonicals, complete OpenGraph tags, SSR login/signup crawler links, Server Component architecture for /interview and /challenge, robots.txt disallow for /trainer, FAQPage JSON-LD schemas, and button accessibility)*
+*Last Updated: 2026-11-02 (Brand Entity & Backlink Foundation: /research citation benchmark report, Organization sameAs entity profiles, PWA store screenshots, and sitemap/footer links)*

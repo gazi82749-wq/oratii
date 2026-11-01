@@ -124,14 +124,24 @@ const softwareAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Oratii | AI Speech & Interview Coach',
-  operatingSystem: 'Web',
+  operatingSystem: 'All modern web browsers, Windows, macOS, iOS, Android',
   applicationCategory: 'EducationalApplication',
+  applicationSubCategory: 'Communication Skills & Interview Preparation',
+  browserRequirements: 'Requires modern web browser with microphone and camera support',
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'USD',
   },
+  featureList: [
+    'Real-time vocal pacing and WPM tracking',
+    'Automatic filler word detection',
+    'Interactive AI video mock interviews with STAR framework scoring',
+    'Academic viva defense practice simulator',
+    '20-Day Public Speaking Challenge with streak rewards',
+  ],
   description: 'AI-powered speech, voice mock interview, and daily communication coach providing real-time feedback on vocal pacing, filler words, and answer structure.',
+  screenshot: `${siteUrl}/og-image.png`,
 };
 
 const organizationSchema = {
@@ -140,6 +150,19 @@ const organizationSchema = {
   name: 'Oratii',
   url: siteUrl,
   logo: `${siteUrl}/icon-512.png`,
+  sameAs: [
+    'https://twitter.com/oratiiapp',
+    'https://www.linkedin.com/company/oratii',
+    'https://github.com/gazi82749-wq/oratii',
+    'https://www.producthunt.com/products/oratii',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'support@oratii.in',
+    contactType: 'customer support',
+    availableLanguage: ['English', 'Hindi'],
+  },
+  description: 'Oratii is an AI-powered communication, public speaking, and mock interview coaching platform helping students and professionals speak with confidence.',
 };
 
 import GlobalErrorLogger from "../components/GlobalErrorLogger";

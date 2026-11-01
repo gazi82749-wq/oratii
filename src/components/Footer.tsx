@@ -36,6 +36,7 @@ export default function Footer() {
             <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Company</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/about" className="hover:text-amber-400 transition-colors">About Us</Link></li>
+              <li><Link href="/research" className="hover:text-amber-400 transition-colors">Research &amp; Benchmarks</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400 transition-colors">Contact Us</Link></li>
               <li>
                 <Link href="/#trainer-portal" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
