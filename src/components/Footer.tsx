@@ -1,8 +1,26 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from './Logo';
 import { GraduationCap } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function Footer() {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <footer className="w-full bg-[#0B0E1B] text-slate-300 relative pt-12 sm:pt-16 pb-24 sm:pb-12 px-4 sm:px-6 mt-auto border-t border-slate-800/80 overflow-hidden">
       {/* Top brand gradient line */}
@@ -65,8 +83,17 @@ export default function Footer() {
               <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview Studio</Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>
-              <li><Link href="/signup" className="hover:text-amber-400 transition-colors">Get Started Free</Link></li>
-              <li><Link href="/login" className="hover:text-amber-400 transition-colors">Account Login</Link></li>
+              {user ? (
+                <>
+                  <li><Link href="/dashboard" rel="nofollow" className="hover:text-amber-400 transition-colors">My Dashboard</Link></li>
+                  <li><Link href="/reports" rel="nofollow" className="hover:text-amber-400 transition-colors">Session Reports</Link></li>
+                </>
+              ) : (
+                <>
+                  <li><Link href="/signup" className="hover:text-amber-400 transition-colors">Get Started Free</Link></li>
+                  <li><Link href="/login" className="hover:text-amber-400 transition-colors">Account Login</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
