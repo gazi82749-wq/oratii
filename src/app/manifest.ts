@@ -18,15 +18,6 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/og-image.png',
         sizes: '1200x630',
         type: 'image/png',
-        form_factor: 'wide',
-        label: 'Oratii AI Speech & Mock Interview Studio',
-      },
-      {
-        src: '/og-image.png',
-        sizes: '1200x630',
-        type: 'image/png',
-        form_factor: 'narrow',
-        label: 'Oratii Real-time Vocal Analytics & Feedback',
       },
     ],
     shortcuts: [
