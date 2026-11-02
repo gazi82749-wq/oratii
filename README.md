@@ -19,7 +19,7 @@
 
 ## 🌟 What is Oratii?
 
-**Oratii** is a full-stack, AI-powered platform that helps students, professionals, and educators become exceptional communicators. From real-time speech analysis and slide deck audits to AI mock interviews and a 20-day habit-building challenge — Oratii gives you the tools to own every stage, boardroom, and screen.
+**Oratii** is a full-stack, AI-powered platform that helps students, job seekers, and professionals become exceptional communicators. From realistic AI mock interviews with STAR framework scoring to real-time speech pacing and a 20-day habit-building challenge — Oratii gives you the tools to ace every interview, meeting, and screen.
 
 > Built for the modern communicator. Powered by state-of-the-art AI models, real-time speech recognition, and in-browser computer vision.
 
