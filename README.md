@@ -8,10 +8,8 @@
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://oratii.in)
-[![License: MIT](https://img.shields.io/badge/License-MIT-F2A93B?style=for-the-badge)](LICENSE)
 
 [**🌐 Live Demo → oratii.in**](https://oratii.in) &nbsp;·&nbsp; [**🐛 Report Bug**](https://oratii.in/feedback) &nbsp;·&nbsp; [**✨ Request Feature**](https://oratii.in/feedback)
 
@@ -50,13 +48,13 @@ Real-time microphone recording + audio file upload (MP3, WAV, M4A, FLAC). Instan
 - **Words Per Minute (WPM)** pacing with target zone indicators
 - **Filler word detection** — "um", "uh", "like", "you know" with exact timestamps
 - **Vocal tone scoring** — clarity, energy, and confidence metrics
-- **Deep AI analysis** — structured improvement recommendations powered by Gemini
+- **Deep AI analysis** — structured improvement recommendations and speech rewriting
 
 ### 📊 Slide Deck Analyzer
 Upload PowerPoint (PPTX) or PDF decks for a full AI audit:
 - Visual clutter & text density scoring per slide
 - Structural readability and information hierarchy review
-- Live mode with body language tracking (eye contact + posture via MediaPipe GPU)
+- Live mode with body language tracking (eye contact + posture telemetry)
 
 ### 🤝 AI Mock Interview Studio
 A photorealistic dual-pane interview experience:
@@ -80,28 +78,19 @@ Educator-first cohort management platform:
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Architecture Overview
 
-| Layer | Technology |
+| Component | Architecture & Design |
 |:---|:---|
-| **Framework** | Next.js 14.2.1 (App Router, React 18, SSR + Client Components) |
-| **Language** | TypeScript 5.x |
-| **Styling** | Tailwind CSS 3.4, Vanilla CSS Keyframes, Glassmorphism, Dark Mode |
-| **Database & Auth** | Supabase (PostgreSQL, Row Level Security, Auth Triggers) |
-| **AI Models** | Multi-model AI system with multimodal text + vision capabilities |
-| **Speech-to-Text** | Deepgram Nova-2 (real-time STT) |
-| **Client ML / CV** | MediaPipe Tasks Vision (GPU in-browser eye contact & posture) |
-| **AI Reliability** | Multi-provider failover with automatic circuit breakers for 99.9% uptime |
-| **Payments** | Razorpay Checkout SDK & Webhook verification |
-| **Notifications** | VAPID Web Push (`web-push`) + Resend Transactional Email |
-| **Analytics** | Google Analytics 4 + Google Tag Manager |
-| **File Processing** | pdf.js, JSZip (PPTX parsing), pdf-parse, ConvertAPI |
-| **Media Recording** | react-webcam, RecordRTC (WebM/WAV), IndexedDB |
-| **Charts & Export** | Recharts, jsPDF + html2canvas |
-| **Rate Limiting** | Upstash Redis + `@upstash/ratelimit` |
-| **Error Monitoring** | Sentry (`@sentry/nextjs`) |
-| **Testing** | Jest + React Testing Library + Playwright (E2E) |
-| **Deployment** | Vercel (Edge Network, Auto CI/CD) |
+| **Framework** | Next.js 14 (App Router, Server Components, Route Handlers) |
+| **Language** | TypeScript |
+| **Frontend Styling** | Tailwind CSS, Glassmorphic UI, Responsive Mobile Layouts |
+| **Audio Processing** | High-precision acoustic telemetry & streaming neural transcription |
+| **Vision Analytics** | In-browser client-side eye contact & posture estimation |
+| **AI Evaluation Engine** | Multi-model fallback waterfall with automatic failover & circuit breakers |
+| **Data & Authentication** | PostgreSQL with Row Level Security, Auth Session Tokens |
+| **Realtime Monitoring** | Automated health checks, error logging, and performance monitoring |
+| **Deployment** | Vercel Edge Global Network with Automated CI/CD |
 
 ---
 
@@ -189,50 +178,9 @@ npm test          # Jest unit tests
 
 ## 🔑 Environment Variables
 
-Copy `.env.example` to `.env.local` and fill in:
+Configuration parameters are managed securely via `.env.local`. Reference `.env.example` for the required configuration template.
 
-```env
-# ─── Supabase ──────────────────────────────────────────────────
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-
-# ─── AI (required — powers all coaching features) ──────────────
-GEMINI_API_KEY=
-GROQ_API_KEY=
-OPENROUTER_API_KEY=
-CEREBRAS_API_KEY=
-
-# ─── Speech-to-Text (Deepgram) ─────────────────────────────────
-DEEPGRAM_API_KEY=
-
-# ─── Payments (Razorpay) ───────────────────────────────────────
-NEXT_PUBLIC_RAZORPAY_KEY_ID=
-RAZORPAY_KEY_ID=
-RAZORPAY_KEY_SECRET=
-RAZORPAY_WEBHOOK_SECRET=
-
-# ─── Email (Resend) ────────────────────────────────────────────
-RESEND_API_KEY=
-
-# ─── Push Notifications (VAPID) ────────────────────────────────
-NEXT_PUBLIC_VAPID_PUBLIC_KEY=
-VAPID_PRIVATE_KEY=
-VAPID_CONTACT_EMAIL=mailto:your@email.com
-
-# ─── File Conversion ───────────────────────────────────────────
-CONVERTAPI_SECRET=
-
-# ─── Rate Limiting (Upstash Redis) ────────────────────────────
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
-
-# ─── Internal Security ─────────────────────────────────────────
-ADMIN_SETUP_SECRET=
-WORKER_SECRET=
-```
-
-> ⚠️ **Never commit `.env.local` to version control.** It is already listed in `.gitignore`.
+> ⚠️ **Never commit `.env.local` to version control.** It is protected under `.gitignore`.
 
 ---
 
