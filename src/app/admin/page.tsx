@@ -293,6 +293,7 @@ export default function AdminDashboard() {
       });
 
       // Calculate daily active users for past 7 days ending today
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const past7DaysData: { day: string; date: string; users: number; sessions: number }[] = [];
 
       for (let i = 6; i >= 0; i--) {
