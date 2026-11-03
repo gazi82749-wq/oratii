@@ -90,7 +90,7 @@ All Admin routes bypass client RLS policies using `verifyAdminCaller` and `SUPAB
 
 | Admin Route | Module Name | Features & Real-Time Sync |
 | :--- | :--- | :--- |
-| `/admin` | **Dashboard Overview** | KPI cards, 6-month user growth chart, MRR revenue chart, daily active user trends, live user signup & session activity feed. |
+| `/admin` | **Dashboard Overview** | Live KPI cards (dynamic MoM growth, 30-day active user rate, conversion %), 6-month dual-mode user growth chart (Monthly New Registrations vs Cumulative Total), MRR revenue chart, past 7-day Daily Active Users (DAU) bar chart, live user signup & session activity feed. |
 | `/admin/users` | **All Users** | User search, pagination, plan upgrade (`free`/`pro`/`enterprise`), role toggling (`admin`/`user`), credit allocation, CSV export. |
 | `/admin/users/[id]` | **User Profile Detail** | Detailed profile view with user joined date, active plan, individual speech/PPT history, and payment transactions. |
 | `/admin/users/premium` | **Premium Users** | Filtered view of active Pro and Enterprise subscribers. |

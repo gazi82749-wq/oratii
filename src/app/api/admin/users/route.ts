@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     }
     const { searchParams } = new URL(req.url);
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 100);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 1000);
     const search = (searchParams.get('search') || '').toLowerCase();
     const plan = searchParams.get('plan') || 'all';
 
