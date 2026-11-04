@@ -73,6 +73,10 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | `/pricing` & `/dashboard/billing` | Plan comparison and Razorpay checkout modal (Pro & Enterprise) | `/api/razorpay/create-order`, `/api/webhooks/razorpay` |
 | `/feedback` & `/support` | Help desk ticket submission and platform rating form | `/api/contact`, `/api/admin/feedback` |
 | `/trainer` | Trainer Academy for cohort management, batch assignments, & code joins | `/api/trainer/*`, `/join/[code]` |
+| `/campus-placement-interview` | SEO Pillar: Engineering & graduate campus placement guide, round breakdowns, 5 common questions & readiness checklist | - |
+| `/hr-interview-questions-freshers` | SEO Pillar: Top 10 fresher HR interview questions, model answers, traps, and 1-click AI mock practice | - |
+| `/star-method-practice` | SEO Pillar: STAR method behavioral framework, 50% Action Rule, before/after teardowns, & AI scoring | - |
+| `/tell-me-about-yourself` | SEO Pillar: 60-Second Present-Past-Future introduction formula, scripts by experience level, & WPM speedometer test | - |
 
 ---
 

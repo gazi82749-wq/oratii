@@ -28,7 +28,7 @@ export default function Footer() {
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-indigo-950/20 to-transparent pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-8 mb-10 sm:mb-14">
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-4">
               <Logo className="text-white text-3xl" />
@@ -98,13 +98,23 @@ export default function Footer() {
           </div>
 
           <div>
+            <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Interview Prep</h4>
+            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
+              <li><Link href="/campus-placement-interview" className="hover:text-amber-400 transition-colors">Campus Placements</Link></li>
+              <li><Link href="/hr-interview-questions-freshers" className="hover:text-amber-400 transition-colors">Top HR Questions</Link></li>
+              <li><Link href="/star-method-practice" className="hover:text-amber-400 transition-colors">STAR Method Practice</Link></li>
+              <li><Link href="/tell-me-about-yourself" className="hover:text-amber-400 transition-colors">&ldquo;Tell Me About Yourself&rdquo;</Link></li>
+            </ul>
+          </div>
+
+          <div>
             <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Company</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/about" className="hover:text-amber-400 transition-colors">About Us</Link></li>
               <li><Link href="/research" className="hover:text-amber-400 transition-colors">Research &amp; Benchmarks</Link></li>
               <li><Link href="/contact" className="hover:text-amber-400 transition-colors">Contact Us</Link></li>
               <li>
-                <Link href="/#trainer-portal" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <Link href="/trainer" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
                   <GraduationCap size={15} className="text-[#F2A93B]" /> For Institutes &amp; Trainers
                 </Link>
               </li>

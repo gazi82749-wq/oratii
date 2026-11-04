@@ -31,6 +31,9 @@ const gaId = rawGaId.startsWith('G-') ? rawGaId : `G-${rawGaId}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: siteUrl,
+  },
   title: {
     template: '%s | Oratii',
     default: 'Oratii | AI Speech & Interview Coach',
