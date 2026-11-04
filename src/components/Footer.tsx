@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Gauge } from 'lucide-react';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function Footer() {
@@ -80,6 +80,7 @@ export default function Footer() {
             <h4 className="text-[11px] font-black text-white uppercase tracking-widest mb-4">Product</h4>
             <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
               <li><Link href="/speech-coach" className="hover:text-amber-400 transition-colors">Speech Coach</Link></li>
+              <li><Link href="/tools/speech-speed-wpm-calculator" className="hover:text-amber-400 transition-colors flex items-center gap-1.5"><Gauge size={13} className="text-[#F2A93B]" /> Free WPM Calculator</Link></li>
               <li><Link href="/interview" className="hover:text-amber-400 transition-colors">Mock Interview Studio</Link></li>
               <li><Link href="/challenge" className="hover:text-amber-400 transition-colors">Daily Challenge</Link></li>
               <li><Link href="/pricing" className="hover:text-amber-400 transition-colors">Pricing Plans</Link></li>

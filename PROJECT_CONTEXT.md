@@ -77,6 +77,7 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | `/hr-interview-questions-freshers` | SEO Pillar: Top 10 fresher HR interview questions, model answers, traps, and 1-click AI mock practice | - |
 | `/star-method-practice` | SEO Pillar: STAR method behavioral framework, 50% Action Rule, before/after teardowns, & AI scoring | - |
 | `/tell-me-about-yourself` | SEO Pillar: 60-Second Present-Past-Future introduction formula, scripts by experience level, & WPM speedometer test | - |
+| `/tools/speech-speed-wpm-calculator` | Public Utility Tool: Free browser Speech Speed (WPM) Calculator with live Web Speech mic speedometer, benchmark passages, filler word tracking, & interview cadence guides | - |
 
 ---
 
