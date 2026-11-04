@@ -62,16 +62,18 @@ const FILLER_WORDS = ['um', 'uh', 'like', 'actually', 'basically', 'you know', '
 
 function getPaceVerdict(wpm: number): {
   category: string;
-  badgeColor: string;
-  textColor: string;
+  badgeBg: string;
+  badgeBorder: string;
+  badgeText: string;
   description: string;
   status: 'slow' | 'conversational' | 'ideal' | 'fast' | 'rushed';
 } {
   if (wpm === 0) {
     return {
       category: 'Ready to Test',
-      badgeColor: 'bg-slate-800 text-slate-300 border-slate-700',
-      textColor: 'text-slate-400',
+      badgeBg: 'bg-[#1A2035]',
+      badgeBorder: 'border-indigo-900/40',
+      badgeText: 'text-slate-300',
       description: 'Start speaking or reading to measure your real-time words per minute.',
       status: 'ideal',
     };
@@ -79,8 +81,9 @@ function getPaceVerdict(wpm: number): {
   if (wpm < 110) {
     return {
       category: 'Too Slow / Hesitant',
-      badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-      textColor: 'text-blue-400',
+      badgeBg: 'bg-blue-950/40',
+      badgeBorder: 'border-blue-500/40',
+      badgeText: 'text-blue-300',
       description: 'Pacing feels disconnected or hesitant. Listeners may lose engagement. Aim for 130–150 WPM.',
       status: 'slow',
     };
@@ -88,8 +91,9 @@ function getPaceVerdict(wpm: number): {
   if (wpm < 130) {
     return {
       category: 'Deliberate / Technical Pace',
-      badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-      textColor: 'text-cyan-400',
+      badgeBg: 'bg-cyan-950/40',
+      badgeBorder: 'border-cyan-500/40',
+      badgeText: 'text-cyan-300',
       description: 'Great for explaining complex technical architectures or high-density code, but slightly slow for everyday conversation.',
       status: 'conversational',
     };
@@ -97,8 +101,9 @@ function getPaceVerdict(wpm: number): {
   if (wpm <= 155) {
     return {
       category: 'Ideal Conversational & Interview Pace',
-      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-      textColor: 'text-emerald-400',
+      badgeBg: 'bg-[#2FBF9F]/15',
+      badgeBorder: 'border-[#2FBF9F]/50',
+      badgeText: 'text-[#2FBF9F]',
       description: 'The golden standard. Clear, confident, authoritative, and easy for recruiters to digest without cognitive strain.',
       status: 'ideal',
     };
@@ -106,16 +111,18 @@ function getPaceVerdict(wpm: number): {
   if (wpm <= 175) {
     return {
       category: 'Energetic / Fast Presentation',
-      badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-      textColor: 'text-amber-400',
+      badgeBg: 'bg-[#F2A93B]/15',
+      badgeBorder: 'border-[#F2A93B]/50',
+      badgeText: 'text-[#F2A93B]',
       description: 'Dynamic and passionate, but borderlining on rushed. Make sure to pause after periods to let key points sink in.',
       status: 'fast',
     };
   }
   return {
     category: 'Too Fast / Nervous Rushing',
-    badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
-    textColor: 'text-rose-400',
+    badgeBg: 'bg-rose-950/40',
+    badgeBorder: 'border-rose-500/40',
+    badgeText: 'text-rose-300',
     description: 'Recruiters often perceive 175+ WPM as nervous rushing. Slow down, take full breaths, and use silent pauses instead of filler words.',
     status: 'rushed',
   };
@@ -398,96 +405,124 @@ export default function WpmCalculatorTool() {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Tab Navigation */}
-      <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-slate-900/90 border border-slate-800 rounded-2xl mb-8 backdrop-blur-md">
+      {/* Tab Navigation with Oratii Brand Navy & Gold */}
+      <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-[#0F1426] border border-indigo-900/60 rounded-2xl mb-8 shadow-xl">
         <button
           onClick={() => setActiveTab('live')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'live'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+              ? 'bg-gradient-to-r from-[#F2A93B] to-[#D98200] text-[#0F1426] shadow-lg shadow-[#F2A93B]/25'
+              : 'text-slate-300 hover:text-white hover:bg-[#1A2035]'
           }`}
         >
-          <Mic size={16} /> Live Voice Test
+          <Mic size={15} /> Live Voice Test
         </button>
         <button
           onClick={() => setActiveTab('read-along')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'read-along'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+              ? 'bg-gradient-to-r from-[#F2A93B] to-[#D98200] text-[#0F1426] shadow-lg shadow-[#F2A93B]/25'
+              : 'text-slate-300 hover:text-white hover:bg-[#1A2035]'
           }`}
         >
-          <FileText size={16} /> Read-Along Challenge
+          <FileText size={15} /> Read-Along Challenge
         </button>
         <button
           onClick={() => setActiveTab('text')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'text'
-              ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+              ? 'bg-gradient-to-r from-[#F2A93B] to-[#D98200] text-[#0F1426] shadow-lg shadow-[#F2A93B]/25'
+              : 'text-slate-300 hover:text-white hover:bg-[#1A2035]'
           }`}
         >
-          <Gauge size={16} /> Transcript Calculator
+          <Gauge size={15} /> Transcript Calculator
         </button>
       </div>
 
       {/* Main Interactive Stage Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
-        {/* Left Column: Interactive Speedometer Dial (5 cols) */}
-        <div className="lg:col-span-5 bg-gradient-to-b from-slate-900/95 to-slate-950 border border-slate-800/90 rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-2xl relative overflow-hidden">
-          {/* Subtle glow backdrop */}
-          <div className="absolute top-1/4 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Left Column: Oratii Signature Speedometer Card (5 cols) */}
+        <div className="lg:col-span-5 bg-[#0F1426] border border-indigo-900/60 rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-2xl shadow-indigo-950/50 relative overflow-hidden">
+          {/* Subtle brand glow backdrop */}
+          <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#F2A93B]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-[#2FBF9F]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Real-Time Speedometer
+            <span className="w-2 h-2 rounded-full bg-[#2FBF9F] animate-pulse" />
+            <span className="text-[11px] font-black uppercase tracking-widest text-[#F2A93B]">
+              Oratii Pace Telemetry
             </span>
           </div>
 
           {/* SVG Speedometer Gauge */}
-          <div className="relative w-72 h-44 my-4 flex items-center justify-center">
+          <div className="relative w-72 h-44 my-3 flex items-center justify-center">
             <svg viewBox="0 0 240 140" className="w-full h-full overflow-visible">
-              {/* Background Arc Bands */}
-              {/* 0 - 110 WPM: Deliberate/Slow (Blue) */}
+              <defs>
+                <linearGradient id="optimalTrackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F2A93B" />
+                  <stop offset="100%" stopColor="#2FBF9F" />
+                </linearGradient>
+              </defs>
+
+              {/* Background Base Arc */}
+              <path
+                d="M 20 120 A 100 100 0 0 1 220 120"
+                fill="none"
+                stroke="#1B2140"
+                strokeWidth="16"
+                strokeLinecap="round"
+              />
+
+              {/* 0 - 110 WPM: Deliberate / Slow (Navy Blue) */}
               <path
                 d="M 20 120 A 100 100 0 0 1 70 33"
                 fill="none"
                 stroke="#3B82F6"
                 strokeWidth="14"
                 strokeLinecap="round"
-                opacity="0.3"
+                opacity="0.45"
               />
-              {/* 110 - 130 WPM: Technical (Cyan) */}
+
+              {/* 110 - 130 WPM: Technical / Deliberate (Cyan) */}
               <path
                 d="M 72 31 A 100 100 0 0 1 120 20"
                 fill="none"
                 stroke="#06B6D4"
                 strokeWidth="14"
-                opacity="0.45"
+                opacity="0.6"
               />
-              {/* 130 - 155 WPM: Ideal Interview Pace (Green - Target Zone) */}
+
+              {/* 130 - 155 WPM: Oratii Target Zone (Signature Emerald / Mint #2FBF9F) */}
               <path
                 d="M 120 20 A 100 100 0 0 1 168 31"
                 fill="none"
-                stroke="#10B981"
+                stroke="#2FBF9F"
                 strokeWidth="18"
                 opacity="0.95"
               />
-              {/* 155 - 175 WPM: Fast/Dynamic (Amber) */}
+
+              {/* 155 - 175 WPM: Energetic / Fast (Oratii Gold #F2A93B) */}
               <path
-                d="M 170 33 A 100 100 0 0 1 220 120"
+                d="M 170 33 A 100 100 0 0 1 200 68"
                 fill="none"
-                stroke="#F59E0B"
+                stroke="#F2A93B"
+                strokeWidth="14"
+                opacity="0.75"
+              />
+
+              {/* 175+ WPM: Too Fast / Rushed (Rose Red) */}
+              <path
+                d="M 200 68 A 100 100 0 0 1 220 120"
+                fill="none"
+                stroke="#F43F5E"
                 strokeWidth="14"
                 strokeLinecap="round"
-                opacity="0.5"
+                opacity="0.85"
               />
 
               {/* Center Pivot Circle */}
-              <circle cx="120" cy="120" r="10" fill="#F2A93B" />
-              <circle cx="120" cy="120" r="4" fill="#0B0E1B" />
+              <circle cx="120" cy="120" r="11" fill="#F2A93B" />
+              <circle cx="120" cy="120" r="4.5" fill="#090D1A" />
 
               {/* Needle */}
               <g
@@ -506,15 +541,15 @@ export default function WpmCalculatorTool() {
                   strokeWidth="3.5"
                   strokeLinecap="round"
                 />
-                <circle cx="120" cy="28" r="3.5" fill="#FFFFFF" />
+                <circle cx="120" cy="28" r="4" fill="#FFFFFF" />
               </g>
 
               {/* Gauge Labels */}
-              <text x="25" y="136" fill="#94A3B8" fontSize="10" fontWeight="bold">0</text>
-              <text x="64" y="30" fill="#94A3B8" fontSize="9">110</text>
-              <text x="110" y="14" fill="#10B981" fontSize="10" fontWeight="bold">145</text>
-              <text x="170" y="30" fill="#94A3B8" fontSize="9">175</text>
-              <text x="212" y="136" fill="#94A3B8" fontSize="10" fontWeight="bold">220+</text>
+              <text x="24" y="136" fill="#64748B" fontSize="10" fontWeight="bold">0</text>
+              <text x="63" y="30" fill="#64748B" fontSize="9">110</text>
+              <text x="110" y="13" fill="#2FBF9F" fontSize="10" fontWeight="bold">145</text>
+              <text x="170" y="30" fill="#F2A93B" fontSize="9">175</text>
+              <text x="210" y="136" fill="#64748B" fontSize="10" fontWeight="bold">220+</text>
             </svg>
           </div>
 
@@ -523,35 +558,35 @@ export default function WpmCalculatorTool() {
             <span className="text-5xl sm:text-6xl font-black text-white tracking-tight font-mono">
               {displayWpm}
             </span>
-            <span className="text-lg font-bold text-amber-400 uppercase tracking-widest">
+            <span className="text-lg font-black text-[#F2A93B] uppercase tracking-widest">
               WPM
             </span>
           </div>
 
           {/* Pace Category Badge */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-xs font-bold my-2 ${verdict.badgeColor}`}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-xs font-black uppercase tracking-wider my-2 ${verdict.badgeBg} ${verdict.badgeBorder} ${verdict.badgeText}`}
           >
             {verdict.category}
           </div>
 
-          <p className="text-xs text-slate-400 max-w-xs mt-1 leading-relaxed">
+          <p className="text-xs text-slate-300 max-w-xs mt-1 leading-relaxed">
             {verdict.description}
           </p>
 
-          {/* Key Metric Pills */}
-          <div className="w-full grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-slate-800">
-            <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-2.5 text-left">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">
+          {/* Key Metric Cards */}
+          <div className="w-full grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-indigo-900/60">
+            <div className="bg-[#1A2035]/80 border border-indigo-900/40 rounded-xl p-2.5 text-left">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">
                 Target Cadence
               </span>
-              <span className="text-sm font-bold text-emerald-400">130 – 155 WPM</span>
+              <span className="text-sm font-black text-[#2FBF9F]">130 – 155 WPM</span>
             </div>
-            <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-2.5 text-left">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold block">
+            <div className="bg-[#1A2035]/80 border border-indigo-900/40 rounded-xl p-2.5 text-left">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">
                 Filler Words
               </span>
-              <span className={`text-sm font-bold ${totalLiveFillerCount > 3 ? 'text-rose-400' : 'text-slate-200'}`}>
+              <span className={`text-sm font-black ${totalLiveFillerCount > 3 ? 'text-rose-400' : 'text-slate-100'}`}>
                 {activeTab === 'live' ? `${totalLiveFillerCount} detected` : 'Voice Mode'}
               </span>
             </div>
@@ -560,35 +595,35 @@ export default function WpmCalculatorTool() {
           {displayWpm > 0 && (
             <button
               onClick={copyResults}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-[#F2A93B] transition-colors cursor-pointer"
             >
-              {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+              {copied ? <Check size={14} className="text-[#2FBF9F]" /> : <Copy size={14} />}
               {copied ? 'Copied to clipboard!' : 'Copy your pace score'}
             </button>
           )}
         </div>
 
         {/* Right Column: Active Mode Interactive Controls (7 cols) */}
-        <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800/90 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-xl flex flex-col justify-between min-h-[460px]">
+        <div className="lg:col-span-7 bg-[#0F1426] border border-indigo-900/60 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-indigo-950/50 flex flex-col justify-between min-h-[460px]">
           {/* TAB 1: LIVE VOICE TEST */}
           {activeTab === 'live' && (
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Mic className="text-amber-400" size={20} />
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
+                    <Mic className="text-[#F2A93B]" size={20} />
                     Live Microphone Test
                   </h3>
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold px-3 py-1 bg-slate-800 border border-slate-700/60 rounded-lg text-slate-300">
-                    <Clock size={13} className="text-amber-400" />
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold px-3 py-1 bg-[#1A2035] border border-indigo-900/60 rounded-lg text-slate-200">
+                    <Clock size={13} className="text-[#F2A93B]" />
                     <span>
                       {Math.floor(liveSeconds / 60)}:
                       {String(liveSeconds % 60).padStart(2, '0')}
                     </span>
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-400">
-                  Click the button below and speak for 15–30 seconds. The calculator transcribes your voice in the browser, tracks elapsed time, and calculates your precise speaking cadence.
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Click the button below and speak for 15–30 seconds. The calculator transcribes your speech live in your browser, measures elapsed time, and calculates your precise speaking cadence.
                 </p>
               </div>
 
@@ -600,16 +635,16 @@ export default function WpmCalculatorTool() {
               )}
 
               {/* Live Transcript Display Box */}
-              <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl min-h-[140px] max-h-[200px] overflow-y-auto text-left relative">
+              <div className="p-4 bg-[#090D1A]/90 border border-indigo-900/60 rounded-2xl min-h-[140px] max-h-[200px] overflow-y-auto text-left relative">
                 {fullLiveText ? (
                   <p className="text-sm text-slate-200 leading-relaxed font-sans">
                     <span>{liveTranscript}</span>
-                    <span className="text-amber-400/90 italic">{liveInterim}</span>
+                    <span className="text-[#F2A93B]/90 italic font-medium">{liveInterim}</span>
                   </p>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-center py-6 text-slate-500">
                     <Volume2 size={24} className="mb-2 opacity-50 text-slate-400" />
-                    <p className="text-xs">Your spoken transcript will appear here in real-time...</p>
+                    <p className="text-xs text-slate-400">Your spoken words will appear here in real-time...</p>
                   </div>
                 )}
               </div>
@@ -617,7 +652,7 @@ export default function WpmCalculatorTool() {
               {/* Filler Word Badges */}
               {liveFillersFound.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
                     Detected Fillers:
                   </span>
                   {liveFillersFound.map((f, i) => (
@@ -636,7 +671,7 @@ export default function WpmCalculatorTool() {
                 {!isListening ? (
                   <button
                     onClick={startLiveRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-[0.98]"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#F2A93B] to-[#D98200] hover:from-[#F2A93B] hover:to-amber-500 text-[#0F1426] font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-[#F2A93B]/25 active:scale-[0.98] cursor-pointer"
                   >
                     <Mic size={18} />
                     <span>Start Speaking (Free)</span>
@@ -644,7 +679,7 @@ export default function WpmCalculatorTool() {
                 ) : (
                   <button
                     onClick={stopLiveRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-600/20 animate-pulse active:scale-[0.98]"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-rose-600/25 animate-pulse active:scale-[0.98] cursor-pointer"
                   >
                     <Pause size={18} />
                     <span>Stop Recording</span>
@@ -654,7 +689,7 @@ export default function WpmCalculatorTool() {
                 <button
                   onClick={resetLiveRecording}
                   disabled={liveSeconds === 0 && !fullLiveText}
-                  className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:hover:bg-slate-800 text-slate-300 rounded-xl transition-colors font-bold text-xs"
+                  className="px-4 py-3.5 bg-[#1A2035] hover:bg-[#1B2140] border border-indigo-900/60 disabled:opacity-40 disabled:hover:bg-[#1A2035] text-slate-200 rounded-xl transition-colors font-bold text-xs cursor-pointer"
                   title="Reset"
                 >
                   <RotateCcw size={16} />
@@ -667,12 +702,12 @@ export default function WpmCalculatorTool() {
           {activeTab === 'read-along' && (
             <div className="space-y-5">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-1">
-                  <FileText className="text-amber-400" size={20} />
+                <h3 className="text-lg font-black text-white flex items-center gap-2 mb-1">
+                  <FileText className="text-[#F2A93B]" size={20} />
                   Read-Along Benchmark Test
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-400">
-                  Select a standardized passage. Click <strong>&ldquo;Start Timer&rdquo;</strong>, read the passage out loud naturally, and click <strong>&ldquo;Finished&rdquo;</strong> as soon as you finish the last sentence.
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Select a standardized passage. Click <strong>&ldquo;Start Timer&rdquo;</strong>, read the passage aloud naturally, and click <strong>&ldquo;Finished!&rdquo;</strong> the moment you say the last word.
                 </p>
               </div>
 
@@ -685,10 +720,10 @@ export default function WpmCalculatorTool() {
                       setSelectedPromptIdx(idx);
                       resetBenchmark();
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                       selectedPromptIdx === idx
-                        ? 'bg-amber-500/15 border-amber-500 text-amber-400'
-                        : 'bg-slate-800/40 border-slate-700/60 text-slate-400 hover:text-white'
+                        ? 'bg-[#F2A93B]/15 border-[#F2A93B] text-[#F2A93B]'
+                        : 'bg-[#1A2035]/60 border-indigo-900/40 text-slate-300 hover:text-white'
                     }`}
                   >
                     {prompt.title}
@@ -697,12 +732,12 @@ export default function WpmCalculatorTool() {
               </div>
 
               {/* Benchmark Text Display */}
-              <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl text-left relative">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80 text-[11px] text-slate-400">
-                  <span className="font-semibold text-slate-300">{currentPrompt.category}</span>
+              <div className="p-4 bg-[#090D1A]/90 border border-indigo-900/60 rounded-2xl text-left relative">
+                <div className="flex items-center justify-between pb-2 mb-2 border-b border-indigo-900/40 text-[11px] text-slate-400">
+                  <span className="font-bold text-slate-300">{currentPrompt.category}</span>
                   <span>
                     Word Count: <strong className="text-white">{currentPrompt.wordCount} words</strong> | Target:{' '}
-                    <strong className="text-emerald-400">~{currentPrompt.targetWpm} WPM</strong>
+                    <strong className="text-[#2FBF9F]">~{currentPrompt.targetWpm} WPM</strong>
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans">
@@ -715,7 +750,7 @@ export default function WpmCalculatorTool() {
                 {!isBenchmarkRunning && !benchmarkDone && (
                   <button
                     onClick={startBenchmark}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#F2A93B] to-[#D98200] hover:from-[#F2A93B] text-[#0F1426] font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-[#F2A93B]/25 cursor-pointer"
                   >
                     <Play size={18} />
                     <span>Start Reading Timer</span>
@@ -725,7 +760,7 @@ export default function WpmCalculatorTool() {
                 {isBenchmarkRunning && (
                   <button
                     onClick={finishBenchmark}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/20 animate-pulse"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#2FBF9F] hover:bg-[#2FBF9F]/90 text-[#0F1426] font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-[#2FBF9F]/25 animate-pulse cursor-pointer"
                   >
                     <CheckCircle2 size={18} />
                     <span>Finished Reading! ({benchmarkSeconds}s)</span>
@@ -735,7 +770,7 @@ export default function WpmCalculatorTool() {
                 {benchmarkDone && (
                   <button
                     onClick={resetBenchmark}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#1A2035] hover:bg-[#1B2140] border border-indigo-900/60 text-white font-bold rounded-xl transition-colors cursor-pointer"
                   >
                     <RotateCcw size={18} />
                     <span>Try Another Passage</span>
@@ -749,24 +784,24 @@ export default function WpmCalculatorTool() {
           {activeTab === 'text' && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-1">
-                  <Gauge className="text-amber-400" size={20} />
+                <h3 className="text-lg font-black text-white flex items-center gap-2 mb-1">
+                  <Gauge className="text-[#F2A93B]" size={20} />
                   Transcript &amp; Audio Duration Calculator
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   Paste your speech transcript or script, and specify how long your recorded audio or rehearsal took.
                 </p>
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1.5">
+                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider block mb-1.5">
                   Paste Script or Speech Transcript
                 </label>
                 <textarea
                   value={manualText}
                   onChange={(e) => setManualText(e.target.value)}
                   rows={4}
-                  className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition-colors leading-relaxed"
+                  className="w-full bg-[#090D1A]/90 border border-indigo-900/60 rounded-xl p-3 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-[#F2A93B] transition-colors leading-relaxed"
                   placeholder="Paste your interview answer, presentation script, or toast speech here..."
                 />
                 <span className="text-[11px] text-slate-400 mt-1 block">
@@ -776,7 +811,7 @@ export default function WpmCalculatorTool() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1">
+                  <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider block mb-1">
                     Minutes
                   </label>
                   <input
@@ -785,11 +820,11 @@ export default function WpmCalculatorTool() {
                     max="60"
                     value={manualDurationMinutes}
                     onChange={(e) => setManualDurationMinutes(Math.max(0, parseInt(e.target.value) || 0))}
-                    className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#090D1A]/90 border border-indigo-900/60 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-[#F2A93B]"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1">
+                  <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider block mb-1">
                     Seconds
                   </label>
                   <input
@@ -798,7 +833,7 @@ export default function WpmCalculatorTool() {
                     max="59"
                     value={manualDurationSeconds}
                     onChange={(e) => setManualDurationSeconds(Math.max(0, parseInt(e.target.value) || 0))}
-                    className="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#090D1A]/90 border border-indigo-900/60 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-[#F2A93B]"
                   />
                 </div>
               </div>
@@ -806,9 +841,9 @@ export default function WpmCalculatorTool() {
           )}
 
           {/* Bottom Conversion Bar directly linked into Oratii core apps */}
-          <div className="mt-6 pt-5 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 bg-amber-500/5 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 p-4 sm:p-5 rounded-b-3xl border-t border-amber-500/15">
+          <div className="mt-6 pt-5 border-t border-indigo-900/60 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#1A2035]/50 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 p-4 sm:p-5 rounded-b-3xl">
             <div className="flex items-center gap-2.5 text-left">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#F2A93B]/15 border border-[#F2A93B]/30 flex items-center justify-center text-[#F2A93B] shrink-0">
                 <Sparkles size={16} />
               </div>
               <div>
@@ -820,7 +855,7 @@ export default function WpmCalculatorTool() {
             </div>
             <Link
               href="/speech-coach"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#F2A93B] to-[#D98200] hover:from-[#F2A93B] text-[#0F1426] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shrink-0 cursor-pointer"
             >
               <span>Try Speech Coach</span>
               <ArrowRight size={13} />
