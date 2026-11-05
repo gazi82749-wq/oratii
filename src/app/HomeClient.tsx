@@ -130,27 +130,9 @@ export default function HomeClient() {
             </FadeUp>
 
             <FadeUp delay={300}>
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-6 text-xs font-semibold text-slate-500">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Real-time voice &amp; speech feedback</span>
-                </div>
-                <span className="hidden sm:inline text-slate-300">•</span>
-                <a
-                  href="https://devhunt.org/tool/oratii"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Oratii on DevHunt"
-                  className="inline-flex items-center hover:opacity-90 transition-opacity"
-                >
-                  <img
-                    src="https://devhunt.org/badge/oratii.svg"
-                    alt="Oratii - Featured on DevHunt"
-                    width={154}
-                    height={38}
-                    className="h-8 w-auto rounded-md shadow-2xs"
-                  />
-                </a>
+              <div className="flex items-center justify-center lg:justify-start gap-2 pt-6 text-xs font-semibold text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Real-time voice &amp; speech feedback</span>
               </div>
             </FadeUp>
           </div>
