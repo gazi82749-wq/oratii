@@ -74,6 +74,25 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
+
+            {/* DevHunt Featured Badge */}
+            <div className="mt-5">
+              <a
+                href="https://devhunt.org/tool/oratii"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Oratii on DevHunt"
+                className="inline-block hover:opacity-90 transition-opacity"
+              >
+                <img
+                  src="https://devhunt.org/badge/oratii.svg"
+                  alt="Oratii - Featured on DevHunt"
+                  width={180}
+                  height={44}
+                  className="h-9 w-auto rounded-lg border border-white/10"
+                />
+              </a>
+            </div>
           </div>
           
           <div>
