@@ -78,6 +78,7 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | `/star-method-practice` | SEO Pillar: STAR method behavioral framework, 50% Action Rule, before/after teardowns, & AI scoring | - |
 | `/tell-me-about-yourself` | SEO Pillar: 60-Second Present-Past-Future introduction formula, scripts by experience level, & WPM speedometer test | - |
 | `/tools/speech-speed-wpm-calculator` | Public Utility Tool: Free browser Speech Speed (WPM) Calculator with live Web Speech mic speedometer, benchmark passages, filler word tracking, & interview cadence guides | - |
+| `/tools/elevator-pitch-timer` | Public Utility Tool: Free Elevator Pitch Timer & Structurer (30s / 60s / 90s) with milestone roadmap pacing, Web Audio transition chimes, live Web Speech STT, teleprompter, and modular pitch builder | - |
 
 ---
 

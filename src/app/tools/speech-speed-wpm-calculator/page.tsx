@@ -237,9 +237,24 @@ export default function SpeechSpeedWpmCalculatorPage() {
       {/* Section 4: Related Preparation Hubs (Internal Linking) */}
       <section className="py-16 px-4 sm:px-6 max-w-5xl mx-auto w-full border-t border-slate-200/80">
         <h2 className="text-xl sm:text-3xl font-black text-[#0F1426] mb-8 text-center tracking-tight">
-          Explore Free Interview &amp; Speech Guides
+          Explore Free Interview &amp; Speech Tools &amp; Guides
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            href="/tools/elevator-pitch-timer"
+            className="p-5 bg-[#FEF7ED] border border-[#F2A93B]/60 rounded-2xl hover:border-[#D98200] hover:shadow-md transition-all group shadow-2xs"
+          >
+            <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#D98200] mb-1">
+              <Sparkles size={12} className="text-[#F2A93B]" />
+              New Free Tool
+            </div>
+            <h3 className="text-sm font-bold text-[#0F1426] group-hover:text-[#D98200] transition-colors mb-1">
+              Elevator Pitch Timer
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              30s, 60s &amp; 90s countdown with segment pacing &amp; script builder.
+            </p>
+          </Link>
           <Link
             href="/tell-me-about-yourself"
             className="p-5 bg-white border border-slate-200/90 rounded-2xl hover:border-[#F2A93B]/60 hover:shadow-md transition-all group shadow-2xs"
