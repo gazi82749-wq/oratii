@@ -17,6 +17,9 @@ import {
   Volume2,
   Copy,
   Check,
+  RefreshCw,
+  Award,
+  Zap,
 } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
@@ -32,7 +35,7 @@ interface BenchmarkPrompt {
 const BENCHMARK_PROMPTS: BenchmarkPrompt[] = [
   {
     id: 'fresher-intro',
-    title: '60-Second Fresher Introduction',
+    title: '60s Fresher Introduction',
     category: 'Interview Prep',
     targetWpm: 140,
     wordCount: 140,
@@ -40,7 +43,7 @@ const BENCHMARK_PROMPTS: BenchmarkPrompt[] = [
   },
   {
     id: 'star-answer',
-    title: 'STAR Method Behavioral Story',
+    title: 'STAR Behavioral Story',
     category: 'Behavioral Round',
     targetWpm: 145,
     wordCount: 152,
@@ -48,7 +51,7 @@ const BENCHMARK_PROMPTS: BenchmarkPrompt[] = [
   },
   {
     id: 'keynote-opening',
-    title: 'Executive Keynote Opening',
+    title: 'Keynote Speech Opening',
     category: 'Public Speaking',
     targetWpm: 125,
     wordCount: 131,
@@ -129,30 +132,37 @@ function getPaceVerdict(wpm: number): {
 export default function WpmCalculatorTool() {
   const [activeTab, setActiveTab] = useState<'live' | 'read-along' | 'text'>('live');
 
-  // --- Live Speech Recognition State ---
+  // --- Live Speech Recognition & Audio State ---
   const [isListening, setIsListening] = useState(false);
+  const [hasCompletedLive, setHasCompletedLive] = useState(false);
   const [liveSeconds, setLiveSeconds] = useState(0);
   const [liveTranscript, setLiveTranscript] = useState('');
   const [liveInterim, setLiveInterim] = useState('');
   const [speechSupported, setSpeechSupported] = useState(true);
   const [speechError, setSpeechError] = useState<string | null>(null);
+  const [audioLevel, setAudioLevel] = useState(0); // 0 to 100
 
   const recognitionRef = useRef<any>(null);
+  const isListeningRef = useRef(false);
   const liveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const animFrameRef = useRef<number | null>(null);
 
   // --- Read-Along Benchmark State ---
   const [selectedPromptIdx, setSelectedPromptIdx] = useState(0);
   const [isBenchmarkRunning, setIsBenchmarkRunning] = useState(false);
   const [benchmarkSeconds, setBenchmarkSeconds] = useState(0);
   const [benchmarkDone, setBenchmarkDone] = useState(false);
+  const [benchmarkWarning, setBenchmarkWarning] = useState<string | null>(null);
   const benchmarkTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Text & Duration Mode State ---
   const [manualText, setManualText] = useState(
     'Practice speaking with confidence and clarity. When you communicate in interviews, your pacing determines whether the interviewer perceives you as calm and authoritative or nervous and unprepared.'
   );
-  const [manualDurationMinutes, setManualDurationMinutes] = useState(1);
-  const [manualDurationSeconds, setManualDurationSeconds] = useState(0);
+  const [manualDurationMinutes, setManualDurationMinutes] = useState(0);
+  const [manualDurationSeconds, setManualDurationSeconds] = useState(25);
   const [copied, setCopied] = useState(false);
 
   // Check Web Speech API availability on mount
@@ -166,12 +176,67 @@ export default function WpmCalculatorTool() {
     }
   }, []);
 
+  // --- Audio Meter Setup ---
+  const startAudioMeter = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioContextClass();
+      audioContextRef.current = audioCtx;
+
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const checkVolume = () => {
+        if (!isListeningRef.current) return;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
+        }
+        const avg = sum / dataArray.length;
+        const normalized = Math.min(Math.round((avg / 60) * 100), 100);
+        setAudioLevel(normalized);
+        animFrameRef.current = requestAnimationFrame(checkVolume);
+      };
+
+      checkVolume();
+      return true;
+    } catch (err: any) {
+      console.warn('[WpmCalculator] Microphone access warning:', err);
+      return false;
+    }
+  };
+
+  const stopAudioMeter = () => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    setAudioLevel(0);
+  };
+
   // --- Mode 1: Live Voice Recognition Logic ---
-  const startLiveRecording = () => {
+  const startLiveRecording = async () => {
     setSpeechError(null);
     setLiveTranscript('');
     setLiveInterim('');
     setLiveSeconds(0);
+    setHasCompletedLive(false);
 
     trackEvent('practice_session_start', {
       source: 'wpm_calculator_live',
@@ -179,12 +244,15 @@ export default function WpmCalculatorTool() {
 
     if (typeof window === 'undefined') return;
 
+    // First request audio stream to guarantee mic permissions in iOS Safari & Android Chrome
+    await startAudioMeter();
+
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       setSpeechSupported(false);
-      setSpeechError('Web Speech API is not supported in this browser. Please use Chrome, Edge, or try the Read-Along Benchmark mode below.');
+      setSpeechError('Web Speech transcription is not supported in this browser. Please use Chrome, Edge, or try the Read-Along Benchmark mode below.');
       return;
     }
 
@@ -192,47 +260,64 @@ export default function WpmCalculatorTool() {
       const rec = new SpeechRecognition();
       rec.continuous = true;
       rec.interimResults = true;
+      rec.maxAlternatives = 1;
       rec.lang = 'en-US';
+
+      isListeningRef.current = true;
 
       rec.onstart = () => {
         setIsListening(true);
         trackEvent('mic_permission_granted', { tool: 'wpm_calculator' });
+        if (liveTimerRef.current) clearInterval(liveTimerRef.current);
         liveTimerRef.current = setInterval(() => {
           setLiveSeconds((prev) => prev + 1);
         }, 1000);
       };
 
       rec.onresult = (event: any) => {
-        let interim = '';
-        let final = '';
+        let interimText = '';
+        let finalText = '';
 
         for (let i = 0; i < event.results.length; i++) {
           const item = event.results[i];
           if (item.isFinal) {
-            final += item[0].transcript + ' ';
+            finalText += item[0].transcript + ' ';
           } else {
-            interim += item[0].transcript;
+            interimText += item[0].transcript + ' ';
           }
         }
 
-        setLiveTranscript(final);
-        setLiveInterim(interim);
+        if (finalText.trim()) {
+          setLiveTranscript((prev) => {
+            const combined = `${prev} ${finalText}`.replace(/\s+/g, ' ').trim();
+            return combined;
+          });
+        }
+        setLiveInterim(interimText.trim());
       };
 
       rec.onerror = (event: any) => {
-        console.warn('[WpmCalculator] Speech recognition error:', event.error);
+        console.warn('[WpmCalculator] Speech error:', event.error);
         if (event.error === 'not-allowed') {
-          setSpeechError('Microphone permission was denied. Please allow microphone access in your browser bar.');
-        } else if (event.error !== 'no-speech') {
-          setSpeechError(`Recognition notice: ${event.error}. You can still use the Read-Along mode!`);
+          setSpeechError('Microphone permission was denied. Please allow microphone access in your browser address bar.');
+          stopLiveRecording();
+        } else if (event.error === 'no-speech') {
+          // Keep listening
+        } else {
+          setSpeechError(`Notice: ${event.error}. You can also type or edit your words below.`);
         }
       };
 
       rec.onend = () => {
-        setIsListening(false);
-        if (liveTimerRef.current) {
-          clearInterval(liveTimerRef.current);
-          liveTimerRef.current = null;
+        // If user hasn't explicitly stopped, restart continuous recognition (fixes mobile auto-cutoff)
+        if (isListeningRef.current) {
+          try {
+            rec.start();
+          } catch (e) {
+            // Already active
+          }
+        } else {
+          setIsListening(false);
         }
       };
 
@@ -240,12 +325,18 @@ export default function WpmCalculatorTool() {
       rec.start();
     } catch (err: any) {
       console.error('[WpmCalculator] Failed to start:', err);
-      setSpeechError('Could not access microphone. Please verify device permissions.');
+      setSpeechError('Could not initialize microphone. Please check browser permissions.');
       setIsListening(false);
+      isListeningRef.current = false;
+      stopAudioMeter();
     }
   };
 
   const stopLiveRecording = () => {
+    isListeningRef.current = false;
+    setIsListening(false);
+    stopAudioMeter();
+
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
@@ -253,11 +344,13 @@ export default function WpmCalculatorTool() {
         // Ignore
       }
     }
-    setIsListening(false);
     if (liveTimerRef.current) {
       clearInterval(liveTimerRef.current);
       liveTimerRef.current = null;
     }
+
+    setHasCompletedLive(true);
+
     trackEvent('recording_complete', {
       seconds: liveSeconds,
       tool: 'wpm_calculator',
@@ -269,10 +362,11 @@ export default function WpmCalculatorTool() {
     setLiveTranscript('');
     setLiveInterim('');
     setLiveSeconds(0);
+    setHasCompletedLive(false);
     setSpeechError(null);
   };
 
-  // Compute live words & WPM
+  // Compute live words & WPM with zero division protection
   const fullLiveText = useMemo(() => {
     return `${liveTranscript} ${liveInterim}`.trim();
   }, [liveTranscript, liveInterim]);
@@ -283,9 +377,12 @@ export default function WpmCalculatorTool() {
   }, [fullLiveText]);
 
   const liveWpm = useMemo(() => {
+    // If not spoken or under 3 seconds, WPM is 0
     if (liveSeconds < 3 || liveWordCount === 0) return 0;
     const minutes = liveSeconds / 60;
-    return Math.round(liveWordCount / minutes);
+    const raw = Math.round(liveWordCount / minutes);
+    // Cap realistic spoken maximum to avoid division spikes
+    return Math.min(Math.max(raw, 0), 240);
   }, [liveSeconds, liveWordCount]);
 
   const liveFillersFound = useMemo(() => {
@@ -311,6 +408,7 @@ export default function WpmCalculatorTool() {
 
   const startBenchmark = () => {
     setBenchmarkDone(false);
+    setBenchmarkWarning(null);
     setBenchmarkSeconds(0);
     setIsBenchmarkRunning(true);
     trackEvent('practice_session_start', {
@@ -331,12 +429,22 @@ export default function WpmCalculatorTool() {
       clearInterval(benchmarkTimerRef.current);
       benchmarkTimerRef.current = null;
     }
+
+    // Protection against 1440 WPM bug: Check if user stopped unrealistically fast
+    if (benchmarkSeconds < 12) {
+      setBenchmarkWarning(
+        `Timer stopped in only ${benchmarkSeconds}s. Normal reading of ${currentPrompt.wordCount} words takes at least 45–60s. Please read through the full passage aloud.`
+      );
+    } else {
+      setBenchmarkWarning(null);
+    }
   };
 
   const resetBenchmark = () => {
     setIsBenchmarkRunning(false);
     setBenchmarkDone(false);
     setBenchmarkSeconds(0);
+    setBenchmarkWarning(null);
     if (benchmarkTimerRef.current) {
       clearInterval(benchmarkTimerRef.current);
       benchmarkTimerRef.current = null;
@@ -344,9 +452,11 @@ export default function WpmCalculatorTool() {
   };
 
   const benchmarkCalculatedWpm = useMemo(() => {
-    if (benchmarkSeconds === 0) return 0;
+    // If under 10 seconds, do NOT compute high fake WPM!
+    if (benchmarkSeconds < 10) return 0;
     const minutes = benchmarkSeconds / 60;
-    return Math.round(currentPrompt.wordCount / minutes);
+    const raw = Math.round(currentPrompt.wordCount / minutes);
+    return Math.min(Math.max(raw, 0), 240);
   }, [benchmarkSeconds, currentPrompt.wordCount]);
 
   // --- Mode 3: Manual Text Calculation Logic ---
@@ -358,13 +468,16 @@ export default function WpmCalculatorTool() {
   const manualTotalSeconds = manualDurationMinutes * 60 + manualDurationSeconds;
 
   const manualCalculatedWpm = useMemo(() => {
-    if (manualTotalSeconds === 0 || manualWordCount === 0) return 0;
-    return Math.round(manualWordCount / (manualTotalSeconds / 60));
+    if (manualTotalSeconds < 5 || manualWordCount === 0) return 0;
+    const raw = Math.round(manualWordCount / (manualTotalSeconds / 60));
+    return Math.min(Math.max(raw, 0), 240);
   }, [manualWordCount, manualTotalSeconds]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      isListeningRef.current = false;
+      stopAudioMeter();
       if (liveTimerRef.current) clearInterval(liveTimerRef.current);
       if (benchmarkTimerRef.current) clearInterval(benchmarkTimerRef.current);
       if (recognitionRef.current) {
@@ -382,7 +495,7 @@ export default function WpmCalculatorTool() {
     activeTab === 'live'
       ? liveWpm
       : activeTab === 'read-along'
-      ? benchmarkDone
+      ? benchmarkDone && !benchmarkWarning
         ? benchmarkCalculatedWpm
         : 0
       : manualCalculatedWpm;
@@ -402,54 +515,63 @@ export default function WpmCalculatorTool() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      {/* Tab Navigation in Oratii Light Theme */}
-      <div className="flex flex-wrap items-center justify-center gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl mb-8 shadow-xs">
+    <div className="w-full max-w-5xl mx-auto px-2 sm:px-0">
+      {/* Tab Navigation: Fully Responsive 3-Column Grid on Mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl mb-6 sm:mb-8 shadow-xs">
         <button
-          onClick={() => setActiveTab('live')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+          onClick={() => {
+            setActiveTab('live');
+            resetLiveRecording();
+          }}
+          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTab === 'live'
               ? 'bg-[#0F1426] text-white shadow-md'
               : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
           }`}
         >
-          <Mic size={16} className={activeTab === 'live' ? 'text-[#F2A93B]' : ''} /> Live Voice Test
+          <Mic size={16} className={activeTab === 'live' ? 'text-[#F2A93B]' : ''} />
+          <span>Live Voice Test</span>
         </button>
         <button
-          onClick={() => setActiveTab('read-along')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+          onClick={() => {
+            setActiveTab('read-along');
+            resetBenchmark();
+          }}
+          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTab === 'read-along'
               ? 'bg-[#0F1426] text-white shadow-md'
               : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
           }`}
         >
-          <FileText size={16} className={activeTab === 'read-along' ? 'text-[#F2A93B]' : ''} /> Read-Along Challenge
+          <FileText size={16} className={activeTab === 'read-along' ? 'text-[#F2A93B]' : ''} />
+          <span>Read-Along Challenge</span>
         </button>
         <button
           onClick={() => setActiveTab('text')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTab === 'text'
               ? 'bg-[#0F1426] text-white shadow-md'
               : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
           }`}
         >
-          <Gauge size={16} className={activeTab === 'text' ? 'text-[#F2A93B]' : ''} /> Transcript Calculator
+          <Gauge size={16} className={activeTab === 'text' ? 'text-[#F2A93B]' : ''} />
+          <span>Transcript Calculator</span>
         </button>
       </div>
 
       {/* Main Interactive Stage Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start mb-10 w-full overflow-hidden">
         {/* Left Column: Oratii Speedometer Card (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-lg shadow-slate-200/50 relative overflow-hidden">
+        <div className="lg:col-span-5 bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-md shadow-slate-200/50 w-full overflow-hidden">
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className={`w-2.5 h-2.5 rounded-full ${isListening ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
             <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">
-              Live Speech Speedometer
+              {isListening ? 'Measuring Vocal Speed...' : 'Live Speech Speedometer'}
             </span>
           </div>
 
-          {/* SVG Speedometer Gauge on Clean White Surface */}
-          <div className="relative w-72 h-44 my-3 flex items-center justify-center">
+          {/* Fully Responsive SVG Speedometer Dial (no horizontal overflow) */}
+          <div className="relative w-full max-w-[260px] sm:max-w-[280px] h-auto aspect-[240/140] mx-auto my-2 flex items-center justify-center">
             <svg viewBox="0 0 240 140" className="w-full h-full overflow-visible">
               {/* Background Base Arc */}
               <path
@@ -536,23 +658,23 @@ export default function WpmCalculatorTool() {
               <text x="63" y="30" fill="#94A3B8" fontSize="9">110</text>
               <text x="110" y="13" fill="#10B981" fontSize="10" fontWeight="bold">145</text>
               <text x="170" y="30" fill="#F2A93B" fontSize="9">175</text>
-              <text x="210" y="136" fill="#94A3B8" fontSize="10" fontWeight="bold">220+</text>
+              <text x="208" y="136" fill="#94A3B8" fontSize="10" fontWeight="bold">220+</text>
             </svg>
           </div>
 
           {/* WPM Readout */}
           <div className="flex items-baseline justify-center gap-1.5 my-1">
-            <span className="text-5xl sm:text-6xl font-black text-[#0F1426] tracking-tight font-mono">
+            <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight font-mono">
               {displayWpm}
             </span>
-            <span className="text-lg font-black text-[#F2A93B] uppercase tracking-widest">
+            <span className="text-base sm:text-lg font-black text-[#F2A93B] uppercase tracking-widest">
               WPM
             </span>
           </div>
 
           {/* Pace Category Badge */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-xs font-bold my-2 ${verdict.badgeBg} ${verdict.badgeBorder} ${verdict.badgeText}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold my-2 max-w-full truncate ${verdict.badgeBg} ${verdict.badgeBorder} ${verdict.badgeText}`}
           >
             {verdict.category}
           </div>
@@ -562,18 +684,18 @@ export default function WpmCalculatorTool() {
           </p>
 
           {/* Key Metric Cards */}
-          <div className="w-full grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-slate-100">
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 text-left">
+          <div className="w-full grid grid-cols-2 gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-100">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 sm:p-2.5 text-left">
               <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block">
                 Target Cadence
               </span>
-              <span className="text-sm font-black text-emerald-700">130 – 155 WPM</span>
+              <span className="text-xs sm:text-sm font-black text-emerald-700">130 – 155 WPM</span>
             </div>
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 text-left">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 sm:p-2.5 text-left">
               <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block">
                 Filler Words
               </span>
-              <span className={`text-sm font-black ${totalLiveFillerCount > 3 ? 'text-rose-600' : 'text-slate-800'}`}>
+              <span className={`text-xs sm:text-sm font-black ${totalLiveFillerCount > 3 ? 'text-rose-600' : 'text-slate-800'}`}>
                 {activeTab === 'live' ? `${totalLiveFillerCount} detected` : 'Voice Mode'}
               </span>
             </div>
@@ -591,13 +713,13 @@ export default function WpmCalculatorTool() {
         </div>
 
         {/* Right Column: Active Mode Interactive Controls (7 cols) */}
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-lg shadow-slate-200/50 flex flex-col justify-between min-h-[460px]">
+        <div className="lg:col-span-7 bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-md shadow-slate-200/50 flex flex-col justify-between min-h-[460px] w-full overflow-hidden">
           {/* TAB 1: LIVE VOICE TEST */}
           {activeTab === 'live' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-black text-[#0F1426] flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <h3 className="text-base sm:text-lg font-black text-[#0F1426] flex items-center gap-2">
                     <Mic className="text-[#F2A93B]" size={20} />
                     Live Microphone Test
                   </h3>
@@ -610,42 +732,69 @@ export default function WpmCalculatorTool() {
                   </div>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Click the button below and speak for 15–30 seconds. The calculator transcribes your speech live in your browser, measures elapsed time, and calculates your precise speaking cadence.
+                  Click <strong>&ldquo;Start Speaking&rdquo;</strong> and speak naturally for 15–30 seconds. Your voice transcribes live, and your words per minute are calculated automatically.
                 </p>
               </div>
 
+              {/* Audio Volume Activity Meter (Gives immediate feedback that mic is receiving sound) */}
+              {isListening && (
+                <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-xl flex items-center gap-3 animate-fade-in">
+                  <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center text-[11px] font-bold text-emerald-800 mb-1">
+                      <span>Microphone Listening...</span>
+                      <span>{audioLevel > 10 ? 'Voice Detected' : 'Speak into mic'}</span>
+                    </div>
+                    <div className="w-full bg-emerald-200/60 h-2 rounded-full overflow-hidden">
+                      <div
+                        className="bg-emerald-600 h-full rounded-full transition-all duration-75"
+                        style={{ width: `${Math.max(audioLevel, 8)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {speechError && (
-                <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-start gap-2.5">
-                  <AlertTriangle size={16} className="text-rose-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-start gap-2">
+                  <AlertTriangle size={15} className="text-rose-600 shrink-0 mt-0.5" />
                   <span>{speechError}</span>
                 </div>
               )}
 
-              {/* Live Transcript Display Box */}
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl min-h-[140px] max-h-[200px] overflow-y-auto text-left relative">
-                {fullLiveText ? (
-                  <p className="text-sm text-slate-800 leading-relaxed font-sans">
-                    <span>{liveTranscript}</span>
-                    <span className="text-[#D98200] italic font-medium">{liveInterim}</span>
-                  </p>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-center py-6 text-slate-400">
-                    <Volume2 size={24} className="mb-2 opacity-40 text-slate-400" />
-                    <p className="text-xs">Your spoken words will appear here in real-time...</p>
-                  </div>
-                )}
+              {/* Live Transcript Display Box with editable fallback */}
+              <div>
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 mb-1.5">
+                  <span>Live Spoken Transcript:</span>
+                  <span>{liveWordCount} words recognized</span>
+                </div>
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl min-h-[130px] max-h-[180px] overflow-y-auto text-left relative focus-within:border-[#F2A93B]">
+                  {fullLiveText ? (
+                    <p className="text-sm text-slate-800 leading-relaxed font-sans">
+                      <span>{liveTranscript}</span>{' '}
+                      <span className="text-[#D98200] italic font-medium">{liveInterim}</span>
+                    </p>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-6 text-slate-400">
+                      <Volume2 size={24} className="mb-1.5 opacity-40 text-slate-400" />
+                      <p className="text-xs">
+                        {isListening ? 'Listening... start speaking now!' : 'Click the button below to start test.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Filler Word Badges */}
               {liveFillersFound.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                    Detected Fillers:
+                    Fillers:
                   </span>
                   {liveFillersFound.map((f, i) => (
                     <span
                       key={i}
-                      className="px-2.5 py-1 bg-rose-50 border border-rose-200 rounded-md text-[11px] font-bold text-rose-700"
+                      className="px-2 py-0.5 bg-rose-50 border border-rose-200 rounded-md text-[11px] font-bold text-rose-700"
                     >
                       &ldquo;{f.word}&rdquo; ({f.count})
                     </span>
@@ -653,23 +802,23 @@ export default function WpmCalculatorTool() {
                 </div>
               )}
 
-              {/* Controls */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              {/* Action Buttons: Explicit "Analyze & Stop" button */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-1">
                 {!isListening ? (
                   <button
                     onClick={startLiveRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer group"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer group active:scale-[0.99]"
                   >
                     <Mic size={18} className="text-[#F2A93B]" />
-                    <span>Start Speaking (Free)</span>
+                    <span>{hasCompletedLive ? 'Start New Recording' : 'Start Speaking (Free)'}</span>
                   </button>
                 ) : (
                   <button
                     onClick={stopLiveRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-rose-600/20 animate-pulse transition-all cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer animate-pulse active:scale-[0.99]"
                   >
-                    <Pause size={18} />
-                    <span>Stop Recording</span>
+                    <CheckCircle2 size={18} />
+                    <span>Stop &amp; Analyze Speech ({liveSeconds}s)</span>
                   </button>
                 )}
 
@@ -682,6 +831,44 @@ export default function WpmCalculatorTool() {
                   <RotateCcw size={16} />
                 </button>
               </div>
+
+              {/* Post-Test Analysis Report Box */}
+              {hasCompletedLive && (
+                <div className="p-4 bg-[#FEF7ED] border border-[#F2A93B]/40 rounded-2xl animate-fade-in text-left">
+                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-[#F2A93B]/20">
+                    <span className="text-xs font-black uppercase tracking-wider text-[#D98200] flex items-center gap-1.5">
+                      <Sparkles size={14} /> Speech Pace Analysis
+                    </span>
+                    <span className="text-xs font-mono font-bold text-slate-700">
+                      {liveWordCount} words in {liveSeconds}s
+                    </span>
+                  </div>
+
+                  {liveWordCount === 0 ? (
+                    <p className="text-xs text-slate-600">
+                      No words were transcribed. Please make sure your microphone volume is turned up and you allow browser microphone access, or use the <strong>Read-Along</strong> or <strong>Transcript</strong> tab.
+                    </p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-black text-[#0F1426] font-mono">{liveWpm} WPM</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${verdict.badgeBg} ${verdict.badgeBorder} ${verdict.badgeText}`}>
+                          {verdict.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-700 leading-relaxed">
+                        {liveWpm >= 130 && liveWpm <= 155 ? (
+                          <span>Excellent pacing! You are right in the recruiter sweet spot (130–155 WPM). Your speech is articulate and easy to digest.</span>
+                        ) : liveWpm > 155 ? (
+                          <span>You spoke faster than normal. Under interview nerves, fast speech often leads to filler words. Practice taking a 1-second breath between sentences.</span>
+                        ) : (
+                          <span>Your speed was deliberate. While great for technical architecture explanations, try aiming for ~135 WPM to maintain energy in conversational interviews.</span>
+                        )}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -689,17 +876,17 @@ export default function WpmCalculatorTool() {
           {activeTab === 'read-along' && (
             <div className="space-y-5">
               <div>
-                <h3 className="text-lg font-black text-[#0F1426] flex items-center gap-2 mb-1">
+                <h3 className="text-base sm:text-lg font-black text-[#0F1426] flex items-center gap-2 mb-1">
                   <FileText className="text-[#F2A93B]" size={20} />
                   Read-Along Benchmark Test
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Select a standardized passage. Click <strong>&ldquo;Start Timer&rdquo;</strong>, read the passage aloud naturally, and click <strong>&ldquo;Finished!&rdquo;</strong> the moment you say the last word.
+                  Select a standardized passage. Click <strong>&ldquo;Start Reading Timer&rdquo;</strong>, read the passage aloud at your natural speaking pace, and click <strong>&ldquo;Finished Reading&rdquo;</strong> when you finish.
                 </p>
               </div>
 
-              {/* Prompt Selector Pills */}
-              <div className="flex flex-wrap gap-2">
+              {/* Prompt Selector Pills: Stacked or scrollable on small screens */}
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {BENCHMARK_PROMPTS.map((prompt, idx) => (
                   <button
                     key={prompt.id}
@@ -720,17 +907,24 @@ export default function WpmCalculatorTool() {
 
               {/* Benchmark Text Display */}
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-left relative">
-                <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-200 text-[11px] text-slate-500">
+                <div className="flex flex-wrap items-center justify-between gap-1 pb-2 mb-2 border-b border-slate-200 text-[11px] text-slate-500">
                   <span className="font-bold text-slate-700">{currentPrompt.category}</span>
                   <span>
                     Word Count: <strong className="text-slate-900">{currentPrompt.wordCount} words</strong> | Target:{' '}
                     <strong className="text-emerald-700">~{currentPrompt.targetWpm} WPM</strong>
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans">
+                <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-sans">
                   {currentPrompt.text}
                 </p>
               </div>
+
+              {benchmarkWarning && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
+                  <AlertTriangle size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                  <span>{benchmarkWarning}</span>
+                </div>
+              )}
 
               {/* Benchmark Controls */}
               <div className="flex items-center gap-3">
@@ -764,6 +958,29 @@ export default function WpmCalculatorTool() {
                   </button>
                 )}
               </div>
+
+              {/* Benchmark Result Card */}
+              {benchmarkDone && !benchmarkWarning && (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-left animate-fade-in">
+                  <div className="flex items-center justify-between mb-1 pb-1 border-b border-emerald-200/60">
+                    <span className="text-xs font-black uppercase text-emerald-800">Reading Benchmark Result</span>
+                    <span className="text-xs font-mono font-bold text-emerald-900">{benchmarkSeconds}s duration</span>
+                  </div>
+                  <div className="flex items-center gap-2 my-1">
+                    <span className="text-xl font-black text-emerald-900 font-mono">{benchmarkCalculatedWpm} WPM</span>
+                    <span className="text-xs font-semibold text-emerald-700">
+                      (Target was ~{currentPrompt.targetWpm} WPM)
+                    </span>
+                  </div>
+                  <p className="text-xs text-emerald-800 leading-relaxed">
+                    {Math.abs(benchmarkCalculatedWpm - currentPrompt.targetWpm) <= 15
+                      ? '🎯 Perfect pacing! Your cadence was right on target for this communication style.'
+                      : benchmarkCalculatedWpm > currentPrompt.targetWpm
+                      ? '⚡ You read slightly faster than the target benchmark. Slowing down slightly will increase audience recall.'
+                      : '⏱️ You read at a deliberate, measured cadence. Try to build slightly more momentum for natural storytelling.'}
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -771,12 +988,12 @@ export default function WpmCalculatorTool() {
           {activeTab === 'text' && (
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-black text-[#0F1426] flex items-center gap-2 mb-1">
+                <h3 className="text-base sm:text-lg font-black text-[#0F1426] flex items-center gap-2 mb-1">
                   <Gauge className="text-[#F2A93B]" size={20} />
                   Transcript &amp; Audio Duration Calculator
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Paste your speech transcript or script, and specify how long your recorded audio or rehearsal took.
+                  Paste your script, interview response, or recorded speech text, and enter how many minutes or seconds it took.
                 </p>
               </div>
 
@@ -788,7 +1005,7 @@ export default function WpmCalculatorTool() {
                   value={manualText}
                   onChange={(e) => setManualText(e.target.value)}
                   rows={4}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs sm:text-sm text-slate-800 focus:bg-white focus:outline-none focus:border-[#F2A93B] transition-colors leading-relaxed"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:bg-white focus:outline-none focus:border-[#F2A93B] transition-colors leading-relaxed"
                   placeholder="Paste your interview answer, presentation script, or toast speech here..."
                 />
                 <span className="text-[11px] text-slate-500 mt-1 block">
@@ -824,11 +1041,17 @@ export default function WpmCalculatorTool() {
                   />
                 </div>
               </div>
+
+              {manualTotalSeconds < 5 && (
+                <p className="text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+                  Please specify at least 5 seconds for a realistic cadence calculation.
+                </p>
+              )}
             </div>
           )}
 
           {/* Bottom Conversion Bar directly linked into Oratii core apps */}
-          <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#FEF7ED]/60 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 p-4 sm:p-5 rounded-b-3xl">
+          <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#FEF7ED]/60 -mx-5 sm:-mx-7 -mb-5 sm:-mb-7 p-4 sm:p-5 rounded-b-2xl sm:rounded-b-3xl">
             <div className="flex items-center gap-2.5 text-left">
               <div className="w-8 h-8 rounded-xl bg-white border border-[#F2A93B]/40 flex items-center justify-center text-[#D98200] shrink-0 shadow-2xs">
                 <Sparkles size={16} />

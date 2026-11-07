@@ -140,18 +140,18 @@ export default function SpeechSpeedWpmCalculatorPage() {
       />
 
       {/* Hero Section with Oratii Modern Animated Canvas */}
-      <ModernBackgroundAnimation variant="hero" className="pt-10 sm:pt-16 pb-12 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FEF7ED] border border-[#F2A93B]/40 text-[#D98200] text-xs font-black uppercase tracking-widest mb-4 shadow-2xs">
-            <Sparkles size={14} className="text-[#F2A93B] animate-pulse" />
-            <span>100% Free Browser Tool • No Signup Required</span>
+      <ModernBackgroundAnimation variant="hero" className="pt-8 sm:pt-16 pb-10 sm:pb-14 px-3 sm:px-6 w-full overflow-hidden">
+        <div className="max-w-6xl mx-auto text-center relative z-10 w-full">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#FEF7ED] border border-[#F2A93B]/40 text-[#D98200] text-[11px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest mb-4 shadow-2xs max-w-full truncate">
+            <Sparkles size={13} className="text-[#F2A93B] animate-pulse shrink-0" />
+            <span className="truncate">100% Free Browser Tool • No Signup Required</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.2] max-w-4xl mx-auto mb-4">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.2] max-w-4xl mx-auto mb-3 sm:mb-4 px-2">
             Free Speech Speed <span className="text-[#D98200]">(WPM) Calculator</span> &amp; Pacing Test
           </h1>
 
-          <p className="text-slate-600 text-sm sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto mb-10">
+          <p className="text-slate-600 text-xs sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-10 px-2">
             Measure your spoken Words Per Minute live with Oratii&apos;s interactive speedometer. Discover whether you speak too fast, too slow, or at the optimal 130–150 WPM interview cadence.
           </p>
 
@@ -209,8 +209,8 @@ export default function SpeechSpeedWpmCalculatorPage() {
               Words Per Minute (WPM) measures the rate of verbal output. In cognitive psychology and linguistics, human working memory processes spoken speech most effectively at <strong>135 to 155 WPM</strong>. Above 175 WPM, listener comprehension drops by up to 40% as cognitive load increases.
             </p>
 
-            <div className="p-4 bg-[#0F1426] text-[#F2A93B] rounded-2xl mb-6 font-mono text-xs sm:text-sm flex items-center justify-between shadow-xs">
-              <span>WPM = (Total Spoken Words) ÷ (Elapsed Seconds ÷ 60)</span>
+            <div className="p-3 sm:p-4 bg-[#0F1426] text-[#F2A93B] rounded-2xl mb-6 font-mono text-[11px] sm:text-sm flex items-center justify-center sm:justify-between shadow-xs overflow-x-auto text-center sm:text-left">
+              <span className="break-words">WPM = (Total Spoken Words) ÷ (Elapsed Seconds ÷ 60)</span>
             </div>
 
             <h3 className="text-base font-bold text-[#0F1426] mb-3">
