@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { Mic, Video, MessageSquare, Briefcase, HelpCircle, Trophy, Flame, ArrowRight, CheckCircle2, AlertCircle, Sparkles, GraduationCap, Building2, Share2 } from 'lucide-react';
+import { Mic, Video, MessageSquare, Briefcase, HelpCircle, Trophy, Flame, ArrowRight, CheckCircle2, AlertCircle, Sparkles, GraduationCap, Building2, Share2, ChevronDown, Shield, Clock, Zap } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 import HeroShowcase from '../components/HeroShowcase';
 import dynamic from 'next/dynamic';
 
@@ -73,6 +74,11 @@ export default function HomeClient() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Track landing page view (P1 funnel)
+  useEffect(() => {
+    trackEvent('landing_page_view', { source: 'homepage' });
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans antialiased text-slate-900 overflow-x-hidden">
       <div className="flex-1">
@@ -93,7 +99,7 @@ export default function HomeClient() {
             <FadeUp delay={150} className="w-full">
               {/* Dynamic Animated Headline for Mobile and Laptop */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0F1426] tracking-tight leading-[1.2] mb-6 min-h-[110px] sm:min-h-[160px] text-center lg:text-left">
-                Say it well. <br />
+                Speak Better. Prepare Smarter. <br />
                 <span key={heroIndex} className="inline-flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 animate-in fade-in slide-in-from-bottom-3 duration-500">
                   <span>{heroPhrases[heroIndex].action}</span>
                   <span className={`px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl border text-2xl sm:text-4xl lg:text-5xl font-black transition-all duration-500 shadow-2xs ${heroPhrases[heroIndex].highlightBg}`}>
@@ -105,7 +111,7 @@ export default function HomeClient() {
 
             <FadeUp delay={200}>
               <p className="text-slate-600 text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-lg mb-8 text-center lg:text-left">
-                Practice speaking, voice mock interviews, and daily speech habits with real-time AI feedback.
+                Your personal AI communication coach for mock interviews, English speaking, and daily communication practice.
               </p>
             </FadeUp>
 
@@ -113,9 +119,10 @@ export default function HomeClient() {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link 
                   href="/speech-coach"
+                  onClick={() => trackEvent('practice_cta_click', { location: 'hero', cta: 'start_practicing_free' })}
                   className="w-full sm:w-auto px-8 py-4 bg-[#0F1426] hover:bg-[#1A2035] text-white font-bold text-base rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  Start practicing <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
+                  Start Practicing Free <ArrowRight size={18} className="text-[#F2A93B] group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <button 
                   onClick={() => {
@@ -124,7 +131,7 @@ export default function HomeClient() {
                   }}
                   className="w-full sm:w-auto px-8 py-4 bg-white text-slate-800 font-bold text-base rounded-xl border border-slate-200 hover:bg-slate-50 transition-all cursor-pointer"
                 >
-                  See how it works
+                  See How It Works
                 </button>
               </div>
             </FadeUp>
@@ -986,21 +993,139 @@ export default function HomeClient() {
       </section>
       )}
 
-      {/* 8. Final CTA Section */}
+      {/* 8. FAQ Section */}
+      <section id="faq" className="py-12 sm:py-28 bg-white border-b border-slate-100 scroll-mt-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <FadeUp>
+            <div className="text-center mb-8 sm:mb-14">
+              <span className="text-xs font-black uppercase tracking-widest text-[#F2A93B] mb-2 block">
+                Common Questions
+              </span>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#0F1426] tracking-tight">
+                Frequently Asked Questions
+              </h2>
+            </div>
+          </FadeUp>
+
+          <div className="space-y-3 sm:space-y-4">
+            {[
+              {
+                q: 'Is Oratii free to use?',
+                a: 'Yes! Oratii offers a free plan with 10 credits per month. You can practice speech coaching, take mock interviews, and join the daily challenge. Paid plans unlock more credits and advanced features.'
+              },
+              {
+                q: 'How does the AI feedback work?',
+                a: 'Oratii uses speech-to-text transcription to analyze your spoken responses in real time. It measures your speaking pace (WPM), detects filler words like "um" and "basically", evaluates answer structure, and provides specific improvement suggestions. All processing happens securely — your voice recordings are never shared.'
+              },
+              {
+                q: 'Do I need to install anything?',
+                a: 'No installation required. Oratii runs entirely in your browser. Just allow microphone access when prompted and start practicing. It also works as a Progressive Web App (PWA) that you can add to your phone\'s home screen.'
+              },
+              {
+                q: 'What types of interviews can I practice?',
+                a: 'Oratii offers a 3-round mock interview campaign: HR Warmup, Technical Panel Deep-Dive, and STAR Method Behavioral rounds. Each round has 5 AI-generated questions with detailed evaluation reports, so you can prepare for campus placements and job interviews.'
+              },
+              {
+                q: 'Is my data private and secure?',
+                a: 'Absolutely. Your voice recordings are processed for feedback and never stored permanently or shared with third parties. We use Supabase with Row Level Security to ensure your data is only accessible to you. Read our full privacy policy for details.'
+              },
+              {
+                q: 'Can I use Oratii on my phone?',
+                a: 'Yes. Oratii is fully responsive and works on all modern mobile browsers. The speech coach, mock interviews, and daily challenges are all optimized for mobile use with touch-friendly controls.'
+              },
+            ].map((faq, idx) => (
+              <FadeUp key={idx} delay={idx * 50}>
+                <details className="group bg-[#F8FAFC] rounded-2xl border border-slate-200 hover:border-slate-300 transition-all overflow-hidden">
+                  <summary className="flex items-center justify-between gap-3 px-5 py-4 sm:px-7 sm:py-5 cursor-pointer list-none text-sm sm:text-base font-bold text-[#0F1426] select-none">
+                    <span>{faq.q}</span>
+                    <ChevronDown size={18} className="text-slate-400 group-open:rotate-180 transition-transform duration-300 shrink-0" />
+                  </summary>
+                  <div className="px-5 pb-4 sm:px-7 sm:pb-5 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                    {faq.a}
+                  </div>
+                </details>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Trust & Privacy Badges */}
+      <section className="py-8 sm:py-14 bg-[#F8FAFC] border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-center">
+            <FadeUp delay={0}>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <Shield size={20} />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-[#0F1426]">Private & Secure</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium">Voice data never stored or shared</span>
+              </div>
+            </FadeUp>
+            <FadeUp delay={100}>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                  <Zap size={20} />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-[#0F1426]">Instant Feedback</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium">Real-time AI analysis as you speak</span>
+              </div>
+            </FadeUp>
+            <FadeUp delay={200}>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <Clock size={20} />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-[#0F1426]">60-Second Sessions</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium">Practice daily in under a minute</span>
+              </div>
+            </FadeUp>
+            <FadeUp delay={300}>
+              <div className="flex flex-col items-center gap-2 p-4">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                  <Mic size={20} />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-[#0F1426]">No Downloads</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium">Works in your browser, any device</span>
+              </div>
+            </FadeUp>
+          </div>
+
+          {/* SaasHub Approved Badge */}
+          <div className="mt-8 flex justify-center">
+            <a
+              href="https://www.saashub.com/oratii-in?utm_source=badge&utm_campaign=badge&utm_content=oratii-in&badge_variant=color&badge_kind=approved"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block hover:opacity-90 transition-opacity"
+            >
+              <img
+                src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1"
+                alt="Oratii.in badge"
+                style={{ maxWidth: '150px' }}
+              />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Final CTA Section */}
       <ModernBackgroundAnimation variant="cta" className="py-16 sm:py-32 text-center px-4 sm:px-6 text-white">
         <div className="max-w-4xl mx-auto relative z-10">
           <FadeUp>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 tracking-tight">
-              Your speech coaching starts here.
+              Start practicing today. It&apos;s free.
             </h2>
             <p className="text-slate-300 text-base sm:text-2xl max-w-xl mx-auto mb-8 sm:mb-12 font-medium">
-              Practice drills. Get instant AI feedback. Improve.
+              Practice interviews. Improve your communication. Build confidence every day.
             </p>
             <Link 
               href="/speech-coach"
+              onClick={() => trackEvent('practice_cta_click', { location: 'bottom_cta', cta: 'start_practicing_free' })}
               className="inline-block px-8 py-4 sm:px-10 sm:py-5 bg-[#F2A93B] hover:bg-[#d98200] text-[#0F1426] text-base sm:text-lg font-extrabold rounded-2xl transition-all shadow-2xl hover:-translate-y-0.5 cursor-pointer"
             >
-              Start practicing
+              Start Practicing Free
             </Link>
           </FadeUp>
         </div>
