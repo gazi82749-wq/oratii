@@ -63,6 +63,8 @@ export default function SpeechCoach() {
   const [language, setLanguage] = useState('hi');
   const [situation, setSituation] = useState('');
   const [challengeDay, setChallengeDay] = useState(null);
+  const [targetDuration, setTargetDuration] = useState<number>(MAX_FREE_RECORDING_SECONDS);
+  const [isDailyHabit, setIsDailyHabit] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   // 30-Second Clean Re-Do Drill State ("Muscle Memory Gym")
@@ -172,9 +174,25 @@ export default function SpeechCoach() {
       const params = new URLSearchParams(window.location.search);
       const cDay = params.get('challengeDay');
       const cTopic = params.get('topic');
+      const durParam = params.get('duration');
+      const isChal = params.get('isChallenge') === 'true';
+
       if (cDay) {
         const parsed = parseInt(cDay, 10);
         if (!isNaN(parsed)) setChallengeDay(parsed);
+        setIsDailyHabit(true);
+      }
+      if (isChal) {
+        setIsDailyHabit(true);
+      }
+      if (durParam) {
+        const parsedDur = parseInt(durParam, 10);
+        if (!isNaN(parsedDur) && parsedDur > 0) {
+          setTargetDuration(parsedDur);
+          setIsDailyHabit(true);
+        }
+      } else if (cDay || isChal) {
+        setTargetDuration(60);
       }
       if (cTopic) {
         setSituation(cTopic);
@@ -236,7 +254,7 @@ export default function SpeechCoach() {
 
   const startRecordingTimer = () => {
     if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
-    const maxTime = challengeDay ? 60 : MAX_FREE_RECORDING_SECONDS;
+    const maxTime = isDailyHabit ? targetDuration : MAX_FREE_RECORDING_SECONDS;
     recordingTimerRef.current = setInterval(() => {
       setRecordingSeconds((prev) => {
         if (prev + 1 >= maxTime) {
@@ -1105,6 +1123,14 @@ export default function SpeechCoach() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center py-1">
+                          {isDailyHabit && (
+                            <div className="mb-3.5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs font-bold shadow-2xs">
+                              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                              <span>
+                                🎯 Daily Habit Mode ({targetDuration}s Target) {challengeDay ? `· Day ${challengeDay}` : ''}
+                              </span>
+                            </div>
+                          )}
                           <div className="relative">
                             {isRecording && !isPaused && <div className="absolute -inset-3 rounded-full border-4 border-rose-500 animate-ping opacity-30"></div>}
                             <button 
@@ -1130,28 +1156,30 @@ export default function SpeechCoach() {
                             </div>
                           )}
 
-                          {/* Recording Progress HUD with 60s Daily Challenge Cap */}
+                          {/* Recording Progress HUD with Daily Habit / Free Drill Cap */}
                           {isRecording && (
                             <div className="w-full max-w-xs flex flex-col items-center mt-2.5">
                               <div className="flex items-center justify-between w-full text-xs font-bold px-1 mb-1">
-                                <span className={recordingSeconds > (challengeDay ? 50 : 150) ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
+                                <span className={recordingSeconds > (isDailyHabit ? targetDuration - 10 : 150) ? 'text-rose-600 animate-pulse' : 'text-slate-700'}>
                                   {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
                                 </span>
                                 <span className="text-[11px] font-semibold text-slate-400">
-                                  {challengeDay ? '01:00 Max (Daily Challenge)' : '03:00 Max (Free Drill)'}
+                                  {isDailyHabit 
+                                    ? `${Math.floor(targetDuration / 60).toString().padStart(2, '0')}:${(targetDuration % 60).toString().padStart(2, '0')} Max (Daily Habit)` 
+                                    : '03:00 Max (Free Drill)'}
                                 </span>
                               </div>
                               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                                 <div 
                                   className={`h-full transition-all duration-500 rounded-full ${
-                                    recordingSeconds > (challengeDay ? 50 : 150) ? 'bg-rose-500' : recordingSeconds > (challengeDay ? 35 : 100) ? 'bg-amber-500' : 'bg-gradient-to-r from-indigo-500 to-violet-600'
+                                    recordingSeconds > (isDailyHabit ? targetDuration - 10 : 150) ? 'bg-rose-500' : recordingSeconds > (isDailyHabit ? Math.round(targetDuration * 0.6) : 100) ? 'bg-amber-500' : 'bg-gradient-to-r from-indigo-500 to-violet-600'
                                   }`}
-                                  style={{ width: `${Math.min(100, (recordingSeconds / (challengeDay ? 60 : MAX_FREE_RECORDING_SECONDS)) * 100)}%` }}
+                                  style={{ width: `${Math.min(100, (recordingSeconds / (isDailyHabit ? targetDuration : MAX_FREE_RECORDING_SECONDS)) * 100)}%` }}
                                 />
                               </div>
-                              {recordingSeconds >= (challengeDay ? 50 : 165) && (
+                              {recordingSeconds >= (isDailyHabit ? targetDuration - 10 : 165) && (
                                 <p className="text-[10px] font-bold text-rose-500 mt-1 animate-pulse">
-                                  {challengeDay ? 'Approaching 60-second limit' : 'Approaching 3-min practice cap'}
+                                  {isDailyHabit ? `Approaching ${targetDuration}-second target` : 'Approaching 3-min practice cap'}
                                 </p>
                               )}
                             </div>
@@ -1161,8 +1189,8 @@ export default function SpeechCoach() {
                             <div className="mt-3.5 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-semibold flex items-center gap-2 max-w-md text-center">
                               <Zap size={14} className="text-amber-600 shrink-0" />
                               <span>
-                                {challengeDay 
-                                  ? '60-Second Daily Challenge limit reached! Recording stopped automatically and is ready for AI analysis.' 
+                                {isDailyHabit 
+                                  ? `${targetDuration}-Second Daily Habit limit reached! Recording stopped automatically and is ready for AI analysis.` 
                                   : '3-Minute Free Practice Drill Limit reached! Your audio was saved and is ready for AI analysis.'}
                               </span>
                             </div>
@@ -1600,14 +1628,14 @@ export default function SpeechCoach() {
               <p className="text-slate-500 font-medium">Here is your detailed breakdown.</p>
             </div>
             <div className="flex items-center gap-3">
-              {challengeDay && (
+              {(challengeDay || isDailyHabit) && (
                 <button
                   onClick={() => { reset(); if (section === 'topic') handleTopicReset(); setRecordingSeconds(0); setShowTimeLimitNotice(false); }}
                   disabled={isDeepLoading}
                   className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-[#0F1426] text-xs font-extrabold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <RotateCcw size={15} />
-                  <span>Repeat Challenge (60s)</span>
+                  <span>Repeat Habit ({targetDuration}s)</span>
                 </button>
               )}
               <button onClick={() => { reset(); if (section === 'topic') handleTopicReset(); }} disabled={isDeepLoading} className="px-5 py-2.5 bg-white border border-indigo-200 rounded-xl text-slate-900 text-sm font-bold shadow-sm hover:bg-indigo-50 transition-all disabled:opacity-50">
