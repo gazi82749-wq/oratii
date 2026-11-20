@@ -25,6 +25,7 @@ import ReferralCard from '@/components/ReferralCard';
 import { supabase } from '@/lib/supabaseClient';
 import { CREDIT_PACKAGES, getUserCredits } from '@/lib/credits';
 import { initializePayment } from '@/lib/razorpay';
+import { trackEvent } from '@/lib/analytics';
 
 export default function PricingClient() {
   const router = useRouter();
@@ -72,9 +73,11 @@ export default function PricingClient() {
 
     setSelectedPack(pack);
     setIsProcessing(true);
+    trackEvent('upgrade_clicked', { pack_id: pack.id, price: pack.price, pack_name: pack.name });
 
     try {
       await initializePayment(pack.id, pack.name, pack.price, (newCredits) => {
+        trackEvent('subscription_completed', { pack_id: pack.id, price: pack.price });
         setUserCredits(newCredits);
         setShowSuccessBanner(true);
         setIsProcessing(false);

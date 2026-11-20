@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { Logo } from '@/components/Logo';
 import { Sparkles, Mic, BarChart3, Trophy, Check, Gift } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 export default function SignupClient() {
   const router = useRouter();
@@ -91,6 +92,8 @@ export default function SignupClient() {
       if (typeof document !== 'undefined') {
         document.cookie = "Oratii_logged_in=true; path=/; max-age=31536000; SameSite=Lax";
       }
+
+      trackEvent('signup_completed', { role: selectedRole, method: 'email' });
       
       if (selectedRole === 'trainer') {
         window.location.href = '/trainer/onboarding';
@@ -111,6 +114,7 @@ export default function SignupClient() {
   const handleGoogleSignup = async () => {
     setLoading(true);
     setError(null);
+    trackEvent('signup_completed', { role: selectedRole, method: 'google' });
 
     const nextUrl = selectedRole === 'trainer' ? '/trainer/onboarding' : '/dashboard';
     const refQuery = refCode ? `&ref=${encodeURIComponent(refCode)}` : '';

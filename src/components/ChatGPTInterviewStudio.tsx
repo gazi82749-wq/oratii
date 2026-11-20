@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { saveSession } from "@/lib/storage";
+import { trackEvent } from "@/lib/analytics";
 import { createPortal } from "react-dom";
 import {
   Mic,
@@ -537,6 +538,7 @@ export default function ChatGPTInterviewStudio({
     setIsLoading(true);
     setCurrentRound(1);
     setChatHistory([]);
+    trackEvent('practice_started', { type: 'interview', role: roleTitle, difficulty: difficultyLevel });
 
     try {
       const authHeaders: Record<string, string> = {
@@ -812,6 +814,7 @@ export default function ChatGPTInterviewStudio({
       });
 
       setIsLoading(false);
+      trackEvent('practice_completed', { type: 'interview', score: finalScores.overall, round: mockSeriesRound });
       router.push(`/reports/${sessionRecord.id}`);
       return;
     } catch (err) {
@@ -839,6 +842,7 @@ export default function ChatGPTInterviewStudio({
         chatHistory
       });
       setIsLoading(false);
+      trackEvent('practice_completed', { type: 'interview', score: fallbackScores.overall, round: mockSeriesRound });
       router.push(`/reports/${sessionRecord.id}`);
     }
   };

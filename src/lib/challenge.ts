@@ -38,17 +38,101 @@ export interface ChallengeState {
   lastUpdated?: string;
 }
 
+export interface JourneyDay {
+  day: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  category: 'intro' | 'pace' | 'interview' | 'technical' | 'fluency' | 'mock' | 'review';
+  actionUrl: string;
+  actionText: string;
+  targetDuration: string;
+}
+
+export const SEVEN_DAY_JOURNEY: JourneyDay[] = [
+  {
+    day: 1,
+    title: 'Introduce Yourself',
+    subtitle: '60-second introduction',
+    description: 'Share who you are, your background, and goals. Focus on clear, confident articulation.',
+    category: 'intro',
+    actionUrl: '/speech-coach?topic=Introduce+Yourself&duration=60&challengeDay=1',
+    actionText: 'Start Day 1',
+    targetDuration: '60 sec',
+  },
+  {
+    day: 2,
+    title: 'Speak for 60 Seconds',
+    subtitle: 'Impromptu speaking & pacing',
+    description: 'Choose any familiar topic and speak continuously for 60 seconds at a steady 130-155 WPM pace.',
+    category: 'pace',
+    actionUrl: '/speech-coach?topic=60-Second+Impromptu+Speaking&duration=60&challengeDay=2',
+    actionText: 'Start Day 2',
+    targetDuration: '60 sec',
+  },
+  {
+    day: 3,
+    title: 'Answer an HR Interview Question',
+    subtitle: 'Behavioral response with STAR',
+    description: 'Answer: "Tell me about a time you overcame a challenge." Use Situation, Task, Action, Result.',
+    category: 'interview',
+    actionUrl: '/interview?role=HR+Interview',
+    actionText: 'Start Day 3',
+    targetDuration: '90 sec',
+  },
+  {
+    day: 4,
+    title: 'Explain a Technical Concept',
+    subtitle: 'Clarity without jargon',
+    description: 'Explain a technical or professional concept simply, as if explaining it to a smart 12-year-old.',
+    category: 'technical',
+    actionUrl: '/speech-coach?topic=Explain+a+Technical+Concept&duration=90&challengeDay=4',
+    actionText: 'Start Day 4',
+    targetDuration: '90 sec',
+  },
+  {
+    day: 5,
+    title: 'Practice English Fluency',
+    subtitle: 'Vocal flow & pause mastery',
+    description: 'Focus on eliminating filler words ("um", "like", "basically") by using deliberate 1-second silent pauses.',
+    category: 'fluency',
+    actionUrl: '/speech-coach?topic=Daily+Fluency+Exercise&duration=60&challengeDay=5',
+    actionText: 'Start Day 5',
+    targetDuration: '60 sec',
+  },
+  {
+    day: 6,
+    title: 'Complete a Mock Interview',
+    subtitle: 'Realistic AI call simulation',
+    description: 'Put all techniques together in an interactive AI mock interview with real-time feedback.',
+    category: 'mock',
+    actionUrl: '/interview',
+    actionText: 'Start Day 6',
+    targetDuration: '3-5 min',
+  },
+  {
+    day: 7,
+    title: 'Review Your Progress',
+    subtitle: 'Growth audit & celebration',
+    description: 'Review your 7-day speaking telemetry, WPM pacing curve, and filler word reductions.',
+    category: 'review',
+    actionUrl: '/reports',
+    actionText: 'Review Progress',
+    targetDuration: 'Audit',
+  },
+];
+
 export const DAILY_TASKS: ChallengeTask[] = [
-  { day: 1, title: 'Introduce Yourself', description: 'A basic 60-second introduction.', targetDuration: '60 sec' },
-  { day: 2, title: 'Describe Nature', description: 'Talk about your favorite place in nature.', targetDuration: '60 sec' },
-  { day: 3, title: 'Thoughts on Money', description: 'What do you think about money and wealth?', targetDuration: '60 sec' },
-  { day: 4, title: 'Your Favorite Hobby', description: 'Discuss what you enjoy doing in your free time.', targetDuration: '60 sec' },
-  { day: 5, title: 'A Memorable Trip', description: 'Talk about a journey you will never forget.', targetDuration: '60 sec' },
-  { day: 6, title: 'Future Goals', description: 'Where do you see yourself in 5 years?', targetDuration: '60 sec' },
-  { day: 7, title: 'Thoughts on Technology', description: 'How does technology impact our daily lives?', targetDuration: '60 sec' },
-  { day: 8, title: 'Favorite Food', description: 'Describe your favorite meal in detail.', targetDuration: '60 sec' },
-  { day: 9, title: 'Role Model', description: 'Who inspires you the most and why?', targetDuration: '60 sec' },
-  { day: 10, title: 'Best Childhood Memory', description: 'Share a happy memory from your childhood.', targetDuration: '60 sec' }
+  { day: 1, title: 'Introduce Yourself', description: 'Share who you are, your background, and goals in a 60-second introduction.', targetDuration: '60 sec' },
+  { day: 2, title: 'Speak for 60 Seconds', description: 'Speak continuously on any familiar topic for 1 minute at steady 130-155 WPM.', targetDuration: '60 sec' },
+  { day: 3, title: 'Answer an HR Interview Question', description: 'Answer a behavioral HR question using the STAR (Situation-Task-Action-Result) method.', targetDuration: '90 sec' },
+  { day: 4, title: 'Explain a Technical Concept', description: 'Explain an engineering or business concept simply without confusing jargon.', targetDuration: '90 sec' },
+  { day: 5, title: 'Practice English Fluency', description: 'Vocal flow exercise: eliminate filler words by practicing deliberate 1-second silent pauses.', targetDuration: '60 sec' },
+  { day: 6, title: 'Complete a Mock Interview', description: 'Complete a realistic AI mock interview round with live question audio.', targetDuration: '3-5 min' },
+  { day: 7, title: 'Review Your Progress', description: 'Review your 7-day speaking metrics, WPM trend, and filler reductions.', targetDuration: 'Audit' },
+  { day: 8, title: 'Executive Elevator Pitch', description: 'Pitch a project, idea, or startup in 60 seconds with clear hook and call-to-action.', targetDuration: '60 sec' },
+  { day: 9, title: 'Handling Difficult Questions', description: 'Practice responding calmly when an interviewer pushes back or asks for deeper detail.', targetDuration: '90 sec' },
+  { day: 10, title: 'Final Graduation Speech', description: 'Deliver a 2-minute celebratory presentation on your communication journey.', targetDuration: '120 sec' }
 ];
 
 const STORAGE_KEY = 'Oratii_20day_challenge_state';

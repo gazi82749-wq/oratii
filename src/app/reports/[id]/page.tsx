@@ -9,6 +9,8 @@ import ConfidenceGraph, { ScoreRing } from '@/components/ConfidenceGraph';
 import VivaDefenseModal from '@/components/VivaDefenseModal';
 import MediaPreviewPlayer, { MediaPreviewPlayerRef } from '@/components/MediaPreviewPlayer';
 import InterviewPrepBreakCard from '@/components/InterviewPrepBreakCard';
+import ActionableCoachingReport from '@/components/ActionableCoachingReport';
+import { trackEvent } from '@/lib/analytics';
 
 export default function ReportPage() {
   const params = useParams();
@@ -38,6 +40,7 @@ export default function ReportPage() {
 
       if (found) {
         setSessionData(found);
+        trackEvent('feedback_viewed', { session_id: id, session_type: found.type || 'speech' });
       }
       setLoading(false);
     }
@@ -626,6 +629,19 @@ export default function ReportPage() {
             )}
           </>
         )}
+
+        {/* Actionable 4-Step Coaching Breakdown */}
+        <ActionableCoachingReport
+          type={type}
+          strengths={strengths}
+          weaknesses={weaknesses}
+          suggestions={suggestions}
+          whatToCut={whatToCut}
+          modelAnswer={modelAnswer}
+          wpm={livePaceWpm}
+          totalFillers={totalFillers}
+          starScore={scores.starAlignment}
+        />
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">

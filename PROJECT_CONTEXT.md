@@ -67,9 +67,9 @@ Located in `src/lib/aiFallback.ts`, the multi-AI waterfall ensures 99.9% uptime 
 | `/presentation` | Slide deck analyzer supporting PPTX/PDF uploads, slide audit, and live presentation mode | `/api/convert-pptx`, `/api/presentations/*`, `/api/analyze-body-language` |
 | `/interview` | Live AI Video Mock Interview Studio (Mocklingo-style dual-pane call): Left pane photorealistic AI interviewer (Sarah Jenkins / Marcus Vance) with speaking animations; Right pane live candidate webcam (`react-webcam`) with on/off toggle; Top question bar with audio replay; Real-time voice answer capture, STAR pacing cues, and automated evaluation reports | `/api/interview-eval`, `/api/interview/reminder` |
 | `/viva` | Academic viva defense examiner for thesis and technical subject Q&A | `/api/viva` |
-| `/challenge` | 20-Day Public Speaking Challenge with gamified daily drills & streak tracking | `/api/cron/streak-reminder` |
-| `/dashboard` | User performance dashboard showing XP, streak, session history, & billing link | `/api/free-upgrade` |
-| `/reports` & `/reports/[id]` | Detailed breakdown reports with Recharts visual graphs & jsPDF export | - |
+| `/challenge` | Daily Communication Challenge with 7-Day progressive vocal habit journey (`SEVEN_DAY_JOURNEY`), daily prompt cards, and streak tracking | `/api/cron/streak-reminder` |
+| `/dashboard` | User performance dashboard showing XP, streak, First Practice 60s activation card, embedded 7-Day Practice Journey, session history, & billing link | `/api/free-upgrade` |
+| `/reports` & `/reports/[id]` | Detailed breakdown reports with 4-part Actionable Coaching Framework (Strengths, Weaknesses, How to improve, What to practice next), Recharts visual graphs & jsPDF export | - |
 | `/pricing` & `/dashboard/billing` | Plan comparison and Razorpay checkout modal (Pro & Enterprise) | `/api/razorpay/create-order`, `/api/webhooks/razorpay` |
 | `/feedback` & `/support` | Help desk ticket submission and platform rating form | `/api/contact`, `/api/admin/feedback` |
 | `/trainer` | Trainer Academy for cohort management, batch assignments, & code joins | `/api/trainer/*`, `/join/[code]` |

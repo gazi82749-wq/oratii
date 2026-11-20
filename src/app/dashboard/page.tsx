@@ -35,6 +35,7 @@ import { getHistory, getStatistics, getProfile, saveProfile, getSettings, saveSe
 import { getGamificationSummary } from '@/lib/gamification';
 import { getChallengeState } from '@/lib/challenge';
 import EmptyState from '@/components/EmptyState';
+import DailyPracticeJourney from '@/components/DailyPracticeJourney';
 import ReferralCard from '@/components/ReferralCard';
 import NotificationPrompt from '@/components/NotificationPrompt';
 import SetPasswordModal from '@/components/SetPasswordModal';
@@ -115,6 +116,7 @@ export default function ProfessionalDashboard() {
   const [recentSessions, setRecentSessions] = useState<any[]>([]);
   const [scoreTrend, setScoreTrend] = useState<number[]>([]);
   const [settings, setSettingsState] = useState({ notifications: true, theme: 'light' });
+  const [challengeState, setChallengeState] = useState<any>(null);
 
   // Modals & Role state
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -207,6 +209,7 @@ export default function ProfessionalDashboard() {
           gamification = getGamificationSummary() || gamification;
           statistics = getStatistics() || statistics;
           cState = getChallengeState() || cState;
+          setChallengeState(cState);
         } catch (storageErr) {
           console.warn('[Dashboard] Local storage load notice:', storageErr);
         }
@@ -572,6 +575,11 @@ export default function ProfessionalDashboard() {
         <ReferralCard />
       </div>
 
+      {/* 7-DAY COMMUNICATION PRACTICE ROADMAP */}
+      <div>
+        <DailyPracticeJourney challengeState={challengeState} />
+      </div>
+
       {/* 3. CORE AI MODULES GRID (Vibrant Landing Page Cards) */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -683,11 +691,55 @@ export default function ProfessionalDashboard() {
           </div>
         </div>
       ) : (
-        <EmptyState
-          title="No practice sessions recorded yet"
-          description="Start a presentation practice session or speech drill above to view your real-time analytics!"
-          type="audio"
-        />
+        <div className="bg-gradient-to-br from-indigo-50/90 via-purple-50/40 to-white border border-indigo-200/90 rounded-3xl p-6 sm:p-8 shadow-sm text-left space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-indigo-100/80 pb-5">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-600 text-white text-[11px] font-black uppercase tracking-wider mb-2 shadow-2xs">
+                <Sparkles size={12} />
+                <span>Ready for Your First Session</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Try Your First 60-Second Speech Check
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xl">
+                Get an instant baseline of your speaking pace (WPM), filler words, and vocal clarity. Zero preparation required.
+              </p>
+            </div>
+            <Link
+              href="/speech-coach?topic=Introduce+Yourself&duration=60"
+              className="py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            >
+              <span>Start 60s Check (Free)</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div className="p-4 rounded-2xl bg-white/80 border border-indigo-100 space-y-1.5">
+              <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-black flex items-center justify-center">1</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Choose a Prompt</h4>
+              <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                Start with a simple self-introduction or pick from placement and everyday conversation prompts.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 border border-indigo-100 space-y-1.5">
+              <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-black flex items-center justify-center">2</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Speak Naturally</h4>
+              <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                Allow microphone access and speak freely for 60 seconds directly in your browser.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 border border-indigo-100 space-y-1.5">
+              <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-black flex items-center justify-center">3</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Instant AI Feedback</h4>
+              <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                Receive real-time WPM pacing feedback, filler word counts, and your CEFR/IELTS benchmark.
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* EDIT PROFILE MODAL (PORTAL TO DOCUMENT BODY) */}

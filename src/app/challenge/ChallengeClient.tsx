@@ -9,6 +9,7 @@ import {
   DAILY_TASKS
 } from '@/lib/challenge';
 import GuestAuthModal from '@/components/GuestAuthModal';
+import DailyPracticeJourney from '@/components/DailyPracticeJourney';
 import { supabase } from '@/lib/supabaseClient';
 import Footer from '@/components/Footer';
 
@@ -105,6 +106,9 @@ export default function ChallengeClient() {
             Target: {todayTask.targetDuration}
           </p>
         </div>
+
+        {/* 7-Day Communication Practice Roadmap */}
+        <DailyPracticeJourney challengeState={state} />
 
       </div>
 

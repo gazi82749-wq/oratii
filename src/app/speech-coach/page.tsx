@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import XPToast from '../../components/XPToast';
 import { checkAndDeductCredits } from '../../lib/credits';
 import { supabase } from '../../lib/supabaseClient';
+import { trackEvent } from '@/lib/analytics';
+import { getHistory } from '@/lib/storage';
 
 const TrialSignupPrompt = dynamic(() => import('../../components/TrialSignupPrompt'), { ssr: false });
 const GuestAuthModal = dynamic(() => import('../../components/GuestAuthModal'), { ssr: false });
@@ -282,6 +284,7 @@ export default function SpeechCoach() {
       setRecordingSeconds(0);
       setShowTimeLimitNotice(false);
       startRecordingTimer();
+      trackEvent('practice_started', { type: 'speech', mode });
     } catch (err) {
       console.error("Microphone access error:", err);
       alert("Could not access the microphone. Please check permissions.");
@@ -555,6 +558,14 @@ export default function SpeechCoach() {
           fillerCount: fillerCount
         });
       }
+
+      trackEvent('practice_completed', { type: 'speech', score: finalOverallScore, duration });
+      try {
+        const historyCount = getHistory().length;
+        if (historyCount === 2) {
+          trackEvent('second_session_completed', { type: 'speech' });
+        }
+      } catch (e) {}
 
       setIsLoading(false);
       setIsDeepLoading(false);
